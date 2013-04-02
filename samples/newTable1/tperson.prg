@@ -1,0 +1,38 @@
+/*
+ * $Id:$
+ */
+
+#include "oordb.ch"
+
+CLASS TPerson FROM MyTableBase
+
+  DEFINE FIELDS
+  DEFINE PRIMARY INDEX
+
+  PROPERTY TableFileName VALUE "person"
+
+ENDCLASS
+
+BEGIN FIELDS CLASS TPerson
+
+  ADD INTEGER FIELD "Id"
+
+  ADD STRING FIELD "Type" SIZE 1;
+    NEWVALUE "P"
+
+  ADD STRING FIELD "FirstName" SIZE 20
+
+  ADD STRING FIELD "LastName" SIZE 20
+
+  ADD DATETIME FIELD "Birth"
+
+  ADD STRING FIELD "Genre" SIZE 1 ;
+    VALIDVALUES {" "=>"Undetermined","M"=>"Male","F"=>"Female"}
+
+END FIELDS CLASS
+
+BEGIN PRIMARY INDEX CLASS TPerson
+
+    DEFINE INDEX "p01" KEYFIELD "Id" AUTOINCREMENT
+
+END PRIMARY INDEX CLASS

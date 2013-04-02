@@ -1,0 +1,33 @@
+#
+# $Id: oordb.hbp 86 2013-01-23 17:56:46Z tfonrouge $
+#
+
+-n1 -es2 -w3 -gc3 -l
+-hblib
+-inc
+-olib/${hb_arch}/${hb_comp}/oordb
+
+-iinclude
+
+-cflag={win}-DWIN32
+-cflag={win}-D_WINDOWS
+-cflag={win}-D_UNICODE
+-cflag={win&allmsvc}/MD
+-cflag={win&allmsvc}/GR
+-cflag={win&allmsvc}/EHsc
+
+{darwin}-DHB_OS_MAC
+{unix}-DHB_OS_UNIX
+{linux}-DHB_OS_LINUX
+{win}-DHB_OS_WINDOWS
+{win}-DHB_OS_WIN_32
+
+-instpath=${hb_lib}/
+
+-instfile=inc:include/*
+-instpath=inc:${hb_inc}/oordb/
+
+-instforce
+
+src/*.cpp
+src/*.prg

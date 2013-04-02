@@ -1,0 +1,901 @@
+/*
+ * $Id: ChangeLog 120 2013-04-02 04:42:21Z tfonrouge $
+ */
+
+2013-04-01 22:41 UTC-0600 Teo Fonrouge (teo/at/windtelsoft/dot/com)
+  *  src/TIndex.prg
+     * renamed property Filter to DbFilter
+     * renamed method DbSetFilter to SetDbFilter
+     ! keep order on storing indexes hash
+     ! allow to set custom index when TField:FieldExpression contains ":" separator
+
+  *  src/TTable.prg
+     * renamed property Filter to DbFilter
+     ! removed DATA filterPrimaryIndexScope
+     ! removed code to validate current scope on FilterEval()
+
+2013-04-01 17:30 UTC-0600 Teo Fonrouge (teo/at/windtelsoft/dot/com)
+  *  src/TField.prg
+     ! on compound fields (array of fields) propagate case_sensitiviness flag to each field
+
+2013-04-01 17:08 UTC-0600 Teo Fonrouge (teo/at/windtelsoft/dot/com)
+  *  src/TField.prg
+     ! using value given (if any) in FIndexExpression to evaluate on each field type
+
+  *  src/TIndex.prg
+     ! do not create a custom index if TField has IndexExpression not empty value
+
+2013-04-01 15:01 UTC-0600 Teo Fonrouge (teo/at/windtelsoft/dot/com)
+  *  src/TIndex.prg
+     ! fixed creating index expression without keyexpression
+
+2013-04-01 12:38 UTC-0600 Teo Fonrouge (teo/at/windtelsoft/dot/com)
+  *  src/TField.prg
+     * moved FUsingField data to PROTECTED from PRIVATE
+     ! IndexExpression now checks if FUsingField
+
+2013-03-30 11:20 UTC-0600 Teo Fonrouge (teo/at/windtelsoft/dot/com)
+  *  src/TTable.prg
+     ! added protection against failure on building table on ::ChildSource()
+
+2013-03-29 20:39 UTC-0600 Teo Fonrouge (teo/at/windtelsoft/dot/com)
+  *  src/TTable.prg
+     * removed debug function
+
+2013-03-29 16:55 UTC-0600 Teo Fonrouge (teo/at/windtelsoft/dot/com)
+  *  include/oordb.ch
+     * minor code cleanup
+
+  *  src/TIndex.prg
+  *  src/TTable.prg
+     % removed index check/creation to TTable class AFTER the primary/secondary indexes are defined
+
+2013-03-22 17:46 UTC-0600 Teo Fonrouge (teo/at/windtelsoft/dot/com)
+  *  src/TAlias.prg
+     % Push/Pop stores ordSetFocus() value
+
+2013-03-20 14:29 UTC-0600 Teo Fonrouge (teo/at/windtelsoft/dot/com)
+  *  ChangeLog
+
+2013-03-20 09:12 UTC-0600 Teo Fonrouge (teo/at/windtelsoft/dot/com)
+  *  src/TField.prg
+  *  src/TIndex.prg
+     ! TODO: Implement a more universal way to set case sensitive flag to index expressions
+
+2013-03-15 10:45 UTC-0600 Teo Fonrouge (teo/at/windtelsoft/dot/com)
+  *  src/TField.prg
+     % return hash value on GetAsDisplay
+
+2013-03-12 16:59 UTC-0600 Teo Fonrouge (teo/at/windtelsoft/dot/com)
+  *  src/Dba.prg
+     % optimized checking for lock on record
+
+  *  src/TAlias.prg
+     % allow to perform recursive lock/unlock of records
+
+2013-03-11 21:35 UTC-0600 Teo Fonrouge (teo/at/windtelsoft/dot/com)
+  *  src/TField.prg
+     ! fixed not returning error value on field validation
+
+  *  src/TIndex.prg
+     ! fixed returning result of DbSkip
+
+2013-03-10 19:48 UTC-0600 Teo Fonrouge (teo/at/windtelsoft/dot/com)
+  *  src/TField.prg
+     ! don't call On[Before|After]Change when initializing data value
+     ! Fixed using NULL values on TDateField, TDateTimeField
+
+2013-03-04 21:38 UTC-0600 Teo Fonrouge (teo/at/windtelsoft/dot/com)
+  *  src/TIndex.prg
+     ! set table to eof if out of filtered scope
+
+  *  src/TTable.prg
+     ! fixed checking for a valid skip, if there is a filter then may be bof is not set
+
+2013-03-02 15:25 UTC-0600 Teo Fonrouge (teo/at/windtelsoft/dot/com)
+  *  src/TDisplayFields.prg
+     % "_" message to call ::__FObj (Table)
+
+  *  src/TTable.prg
+     % "_" message to call GetDisplayFields object
+
+2013-02-27 18:24 UTC-0600 Teo Fonrouge (teo/at/windtelsoft/dot/com)
+  *  src/TTable.prg
+     ! fixed initial value
+
+2013-02-27 15:17 UTC-0600 Teo Fonrouge (teo/at/windtelsoft/dot/com)
+  *  src/TTable.prg
+     % parameter syncFromAlias
+
+2013-02-27 10:14 UTC-0600 Teo Fonrouge (teo/at/windtelsoft/dot/com)
+  *  src/TField.prg
+     ! added protection in DataObj() to check for a valid linkedTable (it can be NIL if
+       returned by a calculated field)
+
+2013-02-22 15:57 UTC-0600 Teo Fonrouge (teo/at/windtelsoft/dot/com)
+  *  src/TField.prg
+     % remove mutual exclusive check
+
+2013-02-22 15:42 UTC-0600 Teo Fonrouge (teo/at/windtelsoft/dot/com)
+  *  src/TField.prg
+     % improved and simplified method to sync linked table if his mastersource key val
+       has changed
+
+2013-02-21 19:25 UTC-0600 Teo Fonrouge (teo/at/windtelsoft/dot/com)
+  *  src/TField.prg
+     ! Removed wrong code, if the linkedTable is at Eof (!InsideScope) then is at Eof
+
+  *  src/TIndex.prg
+     % removed SyncMasterKeyField() and GetMasterKeyVal() returns correct value on
+       default value on fields and value for master source field (if any)
+
+2013-02-20 13:31 UTC-0600 Teo Fonrouge (teo/at/windtelsoft/dot/com)
+  *  oordb.hbc
+  *  src/TTable.prg
+     ! added protection against clearing calculated fields
+
+2013-02-18 16:13 UTC-0600 Teo Fonrouge (teo/at/windtelsoft/dot/com)
+  *  src/TIndex.prg
+     ! removed not needed call to SyncMasterKeyField() on MasterKeyExpression()
+     % automatic created index fields are marked as not published
+
+2013-02-17 19:22 UTC-0600 Teo Fonrouge (teo/at/windtelsoft/dot/com)
+  *  src/TField.prg
+     % added property 'nameAliasPublished'
+     ! added property 'AsDisplay' to TField base class
+
+  *  src/TTable.prg
+     % added parameter to AddFieldAlias() to give published property
+     ! added protection to BuildFieldFromFieldExpression()
+
+2013-02-14 17:26 UTC-0600 Teo Fonrouge (teo/at/windtelsoft/dot/com)
+  *  include/oordb.ch
+     * changed command ADD ALIAS FIELD <nameAlias> FROM <field> to
+       ADD ALIAS NAME <nameAlias> TO FIELD <field> [ PRIVATE ]
+
+  *  src/TField.prg
+     + added published property to an alias field name
+
+  *  src/TTable.prg
+     * added parameter 'published' to AddFieldAlias()
+     - removed property:
+       - PublishedFieldList
+     * changed GetDisplayFields() to use array returned by GetPublishedFieldNameList()
+     % GetDisplayFieldNameList() now process correctly published ppty and sort the final
+       array returned
+
+2013-02-11 12:15 UTC-0600 Teo Fonrouge (teo/at/windtelsoft/dot/com)
+  *  src/TField.prg
+     ! added missing DATA FSize on TNumericField class
+
+2013-02-11 07:14 UTC-0600 Teo Fonrouge (teo/at/windtelsoft/dot/com)
+  *  src/TTable.prg
+  +  src/TDisplayFields.prg
+     % added base class for display fields class
+
+2013-02-06 19:18 UTC-0600 Teo Fonrouge (teo/at/windtelsoft/dot/com)
+  *  src/TIndex.prg
+     * using ::Eof instead of ::Found as return value in ::DbGoBottomTop()
+
+2013-02-06 13:25 UTC-0600 Teo Fonrouge (teo/at/windtelsoft/dot/com)
+  *  src/common.prg
+     ! temporary hack to prevent show a GUI window error on TUI apps
+       TODO: Use a 'register' call function method to set how errors/messages are displayed
+
+2013-01-25 12:06 UTC-0600 Teo Fonrouge (teo/at/windtelsoft/dot/com)
+  *  src/TField.prg
+     % added method's: GetAsDisplay, GetAsDisplayEmptyValue to TDateTimeField
+
+2013-01-25 11:45 UTC-0600 Teo Fonrouge (teo/at/windtelsoft/dot/com)
+  *  src/TField.prg
+     + GetAsDisplayEmptyValue : (solves TTimeField emptyvalue on display)
+
+  *  src/TTable.prg
+     % using ::GetAsDisplayEmptyValue on codeblock returned by GetDisplayFieldBlock, to return
+       an empty value for the TField
+
+  *  src/common.prg
+     % AsString function now process TTime objects
+
+2013-01-23 12:00 UTC-0600 Teo Fonrouge (teo/at/windtelsoft/dot/com)
+  *  ChangeLog
+     * change added
+
+2013-01-23 11:56 UTC-0600 Teo Fonrouge (teo/at/windtelsoft/dot/com)
+  *  include/oordb.ch
+     * added time field type ftTime
+
+  *  oordb.hbp
+     * clean up
+
+  *  src/TField.prg
+     + added functions:
+       + TranslateToFieldValue : value to be set to database field
+       + TranslateToValue : value to be set to buffer (::Value , ::AsVariant)
+     - removed
+       - TranslateToBuffer
+
+  *  src/TTable.prg
+     * using ::GetAsDisplay on codeblock in ::GetDisplayFieldBlock instead of ::GetAsVariant
+
+  *  src/TTime.prg
+     % added operators: "=", "==", "+", "-"
+
+2013-01-18 19:25 UTC-0600 Teo Fonrouge (teo/at/windtelsoft/dot/com)
+  *  src/TTime.prg
+     % added operators "+","-"
+
+2013-01-15 18:08 UTC-0600 Teo Fonrouge (teo/at/windtelsoft/dot/com)
+  *  src/TTable.prg
+     ! Fixed calling to protected data
+
+2013-01-15 11:17 UTC-0600 Teo Fonrouge (teo/at/windtelsoft/dot/com)
+  *  include/oordb.ch
+  *  src/TField.prg
+     * using '::Super' instead of 'Super'
+
+  *  src/TTable.prg
+     ! Fixed ::Childs(), ::DeleteChilds(), ::FillPrimaryIndexes(), ::IndexByName(), to allow
+       recursion of object values (Self) per last changes in Harbour object engine
+
+2012-12-06 11:06 UTC-0600 Teo Fonrouge (teo/at/windtelsoft/dot/com)
+  *  src/TTable.prg
+     ! reverted, it changes behavior on tui browse display
+
+2012-12-05 14:15 UTC-0600 Teo Fonrouge (teo/at/windtelsoft/dot/com)
+  *  include/oordb.ch
+     % added clauses FORMATDATE/FORMATTIME
+
+  *  src/TField.prg
+     * minor code cleanup on GetAsString definition
+     % added ppty's to TDateTimeField:
+       + FormatDate, FormatTime
+
+  *  src/TIndex.prg
+     * using new syntax for Table:BuildFieldBlockFromFieldExpression()
+
+  *  src/TTable.prg
+     * changed syntax of BuildFieldBlockFromFieldExpression; added parameter 'returnMode' which
+       will determine what method to retrieve the value will be used:
+         NIL : the TField
+         'Value' : the :Value method
+         'AsString' : the :AsString method
+         ...
+     * on GetDisplayFieldBlock, using :GetAsString instead of GetAsVariant
+
+2012-11-23 15:30 UTC-0600 Teo Fonrouge (teo/at/windtelsoft/dot/com)
+  *  src/TTable.prg
+     ! Added protection agains changing the current db record number on GetDisplayFieldBlock block
+
+2012-11-10 16:36 UTC-0600 Teo Fonrouge (teo/at/windtelsoft/dot/com)
+  *  src/TField.prg
+     % small optmz
+
+2012-11-10 16:25 UTC-0600 Teo Fonrouge (teo/at/windtelsoft/dot/com)
+  *  src/TField.prg
+     ! Fixed to make sure that masterKeyVal checks with the current value in the masterSource on 'DataObj'
+
+  *  src/TIndex.prg
+     % made 'SyncMasterKeyField()' method function, that returns true if value updated on masterSource has changed
+
+2012-11-07 16:29 UTC-0600 Teo Fonrouge (teo/at/windtelsoft/dot/com)
+  *  src/TIndex.prg
+     % added code to reset any field that is part of a master key field expression
+
+2012-10-30 17:38 UTC-0600 Teo Fonrouge (teo/at/windtelsoft/dot/com)
+  *  src/TField.prg
+     ! removed wrong code that was updating Table's LinkedObjField on WriteToTable()
+     ! removed call to SyncDetailSources() on WriteToTable()
+
+  *  src/TIndex.prg
+     % keep table status on Index object (Bof,Eof,RecNo,Found)
+     * renamed data '[get|set]RecNo' to '[get|set]RecNoBlock'
+     ! Fixed FillCustomIndex() to not update the master source referenced fields on table to construct keyval
+     % small optmz on GetMasterKeyVal(), MasterKeyExpression()
+     ! Fixed checking for a valid index key on InsideScope()
+     ! Fixed SyncMasterKeyField() to update only the master source referenced field, and using flag to proceed
+
+  *  src/TTable.prg
+     % added logic to keep state for table for each index
+     ! removed wrong code on SetIndex()
+     ! Hack temporal to logically disable SynDetailSources,
+       TODO: to remove on near future
+
+2012-10-22 18:59 UTC-0500 Teo Fonrouge (teo/at/windtelsoft/dot/com)
+  *  oordb.hbp
+     * added compiler flag '-l'
+
+  *  src/TTable.prg
+     ! removed stupid modification that was forcing to update records when changing recno, updates must be
+       performed only via ':Value := '
+
+2012-10-12 21:00 UTC-0500 Teo Fonrouge (teo/at/windtelsoft/dot/com)
+  *  src/TTable.prg
+     ! fixed detection of child tables when using descend indexes
+     ! fixed field reset on FillPrimaryIndexes()
+
+2012-10-12 10:18 UTC-0500 Teo Fonrouge (teo/at/windtelsoft/dot/com)
+  *  src/TIndex.prg
+     * method 'FillCustomIndex' made public
+
+2012-10-12 10:16 UTC-0500 Teo Fonrouge (teo/at/windtelsoft/dot/com)
+  *  src/TIndex.prg
+     ! using method 'CustomKeyUpdate()'
+
+2012-10-11 13:35 UTC-0500 Teo Fonrouge (teo/at/windtelsoft/dot/com)
+  *  src/TIndex.prg
+     ! improved deletion of custom keys
+
+2012-10-04 14:26 UTC-0500 Teo Fonrouge (teo/at/windtelsoft/dot/com)
+  *  src/TTable.prg
+     % enhanced 'BuildFieldBlockFromFieldExpression' to return (via referenced var) the target TField used
+
+2012-10-02 17:34 UTC-0500 Teo Fonrouge (teo/at/windtelsoft/dot/com)
+  +  samples/dbf1/dbf1.hbp
+     * updated
+
+2012-10-02 17:32 UTC-0500 Teo Fonrouge (teo/at/windtelsoft/dot/com)
+  *  samples/newTable1/tcompany.prg
+     * updated
+
+2012-10-02 17:28 UTC-0500 Teo Fonrouge (teo/at/windtelsoft/dot/com)
+  *  samples/indexCheck1/indexCheck1.prg
+     * updated
+
+2012-10-02 17:26 UTC-0500 Teo Fonrouge (teo/at/windtelsoft/dot/com)
+  *  src/TField.prg
+     % added capability to define (calculated) fields in the form: "Table1:Table2:Table3"
+
+  *  src/TIndex.prg
+     % clean up and optimized usage of custom indexes (when calculated fields are used to define them)
+     - moved method 'BuildFieldBlockFromFieldExpression' to TTable
+
+  *  src/TTable.prg
+     + added data to hold the list of custom indexes
+     * proceed to update custom indexes on RecUnLock()
+
+  +  samples/indexCheck1
+  +  samples/indexCheck1/TMachine.prg
+  +  samples/indexCheck1/TTool.prg
+  +  samples/indexCheck1/TWorkOrder.prg
+  +  samples/indexCheck1/indexCheck1.hbp
+  +  samples/indexCheck1/indexCheck1.prg
+  +  samples/newTable1
+  +  samples/newTable1/mydb.prg
+  +  samples/newTable1/newTable1.hbp
+  +  samples/newTable1/newTable1.prg
+  +  samples/newTable1/tcompany.prg
+  +  samples/newTable1/temployee.prg
+  +  samples/newTable1/tperson.prg
+     + samples/testings
+
+2012-10-01 19:27 UTC-0500 Teo Fonrouge (teo/at/windtelsoft/dot/com)
+  *  src/TIndex.prg
+     % added capability to use a CALCFIELD to construct a custom index
+
+2012-09-29 15:24 UTC-0500 Teo Fonrouge (teo/at/windtelsoft/dot/com)
+  *  src/TTable.prg
+     * commented out code that doesn't have a specific meaning here; to be removed later
+     * code cleanup
+
+2012-09-28 13:48 UTC-0500 Teo Fonrouge (teo/at/windtelsoft/dot/com)
+  *  src/TTable.prg
+     ! Fixed setting active workarea when creating indexes
+
+2012-09-27 20:59 UTC-0500 Teo Fonrouge (teo/at/windtelsoft/dot/com)
+  *  src/TAlias.prg
+     + added 'OrdKeyVal'
+
+  *  src/TIndex.prg
+     % added capability to create custom index when key field expression on index definition is in the form:
+       "Person:Name:..."
+       ; wrk in progress
+
+  *  src/TTable.prg
+     ! added temporary hack (FState := dsBrowse) to enable GetCurrentRecord on __DefineIndexes
+     * custom index creation on 'CreateIndex'
+
+2012-09-27 14:53 UTC-0500 Teo Fonrouge (teo/at/windtelsoft/dot/com)
+  *  src/TTable.prg
+     * re-enabled 'SetOrderBy' method is used
+
+2012-09-27 14:04 UTC-0500 Teo Fonrouge (teo/at/windtelsoft/dot/com)
+  *  src/TField.prg
+     * renamed parameter in 'SetAutoIncrementKeyIndex'
+     - removed method 'SetKeyIndex'
+     - removed data 'FKeyIndex'
+     + added ppty 'DefaultKeyIndex': this index will be used to locate values assigned directly to fields
+       i.e.: ::Field_Name:Value := 'John'
+       this is because any field can be the key index on many indexes
+     * modified 'GetIsKeyIndex' to check for current index on table or the default index assiged to the field
+     * ppty 'KeyIndex' is now readonly, and gets the table index field key (if assigned) or the field default index
+     * using 'KeyIndex' instead of 'FKeyIndex' (removed)
+
+  *  src/TIndex.prg
+     % if not assigned then assign the DefaultKeyIndex property for the field
+     * using Table:SetBaseKeyIndex to set the primary base index
+
+  *  src/TTable.prg
+     - removed 'SetBaseKeyField'
+     + added 'SetBaseKeyIndex', this sets both of index and field as the base index/key
+     - removed unused 'SetOrderBy'
+
+2012-09-24 19:38 UTC-0500 Teo Fonrouge (teo/at/windtelsoft/dot/com)
+  *  src/TField.prg
+     ! Fixed per last change on Harbour for FieldBlock() returning NIL if field doesn't exists in wa
+
+2012-09-22 20:59 UTC-0500 Teo Fonrouge (teo/at/windtelsoft/dot/com)
+  *  include/oordb.ch
+     * removed unused construct DEFINE MASTERDETAIL FIELDS
+
+  *  src/TField.prg
+     * using Self (TField) when calling FindMasterSourceField() on Reset()
+     * renamed local var on BuildLinkedTable()
+
+  *  src/TTable.prg
+     + added property 'Initialized'
+     + added data FMasterSourceFieldBuffer to store index to mastersource field
+     - removed unused FindDetailSourceField()
+     % added parameter index to FieldByObjClass()
+     - removed ppty MasterDetailFieldList
+     % optimized FieldByObjClass()
+     % optimized FindMasterSourceField() and storing index field
+
+2012-09-20 21:27 UTC-0500 Teo Fonrouge (teo/at/windtelsoft/dot/com)
+  *  src/TTable.prg
+     % using ui_AlertYesNo() to asking procedure
+
+  *  src/common.prg
+     % added ui_AlertYesNo() to use as generic
+
+2012-09-20 13:31 UTC-0500 Teo Fonrouge (teo/at/windtelsoft/dot/com)
+  *  src/TField.prg
+     ! Fixed very stupid typo when stating if hash was empty (and need to check against NIL value)
+
+2012-09-19 15:26 UTC-0500 Teo Fonrouge (teo/at/windtelsoft/dot/com)
+  *  src/TField.prg
+     ! on WriteToTable() checking for valid hash list in Table:UndoList when Field is Calculated (not need rw to db)
+
+2012-09-19 14:43 UTC-0500 Teo Fonrouge (teo/at/windtelsoft/dot/com)
+  *  include/xerror.ch
+  *  src/common.prg
+     % using new functions ui_ShowError(), ui_Alert() to show messages
+
+  *  src/Dba.prg
+     * using ui_Alert() to show error on append or record lock fail
+
+  *  src/TTable.prg
+     % on AddRec(), fill the keyIndex field's after all other field's are filled
+
+2012-09-18 13:13 UTC-0500 Teo Fonrouge (teo/at/windtelsoft/dot/com)
+  *  include/oordb.ch
+  *  src/TField.prg
+     + added new field type:
+       + AUTOINC : TAutoIncField uses native "+" rdd type using a integer
+
+2012-09-10 18:29 UTC-0500 Teo Fonrouge (teo/at/windtelsoft/dot/com)
+  *  include/oordb.ch
+  *  src/TField.prg
+  *  src/TIndex.prg
+     + added clause ON KEYVIOLATION WARN to customize message on unique key violation
+
+2012-09-10 11:13 UTC-0500 Teo Fonrouge (teo/at/windtelsoft/dot/com)
+  *  include/oordb.ch
+     * minor change in clause CLASS now optional
+
+  *  include/xerror.ch
+     % improved showing of message depending on interface frontend
+
+  *  src/TField.prg
+     % UniqueKeyIndex now is a array, this allows to keep  uniqueness for each field on each index
+     % GetEditable now accepts logical or block values
+     ! not validate field when initializing his value
+     ! Fixed checking for CALCULATED clause on field's definition
+
+  *  src/TIndex.prg
+     % adding field to array when defining a Unique field
+     ! Fixed not to calling Reset() when syncing a master key field (i.e. table may be edited and
+       the values previously assigned are reseted)
+
+  *  src/TTable.prg
+     % improved index creation, now accepts and process FOR clause
+     % Checking if inside a valid scope when changing index
+
+
+
+2012-09-07 21:03 UTC-0500 Teo Fonrouge (teo/at/windtelsoft/dot/com)
+  *  src/TField.prg
+     * cast to FTime
+     % added GetAsString/SetAsString to TTimeField()
+
+2012-09-07 20:03 UTC-0500 Teo Fonrouge (teo/at/windtelsoft/dot/com)
+  *  src/TField.prg
+     ! Fixed Validation on hash/array of values
+
+2012-09-07 18:50 UTC-0500 Teo Fonrouge (teo/at/windtelsoft/dot/com)
+  *  src/TField.prg
+  *  src/TTable.prg
+     % method 'Validate' returns NIL (on success) or a string containing description of error
+       so from now, it needs to be checked against returning a NIL value (success)
+
+2012-09-07 16:39 UTC-0500 Teo Fonrouge (teo/at/windtelsoft/dot/com)
+  *  include/xerror.ch
+     * choose Alert() function depending on TUI/GUI frontend
+
+  *  src/TTable.prg
+     * using ErrorBlockOORDB() as default error handler
+
+2012-09-07 14:29 UTC-0500 Teo Fonrouge (teo/at/windtelsoft/dot/com)
+  *  src/TField.prg
+     ! Fixed stupid typo
+
+2012-09-07 14:11 UTC-0500 Teo Fonrouge (teo/at/windtelsoft/dot/com)
+  *  src/TField.prg
+     + added methods to translate to/from field Buffer:
+       + TranslateFromBuffer( buffer ) -> field type value
+       + TranslateToBuffer( value ) -> field buffer
+
+     * property SIZE at TField (READ)
+     % show message if error at OnBeforeChange, OnValidate
+     % TTimeField inherits from TField
+     % TTimeField: added methods to process index information:
+       + GetKeyVal
+       + IndexExpression
+     % TTimeField: implement TranslateFromBuffer/TranslateToBuffer
+
+  *  src/TTime.prg
+     % added read properties:
+       + Hours
+       + Minutes
+       + Seconds
+
+2012-09-07 09:38 UTC-0500 Teo Fonrouge (teo/at/windtelsoft/dot/com)
+  *  src/TTable.prg
+     ! Not include calculated field's to check validation
+
+2012-09-06 21:01 UTC-0500 Teo Fonrouge (teo/at/windtelsoft/dot/com)
+  *  include/oordb.ch
+     * added FieldType ftMemo
+
+  *  src/TField.prg
+     % small optimization on SetBuffer:TStringField
+     + added SetBuffer:TTimeField when setting buffer with a string (i.e. on Reset via NewValue/DefaultValue)
+
+2012-09-06 20:36 UTC-0500 Teo Fonrouge (teo/at/windtelsoft/dot/com)
+  *  include/oordb.ch
+  *  src/TField.prg
+  +  src/TTime.prg
+     + added TTimeField():  ADD TIME FIELD ... FORMAT "HH:MM"
+
+  *  src/TIndex.prg
+     + added protected method:
+       + SyncMasterKeyField : syncs masterkeyfield with mastersource or reset to get default value
+
+  *  src/TTable.prg
+     % small optimization on Cancel
+
+2012-09-06 10:09 UTC-0500 Teo Fonrouge (teo/at/windtelsoft/dot/com)
+  *  src/TField.prg
+     % on writting value to a basekeyfield, update (if exists) the value on the field's linked table too
+
+2012-09-05 18:54 UTC-0500 Teo Fonrouge (teo/at/windtelsoft/dot/com)
+  *  src/TTable.prg
+     ! Do not propagate post on detail sources (if any)
+
+2012-09-05 17:23 UTC-0500 Teo Fonrouge (teo/at/windtelsoft/dot/com)
+  *  src/TTable.prg
+     ! typo fixed
+
+2012-09-05 17:20 UTC-0500 Teo Fonrouge (teo/at/windtelsoft/dot/com)
+  *  include/oordb.ch
+     + added clause CLASSINIT to ADD OBJECT FIELD ... to allow initialize object
+     * separated definition for PRIMARY/SECONDARY indexes, this allow to know the basekeyfield
+       before checking for the table's data structure
+
+  *  oordb.hbp
+     * removed flag -l
+
+  *  src/TField.prg
+     * throw error on attempt to get an invalid baseKeyField
+     * data 'ObjClass' now accepts only a char string containing the class name of the field
+
+  *  src/TIndex.prg
+     + added ppty 'IndexType', contains "PRIMARY" on primary indexes
+     ! Fixed not set a BaseKeyField for non primary indexes
+
+  *  src/TTable.prg
+     * changed to load primary fields definitions right after loading field definitions
+     % optimized checking and fixing for data structure changes, using a STATIC var BaseKeyFieldList to
+       store baseKeyField's for tables and using it on checking/fixing data structure
+
+2012-09-04 15:42 UTC-0500 Teo Fonrouge (teo/at/windtelsoft/dot/com)
+  *  src/TIndex.prg
+     ! Fixed doing Reset() to non TObjectField's when calculating MasterKeyVal
+
+2012-08-29 18:34 UTC-0500 Teo Fonrouge (teo/at/windtelsoft/dot/com)
+  *  src/TField.prg
+     ! fixed stupid typo
+
+2012-08-29 18:33 UTC-0500 Teo Fonrouge (teo/at/windtelsoft/dot/com)
+  *  src/TField.prg
+     * conditional compile on assert
+
+2012-08-29 18:30 UTC-0500 Teo Fonrouge (teo/at/windtelsoft/dot/com)
+  *  src/TField.prg
+     * added ignoreUnDo parameter to SetData to not set undo value and changed flag
+     * code cleanup
+
+  *  src/TTable.prg
+     * using value returned by AField:NewValue to set initial field value on insert
+     ! Fixed saving FUndoList on StatePush/StatePop
+
+
+2012-08-29 10:27 UTC-0500 Teo Fonrouge (teo/at/windtelsoft/dot/com)
+  *  oordb.hbp
+     * added compiler flag '-l'
+
+2012-08-28 14:27 UTC-0500 Teo Fonrouge (teo/at/windtelsoft/dot/com)
+  *  src/TTable.prg
+     ! Fixed stupid bug on not doing reset on fields before getting values
+
+2012-08-28 05:03 UTC-0500 Teo Fonrouge (teo/at/windtelsoft/dot/com)
+  *  src/TField.prg
+     * added 'Clear' method: sets buffer with empty value and sets changed and writtenvalue flags
+     ! Remove 'Reset' call on 'Delete' method
+     TODO: sanitize all the 'Reset' calls
+
+  *  src/TIndex.prg
+     % sync masterSource:linkedObjField on 'GetMasterKeyVal', allows to sync tables with a TObjectField as
+       masterSource
+
+  *  src/TTable.prg
+     * removed 'Reset' call on 'AddRec' and clearing fields instead
+     * avoided to call for 'NewValue' for TField's
+     * using 'Reset' on 'FillPrimaryIndexes'
+     % added capability to set value on fields when are edited and have a linkedObjField
+
+
+2012-08-21 12:09 UTC-0500 Teo Fonrouge (teo/at/windtelsoft/dot/com)
+  *  include/oordb.ch
+  *  src/TField.prg
+     * added ON BEFORE CHANGE <block> clause to ADD FIELD command
+
+2012-08-21 09:54 UTC-0500 Teo Fonrouge (teo/at/windtelsoft/dot/com)
+  *  include/xerror.ch
+     ! Fixed throwing error
+
+2012-08-20 13:05 UTC-0500 Teo Fonrouge (teo/at/windtelsoft/dot/com)
+  *  src/TIndex.prg
+  *  src/TTable.prg
+     * using just Eof() to determine when table is out of scope
+
+2012-08-20 10:51 UTC-0500 Teo Fonrouge (teo/at/windtelsoft/dot/com)
+  *  include/oordb.ch
+  *  src/TField.prg
+  *  src/TIndex.prg
+  *  src/TTable.prg
+     * renamed clause DEFAULT on ADD ... FIELD ... to DEFAULTVALUE
+     * add clause NEWVALUE to ADD ... FIELD . the new value is used to populate field values when creating a new
+       record, if there is not NEWVALUE then DEFAULTVALUE will be used then
+     * add clause RJUST to DEFINE ... INDEX to right justify the key value on the index expression
+
+2012-08-17 13:23 UTC-0500 Teo Fonrouge (teo/at/windtelsoft/dot/com)
+  *  src/TTable.prg
+     ! Fixed creation of DESCEND indexes
+
+2012-08-17 09:53 UTC-0500 Teo Fonrouge (teo/at/windtelsoft/dot/com)
+  *  src/TField.prg
+     ! removed wrong check for ReadOnly on SetData()
+
+2012-08-15 18:21 UTC-0500 Teo Fonrouge (teo/at/windtelsoft/dot/com)
+  *  src/TTable.prg
+     ! enabled code to allow create the physical field for TObjectFields
+       TODO: this was disabled because it went to a infinite loop in the past ???
+
+2012-08-08 10:21 UTC-0500 Teo Fonrouge (teo/at/windtelsoft/dot/com)
+  *  include/oordb.ch
+     - removed clause 'ON SETVALUE ...' on the field definition section
+     + added clause 'ON SETVALUE FIELD ...' on the class definition section
+
+  *  src/TField.prg
+     + added logic to check if a method (in the TTable class) to process when setting value (SetAsVariant) exists
+
+2012-03-16 11:45 UTC-0600 Teo Fonrouge (teo/at/windtelsoft/dot/com)
+  *  include/oordb.ch
+     % added command DEFINE DATABASE WITH <name> CLASS, ( METHOD InitDataBase ... )
+
+
+2012-03-14 13:07 UTC-0600 Teo Fonrouge (teo/at/windtelsoft/dot/com)
+  *  include/property.ch
+     ! Fixed PROPERTY command with out explicit READ clause
+
+2012-03-08 11:02 UTC-0600 Teo Fonrouge (teo/at/windtelsoft/dot/com)
+  *  include/property.ch
+     * updated
+
+2012-03-08 09:02 UTC-0600 Teo Fonrouge (teo/at/windtelsoft/dot/com)
+  *  include/property.ch
+     * updated
+
+2012-03-08 08:40 UTC-0600 Teo Fonrouge (teo/at/windtelsoft/dot/com)
+  *  include/property.ch
+     * updated
+
+2012-03-07 12:25 UTC-0600 Teo Fonrouge (teo/at/windtelsoft/dot/com)
+  *  samples/calcField1/calcField1.prg
+     * minor code cleanup
+
+  *  src/TDatabase.prg
+     ! Fixed WRITE on property NetIO
+
+2012-03-06 16:54 UTC-0600 Teo Fonrouge (teo/at/windtelsoft/dot/com)
+
+2012-03-05 09:08 UTC-0600 Teo Fonrouge (teo/at/windtelsoft/dot/com)
+  *  include/property.ch
+     % added clause INIT to command PROPERTY, sets the initial value for the F<name> DATA
+
+  *  src/TAlias.prg
+     * using PROPERTY ... INIT to some declared pptys
+     * renamed DATA 'driver' to 'RddDriver'
+       (TODO: this value must be readed from current alias ?)
+
+  *  src/TDatabase.prg
+     * using PROPERTY ... INIT
+
+  *  src/TTable.prg
+     * using #define to set default value to 'AutoCreate' ppty
+
+2012-03-04 20:54 UTC-0600 Teo Fonrouge (teo/at/windtelsoft/dot/com)
+  *  samples/buildTable/buildTable.prg
+     * updated
+
+  *  src/TDatabase.prg
+     + property:
+       + TableAutoCreate
+
+  *  src/TTable.prg
+     * using, if defined, ppty TDatabase 'TableAutoCreate' to set 'AutoCreate', defaults to .F.
+
+2012-03-03 14:50 UTC-0600 Teo Fonrouge (teo/at/windtelsoft/dot/com)
+  *  samples/buildTable/buildTable.prg
+     * enhanced
+
+  *  src/TField.prg
+     - removed unneeded:
+       - GetEditText, SetEditText : (use AsString / GetAsString/SetAsString )
+       - DisplayText
+       - Text
+     * use ::Picture value on GetAsString for TNumericField classes
+     * implemented GetAsString for TLogicalField
+
+  +  samples/calcField1
+  +  samples/calcField1/calcField1.prg
+  +  samples/dbf1
+  +  samples/dbf1/dbf1.prg
+  +  samples/dbf1/test.dbf
+     * more samples
+
+2012-03-01 06:47 UTC-0600 Teo Fonrouge (teo/at/windtelsoft/dot/com)
+  *  oordb.hbc
+     * removed harbour flag '-gc3'
+
+2012-02-29 17:51 UTC-0600 Teo Fonrouge (teo/at/windtelsoft/dot/com)
+  *  include/property.ch
+  *  samples/buildTable/buildTable.prg
+     * command PROPERTY ... DEFAULT changed to PROPERTY ... VALUE
+
+2012-02-29 17:34 UTC-0600 Teo Fonrouge (teo/at/windtelsoft/dot/com)
+  *  include/oordb.ch
+     % added protection against re-define NTrim
+
+  *  samples/buildTable/buildTable.prg
+     % enhanced
+
+  *  src/common.prg
+     + added function:
+       + Dec
+
+2012-02-29 17:16 UTC-0600 Teo Fonrouge (teo/at/windtelsoft/dot/com)
+  *  include/oordb.ch
+     + includes:
+       + hbclass.ch
+       + property.ch
+     + define
+       + ntrim
+
+  *  src/TDatabase.prg
+     % checking for existance of directory of database on creation
+
+  *  src/TTable.prg
+     * replacing wxhAlert/wxhAlertYesNo with Alert/AlertYesNo
+
+  +  samples
+     + added samples directory
+
+  +  samples/buildTable
+  +  samples/buildTable/buildTable.prg
+     + added sample
+
+  +  src/common.prg
+     + common functions
+
+2012-02-29 10:46 UTC-0600 Teo Fonrouge (teo/at/windtelsoft/dot/com)
+  *  oordb.hbc
+     % prg compiling flag '-gc3'
+
+2012-02-29 07:48 UTC-0600 Teo Fonrouge (teo/at/windtelsoft/dot/com)
+  *  src/TDatabase.prg
+     * removed static var
+
+2012-02-29 07:27 UTC-0600 Teo Fonrouge (teo/at/windtelsoft/dot/com)
+  +  oordb.hbc
+     + added hbmk2 script
+
+2012-02-28 20:47 UTC-0600 Teo Fonrouge (teo/at/windtelsoft/dot/com)
+  *  include/xerror.ch
+     ! Fixed function name
+
+  *  src/TAlias.prg
+  *  src/TDatabase.prg
+  *  src/TField.prg
+  *  src/TIndex.prg
+  *  src/TTable.prg
+     * inheriting from OORDBBASE class
+
+  +  src/oordbbase.prg
+     * base class
+
+2012-02-28 19:55 UTC-0600 Teo Fonrouge (teo/at/windtelsoft/dot/com)
+MM      ChangeLog
+MM      include/oordb.ch
+MM      include/oordbdefs.h
+MM      include/property.ch
+MM      include/xerror.ch
+MM      oordb.hbp
+MM      src/Dba.prg
+MM      src/TAlias.prg
+MM      src/TDatabase.prg
+MM      src/TField.prg
+MM      src/TIndex.prg
+MM      src/TTable.prg
+        * svn ps svn:keywords
+
+2012-02-28 19:51 UTC-0600 Teo Fonrouge (teo/at/windtelsoft/dot/com)
+  *  include/oordbdefs.h
+  *  include/xerror.ch
+  *  src/Dba.prg
+  *  src/TAlias.prg
+  *  src/TDatabase.prg
+  *  src/TField.prg
+  *  src/TIndex.prg
+  *  src/TTable.prg
+     * removed dependency on wx
+
+  +  ChangeLog
+     * changelog
+
+  -  src/TRDOClient.prg
+  -  src/TRDOServer.prg
+  -  src/TRDOServer_c.cpp
+  -  src/TTable_c.cpp
+     * not used now
+
+2012-02-28 19:29 UTC-0600 Teo Fonrouge (teo/at/windtelsoft/dot/com)
+  +  include
+  +  include/oordb.ch
+  +  include/oordbdefs.h
+  +  include/property.ch
+  +  include/xerror.ch
+  +  oordb.hbp
+  +  src
+  +  src/Dba.prg
+  +  src/TAlias.prg
+  +  src/TDatabase.prg
+  +  src/TField.prg
+  +  src/TIndex.prg
+  +  src/TRDOClient.prg
+  +  src/TRDOServer.prg
+  +  src/TRDOServer_c.cpp
+  +  src/TTable.prg
+  +  src/TTable_c.cpp
+     * 1st commit

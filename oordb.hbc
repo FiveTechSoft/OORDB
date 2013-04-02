@@ -1,0 +1,19 @@
+#
+# $Id: oordb.hbc 97 2013-02-20 19:31:35Z tfonrouge $
+#
+
+prgflags=-w3 -es2
+prgflags=-i${hb_inc}/oordb
+
+incpaths=include
+libpaths=lib/${hb_arch}/${hb_comp}
+libs=hbct hbtip oordb
+
+{allgcc}cpp=yes
+
+{win}libs=rpcrt4
+
+{darwin}prgflags="-DHB_OS_MAC"
+{unix}prgflags="-DHB_OS_UNIX"
+{linux}prgflags="-DHB_OS_LINUX"
+{win}prgflags="-DHB_OS_WINDOWS -DHB_OS_WIN_32"
