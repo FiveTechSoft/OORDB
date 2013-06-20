@@ -2,6 +2,10 @@
  * $Id: ChangeLog 155 2013-06-06 03:29:32Z tfonrouge $
  */
 
+Thu Jun 20 13:47:15 UTC 2013 Teo Fonrouge (tfonrouge@gmail.com)
+  A .gitignore
+    * needed
+
 Thu Jun 20 05:31:06 UTC 2013 Teo Fonrouge (tfonrouge@gmail.com)
   M ChangeLog
   M include/oordb.ch
