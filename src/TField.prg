@@ -1,10 +1,8 @@
 /*
- * $Id: TField.prg 119 2013-04-01 23:30:51Z tfonrouge $
+ * $Id: TField.prg 155 2013-06-06 03:29:32Z tfonrouge $
  */
 
-#include "hbclass.ch"
 #include "oordb.ch"
-#include "property.ch"
 #include "xerror.ch"
 
 /*
@@ -65,6 +63,7 @@ PRIVATE:
 PROTECTED:
 
     DATA FBuffer
+    DATA FcalcResult
     DATA FCalculated INIT .F.
     DATA FChanged INIT .F.
     DATA FCheckEditable INIT .F.  // intended to be used by TUI/GUI
@@ -324,7 +323,11 @@ METHOD FUNCTION GetAsDisplay( ... ) CLASS TField
 
     value := ::GetAsVariant( ... )
 
-    validValues := ::GetValidValues()
+    IF ::FcalcResult = NIL
+        validValues := ::GetValidValues()
+    ELSE
+        validValues := ::FcalcResult:GetValidValues()
+    ENDIF
 
     IF HB_IsHash( validValues )
 
@@ -345,8 +348,14 @@ RETURN value
 METHOD FUNCTION GetAsVariant( ... ) CLASS TField
     LOCAL AField
     LOCAL i
-    LOCAL Result
+    LOCAL result
     LOCAL value
+
+    IF ::FTable:isMetaTable
+        ::FTable:isMetaTable := .F.
+    ENDIF
+
+    ::FcalcResult := NIL
 
     IF ::FUsingField != NIL
         RETURN ::FUsingField:GetAsVariant( ... )
@@ -354,42 +363,40 @@ METHOD FUNCTION GetAsVariant( ... ) CLASS TField
 
     //::SyncToContainerField()
 
-    SWITCH ::FFieldMethodType
-    CASE "A"
-        /*
-         * This will ONLY work when all the items are of TStringField type
-         */
-        Result := ""
-        FOR EACH i IN ::FFieldArrayIndex
-            AField := ::FTable:FieldList[ i ]
-            value := AField:GetAsVariant()
-            IF !HB_IsString( value )
-                Result += AField:AsString
-            ELSE
-                Result += value
+    IF ::FFieldMethodType = "B" .OR. ::FCalculated
+        IF ::FTable:Alias != NIL
+            result := ::FTable:Alias:Eval( ::FieldReadBlock, ::FTable, ... )
+            IF HB_IsObject( result ) .AND. result:IsDerivedFrom("TField")
+                ::FcalcResult := result
+                result := result:Value
             ENDIF
-        NEXT
-        EXIT
-    CASE "B"
-        Result := ::FTable:Alias:Eval( ::FFieldCodeBlock, ::FTable )
-        IF HB_IsObject( Result )
-            Result := Result:Value
         ENDIF
-        EXIT
-    CASE "C"
-        IF ::FCalculated
-            IF ::FTable:Alias != NIL
-                Result := ::FTable:Alias:Eval( ::FieldReadBlock, ::FTable, ... )
-            ENDIF
-        ELSE
-            Result := ::GetBuffer()
-        ENDIF
-        EXIT
-    OTHERWISE
-        THROW ERROR OODB_ERR__FIELD_METHOD_TYPE_NOT_SUPPORTED ARGS ::FFieldMethodType
-    ENDSWITCH
+    ELSE
+        SWITCH ::FFieldMethodType
+        CASE "A"
+            /*
+             * This will ONLY work when all the items are of TStringField type
+             */
+            result := ""
+            FOR EACH i IN ::FFieldArrayIndex
+                AField := ::FTable:FieldList[ i ]
+                value := AField:GetAsVariant()
+                IF !HB_IsString( value )
+                    result += AField:AsString
+                ELSE
+                    result += value
+                ENDIF
+            NEXT
+            EXIT
+        CASE "C"
+            result := ::GetBuffer()
+            EXIT
+        OTHERWISE
+            THROW ERROR OODB_ERR__FIELD_METHOD_TYPE_NOT_SUPPORTED ARGS ::FFieldMethodType
+        ENDSWITCH
+    ENDIF
 
-RETURN Result
+RETURN result
 
 /*
     GetAutoIncrementValue
@@ -625,16 +632,20 @@ METHOD FUNCTION GetFieldReadBlock() CLASS TField
                 RETURN ::FFieldReadBlock
             ENDIF
         ENDIF
-        IF __ObjHasMsgAssigned( ::FTable, "CalcField_" + ::FName )
-            ::FFieldReadBlock := &("{|o,...|" + "o:CalcField_" + ::FName + "( ... ) }")
-        ELSE
-            IF __ObjHasMsgAssigned( ::FTable:MasterSource, "CalcField_" + ::FName )
-                ::FFieldReadBlock := &("{|o,...|" + "o:MasterSource:CalcField_" + ::FName + "( ... ) }")
+        IF ::FFieldCodeBlock = NIL
+            IF __ObjHasMsgAssigned( ::FTable, "CalcField_" + ::FName )
+                ::FFieldReadBlock := &("{|o,...|" + "o:CalcField_" + ::FName + "( ... ) }")
             ELSE
-                IF !::IsDerivedFrom("TObjectField")
-                    THROW ERROR OODB_ERR__CALCULATED_FIELD_CANNOT_BE_SOLVED
+                IF __ObjHasMsgAssigned( ::FTable:MasterSource, "CalcField_" + ::FName )
+                    ::FFieldReadBlock := &("{|o,...|" + "o:MasterSource:CalcField_" + ::FName + "( ... ) }")
+                ELSE
+                    IF !::IsDerivedFrom("TObjectField")
+                        THROW ERROR OODB_ERR__CALCULATED_FIELD_CANNOT_BE_SOLVED
+                    ENDIF
                 ENDIF
             ENDIF
+        ELSE
+            ::FFieldReadBlock := ::FFieldCodeBlock
         ENDIF
     ENDIF
 RETURN ::FFieldReadBlock
@@ -824,7 +835,7 @@ METHOD FUNCTION Reset() CLASS TField
 
                     IF ::IsDerivedFrom("TObjectField") .AND. ::IsMasterFieldComponent
                         IF ::FTable:MasterSource = NIL
-                            RAISE ERROR "MasterField component '" + ::Table:ClassName + ":" + ::Name + "' needs a MasterSource Table."
+                            //RAISE ERROR "MasterField component '" + ::Table:ClassName + ":" + ::Name + "' needs a MasterSource Table."
                         ELSE
     //						RAISE ERROR "MasterField component '" + ::Table:ClassName + ":" + ::Name + "' cannot be resolved in MasterSource Table (" + ::FTable:MasterSource:ClassName() + ") ."
                         ENDIF
@@ -892,6 +903,10 @@ RETURN
 */
 METHOD PROCEDURE SetAsVariant( value ) CLASS TField
     LOCAL oldState
+
+    IF ::FTable:isMetaTable
+        ::FTable:isMetaTable := .F.
+    ENDIF
 
     IF ::IsReadOnly .OR. ::FTable:State = dsInactive .OR. !::Enabled
         RETURN
@@ -1160,6 +1175,12 @@ METHOD PROCEDURE SetData( value, initialize ) CLASS TField
             ::WriteToTable( value, buffer )
         ENDIF
         
+        IF ::FTable:LinkedObjField != NIL .AND. ::FTable:BaseKeyField == Self
+
+            ::FTable:LinkedObjField:SetAsVariant( ::FTable:BaseKeyField:GetAsVariant() )
+
+        ENDIF
+
         /* sync with re-used field in db */
         IF ::FReUseFieldIndex != NIL
             ::FTable:FieldList[ ::FReUseFieldIndex ]:GetData()
@@ -1339,7 +1360,7 @@ METHOD PROCEDURE SetIsMasterFieldComponent( IsMasterFieldComponent ) CLASS TFiel
     ENDSWITCH
 
     IF ::IsDerivedFrom("TObjectField") .AND. Empty( ::FTable:GetMasterSourceClassName() )
-        RAISE TFIELD ::Name ERROR "ObjectField's needs a valid MasterSource table."
+        //RAISE TFIELD ::Name ERROR "ObjectField's needs a valid MasterSource table."
     ENDIF
 
 RETURN
@@ -1916,7 +1937,7 @@ METHOD FUNCTION GetKeyVal( keyVal ) CLASS TIntegerField
         RETURN HB_NumToHex( ::GetAsVariant(), 8 )
     ENDSWITCH
 
-    RAISE TFIELD ::GetLabel() ERROR "Don't know how to convert to key value..."
+    RAISE TFIELD ::GetLabel() ERROR "Don't know how to convert to key value ('" + ValType( keyVal ) + "')..."
 
 RETURN NIL
 
@@ -1963,6 +1984,7 @@ PRIVATE:
 PROTECTED:
     DATA FDBS_TYPE INIT "+"
     DATA FType INIT "AutoInc"
+    DATA FFieldType INIT ftAutoInc
 PUBLIC:
 PUBLISHED:
 ENDCLASS
@@ -2449,10 +2471,13 @@ PRIVATE:
     METHOD SetLinkedTableMasterSource( linkedTable )
     METHOD SetObjClass( objClass ) INLINE ::FObjClass := objClass
 PROTECTED:
+    DATA buildingLinkedTable
     DATA FCalcMethod
+    DATA FcalculatingLinkedTable INIT .F.
     DATA FClassInit
     DATA FFieldType INIT ftObject
-    DATA FMasterKeyVal EXPORTED
+    DATA FMasterKeyVal
+    DATA FonDataChangeBlock
     DATA FType INIT "ObjectField"
     DATA FValidValuesLabelField
     DATA FValType INIT "O"
@@ -2490,11 +2515,15 @@ ENDCLASS
     Teo. Mexico 2011
 */
 METHOD FUNCTION BaseKeyField() CLASS TObjectField
-    LOCAL baseKeyField := ::GetLinkedTable:BaseKeyField
-    IF baseKeyField = NIL
-        ::No_BaseKeyField_Defined()
-        //RAISE TFIELD ::Name ERROR "TObjectField has not BaseKeyField value (no PRIMARY index defined)."
+    LOCAL baseKeyField
+
+    IF ::FLinkedTable != NIL .OR. !Empty( ::GetLinkedTable() )
+        baseKeyField := ::FLinkedTable:BaseKeyField
+        IF baseKeyField = NIL
+            ::No_BaseKeyField_Defined()
+        ENDIF
     ENDIF
+
 RETURN baseKeyField
 
 /*
@@ -2506,68 +2535,76 @@ METHOD PROCEDURE BuildLinkedTable() CLASS TObjectField
     LOCAL className
     LOCAL fld
 
-    IF Empty( ::FObjClass )
-        RAISE TFIELD ::Name ERROR "TObjectField has not a ObjClass value."
-    ENDIF
+    IF ::buildingLinkedTable = NIL
 
-    /*
-     * Solve using the default ObjClass
-     */
-    IF ::FTable:MasterSource != NIL .AND. ::FTable:MasterSource:IsDerivedFrom( ::FObjClass ) .AND. ::IsMasterFieldComponent
-        ::FLinkedTable := ::FTable:MasterSource
-    ELSE
-        IF ::FLinkedTableMasterSource != NIL
-            masterSource := ::FLinkedTableMasterSource
-        ELSEIF ::FTable:IsDerivedFrom( ::Table:GetMasterSourceClassName() ) //( ::FObjClass ) )
-            masterSource := ::FTable
+        ::buildingLinkedTable := .T.
+
+        IF Empty( ::FObjClass )
+            RAISE TFIELD ::Name ERROR "TObjectField has not a ObjClass value."
         ENDIF
 
-        ::FLinkedTable := __ClsInstFromName( ::FObjClass )
-
-        IF ::FLinkedTable:IsDerivedFrom( ::FTable:ClassName() )
-            RAISE TFIELD ::Name ERROR "Denied: To create TObjectField's linked table derived from the same field's table class."
-        ENDIF
-
-        IF !::FLinkedTable:IsDerivedFrom( "TTable" )
-            RAISE TFIELD ::Name ERROR "Denied: To create TObjectField's linked table NOT derived from a TTable class."
-        ENDIF
-
-        /* check if we still need a mastersource and it exists in TObjectField's Table */
-        IF Empty( masterSource )
-            className := ::FLinkedTable:GetMasterSourceClassName()
-            IF ::FTable:IsDerivedFrom( className )
+        /*
+         * Solve using the default ObjClass
+         */
+        IF ::FTable:MasterSource != NIL .AND. ::FTable:MasterSource:IsDerivedFrom( ::FObjClass ) .AND. ::IsMasterFieldComponent
+            ::FLinkedTable := ::FTable:MasterSource
+        ELSE
+            IF ::FLinkedTableMasterSource != NIL
+                masterSource := ::FLinkedTableMasterSource
+            ELSEIF ::FTable:IsDerivedFrom( ::Table:GetMasterSourceClassName() ) //( ::FObjClass ) )
                 masterSource := ::FTable
-            ELSEIF !Empty( className ) .AND. ! Empty( fld := ::FTable:FieldByObjClass( className, .T. ) )
-                masterSource := fld
+            ENDIF
+
+            ::FLinkedTable := __ClsInstFromName( ::FObjClass )
+
+            IF ::FLinkedTable:IsDerivedFrom( ::FTable:ClassName() )
+                RAISE TFIELD ::Name ERROR "Denied: To create TObjectField's linked table derived from the same field's table class."
+            ENDIF
+
+            IF !::FLinkedTable:IsDerivedFrom( "TTable" )
+                RAISE TFIELD ::Name ERROR "Denied: To create TObjectField's linked table NOT derived from a TTable class."
+            ENDIF
+
+            /* check if we still need a mastersource and it exists in TObjectField's Table */
+            IF Empty( masterSource )
+                className := ::FLinkedTable:GetMasterSourceClassName()
+                IF ::FTable:IsDerivedFrom( className )
+                    masterSource := ::FTable
+                ELSEIF !Empty( className ) .AND. ! Empty( fld := ::FTable:FieldByObjClass( className, .T. ) )
+                    masterSource := fld
+                ENDIF
+            ENDIF
+            ::FLinkedTable:New( masterSource )
+            IF ::FClassInit != NIL
+                ::FClassInit:Eval( ::FLinkedTable )
             ENDIF
         ENDIF
-        ::FLinkedTable:New( masterSource )
-        IF ::FClassInit != NIL
-            ::FClassInit:Eval( ::FLinkedTable )
+
+        IF !HB_IsObject( ::FLinkedTable ) .OR. ! ::FLinkedTable:IsDerivedFrom( "TTable" )
+            RAISE TFIELD ::Name ERROR "Default value is not a TTable object."
         ENDIF
-    ENDIF
 
-    IF !HB_IsObject( ::FLinkedTable ) .OR. ! ::FLinkedTable:IsDerivedFrom( "TTable" )
-        RAISE TFIELD ::Name ERROR "Default value is not a TTable object."
-    ENDIF
+        /*
+         * Attach the current DataObj to the one in table to sync when table changes
+         * MasterFieldComponents are ignored, a child cannot change his parent :)
+         */
+        IF !::IsMasterFieldComponent .AND. ::FLinkedTable:LinkedObjField == NIL
+            /*
+             * LinkedObjField is linked to the FIRST TObjectField were it is referenced
+             * this has to be the most top level MasterSource table
+             */
+            ::FLinkedTable:LinkedObjField := Self
+        ELSE
+            /*
+             * We need to set this field as READONLY, because their LinkedTable
+             * belongs to a some TObjectField in some MasterSource table
+             * so this TObjectField cannot modify the physical database here
+             */
+            //::ReadOnly := .T.
+        ENDIF
 
-    /*
-     * Attach the current DataObj to the one in table to sync when table changes
-     * MasterFieldComponents are ignored, a child cannot change his parent :)
-     */
-    IF !::IsMasterFieldComponent .AND. ::FLinkedTable:LinkedObjField == NIL
-        /*
-         * LinkedObjField is linked to the FIRST TObjectField were it is referenced
-         * this has to be the most top level MasterSource table
-         */
-        ::FLinkedTable:LinkedObjField := Self
-    ELSE
-        /*
-         * We need to set this field as READONLY, because their LinkedTable
-         * belongs to a some TObjectField in some MasterSource table
-         * so this TObjectField cannot modify the physical database here
-         */
-        //::ReadOnly := .T.
+        ::buildingLinkedTable := NIL
+
     ENDIF
 
 RETURN
@@ -2585,29 +2622,50 @@ METHOD FUNCTION DataObj CLASS TObjectField
     linkedTable := ::GetLinkedTable()
 
     IF linkedTable != NIL
-        IF ::IsMasterFieldComponent .AND. ::FTable:FUnderReset
 
+        IF linkedTable:isMetaTable
+            linkedTable:isMetaTable := .F.
+        ENDIF
+
+        IF ::FonDataChangeBlock != NIL
+            linkedTable:OnDataChangeBlock := ::FonDataChangeBlock
+            linkedTable:OnDataChangeBlock_Param := ::Table
+            ::FonDataChangeBlock := NIL
+        ENDIF
+
+        IF linkedTable:State = dsBrowse
+            IF ::IsMasterFieldComponent .AND. ::FTable:FUnderReset
+
+            ELSE
+                /*
+                    to sure a resync with linkedTable mastersource table
+                    on TObjectField's that have a mastersource field (another TObjectField)
+                    in the same table
+                */
+                IF !Empty( linkedTable:MasterSource ) .AND. !Empty( linkedTable:MasterSource:LinkedObjField ) .AND. linkedTable:MasterSource:LinkedObjField:Table == ::FTable
+                    linkedTable:MasterSource:LinkedObjField:DataObj()
+                ENDIF
+                /* to be sure of mastersource synced with linkedTable */
+                IF linkedTable:MasterSource != NIL .AND. !linkedTable:MasterSource:BaseKeyField:KeyVal == ::FMasterKeyVal
+                    IF linkedTable:InsideScope()
+                        //linkedTable:GetCurrentRecord()
+                    ELSE
+                        linkedTable:DbGoTop()
+                    ENDIF
+                    ::FMasterKeyVal := linkedTable:MasterSource:BaseKeyField:KeyVal
+                ENDIF
+                keyVal := ::GetKeyVal()
+                /* Syncs with the current value */
+                IF !::FTable:MasterSource == linkedTable .AND. !linkedTable:BaseKeyField:KeyVal == keyVal
+                    linkedObjField := linkedTable:LinkedObjField
+                    linkedTable:LinkedObjField := NIL
+                    linkedTable:BaseKeyField:SetKeyVal( keyVal )
+                    linkedTable:LinkedObjField := linkedObjField
+                ENDIF
+            ENDIF
         ELSE
-            /*
-                to sure a resync with linkedTable mastersource table
-                on TObjectField's that have a mastersource field (another TObjectField)
-                in the same table
-            */
-            IF !Empty( linkedTable:MasterSource ) .AND. !Empty( linkedTable:MasterSource:LinkedObjField ) .AND. linkedTable:MasterSource:LinkedObjField:Table == ::FTable
-                linkedTable:MasterSource:LinkedObjField:DataObj()
-            ENDIF
-            /* to be sure of mastersource synced with linkedTable */
-            IF linkedTable:MasterSource != NIL .AND. !linkedTable:MasterSource:BaseKeyField:KeyVal == ::FMasterKeyVal
+            IF linkedTable:MasterSource != NIL .AND. AScan( { dsEdit, dsInsert }, linkedTable:State ) > 0
                 ::FMasterKeyVal := linkedTable:MasterSource:BaseKeyField:KeyVal
-                linkedTable:DbGoTop()
-            ENDIF
-            keyVal := ::GetKeyVal()
-            /* Syncs with the current value */
-            IF !::FTable:MasterSource == linkedTable .AND. !linkedTable:BaseKeyField:KeyVal == keyVal
-                linkedObjField := linkedTable:LinkedObjField
-                linkedTable:LinkedObjField := NIL
-                linkedTable:BaseKeyField:SetKeyVal( keyVal )
-                linkedTable:LinkedObjField := linkedObjField
             ENDIF
         ENDIF
     ENDIF
@@ -2656,7 +2714,11 @@ METHOD FUNCTION GetFieldReadBlock() CLASS TObjectField
 
     IF ::FFieldReadBlock = NIL .AND. ::Super:GetFieldReadBlock() = NIL
         IF ::FLinkedTable = NIL
-            ::BuildLinkedTable()
+            IF ::FcalculatingLinkedTable
+                ::BuildLinkedTable() /* no result from calculating, so create table from ObjClass name */
+            ELSE
+                ::GetLinkedTable()
+            ENDIF
         ENDIF
         ::FFieldReadBlock := {|| ::FLinkedTable }
     ENDIF
@@ -2693,17 +2755,38 @@ RETURN ""
     Teo. Mexico 2009
 */
 METHOD FUNCTION GetLinkedTable CLASS TObjectField
-    LOCAL linkedTable
+    LOCAL result
 
     IF ::FCalculated
 
-        linkedTable := ::FieldReadBlock:Eval( ::FTable )
+        IF !::FcalculatingLinkedTable
 
-        IF linkedTable != NIL .AND. linkedTable:IsDerivedFrom( "TObjectField" )
-            linkedTable := linkedTable:DataObj()
+            ::FcalculatingLinkedTable := .T.
+
+            result := ::FieldReadBlock:Eval( ::FTable )
+
+            IF result != NIL
+                IF HB_IsObject( result )
+                    IF result:IsDerivedFrom( "TTable" )
+                        ::FLinkedTable := result
+                    ELSEIF result:IsDerivedFrom( "TObjectField" )
+                        ::FLinkedTable := result:DataObj()
+                    ENDIF
+                ELSE /* the basekey field value is returned for the calculated field */
+                    IF ::FLinkedTable = NIL
+                        ::BuildLinkedTable()
+                    ENDIF
+                    ::FLinkedTable:BaseKeyField:Value := result
+                ENDIF
+            ENDIF
+
+            ::FcalculatingLinkedTable := .F.
+
+        ELSE
+
+            ::BuildLinkedTable()
+
         ENDIF
-
-        RETURN linkedTable
 
     ELSE
 
@@ -2790,9 +2873,8 @@ RETURN
     Teo. Mexico 2011
 */
 METHOD PROCEDURE SetOnDataChange( onDataChangeBlock ) CLASS TObjectField
-    ::GetLinkedTable:OnDataChangeBlock := onDataChangeBlock
-    ::GetLinkedTable:OnDataChangeBlock_Param := ::Table
-RETURN 
+    ::FonDataChangeBlock := onDataChangeBlock
+RETURN
 
 /*
     SetValidValues

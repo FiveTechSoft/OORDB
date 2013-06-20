@@ -1,5 +1,5 @@
 /*
- * $Id: TIndex.prg 120 2013-04-02 04:42:21Z tfonrouge $
+ * $Id: TIndex.prg 143 2013-05-10 13:45:21Z tfonrouge $
  */
 
 /*
@@ -7,10 +7,6 @@
     Teo. Mexico 2007
 */
 
-#include "hbclass.ch"
-#include "dbinfo.ch"
-
-#include "property.ch"
 #include "oordb.ch"
 #include "xerror.ch"
 

@@ -1,5 +1,5 @@
 /*
- * $Id: common.prg 90 2013-02-06 19:25:53Z tfonrouge $
+ * $Id: common.prg 122 2013-04-05 01:59:12Z tfonrouge $
  */
 
 STATIC BaseArray:="0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ"
@@ -77,6 +77,7 @@ RETURN 0
     Teo. Mexico 2004
 */
 FUNCTION AsString( xVal )
+    LOCAL result
 
     SWITCH ValType( xVal )
     CASE 'C'
@@ -94,10 +95,13 @@ FUNCTION AsString( xVal )
     CASE 'N'
         RETURN LTrim( Str( xVal ) )
     CASE 'O'
-        IF xVal:IsDerivedFrom("TTime'")
-            RETURN xVal:AsString
-        ENDIF
-        RETURN "<Object>: "+xVal:ClassName
+        result := xVal:ClassName
+        BEGIN SEQUENCE WITH {|oErr| Break( oErr ) }
+            IF xVal:IsDerivedFrom("TTime'")
+                result := xVal:AsString
+            ENDIF
+        END SEQUENCE
+        RETURN "<Object>: " + result
     CASE 'A'
         RETURN "<Array>: "+LTrim( Str( Len( xVal ) ) )
     END

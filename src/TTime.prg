@@ -7,10 +7,12 @@
 
 CLASS TTime
 PROTECTED:
+    DATA FDays INIT 0
     DATA FHours INIT 0
     DATA FMinutes INIT 0
     DATA FSeconds INIT 0
     DATA FFormat INIT "HH:MM:SS"
+    METHOD GetAsDays
     METHOD GetAsHours
     METHOD GetAsMinutes
     METHOD GetAsSeconds
@@ -19,16 +21,19 @@ PUBLIC:
 
     CONSTRUCTOR New( time, format )
 
+    METHOD SetAsDays( days )
     METHOD SetAsHours( hours )
     METHOD SetAsMinutes( minutes )
     METHOD SetAsSeconds( seconds )
     METHOD SetAsString ( time )
     METHOD SetFormat( format ) INLINE ::FFormat := format
 
-    PROPERTY AsString READ GetAsString WRITE SetAsString
+    PROPERTY AsDays READ GetAsDays WRITE SetAsDays
     PROPERTY AsHours READ GetAsHours WRITE SetAsHours
     PROPERTY AsMinutes READ GetAsMinutes WRITE SetAsMinutes
     PROPERTY AsSeconds READ GetAsSeconds WRITE SetAsSeconds
+    PROPERTY AsString READ GetAsString WRITE SetAsString
+    PROPERTY Days READ FDays
     PROPERTY Hours READ FHours
     PROPERTY Minutes READ FMinutes
     PROPERTY Seconds READ FSeconds
@@ -58,6 +63,9 @@ METHOD New( time, format ) CLASS TTime
     ::AsString := time
 RETURN Self
 
+METHOD FUNCTION GetAsDays CLASS TTime
+RETURN ( ::FHours + (::FMinutes/60) + (::FSeconds/60/60) ) / 24
+
 METHOD FUNCTION GetAsHours CLASS TTime
 RETURN ::FHours + (::FMinutes/60) + (::FSeconds/60/60)
 
@@ -73,22 +81,25 @@ METHOD FUNCTION GetAsString CLASS TTime
     LOCAL i
     LOCAL s
     LOCAL tk
+    LOCAL itm
 
     numToken := NumToken( ::FFormat, ":" )
 
     FOR i:=1 TO numToken
         tk := Token( ::FFormat, ":", i )
-        SWITCH Upper( Left( tk, 1) )
+        itm := Upper( tk )
+        SWITCH Left( itm, 1 )
         CASE "H"
-            s := PadL( LTrim(Str( ::FHours, 0 )), 2, "0" )
+            s := LTrim(Str( ::FHours, 0 ))
             EXIT
         CASE "M"
-            s := PadL( LTrim(Str( ::FMinutes, 0 )), 2, "0" )
+            s := LTrim(Str( ::FMinutes, 0 ))
             EXIT
         CASE "S"
-            s := PadL( LTrim(Str( ::FSeconds, 0 )), 2, "0" )
+            s := LTrim(Str( ::FSeconds, 0 ))
             EXIT
         ENDSWITCH
+        s := PadL( s, Max( 2, Len( itm ) ), "0" )
         asString += s
         IF i < numToken
             asString += ":"
@@ -128,6 +139,10 @@ METHOD Op_Minus( timeToMinus ) CLASS TTime
         EXIT
     ENDSWITCH
 RETURN time
+
+METHOD PROCEDURE SetAsDays( days ) CLASS TTime
+    ::SetAsMinutes( ( days / 24 ) * 60 )
+RETURN
 
 METHOD PROCEDURE SetAsHours( hours ) CLASS TTime
     ::SetAsMinutes( hours * 60 )

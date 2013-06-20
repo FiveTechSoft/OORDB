@@ -1,6 +1,226 @@
 /*
- * $Id: ChangeLog 120 2013-04-02 04:42:21Z tfonrouge $
+ * $Id: ChangeLog 155 2013-06-06 03:29:32Z tfonrouge $
  */
+
+Thu Jun 20 05:31:06 UTC 2013 Teo Fonrouge (tfonrouge@gmail.com)
+  M ChangeLog
+  M include/oordb.ch
+  M src/TAlias.prg
+  M src/TField.prg
+  M src/TIndex.prg
+  M src/TTable.prg
+  M src/TTime.prg
+  M src/common.prg
+  A tests/test01.hbp
+  A tests/test01.prg
+    * first commit
+
+2013-06-05 22:27 UTC-0500 Teo Fonrouge (teo/at/windtelsoft/dot/com)
+  *  src/TField.prg
+     ! do not call GetLinkedTable() on TObjectField:SetOnDataChange to avoid instantiate the linkedTable
+
+2013-06-04 15:48 UTC-0500 Teo Fonrouge (teo/at/windtelsoft/dot/com)
+  *  src/TField.prg
+     ! protected section when linkedTable is created in TObjectField
+
+  *  src/TTable.prg
+     * minor code cleanup
+
+2013-05-24 10:15 UTC-0500 Teo Fonrouge (teo/at/windtelsoft/dot/com)
+  *  src/TField.prg
+     % using hash on a referenced calculated object field to use in GetAsDisplay
+
+  *  src/TTable.prg
+     ! convert field type from "+" to "I" when using autoInc fields
+
+2013-05-22 12:46 UTC-0500 Teo Fonrouge (teo/at/windtelsoft/dot/com)
+  *  src/TTable.prg
+     % property:
+       + causeEditState : contains { dsInsert, dsEdit } to determina (i.e. at Post()) the action to edit
+
+2013-05-20 14:00 UTC-0500 Teo Fonrouge (teo/at/windtelsoft/dot/com)
+  *  src/TTable.prg
+     ! check for metaTable status on StatePush()
+
+2013-05-16 14:07 UTC-0500 Teo Fonrouge (teo/at/windtelsoft/dot/com)
+  *  src/TTable.prg
+     ! moved section that delete table childs after OnBeforeDelete() check
+
+2013-05-14 12:55 UTC-0500 Teo Fonrouge (teo/at/windtelsoft/dot/com)
+  *  src/TTable.prg
+     - removed duplicated GetFound()
+
+2013-05-14 12:54 UTC-0500 Teo Fonrouge (teo/at/windtelsoft/dot/com)
+  *  src/TTable.prg
+     ! more checking for metaTable status:
+       * GetBof
+       * GetEof
+       * GetFound
+       * GetRecNo
+
+2013-05-13 19:47 UTC-0500 Teo Fonrouge (teo/at/windtelsoft/dot/com)
+  *  src/TField.prg
+     ! checking for metaTable on linkedTable on DataObj()
+
+2013-05-13 13:02 UTC-0500 Teo Fonrouge (teo/at/windtelsoft/dot/com)
+  *  src/TTable.prg
+     ! checking for metaTable status on Insert()
+
+2013-05-13 12:03 UTC-0500 Teo Fonrouge (teo/at/windtelsoft/dot/com)
+  *  src/TTable.prg
+     ! check for metaTable flag on IndexByName()
+
+2013-05-13 09:55 UTC-0500 Teo Fonrouge (teo/at/windtelsoft/dot/com)
+  *  src/TAlias.prg
+     ! not selecting a empty workarea
+
+2013-05-10 08:42 UTC-0500 Teo Fonrouge (teo/at/windtelsoft/dot/com)
+  *  include/oordb.ch
+     * renamed method __DefineIndexes to __DefineSecondaryIndexes
+
+  *  src/TAlias.prg
+     * removed redundant #include´s
+     % keep work area used after openning a new table
+
+  *  src/TField.prg
+     * removed redundant #include´s
+     % added to GetAsVariant/SetAsVariant checking for metaTable
+
+  *  src/TIndex.prg
+     * removed redundant #include´s
+
+  *  src/TTable.prg
+     * removed redundant #include´s
+     * GetIndexName returns a empty string "" if there is no index
+     + added ppty isMetaTable, this allows to late 'instantiate' a Table (open alias, check tablestruct, and
+       create indexes), so building a linked table on TObjectFields don't will cause a infinite loop on tables
+       with ciclic references on it (ie. table A has a object field B which has a object field of table A)
+     + added method
+       + CreateTableInstance: change status of metaTable
+     * check by change metaTable status on GetIndex(),GetAlias(),GetDisplayFields()
+     * renamed __DefineIndexes to __DefineSecondaryIndexes
+     - removed WRITE clause to property Alias
+     - removed SyncDetailsSources
+     % small optmz on get/set Index object
+
+  +  tests
+  +  tests/test01.hbp
+  +  tests/test01.prg
+     + test to check for create tables with cicilic references
+
+
+2013-05-03 23:43 UTC-0500 Teo Fonrouge (teo/at/windtelsoft/dot/com)
+  *  src/TField.prg
+     ! reverted change to create undo values
+
+2013-05-03 14:36 UTC-0500 Teo Fonrouge (teo/at/windtelsoft/dot/com)
+  *  src/TField.prg
+     ! Fixed when a calculated TObjectField returns the basekeyfield key value and still needs
+       to be builded the linkedTable
+
+2013-05-02 21:35 UTC-0500 Teo Fonrouge (teo/at/windtelsoft/dot/com)
+  *  src/TField.prg
+     ! Create linked table if recurses in GetLinkedTable for calculated tobject fields
+
+2013-05-02 21:07 UTC-0500 Teo Fonrouge (teo/at/windtelsoft/dot/com)
+  *  src/TField.prg
+     % on calculated TObjectField´s create linked table from the ObjClass name if the calculation
+       tries to recurse (no func method to do the calculation)
+
+2013-05-02 17:41 UTC-0500 Teo Fonrouge (teo/at/windtelsoft/dot/com)
+  *  src/TField.prg
+
+2013-04-30 13:45 UTC-0500 Teo Fonrouge (teo/at/windtelsoft/dot/com)
+  *  ChangeLog
+
+2013-04-30 13:44 UTC-0500 Teo Fonrouge (teo/at/windtelsoft/dot/com)
+  *  src/TField.prg
+     % small optimization
+     ! get ::Value only on TField objects
+     ! check for a linkedtable on BaseKeyField
+     ! GetLinkedTable allways will build the linked table
+
+2013-04-30 13:44 UTC-0500 Teo Fonrouge (teo/at/windtelsoft/dot/com)
+  *  src/TField.prg
+     % small optimization
+     ! get ::Value only on TField objects
+     ! check for a linkedtable on BaseKeyField
+     ! GetLinkedTable allways will build the linked table
+
+2013-04-30 12:12 UTC-0500 Teo Fonrouge (teo/at/windtelsoft/dot/com)
+  *  src/TField.prg
+     % using the same logic to calculate field value
+
+2013-04-30 09:45 UTC-0500 Teo Fonrouge (teo/at/windtelsoft/dot/com)
+  *  src/TField.prg
+     % GetAsVariant improved evaluation of calculated fields
+     % improved logic to get FFieldReadBlock
+     * not raise error when checking for MasterSource on TObjectField's (field is not
+       master index key component)
+     % improved error on TIntegerField:GetKayVal
+
+  *  src/TTable.prg
+     % improved value returned on DbGoTo()
+
+2013-04-19 13:19 UTC-0500 Teo Fonrouge (teo/at/windtelsoft/dot/com)
+  *  src/TTime.prg
+     ! fixed using format "HHH:M"
+
+2013-04-17 17:02 UTC-0500 Teo Fonrouge (teo/at/windtelsoft/dot/com)
+  *  src/TField.prg
+  *  src/TTable.prg
+     * reverted some changes by tracking a bug
+
+2013-04-17 11:52 UTC-0500 Teo Fonrouge (teo/at/windtelsoft/dot/com)
+  *  src/TField.prg
+     % re-read linked table if it's inside scope
+
+2013-04-17 11:44 UTC-0500 Teo Fonrouge (teo/at/windtelsoft/dot/com)
+  *  src/TTable.prg
+     ! test if flush (skip(0)) is needed
+
+2013-04-16 17:55 UTC-0500 Teo Fonrouge (teo/at/windtelsoft/dot/com)
+  *  src/TTable.prg
+     % added event OnBeforeEdit() previous to executing ::Edit process
+
+2013-04-16 12:23 UTC-0500 Teo Fonrouge (teo/at/windtelsoft/dot/com)
+  *  include/oordb.ch
+  *  src/TField.prg
+     + added ftAutoInc field type to TAutoIncField class
+
+  *  src/TTable.prg
+     * get the autoinc value on TAutoIncField's
+
+
+2013-04-15 14:20 UTC-0500 Teo Fonrouge (teo/at/windtelsoft/dot/com)
+  *  src/TField.prg
+     ! don't call goTop to try to get inside scope if it's already
+
+2013-04-09 14:05 UTC-0500 Teo Fonrouge (teo/at/windtelsoft/dot/com)
+  *  src/TField.prg
+     ! reverted stupid modification
+
+2013-04-09 13:50 UTC-0500 Teo Fonrouge (teo/at/windtelsoft/dot/com)
+  *  src/TField.prg
+     % on TObjectField's SetData() sync table's linkedObjField (if any) if field value changes
+     ! on SetKeyVal() sync table's linkedObjField only if field is the base key field
+
+2013-04-08 18:23 UTC-0500 Teo Fonrouge (teo/at/windtelsoft/dot/com)
+  *  src/TField.prg
+     % added protection in DataObj to don't try to sync linkedTable with MasterSource if
+       linkedTable is dsInsert,dsEdit modes, sync only occurs in dsBrowse
+
+2013-04-05 12:15 UTC-0600 Teo Fonrouge (teo/at/windtelsoft/dot/com)
+  *  src/TField.prg
+     * removed exported clause to FMasterKeyVal data
+
+2013-04-04 19:59 UTC-0600 Teo Fonrouge (teo/at/windtelsoft/dot/com)
+  *  src/common.prg
+     ! added protection against using IsDerivedFrom() method in TBrowse derived classes
+
+2013-04-03 17:29 UTC-0600 Teo Fonrouge (teo/at/windtelsoft/dot/com)
+  *  src/TTable.prg
+     ! free lock after fail in OnBeforeDelete()
 
 2013-04-01 22:41 UTC-0600 Teo Fonrouge (teo/at/windtelsoft/dot/com)
   *  src/TIndex.prg

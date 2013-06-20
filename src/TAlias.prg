@@ -1,5 +1,5 @@
 /*
- * $Id: TAlias.prg 112 2013-03-22 23:46:21Z tfonrouge $
+ * $Id: TAlias.prg 144 2013-05-13 14:56:50Z tfonrouge $
  */
 
 /*
@@ -7,8 +7,6 @@
     Teo. Mexico 2007
 */
 
-#include "hbclass.ch"
-#include "property.ch"
 #include "oordb.ch"
 #include "xerror.ch"
 
@@ -230,6 +228,10 @@ METHOD DbOpen( table, aliasName ) CLASS TAlias
     LOCAL netIO
     LOCAL cPrefix
     LOCAL isTempTable := .F.
+    LOCAL wa
+    LOCAL result
+
+    wa := Alias()
 
     IF HB_IsObject( table )
 
@@ -256,6 +258,9 @@ METHOD DbOpen( table, aliasName ) CLASS TAlias
             ENDIF
             ::FTableName := table:TableFileName
             ::workArea := Select()
+            IF !Empty( wa )
+                dbSelectArea( wa )
+            ENDIF
             RETURN .T.
         ENDIF
 
@@ -297,9 +302,15 @@ METHOD DbOpen( table, aliasName ) CLASS TAlias
 
     ::FTableName := tableName
     ::workArea := Select()
-    ::FInstances[ tableName, "fullFileName" ] := tableFullFileName 
+    ::FInstances[ tableName, "fullFileName" ] := tableFullFileName
 
-RETURN !NetErr()
+    result := !NetErr()
+
+    IF !Empty( wa )
+        dbSelectArea( wa )
+    ENDIF
+
+RETURN result
 
 /*
     DbOrderInfo

@@ -1,5 +1,5 @@
 /*
- * $Id: oordb.ch 113 2013-03-29 22:55:37Z tfonrouge $
+ * $Id: oordb.ch 143 2013-05-10 13:45:21Z tfonrouge $
  */
 
 /*
@@ -28,6 +28,8 @@
 #define ftObject    1
 #define ftMemo      2
 #define ftTime      3
+#define ftAutoInc   4
+
 
 /* Events for TTable */
 #xtranslate EVENT ONAFTEROPEN => METHOD OnAfterOpen()
@@ -197,7 +199,7 @@
 #xtranslate DEFINE SECONDARY INDEX ;
     => ;
     DATA curClassIndex HIDDEN ;;
-    METHOD __DefineIndexes()
+    METHOD __DefineSecondaryIndexes()
 
 #xtranslate BEGIN FIELDS CLASS <className>;
                         => ;
@@ -223,10 +225,10 @@
             
 #xtranslate BEGIN SECONDARY INDEX CLASS <className> ;
                         => ;
-            METHOD PROCEDURE __DefineIndexes() CLASS <className> ;;
+            METHOD PROCEDURE __DefineSecondaryIndexes() CLASS <className> ;;
             LOCAL __typeIndex__ := "SECONDARY" ;;
             ::curClassIndex := <(className)> ;;
-            ::Super:__DefineIndexes() ;;
+            ::Super:__DefineSecondaryIndexes() ;;
 
 #xtranslate END SECONDARY INDEX [CLASS] ;
                         => ;
