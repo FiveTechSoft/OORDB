@@ -2,6 +2,10 @@
  * $Id: ChangeLog 155 2013-06-06 03:29:32Z tfonrouge $
  */
 
+Thu Jun 20 21:47:10 UTC 2013 Teo Fonrouge (tfonrouge@gmail.com)
+  M src/TField.prg
+    ! moved class initialization for TObjectField´s after LinkedObjField has been assigned
+
 Thu Jun 20 13:47:15 UTC 2013 Teo Fonrouge (tfonrouge@gmail.com)
   A .gitignore
     * needed

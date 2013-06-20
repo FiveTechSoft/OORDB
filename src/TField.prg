@@ -2534,6 +2534,7 @@ METHOD PROCEDURE BuildLinkedTable() CLASS TObjectField
     LOCAL masterSource
     LOCAL className
     LOCAL fld
+    LOCAL classInit
 
     IF ::buildingLinkedTable = NIL
 
@@ -2575,9 +2576,7 @@ METHOD PROCEDURE BuildLinkedTable() CLASS TObjectField
                 ENDIF
             ENDIF
             ::FLinkedTable:New( masterSource )
-            IF ::FClassInit != NIL
-                ::FClassInit:Eval( ::FLinkedTable )
-            ENDIF
+            classInit := ::FClassInit
         ENDIF
 
         IF !HB_IsObject( ::FLinkedTable ) .OR. ! ::FLinkedTable:IsDerivedFrom( "TTable" )
@@ -2601,6 +2600,10 @@ METHOD PROCEDURE BuildLinkedTable() CLASS TObjectField
              * so this TObjectField cannot modify the physical database here
              */
             //::ReadOnly := .T.
+        ENDIF
+
+        IF classInit != NIL
+            classInit:Eval( ::FLinkedTable )
         ENDIF
 
         ::buildingLinkedTable := NIL
