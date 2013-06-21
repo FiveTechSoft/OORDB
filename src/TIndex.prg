@@ -254,7 +254,7 @@ RETURN ::FFound
     Teo. Mexico 2012
 */
 METHOD FUNCTION CustomKeyExpValue() CLASS TIndex
-RETURN ::MasterKeyVal + ::KeyVal
+RETURN ::MasterKeyField:KeyVal + ::KeyVal
 
 /*
     CustomKeyUpdate
