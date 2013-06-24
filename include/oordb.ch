@@ -106,7 +106,6 @@
                         [ <rq: REQUIRED> ] ;
                         [ GROUP <cGroup> ] ;
                         [ DESCRIPTION <cDesc> ] ;
-                        [ PICKLIST <pickList> ] ;
                         [ SIZE <nSize> ] ;
                         [ FORMAT <timeFormat> ] ;
                         [ LEN <nLen> ] ;
@@ -151,7 +150,6 @@
                             [ :Required := <.rq.> ] ;;
                             [ :Group := <cGroup> ] ;;
                             [ :Description := <cDesc> ] ;;
-                            [ :PickList := <pickList> ] ;;
                             [ :DBS_LEN := <nLen> ] ;;
                             [ :DBS_DEC := <nDec> ] ;;
                             [ :Picture := <pict> ] ;;

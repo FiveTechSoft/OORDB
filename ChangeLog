@@ -2,6 +2,12 @@
  * $Id: ChangeLog 155 2013-06-06 03:29:32Z tfonrouge $
  */
 
+Mon Jun 24 22:41:09 UTC 2013 Teo Fonrouge (tfonrouge@gmail.com)
+  M include/oordb.ch
+  M src/TField.prg
+  M src/TTable.prg
+    - removed deprecated PICKLIST clause, now sensitive context lists are obtained from indexes
+
 Mon Jun 24 20:16:40 UTC 2013 Teo Fonrouge (tfonrouge@gmail.com)
   M src/TField.prg
     % some conversions needed when calculating a TTime value

@@ -31,7 +31,6 @@ PRIVATE:
     DATA FFieldCodeBlock									// Code Block
     DATA FFieldWriteBlock									// Code Block to do WRITE
     DATA FHasCalcFieldMethod INIT .F.
-    DATA FPickList											// codeblock to help to pick a value
     DATA FGroup														// A Text label for grouping
     DATA FIsMasterFieldComponent INIT .F. // Field is a MasterField component
     DATA FPrimaryKeyComponent INIT .F.		// Field is included in a Array of fields for a Primary Index Key
@@ -54,7 +53,6 @@ PRIVATE:
     METHOD SetGroup( Group ) INLINE ::FGroup := Group
     METHOD SetIsMasterFieldComponent( IsMasterFieldComponent )
     METHOD SetName( name )
-    METHOD SetPickList( pickList )
     METHOD SetPrimaryKeyComponent( PrimaryKeyComponent )
     METHOD SetPublished( Published ) INLINE ::FPublished := Published
     METHOD SetReadOnly( ReadOnly ) INLINE ::FReadOnly := ReadOnly
@@ -150,7 +148,6 @@ PUBLIC:
     METHOD IndexExpression VIRTUAL
     METHOD IsReadOnly() INLINE ::FTable:ReadOnly .OR. ::FReadOnly .OR. ( ::FTable:State != dsBrowse .AND. ::AutoIncrement )
     METHOD IsTableField()
-    METHOD OnPickList( param )
     METHOD Reset()
     METHOD RevertValue()
     METHOD SetAsVariant( value )
@@ -176,7 +173,6 @@ PUBLIC:
     PROPERTY FieldArrayIndex READ FFieldArrayIndex
     PROPERTY KeyVal READ GetKeyVal WRITE SetKeyVal
     PROPERTY LinkedTable READ GetLinkedTable
-    PROPERTY PickList READ FPickList WRITE SetPickList
     PROPERTY ReUseField READ FReUseField WRITE SetReUseField
     PROPERTY ReUseFieldIndex READ FReUseFieldIndex
     PROPERTY IsKeyIndex READ GetIsKeyIndex
@@ -748,25 +744,6 @@ RETURN NIL
 */
 METHOD FUNCTION IsTableField() CLASS TField
 RETURN ::FFieldMethodType = "C" .AND. !::FCalculated .AND. ::FUsingField = NIL
-
-/*
-    OnPickList
-    Teo. Mexico 2009
-*/
-METHOD FUNCTION OnPickList( param ) CLASS TField
-
-    IF ::FPickList == NIL
-        RETURN NIL
-    ENDIF
-
-    SWITCH ValType( ::FPickList )
-    CASE 'B'
-        RETURN ::FPickList:Eval( param )
-    CASE 'L'
-        RETURN ::FTable:OnPickList( param )
-    ENDSWITCH
-
-RETURN NIL
 
 /*
     Reset
@@ -1424,23 +1401,6 @@ METHOD PROCEDURE SetName( name ) CLASS TField
 
     ::FName := name
 
-RETURN
-
-/*
-    SetPickList
-    Teo. Mexico 2009
-*/
-METHOD PROCEDURE SetPickList( pickList ) CLASS TField
-    SWITCH ValType( pickList )
-    CASE 'B'
-        ::FPickList := pickList
-        EXIT
-    CASE 'L'
-        IF pickList
-            ::FPickList := .T.
-        ENDIF
-        EXIT
-    ENDSWITCH
 RETURN
 
 /*

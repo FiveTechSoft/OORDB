@@ -323,7 +323,6 @@ PUBLIC:
     METHOD OnBeforeLock INLINE .T.
     METHOD OnBeforePost() INLINE .T.
     METHOD OnDataChange()
-    METHOD OnPickList( param ) VIRTUAL
     METHOD OnStateChange( oldState ) VIRTUAL
     METHOD OnSyncFromMasterSource() VIRTUAL
 
