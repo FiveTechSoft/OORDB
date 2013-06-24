@@ -2007,6 +2007,7 @@ PROTECTED:
     DATA FTime AS OBJECT
     DATA FType INIT "Time"
     METHOD GetAs( index )
+    METHOD GetAsVariant( ... )
     METHOD GetEmptyValue INLINE ::Time:AsSeconds := 0, ::Time
     METHOD GetTime INLINE iif( ::FTime = NIL, ::FTime := TTime():New("00:00:00","HH:MM:SS"), ::FTime )
     METHOD TranslateToFieldValue( value )
@@ -2045,6 +2046,29 @@ METHOD FUNCTION GetAs( index ) CLASS TTimeField
         RETURN ::Time:AsSeconds
     ENDSWITCH
 RETURN NIL
+
+/*
+    GetAsVariant
+    Teo. Mexico 2013
+*/
+METHOD FUNCTION GetAsVariant( ... ) CLASS TTimeField
+    LOCAL time
+
+    time := ::Super:GetAsVariant( ... )
+
+    SWITCH ValType( time )
+    CASE "N"
+        ::time:AsSeconds := time
+        EXIT
+    CASE "C"
+        ::time:AsString := time
+        EXIT
+    CASE "O"
+        ::time:AsSeconds := time:AsSeconds
+        EXIT
+    ENDSWITCH
+
+RETURN ::time
 
 /*
     GetKeyVal
