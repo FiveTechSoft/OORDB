@@ -5,7 +5,9 @@
 #include "hbclass.ch"
 
 CLASS OORDBBASE
-  METHOD ObjectH
+
+   METHOD ObjectH
+
 ENDCLASS
 
 #pragma BEGINDUMP

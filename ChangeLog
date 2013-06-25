@@ -2,6 +2,19 @@
  * $Id: ChangeLog 155 2013-06-06 03:29:32Z tfonrouge $
  */
 
+Tue Jun 25 19:18:37 UTC 2013 Teo Fonrouge (tfonrouge@gmail.com)
+  M src/Dba.prg
+  M src/TAlias.prg
+  M src/TDatabase.prg
+  M src/TDisplayFields.prg
+  M src/TField.prg
+  M src/TIndex.prg
+  M src/TTable.prg
+  M src/TTime.prg
+  M src/common.prg
+  M src/oordbbase.prg
+    * harboured source code
+
 Tue Jun 25 19:15:05 UTC 2013 Teo Fonrouge (tfonrouge@gmail.com)
   M include/oordb.ch
     % added 'METHOD' to 'CALCFIELD' command

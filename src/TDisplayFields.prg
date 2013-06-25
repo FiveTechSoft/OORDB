@@ -11,10 +11,13 @@
     Teo. Mexico 2013
 */
 CLASS TDisplayFields
-PUBLIC:
-    DATA __FFields
-    DATA __FLastLabel
-    DATA __FObj
-    DATA __FSyncFromAlias
-    METHOD _ INLINE ::__FObj
+
+   PUBLIC:
+
+   DATA __FFields
+   DATA __FLastLabel
+   DATA __FObj
+   DATA __FSyncFromAlias
+   METHOD _ INLINE ::__FObj
+
 ENDCLASS
