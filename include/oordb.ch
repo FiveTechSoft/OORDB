@@ -232,11 +232,11 @@
                         => ;
             RETURN
             
-#xtranslate CALCFIELD <clcField> => METHOD CalcField_<clcField>
-#xtranslate CALCFIELD <clcField> CLASS <className> ;
+#xtranslate METHOD CALCFIELD <clcField> => METHOD CalcField_<clcField>
+#xtranslate METHOD CALCFIELD <clcField> CLASS <className> ;
     => ;
     METHOD FUNCTION CalcField_<clcField> CLASS <className>
-#xtranslate CALCFIELD <clcField>( [<params,...>] ) CLASS <className> ;
+#xtranslate METHOD CALCFIELD <clcField>( [<params,...>] ) CLASS <className> ;
     => ;
     METHOD FUNCTION CalcField_<clcField>( [<params>] ) CLASS <className>
 
