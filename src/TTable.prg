@@ -452,8 +452,11 @@ METHOD New( masterSource, tableName ) CLASS TTable
      */
    ::FillFieldList()
 
-   /* Load Primary index */
+   /* Load Primary indexes */
    ::__DefinePrimaryIndex()
+
+   /* Load Secondary Indexes */
+   ::__DefineSecondaryIndexes()
 
    IF !::isMetaTable
       ::CreateTableInstance()
@@ -1222,11 +1225,6 @@ METHOD PROCEDURE CreateTableInstance() CLASS TTable
    NEXT
 
    ::FState := dsBrowse
-
-    /*!
-     * Load definitions for Secondary Indexes
-     */
-   ::__DefineSecondaryIndexes()
 
    ::__CheckIndexes()
 

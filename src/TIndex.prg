@@ -737,9 +737,7 @@ METHOD PROCEDURE SetField( nIndex, XField ) CLASS TIndex
       IF AField:IsDerivedFrom( "TStringField" ) .AND. Len( AField ) = 0
          RAISE ERROR ::FTable:ClassName + ": Master key field <" + AField:Name + "> needs a size > zero..."
       ENDIF
-      IF AField:DefaultKeyIndex = NIL
-         AField:SetDefaultKeyIndex( Self )
-      ENDIF
+      AField:AddKeyIndex( Self )
       ::FKeyField := AField
       IF ::FIndexType == "PRIMARY" .AND. ::FTable:BaseKeyIndex = NIL
          ::FTable:SetBaseKeyIndex( Self )

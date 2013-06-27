@@ -66,7 +66,6 @@ CLASS TField FROM OORDBBASE
    DATA FCalculated INIT .F.
    DATA FChanged INIT .F.
    DATA FCheckEditable INIT .F.  // intended to be used by TUI/GUI
-   DATA FDefaultKeyIndex
    DATA FDefaultValue
    DATA FDBS_DEC INIT 0
    DATA FDBS_LEN
@@ -80,6 +79,7 @@ CLASS TField FROM OORDBBASE
    DATA FFieldReadBlock        // Code Block to do READ
    DATA FFieldType     INIT ftBase
    DATA FIndexExpression
+   DATA FIndexKeyList  INIT {}
    DATA FLabel
    DATA FModStamp INIT .F.       // Field is automatically mantained (dbf layer)
    DATA FName INIT ""
@@ -103,7 +103,7 @@ CLASS TField FROM OORDBBASE
    METHOD GetEmptyValue BLOCK {|| NIL }
    METHOD GetFieldArray()
    METHOD GetFieldReadBlock()
-   METHOD GetIsKeyIndex INLINE ( ::FTable:Index != NIL .AND. ::FTable:Index:KeyField == Self ) .OR. ::FDefaultKeyIndex != NIL
+   METHOD GetIsKeyIndex INLINE ::KeyIndex != NIL
    METHOD GetKeyIndex()
    METHOD GetLabel INLINE iif( ::FLabel == NIL, ::FName, ::FLabel )
    METHOD GetLinkedTable() INLINE NIL
@@ -134,6 +134,7 @@ CLASS TField FROM OORDBBASE
    // ON ERROR FUNCTION OODB_ErrorHandler( ... )
 
    METHOD AddFieldMessage()
+   METHOD AddKeyIndex( index )
    METHOD CheckEditable( flag )
    METHOD CLEAR()
    METHOD DELETE()
@@ -154,7 +155,6 @@ CLASS TField FROM OORDBBASE
    METHOD SetAsVariant( value )
    METHOD SetData( value, initialize )
    METHOD SetDbStruct( aStruct )
-   METHOD SetDefaultKeyIndex( index ) INLINE ::FDefaultKeyIndex := index
    METHOD SetFieldMethod( FieldMethod, calculated )
    METHOD SetIndexExpression( indexExpression ) INLINE ::FIndexExpression := indexExpression
    METHOD SetKeyVal( keyVal )
@@ -169,7 +169,6 @@ CLASS TField FROM OORDBBASE
    PROPERTY AsVariant READ GetAsVariant WRITE SetAsVariant
    PROPERTY Calculated READ FCalculated
    PROPERTY CloneData READ GetCloneData WRITE SetCloneData
-   PROPERTY DefaultKeyIndex READ FDefaultKeyIndex WRITE SetDefaultKeyIndex
    PROPERTY EmptyValue READ GetEmptyValue
    PROPERTY FieldArrayIndex READ FFieldArrayIndex
    PROPERTY KeyVal READ GetKeyVal WRITE SetKeyVal
@@ -224,6 +223,7 @@ CLASS TField FROM OORDBBASE
    PROPERTY FieldType READ FFieldType
    PROPERTY FieldWriteBlock READ FFieldWriteBlock
    PROPERTY Group READ FGroup WRITE SetGroup
+   PROPERTY IndexKeyList READ FIndexKeyList
    PROPERTY KeyIndex READ GetKeyIndex
    PROPERTY LABEL READ GetLabel WRITE SetLabel
    PROPERTY Name READ FName WRITE SetName
@@ -262,6 +262,20 @@ METHOD New( Table, curBaseClass ) CLASS TField
 METHOD PROCEDURE AddFieldMessage() CLASS TField
 
    ::FTable:AddFieldMessage( ::Name, Self )
+
+   RETURN
+
+/*
+   AddKeyIndex
+   Teo. Mexico 2013
+*/
+METHOD PROCEDURE AddKeyIndex( index ) CLASS TField
+
+   IF AScan( ::FIndexKeyList, {|e| e == index } ) = 0
+      hb_aIns( ::FIndexKeyList, 1, index, .T. )
+   ELSE
+      ::ERROR_ATTEMPT_TO_REASIGN_INDEX_TO_FIELD()
+   ENDIF
 
    RETURN
 
@@ -676,11 +690,11 @@ METHOD FUNCTION GetFieldReadBlock() CLASS TField
 */
 METHOD FUNCTION GetKeyIndex() CLASS TField
 
-   IF ::FTable:Index != NIL .AND. ::FTable:Index:KeyField == Self
-      RETURN ::FTable:Index
+   IF Len( ::FIndexKeyList ) > 0
+      RETURN ::FIndexKeyList[ 1 ]
    ENDIF
 
-   RETURN ::FDefaultKeyIndex
+   RETURN NIL
 
 /*
     GetKeyVal
