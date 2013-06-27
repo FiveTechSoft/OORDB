@@ -2,6 +2,10 @@
  * $Id: ChangeLog 155 2013-06-06 03:29:32Z tfonrouge $
  */
 
+Thu Jun 27 19:47:20 UTC 2013 Teo Fonrouge (tfonrouge@gmail.com)
+  M src/TField.prg
+    * source harboured
+
 Thu Jun 27 19:34:42 UTC 2013 Teo Fonrouge (tfonrouge@gmail.com)
   M src/TField.prg
     % using a array to keep list of indexes assigned to field, first element is top most level index

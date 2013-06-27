@@ -271,8 +271,8 @@ METHOD PROCEDURE AddFieldMessage() CLASS TField
 */
 METHOD PROCEDURE AddKeyIndex( index ) CLASS TField
 
-   IF AScan( ::FIndexKeyList, {|e| e == index } ) = 0
-      hb_aIns( ::FIndexKeyList, 1, index, .T. )
+   IF AScan( ::FIndexKeyList, {| e| e == index } ) = 0
+      hb_AIns( ::FIndexKeyList, 1, index, .T. )
    ELSE
       ::ERROR_ATTEMPT_TO_REASIGN_INDEX_TO_FIELD()
    ENDIF
