@@ -754,7 +754,7 @@ METHOD FUNCTION BuildFieldBlockFromFieldExpression( fieldExp, returnMode, field 
             s += ":DataObj:FieldList[" + NTrim( index ) + "]"
          ENDIF
          IF field:IsDerivedFrom( "TObjectField" )
-            table := field:DataObj
+            table := field:LinkedTable
          ENDIF
       ELSE
          RETURN NIL
