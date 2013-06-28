@@ -340,7 +340,7 @@ METHOD PROCEDURE DELETE() CLASS TField
 */
 METHOD FUNCTION EvalFieldReadBlock( ... ) CLASS TField
     LOCAL result
-    IF !::FonEvalFieldReadBlock
+    IF .T. //!::FonEvalFieldReadBlock
         ::FonEvalFieldReadBlock := .T.
         result := ::FTable:Alias:Eval( ::FieldReadBlock, ::FTable, ... )
         ::FonEvalFieldReadBlock := .F.

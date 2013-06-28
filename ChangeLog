@@ -2,6 +2,10 @@
  * $Id: ChangeLog 155 2013-06-06 03:29:32Z tfonrouge $
  */
 
+Fri Jun 28 21:37:18 UTC 2013 Teo Fonrouge (tfonrouge@gmail.com)
+  M src/TField.prg
+    ! reverted . returns NIL
+
 Fri Jun 28 13:01:16 UTC 2013 Teo Fonrouge (tfonrouge@gmail.com)
   M src/TField.prg
     % added protection against possible infinite loop due to calling ::DataObj inside the same
