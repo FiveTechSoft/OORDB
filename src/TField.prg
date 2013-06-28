@@ -84,6 +84,7 @@ CLASS TField FROM OORDBBASE
    DATA FModStamp INIT .F.       // Field is automatically mantained (dbf layer)
    DATA FName INIT ""
    DATA FNewValue
+    DATA FonEvalFieldReadBlock  INIT .F.
    DATA FOnReset INIT .F.
    DATA FOnSetValue
    DATA FTable
@@ -93,6 +94,7 @@ CLASS TField FROM OORDBBASE
    DATA FValType INIT "U"
    DATA FWrittenValue
 
+   METHOD EvalFieldReadBlock( ... )
    METHOD GetAsExpression INLINE hb_StrToExp( ::GetAsString )
    METHOD GetCloneData( cloneData )
    METHOD GetDBS_LEN INLINE ::FDBS_LEN
@@ -333,6 +335,19 @@ METHOD PROCEDURE DELETE() CLASS TField
    RETURN
 
 /*
+    EvalFieldReadBlock
+    Teo. Mexico 2013
+*/
+METHOD FUNCTION EvalFieldReadBlock( ... ) CLASS TField
+    LOCAL result
+    IF !::FonEvalFieldReadBlock
+        ::FonEvalFieldReadBlock := .T.
+        result := ::FTable:Alias:Eval( ::FieldReadBlock, ::FTable, ... )
+        ::FonEvalFieldReadBlock := .F.
+    ENDIF
+RETURN result
+
+/*
     GetAsDisplay
     Teo. Mexico 2013
 */
@@ -386,7 +401,7 @@ METHOD FUNCTION GetAsVariant( ... ) CLASS TField
 
    IF ::FFieldMethodType = "B" .OR. ::FCalculated
       IF ::FTable:Alias != NIL
-         result := ::FTable:Alias:Eval( ::FieldReadBlock, ::FTable, ... )
+         result := ::EvalFieldReadBlock( ... )
          IF HB_ISOBJECT( result ) .AND. result:IsDerivedFrom( "TField" )
             ::FcalcResult := result
             result := result:Value
@@ -2656,7 +2671,7 @@ METHOD PROCEDURE BuildLinkedTable() CLASS TObjectField
    LOCAL fld
    LOCAL classInit
 
-   IF ::buildingLinkedTable = NIL
+   IF ::FLinkedTable = NIL .AND. ::buildingLinkedTable = NIL
 
       ::buildingLinkedTable := .T.
 
@@ -2891,7 +2906,7 @@ METHOD FUNCTION GetLinkedTable CLASS TObjectField
 
          ::FcalculatingLinkedTable := .T.
 
-         result := ::FieldReadBlock:Eval( ::FTable )
+         result := ::EvalFieldReadBlock()
 
          IF result != NIL
             IF HB_ISOBJECT( result )

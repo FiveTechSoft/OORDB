@@ -2,6 +2,11 @@
  * $Id: ChangeLog 155 2013-06-06 03:29:32Z tfonrouge $
  */
 
+Fri Jun 28 13:01:16 UTC 2013 Teo Fonrouge (tfonrouge@gmail.com)
+  M src/TField.prg
+    % added protection against possible infinite loop due to calling ::DataObj inside the same
+      calc field definition, ::linkedTable can be used instead
+
 Thu Jun 27 20:55:07 UTC 2013 Teo Fonrouge (tfonrouge@gmail.com)
   M src/TTable.prg
     % if table is already instanced then use DataObj to sync to table dataBase
