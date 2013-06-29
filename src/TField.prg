@@ -84,7 +84,6 @@ CLASS TField FROM OORDBBASE
    DATA FModStamp INIT .F.       // Field is automatically mantained (dbf layer)
    DATA FName INIT ""
    DATA FNewValue
-    DATA FonEvalFieldReadBlock  INIT .F.
    DATA FOnReset INIT .F.
    DATA FOnSetValue
    DATA FTable
@@ -94,7 +93,6 @@ CLASS TField FROM OORDBBASE
    DATA FValType INIT "U"
    DATA FWrittenValue
 
-   METHOD EvalFieldReadBlock( ... )
    METHOD GetAsExpression INLINE hb_StrToExp( ::GetAsString )
    METHOD GetCloneData( cloneData )
    METHOD GetDBS_LEN INLINE ::FDBS_LEN
@@ -335,19 +333,6 @@ METHOD PROCEDURE DELETE() CLASS TField
    RETURN
 
 /*
-    EvalFieldReadBlock
-    Teo. Mexico 2013
-*/
-METHOD FUNCTION EvalFieldReadBlock( ... ) CLASS TField
-    LOCAL result
-    IF .T. //!::FonEvalFieldReadBlock
-        ::FonEvalFieldReadBlock := .T.
-        result := ::FTable:Alias:Eval( ::FieldReadBlock, ::FTable, ... )
-        ::FonEvalFieldReadBlock := .F.
-    ENDIF
-RETURN result
-
-/*
     GetAsDisplay
     Teo. Mexico 2013
 */
@@ -401,7 +386,7 @@ METHOD FUNCTION GetAsVariant( ... ) CLASS TField
 
    IF ::FFieldMethodType = "B" .OR. ::FCalculated
       IF ::FTable:Alias != NIL
-         result := ::EvalFieldReadBlock( ... )
+         result := ::FTable:Alias:Eval( ::FieldReadBlock, ::FTable, ... )
          IF HB_ISOBJECT( result ) .AND. result:IsDerivedFrom( "TField" )
             ::FcalcResult := result
             result := result:Value
@@ -2602,7 +2587,9 @@ CLASS TObjectField FROM TField
    METHOD BuildLinkedTable()
    METHOD SetLinkedTableMasterSource( linkedTable )
    METHOD SetObjClass( objClass ) INLINE ::FObjClass := objClass
+
    PROTECTED:
+
    DATA buildingLinkedTable
    DATA FCalcMethod
    DATA FcalculatingLinkedTable INIT .F.
@@ -2610,6 +2597,7 @@ CLASS TObjectField FROM TField
    DATA FFieldType INIT ftObject
    DATA FMasterKeyVal
    DATA FonDataChangeBlock
+   DATA FonDataObj
    DATA FType INIT "ObjectField"
    DATA FValidValuesLabelField
    DATA FValType INIT "O"
@@ -2621,7 +2609,9 @@ CLASS TObjectField FROM TField
    METHOD GetFieldReadBlock()
    METHOD GetOnDataChange()
    METHOD SetOnDataChange( onDataChangeBlock )
+
    PUBLIC:
+
    METHOD BaseKeyField() // Returns the non-TObjectField associated to this obj
    METHOD DataObj
    METHOD GetAsDisplay() INLINE ::GetKeyVal()
@@ -2639,7 +2629,6 @@ CLASS TObjectField FROM TField
    PROPERTY OnDataChange READ GetOnDataChange WRITE SetOnDataChange
    PROPERTY Size READ BaseKeyField():Size
    PROPERTY ValidValuesLabelField READ FValidValuesLabelField
-   PUBLISHED:
 
 ENDCLASS
 
@@ -2760,53 +2749,61 @@ METHOD FUNCTION DataObj CLASS TObjectField
 
    linkedTable := ::GetLinkedTable()
 
-   IF linkedTable != NIL
+   IF ::FonDataObj = NIL
 
-      IF linkedTable:isMetaTable
-         linkedTable:isMetaTable := .F.
-      ENDIF
+      ::FonDataObj := .T.
 
-      IF ::FonDataChangeBlock != NIL
-         linkedTable:OnDataChangeBlock := ::FonDataChangeBlock
-         linkedTable:OnDataChangeBlock_Param := ::Table
-         ::FonDataChangeBlock := NIL
-      ENDIF
+      IF linkedTable != NIL
 
-      IF linkedTable:State = dsBrowse
-         IF ::IsMasterFieldComponent .AND. ::FTable:FUnderReset
+         IF linkedTable:isMetaTable
+            linkedTable:isMetaTable := .F.
+         ENDIF
 
-         ELSE
+         IF ::FonDataChangeBlock != NIL
+            linkedTable:OnDataChangeBlock := ::FonDataChangeBlock
+            linkedTable:OnDataChangeBlock_Param := ::Table
+            ::FonDataChangeBlock := NIL
+         ENDIF
+
+         IF linkedTable:State = dsBrowse
+            IF ::IsMasterFieldComponent .AND. ::FTable:FUnderReset
+
+            ELSE
                 /*
                     to sure a resync with linkedTable mastersource table
                     on TObjectField's that have a mastersource field (another TObjectField)
                     in the same table
                 */
-            IF !Empty( linkedTable:MasterSource ) .AND. !Empty( linkedTable:MasterSource:LinkedObjField ) .AND. linkedTable:MasterSource:LinkedObjField:Table == ::FTable
-               linkedTable:MasterSource:LinkedObjField:DataObj()
-            ENDIF
-            /* to be sure of mastersource synced with linkedTable */
-            IF linkedTable:MasterSource != NIL .AND. !linkedTable:MasterSource:BaseKeyField:KeyVal == ::FMasterKeyVal
-               IF linkedTable:InsideScope()
-                  // linkedTable:GetCurrentRecord()
-               ELSE
-                  linkedTable:dbGoTop()
+               IF !Empty( linkedTable:MasterSource ) .AND. !Empty( linkedTable:MasterSource:LinkedObjField ) .AND. linkedTable:MasterSource:LinkedObjField:Table == ::FTable
+                  linkedTable:MasterSource:LinkedObjField:DataObj()
                ENDIF
+               /* to be sure of mastersource synced with linkedTable */
+               IF linkedTable:MasterSource != NIL .AND. !linkedTable:MasterSource:BaseKeyField:KeyVal == ::FMasterKeyVal
+                  IF linkedTable:InsideScope()
+                     // linkedTable:GetCurrentRecord()
+                  ELSE
+                     linkedTable:dbGoTop()
+                  ENDIF
+                  ::FMasterKeyVal := linkedTable:MasterSource:BaseKeyField:KeyVal
+               ENDIF
+               keyVal := ::GetKeyVal()
+               /* Syncs with the current value */
+               IF !::FTable:MasterSource == linkedTable .AND. !linkedTable:BaseKeyField:KeyVal == keyVal
+                  linkedObjField := linkedTable:LinkedObjField
+                  linkedTable:LinkedObjField := NIL
+                  linkedTable:BaseKeyField:SetKeyVal( keyVal )
+                  linkedTable:LinkedObjField := linkedObjField
+               ENDIF
+            ENDIF
+         ELSE
+            IF linkedTable:MasterSource != NIL .AND. AScan( { dsEdit, dsInsert }, linkedTable:State ) > 0
                ::FMasterKeyVal := linkedTable:MasterSource:BaseKeyField:KeyVal
             ENDIF
-            keyVal := ::GetKeyVal()
-            /* Syncs with the current value */
-            IF !::FTable:MasterSource == linkedTable .AND. !linkedTable:BaseKeyField:KeyVal == keyVal
-               linkedObjField := linkedTable:LinkedObjField
-               linkedTable:LinkedObjField := NIL
-               linkedTable:BaseKeyField:SetKeyVal( keyVal )
-               linkedTable:LinkedObjField := linkedObjField
-            ENDIF
-         ENDIF
-      ELSE
-         IF linkedTable:MasterSource != NIL .AND. AScan( { dsEdit, dsInsert }, linkedTable:State ) > 0
-            ::FMasterKeyVal := linkedTable:MasterSource:BaseKeyField:KeyVal
          ENDIF
       ENDIF
+
+      ::FonDataObj := NIL
+
    ENDIF
 
    RETURN linkedTable
@@ -2906,7 +2903,7 @@ METHOD FUNCTION GetLinkedTable CLASS TObjectField
 
          ::FcalculatingLinkedTable := .T.
 
-         result := ::EvalFieldReadBlock()
+         result := ::FTable:Alias:Eval( ::FieldReadBlock, ::FTable )
 
          IF result != NIL
             IF HB_ISOBJECT( result )

@@ -758,9 +758,9 @@ METHOD FUNCTION BuildFieldBlockFromFieldExpression( fieldExp, returnMode, field 
          ENDIF
          IF field:IsDerivedFrom( "TObjectField" )
             IF field:LinkedTable:isMetaTable
-                table := field:LinkedTable
+               table := field:LinkedTable
             ELSE
-                table := field:DataObj
+               table := field:DataObj
             ENDIF
          ENDIF
       ELSE

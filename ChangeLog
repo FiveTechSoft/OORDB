@@ -2,6 +2,13 @@
  * $Id: ChangeLog 155 2013-06-06 03:29:32Z tfonrouge $
  */
 
+Sat Jun 29 14:00:00 UTC 2013 Teo Fonrouge (tfonrouge@gmail.com)
+  M src/TField.prg
+    % improved protection against infinite loop inside a calc field by calling DataObj inside method calcfield
+
+  M src/TTable.prg
+    * minor code clean
+
 Fri Jun 28 21:37:18 UTC 2013 Teo Fonrouge (tfonrouge@gmail.com)
   M src/TField.prg
     ! reverted . returns NIL
