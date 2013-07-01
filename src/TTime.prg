@@ -17,7 +17,7 @@ CLASS TTime
    METHOD GetAsHours
    METHOD GetAsMinutes
    METHOD GetAsSeconds
-   METHOD GetAsString
+   METHOD GetAsString( format )
    PUBLIC:
 
    CONSTRUCTOR New( time, format )
@@ -33,7 +33,7 @@ CLASS TTime
    PROPERTY AsHours READ GetAsHours WRITE SetAsHours
    PROPERTY AsMinutes READ GetAsMinutes WRITE SetAsMinutes
    PROPERTY AsSeconds READ GetAsSeconds WRITE SetAsSeconds
-   PROPERTY AsString READ GetAsString WRITE SetAsString
+   PROPERTY AsString READ GetAsString( ... ) WRITE SetAsString
    PROPERTY Days READ FDays
    PROPERTY Hours READ FHours
    PROPERTY Minutes READ FMinutes
@@ -65,6 +65,7 @@ METHOD New( time, format ) CLASS TTime
    IF format != NIL
       ::FFormat := format
    ENDIF
+
    ::AsString := time
 
    RETURN Self
@@ -81,7 +82,7 @@ METHOD FUNCTION GetAsMinutes CLASS TTime
 METHOD FUNCTION GetAsSeconds CLASS TTime
    RETURN ( ::FHours * 60 * 60 ) + ( ::FMinutes * 60 ) + ::FSeconds
 
-METHOD FUNCTION GetAsString CLASS TTime
+METHOD FUNCTION GetAsString( format ) CLASS TTime
 
    LOCAL asString := ""
    LOCAL numToken
@@ -90,10 +91,14 @@ METHOD FUNCTION GetAsString CLASS TTime
    LOCAL tk
    LOCAL itm
 
-   numToken := NumToken( ::FFormat, ":" )
+   IF Empty( format )
+      format := ::FFormat
+   ENDIF
+
+   numToken := NumToken( format, ":" )
 
    FOR i := 1 TO numToken
-      tk := Token( ::FFormat, ":", i )
+      tk := Token( format, ":", i )
       itm := Upper( tk )
       SWITCH Left( itm, 1 )
       CASE "H"

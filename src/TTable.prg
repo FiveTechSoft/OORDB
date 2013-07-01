@@ -2239,10 +2239,10 @@ METHOD FUNCTION GetDisplayFieldBlock( xField ) CLASS TTable
       ENDDO
 
       IF o:__FObj:Eof()
-         RETURN AField:GetAsDisplayEmptyValue
+         RETURN AField:EmptyValue
       ENDIF
 
-      result := AField:GetAsDisplay( ... )
+      result := AField:Value( ... )
 
       o:__FObj:Alias:SyncFromRecNo()
 
