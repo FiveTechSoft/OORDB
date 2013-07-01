@@ -290,12 +290,6 @@ CLASS TTable FROM OORDBBASE
    METHOD SetBaseKeyIndex( baseKeyIndex )
    METHOD SetDbFilter( filter ) INLINE ::FDbFilter := filter
    METHOD SetKeyVal( keyVal )
-    /*
-     * TODO: Enhance this to:
-     *    <order> can be "fieldname" or "fieldname1;fieldname2"
-     *    able to create a live index
-     */
-   METHOD SetOrderBy( order ) INLINE ::SetIndex( ::FieldByName( order ):KeyIndex )
    METHOD SetPrimaryIndex( primaryIndex )
    METHOD SetPrimaryIndexList( clsName, name )
    METHOD SetValue( value )

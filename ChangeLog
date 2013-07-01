@@ -2,6 +2,10 @@
  * $Id: ChangeLog 155 2013-06-06 03:29:32Z tfonrouge $
  */
 
+Mon Jul  1 16:54:16 UTC 2013 Teo Fonrouge (tfonrouge@gmail.com)
+  M src/TTable.prg
+    % removed TODO, index expressions can contain complex formulas even tfield names
+
 Sat Jun 29 14:00:00 UTC 2013 Teo Fonrouge (tfonrouge@gmail.com)
   M src/TField.prg
     % improved protection against infinite loop inside a calc field by calling DataObj inside method calcfield
