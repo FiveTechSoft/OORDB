@@ -41,9 +41,7 @@ CLASS TTime
    PROPERTY FORMAT READ FFormat WRITE SetFormat
 
    METHOD Op_Add( timeToAdd )      OPERATOR "+"
-   METHOD Op_Div( timeToDiv )      OPERATOR "/"
    METHOD Op_Minus( timeToMinus )  OPERATOR "-"
-   METHOD Op_Mult( timeToMult )    OPERATOR "*"
    OPERATOR "==" FUNCTION TTime_Op_Equal()
    OPERATOR "=" FUNCTION TTime_Op_Equal()
 
@@ -142,25 +140,6 @@ METHOD Op_Add( timeToAdd ) CLASS TTime
    RETURN time
 
 /*
-    Op_Div :
-    Teo. Mexico 2013
-*/
-METHOD Op_Div( timeToDiv ) CLASS TTime
-
-   LOCAL time := TTime():New()
-
-   SWITCH ValType( timeToDiv )
-   CASE "O"
-      time:SetAsSeconds( ::AsSeconds / timeToDiv:AsSeconds )
-      EXIT
-   CASE "N"
-      time:SetAsSeconds( ::AsSeconds / timeToDiv )
-      EXIT
-   ENDSWITCH
-
-   RETURN time
-
-/*
     Op_Minus : ~ if time to substract is > Self, then time will be set to 0
     Teo. Mexico 2013
 */
@@ -174,25 +153,6 @@ METHOD Op_Minus( timeToMinus ) CLASS TTime
       EXIT
    CASE "N"
       time:SetAsSeconds( Max( ::AsSeconds - timeToMinus, 0 ) )
-      EXIT
-   ENDSWITCH
-
-   RETURN time
-
-/*
-    Op_Mult :
-    Teo. Mexico 2013
-*/
-METHOD Op_Mult( timeToMult ) CLASS TTime
-
-   LOCAL time := TTime():New()
-
-   SWITCH ValType( timeToMult )
-   CASE "O"
-      time:SetAsSeconds( ::AsSeconds * timeToMult:AsSeconds )
-      EXIT
-   CASE "N"
-      time:SetAsSeconds( ::AsSeconds * timeToMult )
       EXIT
    ENDSWITCH
 
