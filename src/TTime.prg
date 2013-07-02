@@ -41,7 +41,9 @@ CLASS TTime
    PROPERTY FORMAT READ FFormat WRITE SetFormat
 
    METHOD Op_Add( timeToAdd )      OPERATOR "+"
+   METHOD Op_Div( timeToDiv )      OPERATOR "/"
    METHOD Op_Minus( timeToMinus )  OPERATOR "-"
+   METHOD Op_Mult( timeToMult )    OPERATOR "*"
    OPERATOR "==" FUNCTION TTime_Op_Equal()
    OPERATOR "=" FUNCTION TTime_Op_Equal()
 
@@ -128,14 +130,23 @@ METHOD Op_Add( timeToAdd ) CLASS TTime
 
    LOCAL time := TTime():New()
 
-   SWITCH ValType( timeToAdd )
-   CASE "O"
+   IF ValType( timeToAdd ) = "O"
       time:SetAsSeconds( ::AsSeconds + timeToAdd:AsSeconds )
-      EXIT
-   CASE "N"
+   ELSE
       time:SetAsSeconds( ::AsSeconds + timeToAdd )
-      EXIT
-   ENDSWITCH
+   ENDIF
+
+   RETURN time
+
+/*
+    Op_Div
+    Teo. Mexico 2013
+*/
+METHOD Op_Div( timeToDiv ) CLASS TTime
+
+   LOCAL time := TTime():New()
+
+   time:SetAsSeconds( ::AsSeconds / timeToDiv )
 
    RETURN time
 
@@ -147,14 +158,23 @@ METHOD Op_Minus( timeToMinus ) CLASS TTime
 
    LOCAL time := TTime():New()
 
-   SWITCH ValType( timeToMinus )
-   CASE "O"
+   IF ValType( timeToMinus ) = "O"
       time:SetAsSeconds( Max( ::AsSeconds - timeToMinus:AsSeconds, 0 ) )
-      EXIT
-   CASE "N"
+   ELSE
       time:SetAsSeconds( Max( ::AsSeconds - timeToMinus, 0 ) )
-      EXIT
-   ENDSWITCH
+   ENDIF
+
+   RETURN time
+
+/*
+    Op_Mult
+    Teo. Mexico 2013
+*/
+METHOD Op_Mult( timeToMult ) CLASS TTime
+
+   LOCAL time := TTime():New()
+
+   time:SetAsSeconds( ::AsSeconds * timeToMult )
 
    RETURN time
 
