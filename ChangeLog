@@ -2,6 +2,10 @@
  * $Id: ChangeLog 155 2013-06-06 03:29:32Z tfonrouge $
  */
 
+Tue Jul  2 03:02:10 UTC 2013 Teo Fonrouge (tfonrouge@gmail.com)
+  M src/TTime.prg
+    % implemented mult and div ( *, / ) operators
+
 Mon Jul  1 23:46:33 UTC 2013 Teo Fonrouge (tfonrouge@gmail.com)
   M src/TTable.prg
     % TDisplayFields class returns ::Value for fields instead of ::AsDisplay, this allows to use directly
