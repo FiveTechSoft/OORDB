@@ -2,6 +2,10 @@
  * $Id: ChangeLog 155 2013-06-06 03:29:32Z tfonrouge $
  */
 
+Fri Jul  5 14:58:46 UTC 2013 Teo Fonrouge (tfonrouge@gmail.com)
+  M src/TTable.prg
+    % improved returned result on InsertRecord()
+
 Tue Jul  2 17:45:39 UTC 2013 Teo Fonrouge (tfonrouge@gmail.com)
   M src/TTime.prg
     % added mult , div operators ( * , / )

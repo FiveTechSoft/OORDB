@@ -2754,15 +2754,23 @@ METHOD FUNCTION Insert() CLASS TTable
     InsertRecord
     Teo. Mexico 2007
 */
-METHOD PROCEDURE InsertRecord( origin ) CLASS TTable
+METHOD FUNCTION InsertRecord( origin ) CLASS TTable
 
-   IF !::Insert() .OR. !::CopyRecord( origin )
-      RETURN
+   IF !::Insert()
+      RETURN .F.
    ENDIF
 
-   ::Post()
+   IF ::CopyRecord( origin )
 
-   RETURN
+      RETURN ::Post()
+
+   ELSE
+
+      ::Cancel()
+
+   ENDIF
+
+   RETURN .F.
 
 /*
     InsideScope
