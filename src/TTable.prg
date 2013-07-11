@@ -854,9 +854,6 @@ METHOD FUNCTION CheckDbStruct() CLASS TTable
                dbsLen  := BaseKeyFieldList[ i, 3 ]
                dbsDec  := BaseKeyFieldList[ i, 4 ]
                dbsSize := BaseKeyFieldList[ i, 5 ]
-               IF dbsType = "+"
-                  dbsType := "I"
-               ENDIF
             ELSE
                dbsType := AField:DBS_TYPE
                dbsLen  := AField:DBS_LEN
@@ -869,7 +866,7 @@ METHOD FUNCTION CheckDbStruct() CLASS TTable
             IF n = 0
                AAdd( aDb, { AField:DBS_NAME, dbsType, dbsLen, dbsDec } )
                sResult += "Field not found '" + AField:DBS_NAME + E"'\n"
-            ELSEIF !aDb[ n, 2 ] == dbsType
+            ELSEIF !aDb[ n, 2 ] == dbsType .AND. !( aDb[ n, 2 ] $ "+I" .AND. dbsType $ "+I" )
                sResult += "Wrong type ('" + aDb[ n, 2 ] + "') on field '" + AField:DBS_NAME + "', must be '" + dbsType + E"'\n"
                aDb[ n, 2 ] := dbsType
                aDb[ n, 3 ] := dbsLen
