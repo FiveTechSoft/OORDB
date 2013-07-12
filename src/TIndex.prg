@@ -365,7 +365,11 @@ METHOD PROCEDURE FillCustomIndex() CLASS TIndex
       baseKeyIndex:dbGoTop()
       /* TODO: Loop to remove all the custom keys ? */
       WHILE baseKeyIndex:InsideScope()
-         ::CustomKeyUpdate()
+         IF ::FTable:FilterEval( Self )
+            ::CustomKeyUpdate()
+         ELSE
+            WHILE ::FTable:Alias:ordKeyDel( ::FTagName ) ; ENDDO
+         ENDIF
          baseKeyIndex:dbSkip()
       ENDDO
       ::FTable:SetDbFilter( dbFilter )

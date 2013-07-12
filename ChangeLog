@@ -2,6 +2,10 @@
  * $Id: ChangeLog 155 2013-06-06 03:29:32Z tfonrouge $
  */
 
+Fri Jul 12 22:52:31 UTC 2013 Teo Fonrouge (tfonrouge@gmail.com)
+  M src/TIndex.prg
+    % enabled using filtering (if any) when adding keys to custom index
+
 Fri Jul 12 19:03:33 UTC 2013 Teo Fonrouge (tfonrouge@gmail.com)
   M src/TIndex.prg
   M src/TTable.prg
