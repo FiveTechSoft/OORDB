@@ -228,7 +228,8 @@ CLASS TTable FROM OORDBBASE
    METHOD __DefinePrimaryIndex() VIRTUAL   // DEFINE PRIMARY INDEX
    METHOD __DefineSecondaryIndexes() VIRTUAL        // DEFINE SECONDARY INDEX
 
-   METHOD BaseSeek( direction, Value, index, lSoftSeek )
+   METHOD __Seek( direction, Value, index, lSoftSeek )
+   METHOD BaseSeek( baseKeyValue ) INLINE ::FBaseKeyIndex:Seek( baseKeyValue )
    METHOD BuildFieldBlockFromFieldExpression( fieldExp, returnMode, field )
    METHOD AddCustomIndex( index )
    METHOD AddFieldAlias( nameAlias, fld, private )
@@ -284,8 +285,8 @@ CLASS TTable FROM OORDBBASE
    METHOD RecUnLock()
    METHOD Refresh
    METHOD Reset() // Set Field Record to their default values, Sync MasterKeyVal Value
-   METHOD SEEK( Value, AIndex, SoftSeek ) INLINE ::BaseSeek( 0, Value, AIndex, SoftSeek )
-   METHOD SeekLast( Value, AIndex, SoftSeek ) INLINE ::BaseSeek( 1, Value, AIndex, SoftSeek )
+   METHOD SEEK( Value, AIndex, SoftSeek ) INLINE ::__Seek( 0, Value, AIndex, SoftSeek )
+   METHOD SeekLast( Value, AIndex, SoftSeek ) INLINE ::__Seek( 1, Value, AIndex, SoftSeek )
    METHOD SetAsString( Value ) INLINE ::GetKeyField():AsString := Value
    METHOD SetBaseKeyIndex( baseKeyIndex )
    METHOD SetDbFilter( filter ) INLINE ::FDbFilter := filter
@@ -509,6 +510,18 @@ METHOD PROCEDURE __CheckIndexes() CLASS TTable
    RETURN
 
 /*
+    __Seek
+    Teo. Mexico 2007
+*/
+METHOD FUNCTION __Seek( direction, Value, index, lSoftSeek ) CLASS TTable
+
+   LOCAL AIndex
+
+   AIndex := ::FindIndex( index )
+
+   RETURN AIndex:__Seek( direction, Value, lSoftSeek )
+
+/*
     AddCustomIndex
     Teo. Mexico 2012
 */
@@ -704,22 +717,6 @@ METHOD PROCEDURE AssociateTableIndex( table, name, getRecNo, setRecNo ) CLASS TT
    ::ExternalIndexList[ index:ObjectH ] := index
 
    RETURN
-
-/*
-    BaseSeek
-    Teo. Mexico 2007
-*/
-METHOD FUNCTION BaseSeek( direction, Value, index, lSoftSeek ) CLASS TTable
-
-   LOCAL AIndex
-
-   AIndex := ::FindIndex( index )
-
-   IF direction = 0
-      RETURN AIndex:BaseSeek( 0, Value, lSoftSeek )
-   ENDIF
-
-   RETURN AIndex:BaseSeek( 1, Value, lSoftSeek )
 
 /*
     BuildFieldBlockFromFieldExpression

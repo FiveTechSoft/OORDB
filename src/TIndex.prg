@@ -77,8 +77,8 @@ CLASS TIndex FROM OORDBBASE
 
    METHOD New( Table, tagName, name, indexType, curClass, warnMsg ) CONSTRUCTOR
 
+   METHOD __Seek( direction, keyValue, lSoftSeek )
    METHOD AddIndex
-   METHOD BaseSeek( direction, keyValue, lSoftSeek )
    METHOD CustomKeyUpdate
    METHOD DbGoBottom INLINE ::DbGoBottomTop( -1 )
    METHOD DbGoTop INLINE ::DbGoBottomTop( 1 )
@@ -117,8 +117,8 @@ CLASS TIndex FROM OORDBBASE
    PROPERTY ScopeBottom READ GetScopeBottom WRITE SetScopeBottom
    PROPERTY ScopeTop READ GetScopeTop WRITE SetScopeTop
 
-   METHOD SEEK( keyValue, lSoftSeek ) INLINE ::BaseSeek( 0, keyValue, lSoftSeek )
-   METHOD SeekLast( keyValue, lSoftSeek ) INLINE ::BaseSeek( 1, keyValue, lSoftSeek )
+   METHOD SEEK( keyValue, lSoftSeek ) INLINE ::__Seek( 0, keyValue, lSoftSeek )
+   METHOD SeekLast( keyValue, lSoftSeek ) INLINE ::__Seek( 1, keyValue, lSoftSeek )
    METHOD SetBof( bof ) INLINE ::FBof := bof
    METHOD SetEof( eof ) INLINE ::FEof := eof
    METHOD SetFound( found ) INLINE ::FFound := found
@@ -185,6 +185,32 @@ METHOD New( Table, tagName, name, indexType, curClass, warnMsg ) CLASS TIndex
    RETURN Self
 
 /*
+    __Seek
+    Teo. Mexico 2007
+*/
+METHOD FUNCTION __Seek( direction, keyValue, lSoftSeek ) CLASS TIndex
+
+   LOCAL ALIAS
+
+   alias := ::GetAlias()
+
+   IF AScan( { dsEdit, dsInsert }, ::FTable:State ) > 0
+      ::FTable:Post()
+   ENDIF
+
+   keyValue := ::KeyField:GetKeyVal( keyValue )
+
+   IF direction = 0
+      alias:Seek( ::MasterKeyVal + keyValue, ::FTagName, lSoftSeek )
+   ELSE
+      alias:SeekLast( ::MasterKeyVal + keyValue, ::FTagName, lSoftSeek )
+   ENDIF
+
+   ::GetCurrentRecord()
+
+   RETURN ::FFound
+
+/*
     AddIndex
     Teo. Mexico 2008
 */
@@ -226,32 +252,6 @@ METHOD AddIndex( cMasterKeyField, ai, un, cKeyField, ForKey, cs, de, acceptEmpty
    // ::Custom := iif( HB_ISNIL( cu ), .F. , cu )
 
    RETURN Self
-
-/*
-    BaseSeek
-    Teo. Mexico 2007
-*/
-METHOD FUNCTION BaseSeek( direction, keyValue, lSoftSeek ) CLASS TIndex
-
-   LOCAL ALIAS
-
-   alias := ::GetAlias()
-
-   IF AScan( { dsEdit, dsInsert }, ::FTable:State ) > 0
-      ::FTable:Post()
-   ENDIF
-
-   keyValue := ::KeyField:GetKeyVal( keyValue )
-
-   IF direction = 0
-      alias:Seek( ::MasterKeyVal + keyValue, ::FTagName, lSoftSeek )
-   ELSE
-      alias:SeekLast( ::MasterKeyVal + keyValue, ::FTagName, lSoftSeek )
-   ENDIF
-
-   ::GetCurrentRecord()
-
-   RETURN ::FFound
 
 /*
     CustomKeyExpValue
