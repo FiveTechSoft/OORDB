@@ -2602,7 +2602,7 @@ CLASS TObjectField FROM TField
    DATA FValidValuesLabelField
    DATA FValType INIT "O"
    METHOD GetDBS_LEN INLINE ::BaseKeyField():DBS_LEN
-   METHOD GetDBS_TYPE INLINE ::BaseKeyField():DBS_TYPE
+   METHOD GetDBS_TYPE INLINE iif( ::BaseKeyField():DBS_TYPE = "+", "I", ::BaseKeyField():DBS_TYPE )
    METHOD GetLabel()
    METHOD GetLinkedTable
    METHOD GetEmptyValue() INLINE ::BaseKeyField():EmptyValue

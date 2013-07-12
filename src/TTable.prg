@@ -1154,7 +1154,7 @@ METHOD FUNCTION CreateTable( fullFileName ) CLASS TTable
          IF fld:FieldType = ftObject
             n := FindTableBaseClass( fld )
             IF n > 0
-               dbsType := BaseKeyFieldList[ n, 2 ]
+               dbsType := iif( BaseKeyFieldList[ n, 2 ] = "+", "I", BaseKeyFieldList[ n, 2 ] )
                dbsLen  := BaseKeyFieldList[ n, 3 ]
                dbsDec  := BaseKeyFieldList[ n, 4 ]
             ELSE

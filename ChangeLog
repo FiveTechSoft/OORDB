@@ -2,6 +2,11 @@
  * $Id: ChangeLog 155 2013-06-06 03:29:32Z tfonrouge $
  */
 
+Fri Jul 12 04:40:34 UTC 2013 Teo Fonrouge (tfonrouge@gmail.com)
+  M src/TField.prg
+  M src/TTable.prg
+    % use field type "I" instead of "+" when creating field objects references
+
 Thu Jul 11 21:58:39 UTC 2013 Teo Fonrouge (tfonrouge@gmail.com)
   M src/TTable.prg
     % improved equality on fields types "+" and "I"
