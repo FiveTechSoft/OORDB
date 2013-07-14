@@ -64,6 +64,7 @@ CLASS TIndex FROM OORDBBASE
    DATA FTableBaseClass
    METHOD CustomKeyExpValue()
    METHOD SetCustomIndexExpression( customIndexExpression )
+
    PUBLIC:
 
    DATA associatedTable
@@ -79,6 +80,7 @@ CLASS TIndex FROM OORDBBASE
 
    METHOD __Seek( direction, keyValue, lSoftSeek )
    METHOD AddIndex
+   METHOD Count( bForCondition, bWhileCondition )
    METHOD CustomKeyUpdate
    METHOD DbGoBottom INLINE ::DbGoBottomTop( -1 )
    METHOD DbGoTop INLINE ::DbGoBottomTop( 1 )
@@ -252,6 +254,18 @@ METHOD AddIndex( cMasterKeyField, ai, un, cKeyField, ForKey, cs, de, acceptEmpty
    // ::Custom := iif( HB_ISNIL( cu ), .F. , cu )
 
    RETURN Self
+
+/*
+    Count
+    Teo. Mexico 2013
+*/
+METHOD FUNCTION Count( bForCondition, bWhileCondition ) CLASS TIndex
+
+   LOCAL nCount := 0
+
+   ::FTable:dbEval( {|| ++nCount }, bForCondition, bWhileCondition, Self )
+
+   RETURN nCount
 
 /*
     CustomKeyExpValue

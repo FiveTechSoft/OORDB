@@ -1366,7 +1366,9 @@ METHOD PROCEDURE dbEval( bBlock, bForCondition, bWhileCondition, index, scope ) 
          bBlock:Eval( Self )
       ENDIF
 
-      ::dbSkip()
+      IF !::dbSkip( 1 )
+         EXIT
+      ENDIF
 
    ENDDO
 
@@ -3428,6 +3430,7 @@ METHOD FUNCTION SkipFilter( n, index ) CLASS TTable
 
    WHILE .T.
       IF !alias:dbSkip( i, tagName ) .OR. ! o:GetCurrentRecord()
+         ::DbGoTo( 0 )
          RETURN .F.
       ENDIF
       IF ::FilterEval( index )
