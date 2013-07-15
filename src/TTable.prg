@@ -147,6 +147,7 @@ CLASS TTable FROM OORDBBASE
    DATA FAutoCreate
    DATA FBaseKeyField
    DATA FBaseKeyIndex
+   DATA FDbFilterStack INIT {}
    DATA FBof    INIT .T.
    DATA FcanCreateInstance INIT .F.
    DATA FCustomIndexList   INIT {}
@@ -244,6 +245,8 @@ CLASS TTable FROM OORDBBASE
    METHOD CreateIndex( index )
    METHOD CreateTempIndex( index )
    METHOD CreateTable( fullFileName )
+   METHOD DbFilterPop()
+   METHOD DbFilterPush()
    METHOD DefineRelations       VIRTUAL
    METHOD Destroy()
    METHOD dbEval( bBlock, bForCondition, bWhileCondition, index, scope )
@@ -1387,6 +1390,28 @@ METHOD PROCEDURE dbEval( bBlock, bForCondition, bWhileCondition, index, scope ) 
    RETURN
 
 /*
+    DbFilterPop
+    Teo. Mexico 2013
+*/
+METHOD PROCEDURE DbFilterPop() CLASS TTable
+
+   ::FDbFilter := ATail( ::FDbFilterStack )
+   hb_ADel( ::FDbFilterStack, Len( ::FDbFilterStack ), .T. )
+
+   RETURN
+
+/*
+    DbFilterPush
+    Teo. Mexico 2013
+*/
+METHOD PROCEDURE DbFilterPush() CLASS TTable
+
+   AAdd( ::FDbFilterStack, ::FDbFilter )
+   ::FDbFilter := NIL
+
+   RETURN
+
+/*
     DbGoBottomTop
     Teo. Mexico 2007
 */
@@ -2118,30 +2143,28 @@ METHOD FUNCTION GetCurrentRecord( idxAlias ) CLASS TTable
 
    IF ::FState = dsBrowse
 
-      IF ( Result := ::InsideScope() )
+      IF !read == .T. .AND. !::Eof()
 
-         IF !read == .T.
+         FOR EACH AField IN ::FFieldList
 
-            FOR EACH AField IN ::FFieldList
-
-               IF AField:Enabled
-                  IF AField:FieldMethodType = "C" .AND. !AField:Calculated // .AND. !AField:IsMasterFieldComponent
-                     AField:GetData()
-                  ENDIF
-
-                  IF AField:FieldType = ftObject .AND. AField:Calculated .AND. AField:LinkedTableAssigned
-                     table := AField:LinkedTable
-                     IF table:LinkedObjField != NIL .AND. table:LinkedObjField:Calculated .AND. !table:MasterSource == Self .AND. table:MasterSource == table:LinkedObjField:Table:KeyField:LinkedTable
-                        table:LinkedObjField:Table:KeyField:DataObj()
-                     ENDIF
-                  ENDIF
+            IF AField:Enabled
+               IF AField:FieldMethodType = "C" .AND. !AField:Calculated // .AND. !AField:IsMasterFieldComponent
+                  AField:GetData()
                ENDIF
 
-            NEXT
+               IF AField:FieldType = ftObject .AND. AField:Calculated .AND. AField:LinkedTableAssigned
+                  table := AField:LinkedTable
+                  IF table:LinkedObjField != NIL .AND. table:LinkedObjField:Calculated .AND. !table:MasterSource == Self .AND. table:MasterSource == table:LinkedObjField:Table:KeyField:LinkedTable
+                     table:LinkedObjField:Table:KeyField:DataObj()
+                  ENDIF
+               ENDIF
+            ENDIF
 
-         ENDIF
+         NEXT
 
-      ELSE
+      ENDIF
+
+      IF !( Result := ::InsideScope() )
          ::FEof := .T.
          ::FBof := .T.
          ::FFound := .F.
@@ -3435,10 +3458,13 @@ METHOD FUNCTION SkipFilter( n, index ) CLASS TTable
    ENDIF
 
    WHILE .T.
+      o:DbFilterPush()
       IF !alias:dbSkip( i, tagName ) .OR. ! o:GetCurrentRecord()
-         ::DbGoTo( 0 )
+         o:DbFilterPop()
+         ::dbGoto( 0 )
          RETURN .F.
       ENDIF
+      o:DbFilterPop()
       IF ::FilterEval( index )
          --n
       ENDIF

@@ -23,6 +23,7 @@ CLASS TIndex FROM OORDBBASE
    DATA FCustom INIT .F.
    DATA FDescend INIT .F.
    DATA FDbFilter
+   DATA FDbFilterStack INIT {}
    DATA FForKey
    DATA FKeyField
    DATA FName
@@ -53,7 +54,9 @@ CLASS TIndex FROM OORDBBASE
    METHOD SetScope( value )
    METHOD SetScopeBottom( value )
    METHOD SetScopeTop( value )
+
    PROTECTED:
+
    DATA FBof INIT .T.
    DATA FCustomIndexExpression
    DATA FEof INIT .T.
@@ -80,8 +83,10 @@ CLASS TIndex FROM OORDBBASE
 
    METHOD __Seek( direction, keyValue, lSoftSeek )
    METHOD AddIndex
-   METHOD Count( bForCondition, bWhileCondition )
+   METHOD COUNT( bForCondition, bWhileCondition )
    METHOD CustomKeyUpdate
+   METHOD DbFilterPush()
+   METHOD DbFilterPop()
    METHOD DbGoBottom INLINE ::DbGoBottomTop( -1 )
    METHOD DbGoTop INLINE ::DbGoBottomTop( 1 )
    METHOD dbSkip( numRecs )
@@ -256,10 +261,34 @@ METHOD AddIndex( cMasterKeyField, ai, un, cKeyField, ForKey, cs, de, acceptEmpty
    RETURN Self
 
 /*
+    DbFilterPop
+    Teo. Mexico 2013
+*/
+METHOD PROCEDURE DbFilterPop() CLASS TIndex
+
+   ::FDbFilter := ATail( ::FDbFilterStack )
+   hb_ADel( ::FDbFilterStack, Len( ::FDbFilterStack ), .T. )
+   ::FTable:DbFilterPop()
+
+   RETURN
+
+/*
+    DbFilterPush
+    Teo. Mexico 2013
+*/
+METHOD PROCEDURE DbFilterPush() CLASS TIndex
+
+   AAdd( ::FDbFilterStack, ::FDbFilter )
+   ::FDbFilter := NIL
+   ::FTable:DbFilterPush()
+
+   RETURN
+
+/*
     Count
     Teo. Mexico 2013
 */
-METHOD FUNCTION Count( bForCondition, bWhileCondition ) CLASS TIndex
+METHOD FUNCTION COUNT( bForCondition, bWhileCondition ) CLASS TIndex
 
    LOCAL nCount := 0
 
@@ -317,10 +346,15 @@ METHOD FUNCTION DbGoBottomTop( n ) CLASS TIndex
       ENDIF
    ENDIF
 
-   ::GetCurrentRecord()
-
-   IF !::FTable:FilterEval( Self ) .AND. !::FTable:SkipFilter( n, Self )
-      ::FTable:dbGoto( 0 )
+   IF !Empty( ::DbFilter )
+      ::DbFilterPush()
+      ::GetCurrentRecord()
+      ::DbFilterPop()
+      IF ::FEof() .OR. ( !::FTable:FilterEval( Self ) .AND. !::FTable:SkipFilter( n, Self ) )
+         ::FTable:dbGoto( 0 )
+      ENDIF
+   ELSE
+      ::GetCurrentRecord()
    ENDIF
 
    RETURN !::FEof
@@ -376,9 +410,9 @@ METHOD PROCEDURE FillCustomIndex() CLASS TIndex
       resetToMasterSourceFields := ::FResetToMasterSourceFields
       ::FResetToMasterSourceFields := .F.
       dbFilter := ::FTable:DbFilter
+      ::FTable:SetDbFilter( NIL )
       baseKeyIndex:dbGoTop()
-      /* TODO: Loop to remove all the custom keys ? */
-      WHILE baseKeyIndex:InsideScope()
+      WHILE !baseKeyIndex:Eof()
          IF ::FTable:FilterEval( Self )
             ::CustomKeyUpdate()
          ELSE
@@ -561,7 +595,7 @@ METHOD FUNCTION InsideScope() CLASS TIndex
 
    keyValue := ::GetAlias():KeyVal( ::FTagName )
 
-   IF keyValue == NIL
+   IF keyValue == NIL .OR. !::FTable:FilterEval( Self )
       RETURN .F.
    ENDIF
 

@@ -2,6 +2,15 @@
  * $Id: ChangeLog 155 2013-06-06 03:29:32Z tfonrouge $
  */
 
+Mon Jul 15 22:02:36 UTC 2013 Teo Fonrouge (tfonrouge@gmail.com)
+  M src/TIndex.prg
+  M src/TTable.prg
+    % implemented reciprocal methods DbFilterPush/DbFilterPop to allow ignore possible filter on GetCurrentRecord()
+    ! fixed TIndex:FillCustomIndex to use ::Eof instead of ::InsideScope because the former checks filters
+    * removed TODO
+    % move checking of result after reading fields on TTable:GetCurrentRecord, this allows to use filters that contain
+      field´s references
+
 Mon Jul 15 16:24:08 UTC 2013 Teo Fonrouge (tfonrouge@gmail.com)
   M src/TTable.prg
     ! added protection against attempt to instanciate table before primary/secondary indexes are defined
