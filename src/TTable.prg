@@ -148,6 +148,7 @@ CLASS TTable FROM OORDBBASE
    DATA FBaseKeyField
    DATA FBaseKeyIndex
    DATA FBof    INIT .T.
+   DATA FcanCreateInstance INIT .F.
    DATA FCustomIndexList   INIT {}
    DATA FDataBaseClass
    DATA FEof    INIT .T.
@@ -452,6 +453,9 @@ METHOD New( masterSource, tableName ) CLASS TTable
 
    /* Load Secondary Indexes */
    ::__DefineSecondaryIndexes()
+
+   /* now create instance is allowed */
+   ::FcanCreateInstance := .T.
 
    IF !::isMetaTable
       ::CreateTableInstance()
@@ -1222,12 +1226,10 @@ METHOD PROCEDURE CreateTableInstance() CLASS TTable
 
    ::FState := dsInactive
 
-   IF ::GetIndex() = NIL
-      IF ::FPrimaryIndex != NIL
-         ::SetIndex( ::FPrimaryIndex )
-      ELSEIF !Empty( ::FIndexList )
-         ::SetIndex( hb_HValueAt( hb_HValueAt( ::FIndexList, 1 ), 1 ) )
-      ENDIF
+   IF ::FPrimaryIndex != NIL
+      ::SetIndex( ::FPrimaryIndex )
+   ELSEIF !Empty( ::FIndexList )
+      ::SetIndex( hb_HValueAt( hb_HValueAt( ::FIndexList, 1 ), 1 ) )
    ENDIF
 
    ::OnCreate()
@@ -3217,7 +3219,11 @@ METHOD PROCEDURE SetIndexName( indexName ) CLASS TTable
 METHOD PROCEDURE SetisMetaTable( isMetaTable ) CLASS TTable
 
    IF ::FisMetaTable .AND. !isMetaTable
-      ::CreateTableInstance()
+
+      IF ::FcanCreateInstance
+         ::CreateTableInstance()
+      ENDIF
+
    ENDIF
 
    RETURN

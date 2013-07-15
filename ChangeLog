@@ -2,6 +2,11 @@
  * $Id: ChangeLog 155 2013-06-06 03:29:32Z tfonrouge $
  */
 
+Mon Jul 15 16:24:08 UTC 2013 Teo Fonrouge (tfonrouge@gmail.com)
+  M src/TTable.prg
+    ! added protection against attempt to instanciate table before primary/secondary indexes are defined
+    * on table instance set the primary index as controlling index
+
 Sun Jul 14 21:24:06 UTC 2013 Teo Fonrouge (tfonrouge@gmail.com)
   M src/TIndex.prg
     % added specific Count() method
