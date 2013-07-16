@@ -184,7 +184,6 @@ CLASS TTable FROM OORDBBASE
    METHOD GetEof()
    METHOD GetErrorBlock() INLINE iif( FErrorBlock = NIL, FErrorBlock := {| oErr| ErrorBlockOORDB( oErr ) }, FErrorBlock )
    METHOD GetFound()
-   METHOD GetHasFilter()
    METHOD GetIndex()
    METHOD GetRecNo()
    METHOD InitDataBase INLINE TDataBase():New()
@@ -274,6 +273,7 @@ CLASS TTable FROM OORDBBASE
    METHOD GetPublishedFieldNameList( typeList )
    METHOD GetTableFileName()
    METHOD GetValue
+   METHOD HasFilter() INLINE ::FDbFilter != NIL
    METHOD ImportField( fromField, fieldDbName, fieldName )
    METHOD IndexByName( IndexName, curClass )
    METHOD Insert()
@@ -346,7 +346,6 @@ CLASS TTable FROM OORDBBASE
    PROPERTY FieldList READ FFieldList
    PROPERTY Found READ GetFound
    PROPERTY FieldTypes READ GetFieldTypes
-   PROPERTY HasFilter READ GetHasFilter
    PROPERTY Initialized READ FInitialized
    PROPERTY Instance READ GetInstance
    PROPERTY Instances READ FInstances
@@ -1433,13 +1432,20 @@ METHOD FUNCTION DbGoBottomTop( n ) CLASS TTable
       ELSE
          ::Alias:dbGoBottom()
       ENDIF
-      ::GetCurrentRecord()
-      IF ::HasFilter .AND. !::FilterEval()
-         ::SkipFilter( n )
+
+      IF ::HasFilter()
+         ::DbFilterPush()
+         ::GetCurrentRecord()
+         ::DbFilterPop()
+         IF !::FilterEval() .AND. !::SkipFilter( n )
+            ::dbGoto( 0 )
+            RETURN .F.
+         ENDIF
       ENDIF
+
    ENDIF
 
-   RETURN .F.
+   RETURN ::GetCurrentRecord()
 
 /*
     DbGoTo
@@ -1457,6 +1463,8 @@ METHOD FUNCTION dbGoto( RecNo ) CLASS TTable
 */
 METHOD FUNCTION dbSkip( numRecs ) CLASS TTable
 
+   LOCAL result
+
    IF AScan( { dsEdit, dsInsert }, ::FState ) > 0
       ::Post()
    ENDIF
@@ -1465,8 +1473,9 @@ METHOD FUNCTION dbSkip( numRecs ) CLASS TTable
       RETURN ::GetIndex():dbSkip( numRecs )
    ELSE
       IF !::HasFilter
-         ::Alias:dbSkip( numRecs )
-         RETURN ::GetCurrentRecord()
+         result := ::Alias:dbSkip( numRecs ) /* because on Bof returns .F. */
+         ::GetCurrentRecord()
+         RETURN result
       ENDIF
    ENDIF
 
@@ -2425,13 +2434,6 @@ METHOD FUNCTION GetFound() CLASS TTable
    ENDIF
 
    RETURN ::FFound
-
-/*
-    GetHasFilter
-    Teo. Mexico 2010
-*/
-METHOD GetHasFilter() CLASS TTable
-   RETURN ::FDbFilter != NIL
 
 /*
     GetIndex
