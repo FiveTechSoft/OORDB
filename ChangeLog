@@ -2,6 +2,10 @@
  * $Id: ChangeLog 155 2013-06-06 03:29:32Z tfonrouge $
  */
 
+Tue Jul 16 06:52:06 UTC 2013 Teo Fonrouge (tfonrouge@gmail.com)
+  M src/TIndex.prg
+    ! removed checking only for TObjectFields on GetMasterKeyVal
+
 Tue Jul 16 05:27:30 UTC 2013 Teo Fonrouge (tfonrouge@gmail.com)
   M src/TIndex.prg
   M src/TTable.prg
