@@ -278,7 +278,7 @@ CLASS TTable FROM OORDBBASE
    METHOD IndexByName( IndexName, curClass )
    METHOD Insert()
    METHOD InsertRecord( origin )
-   METHOD InsideScope()
+   METHOD InsideScope( ignoreFilters )
    METHOD Open
    METHOD ordCondSet( ... )
    METHOD ordCreate( ... )
@@ -1867,6 +1867,10 @@ METHOD FUNCTION FilterEval( index ) CLASS TTable
 
    LOCAL table
 
+   IF PCount() = 0
+      index := ::GetIndex()
+   ENDIF
+
    IF index != NIL .AND. index:associatedTable != NIL
       table := index:associatedTable
    ELSE
@@ -2152,28 +2156,30 @@ METHOD FUNCTION GetCurrentRecord( idxAlias ) CLASS TTable
 
    IF ::FState = dsBrowse
 
-      IF !read == .T. .AND. !::Eof()
+      IF ( Result := ::InsideScope( .T. ) )
 
-         FOR EACH AField IN ::FFieldList
+         IF !read == .T.
 
-            IF AField:Enabled
-               IF AField:FieldMethodType = "C" .AND. !AField:Calculated // .AND. !AField:IsMasterFieldComponent
-                  AField:GetData()
-               ENDIF
+            FOR EACH AField IN ::FFieldList
 
-               IF AField:FieldType = ftObject .AND. AField:Calculated .AND. AField:LinkedTableAssigned
-                  table := AField:LinkedTable
-                  IF table:LinkedObjField != NIL .AND. table:LinkedObjField:Calculated .AND. !table:MasterSource == Self .AND. table:MasterSource == table:LinkedObjField:Table:KeyField:LinkedTable
-                     table:LinkedObjField:Table:KeyField:DataObj()
+               IF AField:Enabled
+                  IF AField:FieldMethodType = "C" .AND. !AField:Calculated // .AND. !AField:IsMasterFieldComponent
+                     AField:GetData()
+                  ENDIF
+
+                  IF AField:FieldType = ftObject .AND. AField:Calculated .AND. AField:LinkedTableAssigned
+                     table := AField:LinkedTable
+                     IF table:LinkedObjField != NIL .AND. table:LinkedObjField:Calculated .AND. !table:MasterSource == Self .AND. table:MasterSource == table:LinkedObjField:Table:KeyField:LinkedTable
+                        table:LinkedObjField:Table:KeyField:DataObj()
+                     ENDIF
                   ENDIF
                ENDIF
-            ENDIF
 
-         NEXT
+            NEXT
 
-      ENDIF
+         ENDIF
 
-      IF !( Result := ::InsideScope() )
+      ELSEIF !Result .OR. !::FilterEval()
          ::FEof := .T.
          ::FBof := .T.
          ::FFound := .F.
@@ -2799,13 +2805,13 @@ METHOD FUNCTION InsertRecord( origin ) CLASS TTable
     InsideScope
     Teo. Mexico 2008
 */
-METHOD FUNCTION InsideScope() CLASS TTable
+METHOD FUNCTION InsideScope( ignoreFilters ) CLASS TTable
 
    IF ::Eof() .OR. ( ::MasterSource != NIL .AND. ::MasterSource:Eof() )
       RETURN .F.
    ENDIF
 
-   RETURN ::GetIndex() = NIL .OR. ::GetIndex():InsideScope()
+   RETURN ::GetIndex() = NIL .OR. ::GetIndex():InsideScope( ignoreFilters )
 
 /*
     OnActiveSetKeyVal
@@ -3084,7 +3090,7 @@ METHOD FUNCTION RecLock() CLASS TTable
       RAISE ERROR "Attempt to lock record at EOF..."
    ENDIF
 
-   IF !::InsideScope .OR. !::Alias:RecLock()
+   IF !::InsideScope() .OR. !::Alias:RecLock()
       RETURN .F.
    ENDIF
 

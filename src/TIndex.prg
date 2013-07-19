@@ -99,7 +99,7 @@ CLASS TIndex FROM OORDBBASE
    METHOD GetCurrentRecord()
    METHOD HasFilter() INLINE ::FDbFilter != NIL
    METHOD IndexExpression()
-   METHOD InsideScope()
+   METHOD InsideScope( ignoreFilters )
    METHOD KeyExpression()
    METHOD MasterKeyExpression()
 
@@ -577,7 +577,7 @@ METHOD FUNCTION IndexExpression() CLASS TIndex
     InsideScope
     Teo. Mexico 2008
 */
-METHOD FUNCTION InsideScope() CLASS TIndex
+METHOD FUNCTION InsideScope( ignoreFilters ) CLASS TIndex
 
    LOCAL masterKeyVal
    LOCAL scopeVal
@@ -589,7 +589,7 @@ METHOD FUNCTION InsideScope() CLASS TIndex
 
    keyValue := ::GetAlias():KeyVal( ::FTagName )
 
-   IF keyValue == NIL .OR. !::FTable:FilterEval( Self )
+   IF keyValue == NIL .OR. ( !ignoreFilters == .T. .AND. !::FTable:FilterEval( Self ) )
       RETURN .F.
    ENDIF
 

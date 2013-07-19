@@ -2,6 +2,14 @@
  * $Id: ChangeLog 155 2013-06-06 03:29:32Z tfonrouge $
  */
 
+Fri Jul 19 02:59:49 UTC 2013 Teo Fonrouge (tfonrouge@gmail.com)
+  M src/TIndex.prg
+    % added parameter 'ignoreFilters' (logical) to insideScope()
+
+  M src/TTable.prg
+    % always evaluate index filter (if any) in FilterEval()
+    % on GetCurrentRecord() read if inside scope then checks filters
+
 Tue Jul 16 17:36:36 UTC 2013 Teo Fonrouge (tfonrouge@gmail.com)
   M src/TIndex.prg
     % use default value on (master) key field if has it defined
