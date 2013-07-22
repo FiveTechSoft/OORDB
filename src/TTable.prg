@@ -1228,10 +1228,8 @@ METHOD PROCEDURE CreateTableInstance() CLASS TTable
 
    ::FState := dsInactive
 
-   IF ::FPrimaryIndex != NIL
-      ::SetIndex( ::FPrimaryIndex )
-   ELSEIF !Empty( ::FIndexList )
-      ::SetIndex( hb_HValueAt( hb_HValueAt( ::FIndexList, 1 ), 1 ) )
+   IF !::IndexName == ::PrimaryIndex:Name
+      ::SetIndex( ::PrimaryIndex )
    ENDIF
 
    ::OnCreate()

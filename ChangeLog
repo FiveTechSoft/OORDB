@@ -2,6 +2,10 @@
  * $Id: ChangeLog 155 2013-06-06 03:29:32Z tfonrouge $
  */
 
+Mon Jul 22 03:43:42 UTC 2013 Teo Fonrouge (tfonrouge@gmail.com)
+  M src/TTable.prg
+    % enforcing primary index on table
+
 Fri Jul 19 02:59:49 UTC 2013 Teo Fonrouge (tfonrouge@gmail.com)
   M src/TIndex.prg
     % added parameter 'ignoreFilters' (logical) to insideScope()
