@@ -2416,7 +2416,7 @@ ENDCLASS
 METHOD FUNCTION DiffSeconds( dateTimePrev ) CLASS TDateTimeField
 
    LOCAL t1, t2
-   LOCAL t, n
+   LOCAL t
 
    IF dateTimePrev = NIL
       dateTimePrev := hb_dateTime()
@@ -2429,14 +2429,12 @@ METHOD FUNCTION DiffSeconds( dateTimePrev ) CLASS TDateTimeField
    IF dateTimePrev < ::Value
       t1 := ::Value
       t2 := dateTimePrev
-      n := 1
    ELSE
       t2 := ::Value
       t1 := dateTimePrev
-      n := -1
    ENDIF
 
-   RETURN n * ( ( hb_TToD( hb_NToT( t1 - t2 ), @t ) - CToD( "" ) ) * 86400 + t )
+   RETURN ( hb_TToD( hb_NToT( t1 - t2 ), @t ) - CToD( "" ) ) * 86400 + t
 
 /*
     GetAsString
