@@ -159,7 +159,7 @@ CLASS TField FROM OORDBBASE
    METHOD SetIndexExpression( indexExpression ) INLINE ::FIndexExpression := indexExpression
    METHOD SetKeyVal( keyVal )
    METHOD SetValidValues( validValues )
-   METHOD Validate( showAlert )
+   METHOD Validate( showAlert, value )
    METHOD ValidateFieldInfo VIRTUAL
 
    PROPERTY AsDisplay READ GetAsDisplay
@@ -932,7 +932,7 @@ METHOD PROCEDURE SetAsVariant( value ) CLASS TField
       ::FTable:isMetaTable := .F.
    ENDIF
 
-   IF ::IsReadOnly .OR. ::FTable:State = dsInactive .OR. !::Enabled
+   IF ::IsReadOnly .OR. ::FTable:State = dsInactive .OR. !::Enabled .OR. ::FCalculated
       RETURN
    ENDIF
 
@@ -942,11 +942,6 @@ METHOD PROCEDURE SetAsVariant( value ) CLASS TField
 
    IF ::FOnSetValue
       __objSendMsg( ::FTable, "OnSetValue_Field_" + ::Name, @value )
-   ENDIF
-
-   IF ::FCalculated
-      ::SetData( value )
-      RETURN
    ENDIF
 
    IF ( ::FTable:LinkedObjField = NIL .OR. ::FTable:LinkedObjField:Table:State = dsBrowse ) .AND. ::FTable:State = dsBrowse .AND. ::FTable:autoEdit
@@ -1023,9 +1018,9 @@ METHOD PROCEDURE SetBuffer( value ) CLASS TField
          RAISE TFIELD ::Name ERROR "Wrong Type Assign: [" + value:ClassName + "] to <" + ::ClassName + ">"
       ENDIF
 
-      ::FBuffer := value
-
    ENDIF
+
+   ::FBuffer := value
 
    RETURN
 
@@ -1179,7 +1174,7 @@ METHOD PROCEDURE SetData( value, initialize ) CLASS TField
    ::SetBuffer( value )
 
    /* Validate before the physical writting */
-   IF !initialize == .T. .AND. !Empty( ::Validate( .T. ) )
+   IF !initialize == .T. .AND. !Empty( ::Validate( .T., value ) )
       ::SetBuffer( buffer )  // revert the change
       RETURN
    ENDIF
@@ -1201,9 +1196,11 @@ METHOD PROCEDURE SetData( value, initialize ) CLASS TField
          ::WriteToTable( value, buffer )
       ENDIF
 
-      IF ::FTable:LinkedObjField != NIL .AND. ::FTable:BaseKeyField == Self
+      IF ::FTable:LinkedObjField != NIL  .AND. ::FTable:BaseKeyField == Self
 
-         ::FTable:LinkedObjField:SetAsVariant( ::FTable:BaseKeyField:GetAsVariant() )
+         IF !::FTable:LinkedObjField:Calculated
+            ::FTable:LinkedObjField:SetAsVariant( ::GetAsVariant() )
+         ENDIF
 
       ENDIF
 
@@ -1506,37 +1503,12 @@ METHOD PROCEDURE SetValidValues( validValues ) CLASS TField
    RETURN
 
 /*
-    WriteToTable
-    Teo. Mexico 2010
-*/
-METHOD PROCEDURE WriteToTable( value, oldBuffer ) CLASS TField
-
-   /* The physical write to the field */
-   ::FTable:Alias:Eval( ::FFieldWriteBlock, ::TranslateToFieldValue( value ) )
-
-   ::FWrittenValue := ::GetBuffer()
-
-   /* fill undolist */
-   IF ::FTable:UndoList != NIL .AND. !hb_HHasKey( ::FTable:UndoList, ::FName ) .AND. PCount() > 1
-#ifdef __DEBUG
-      IF HB_ISHASH( ::ValidValues ) .AND. !hb_HHasKey( ::ValidValues, oldBuffer )
-         ::TRHOW_SOME_ERROR()
-      ENDIF
-#endif
-      ::FTable:UndoList[ ::FName ] := oldBuffer
-      ::FChanged := ! value == oldBuffer
-   ENDIF
-
-   RETURN
-
-/*
     Validate
     Teo. Mexico 2011
 */
-METHOD FUNCTION Validate( showAlert ) CLASS TField
+METHOD FUNCTION Validate( showAlert, value ) CLASS TField
 
    LOCAL validValues
-   LOCAL value
    LOCAL result := NIL
    LOCAL l
    LOCAL INDEX
@@ -1544,7 +1516,9 @@ METHOD FUNCTION Validate( showAlert ) CLASS TField
 
    IF ::Enabled
 
-      value := ::GetAsVariant()
+      IF PCount() < 2
+         value := ::GetAsVariant()
+      ENDIF
 
       IF ::FRequired .AND. Empty( value )
          result := ::FTable:ClassName + ": '" + ::GetLabel() + "' <empty field required value>"
@@ -1640,6 +1614,30 @@ METHOD FUNCTION Validate( showAlert ) CLASS TField
    ENDIF
 
    RETURN result
+
+/*
+    WriteToTable
+    Teo. Mexico 2010
+*/
+METHOD PROCEDURE WriteToTable( value, oldBuffer ) CLASS TField
+
+   /* The physical write to the field */
+   ::FTable:Alias:Eval( ::FFieldWriteBlock, ::TranslateToFieldValue( value ) )
+
+   ::FWrittenValue := ::GetBuffer()
+
+   /* fill undolist */
+   IF ::FTable:UndoList != NIL .AND. !hb_HHasKey( ::FTable:UndoList, ::FName ) .AND. PCount() > 1
+#ifdef __DEBUG
+      IF HB_ISHASH( ::ValidValues ) .AND. !hb_HHasKey( ::ValidValues, oldBuffer )
+         ::TRHOW_SOME_ERROR()
+      ENDIF
+#endif
+      ::FTable:UndoList[ ::FName ] := oldBuffer
+      ::FChanged := ! value == oldBuffer
+   ENDIF
+
+   RETURN
 
 /*
     ENDCLASS TField
