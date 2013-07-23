@@ -95,6 +95,11 @@
                         ADD [<clauses0>] _OBJECT FIELD <xFieldMethod> [<clauses1>] CLASS <objClass> [<clauses2>]
 #xtranslate T_ObjectField => TObjectField
 
+/* Calculated field with READWRITE method */
+#xtranslate ADD CALCULATED [<clauses0,...>] FIELD <fldName> READWRITE <mthd> [<clauses1,...>] ;
+                        => ;
+                        ADD CALCULATED [<clauses0>] FIELD <fldName> READ \{|Self| ::<mthd>(<fldName>) } WRITE {|Self,value| ::<mthd>( <fldName>, value ) } [<clauses1>]
+
 #xtranslate ADD [<calc: CALCULATED>] <type: _STRING, MEMO, _NUMERIC, FLOAT, INTEGER, AUTOINC, LOGICAL, _TIME, DATE, DATETIME, MODTIME, _OBJECT, VARIANT> FIELD [<xFieldMethod>] ;
                         [ NAME <cName> ] ;
                         [ LABEL <label> ] ;
@@ -143,8 +148,8 @@
                             [ :Size := <nSize> ] ;;
                             [ :TimeFormat := <timeFormat> ] ;;
                             [ :SetFieldMethod( <xFieldMethod>, <.calc.> ) ] ;;
-                            [ :ReadBlock := {|| <readblock> } ] ;;
-                            [ :WriteBlock := {|Value| <writeblock> } ] ;;
+                            [ :FieldReadBlock := <{readblock}> ] ;;
+                            [ :FieldWriteBlock := <{writeblock}> ] ;;
                             [ :DefaultValue := <xDefaultValue> ] ;;
                             [ :NewValue := <xNewValue> ] ;;
                             [ :Required := <.rq.> ] ;;
