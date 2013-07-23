@@ -377,7 +377,7 @@ METHOD FUNCTION dbSkip( numRecs ) CLASS TIndex
    IF !::HasFilter() .AND. !table:HasFilter()
       result := ::GetAlias():dbSkip( numRecs, ::FTagName ) /* because on Bof returns .F. */
       ::GetCurrentRecord()
-      RETURN result
+      RETURN result .AND. ::InsideScope()
    ENDIF
 
    RETURN ::FTable:SkipFilter( numRecs, Self )
