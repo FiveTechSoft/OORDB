@@ -31,7 +31,6 @@ CLASS TField FROM OORDBBASE
    DATA FDescription INIT ""
    DATA FFieldCodeBlock         // Code Block
    DATA FFieldWriteBlock         // Code Block to do WRITE
-   DATA FHasCalcFieldMethod INIT .F.
    DATA FGroup              // A Text label for grouping
    DATA FIsMasterFieldComponent INIT .F. // Field is a MasterField component
    DATA FPrimaryKeyComponent INIT .F.  // Field is included in a Array of fields for a Primary Index Key
@@ -156,6 +155,8 @@ CLASS TField FROM OORDBBASE
    METHOD SetData( value, initialize )
    METHOD SetDbStruct( aStruct )
    METHOD SetFieldMethod( FieldMethod, calculated )
+   METHOD SetFieldReadBlock( readBlock ) INLINE ::FFieldReadBlock := readBlock
+   METHOD SetFieldWriteBlock( writeBlock ) INLINE ::FFieldWriteBlock := writeBlock
    METHOD SetIndexExpression( indexExpression ) INLINE ::FIndexExpression := indexExpression
    METHOD SetKeyVal( keyVal )
    METHOD SetValidValues( validValues )
@@ -219,9 +220,9 @@ CLASS TField FROM OORDBBASE
    PROPERTY FieldExpression READ FFieldExpression WRITE SetFieldMethod
    PROPERTY FieldMethod READ GetFieldMethod WRITE SetFieldMethod
    PROPERTY FieldMethodType READ FFieldMethodType
-   PROPERTY FieldReadBlock READ GetFieldReadBlock
+   PROPERTY FieldReadBlock READ GetFieldReadBlock WRITE SetFieldReadBlock
    PROPERTY FieldType READ FFieldType
-   PROPERTY FieldWriteBlock READ FFieldWriteBlock
+   PROPERTY FieldWriteBlock READ FFieldWriteBlock WRITE SetFieldWriteBlock
    PROPERTY Group READ FGroup WRITE SetGroup
    PROPERTY IndexKeyList READ FIndexKeyList
    PROPERTY KeyIndex READ GetKeyIndex
@@ -932,7 +933,7 @@ METHOD PROCEDURE SetAsVariant( value ) CLASS TField
       ::FTable:isMetaTable := .F.
    ENDIF
 
-   IF ::IsReadOnly .OR. ::FTable:State = dsInactive .OR. !::Enabled .OR. ::FCalculated
+   IF ::IsReadOnly .OR. ::FTable:State = dsInactive .OR. !::Enabled
       RETURN
    ENDIF
 
@@ -942,6 +943,13 @@ METHOD PROCEDURE SetAsVariant( value ) CLASS TField
 
    IF ::FOnSetValue
       __objSendMsg( ::FTable, "OnSetValue_Field_" + ::Name, @value )
+   ENDIF
+
+   IF ::FCalculated
+      IF ::FFieldWriteBlock != NIL
+         ::FTable:Alias:Eval( ::FFieldWriteBlock, ::FTable, value )
+      ENDIF
+      RETURN
    ENDIF
 
    IF ( ::FTable:LinkedObjField = NIL .OR. ::FTable:LinkedObjField:Table:State = dsBrowse ) .AND. ::FTable:State = dsBrowse .AND. ::FTable:autoEdit
@@ -1086,12 +1094,12 @@ METHOD PROCEDURE SetData( value, initialize ) CLASS TField
 
    ENDSWITCH
 
-   IF !::FCalculated .AND. AScan( { dsEdit, dsInsert }, ::Table:State ) = 0
+   IF AScan( { dsEdit, dsInsert }, ::Table:State ) = 0
       RAISE TFIELD ::Name ERROR "SetData(): Table not in Edit or Insert mode..."
       RETURN
    ENDIF
 
-   IF ( ::FCalculated .AND. !::FHasCalcFieldMethod ) .OR. ::FModStamp
+   IF ::FModStamp
       RETURN
    ENDIF
 
@@ -1130,7 +1138,7 @@ METHOD PROCEDURE SetData( value, initialize ) CLASS TField
    ENDIF
 
    /* Don't bother... */
-   IF !::FCalculated .AND. ( value == ::FWrittenValue )
+   IF value == ::FWrittenValue
       RETURN
    ENDIF
 
@@ -1198,9 +1206,7 @@ METHOD PROCEDURE SetData( value, initialize ) CLASS TField
 
       IF ::FTable:LinkedObjField != NIL  .AND. ::FTable:BaseKeyField == Self
 
-         IF !::FTable:LinkedObjField:Calculated
-            ::FTable:LinkedObjField:SetAsVariant( ::GetAsVariant() )
-         ENDIF
+         ::FTable:LinkedObjField:SetAsVariant( ::GetAsVariant() )
 
       ENDIF
 
@@ -1346,13 +1352,6 @@ METHOD PROCEDURE SetFieldMethod( FieldMethod, calculated ) CLASS TField
          ELSE
             ::FFieldReadBlock := fieldBlock
             ::FFieldWriteBlock := fieldBlock
-         ENDIF
-
-      ELSE
-
-         IF __objHasMsgAssigned( ::FTable, "CalcField_" + FieldMethod )
-            ::FHasCalcFieldMethod := .T.
-            ::FFieldWriteBlock := {| value| __objSendMsg( ::FTable, "CalcField_" + FieldMethod, value ) }
          ENDIF
 
       ENDIF
