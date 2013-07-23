@@ -2418,6 +2418,10 @@ METHOD FUNCTION DiffSeconds( dateTimePrev ) CLASS TDateTimeField
    LOCAL t1, t2
    LOCAL t, n
 
+   IF dateTimePrev = NIL
+      dateTimePrev := hb_dateTime()
+   ENDIF
+
    IF dateTimePrev = ::Value
       RETURN 0.0
    ENDIF
