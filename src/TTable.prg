@@ -668,7 +668,7 @@ METHOD FUNCTION AddRec() CLASS TTable
       ::FillPrimaryIndexes( Self )
 
       FOR EACH AField IN ::FFieldList
-         IF AField:FieldMethodType = 'C' .AND. !AField:PrimaryKeyComponent .AND. AField:WrittenValue == NIL .AND. AField:Enabled
+         IF !AField:Calculated .AND. AField:FieldMethodType = 'C' .AND. !AField:PrimaryKeyComponent .AND. AField:WrittenValue == NIL .AND. AField:Enabled
             newValue := AField:NewValue
             IF newValue != NIL .OR. AField:AutoIncrement
                IF !AField:IsKeyIndex
@@ -1038,7 +1038,7 @@ METHOD FUNCTION CopyRecord( origin ) CLASS TTable
          RETURN .F.
       ENDIF
       FOR EACH AField IN ::FFieldList
-         IF AField:FieldMethodType = 'C' .AND. !AField:PrimaryKeyComponent
+         IF !AField:Calculated .AND. AField:FieldMethodType = 'C' .AND. !AField:PrimaryKeyComponent
             AField1 := origin:FieldByName( AField:Name )
             IF AField1 != NIL
                AField:Value := AField1:Value
@@ -1049,7 +1049,7 @@ METHOD FUNCTION CopyRecord( origin ) CLASS TTable
    CASE 'H' // Hash of Values
       FOR EACH entry IN origin
          AField := ::FieldByName( entry:__enumKey )
-         IF AField != NIL .AND. AField:FieldMethodType = 'C' .AND. !AField:PrimaryKeyComponent
+         IF AField != NIL .AND. !AField:Calculated .AND. AField:FieldMethodType = 'C' .AND. !AField:PrimaryKeyComponent
             AField:Value := entry:__enumValue
          ENDIF
       NEXT
@@ -3149,7 +3149,7 @@ METHOD PROCEDURE Reset() CLASS TTable
 
    FOR EACH AField IN ::FFieldList
 
-      IF AField:FieldMethodType = "C" .AND. AField:Enabled
+      IF !AField:Calculated .AND. AField:FieldMethodType = "C" .AND. AField:Enabled
          IF AField:RawDefaultValue != NIL .OR. AField:RawNewValue != NIL .OR. !AField:IsMasterFieldComponent
             AField:Reset()
          ENDIF
