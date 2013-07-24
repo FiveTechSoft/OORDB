@@ -181,6 +181,11 @@
                         => ;
                         ADD CALCULATED [<clauses0>] FIELD <fldName> READ \{|Self| ::<mthd>(<fldName>) } WRITE {|Self,value| ::<mthd>( <fldName>, value ) } [<clauses1>]
 
+/* Calculated field with ALLOW_WRITE method */
+#xtranslate ADD CALCULATED [<clauses0,...>] FIELD <fldName> ALLOW_WRITE [<clauses1,...>] ;
+                        => ;
+                        ADD CALCULATED [<clauses0>] FIELD <fldName> WRITE <fldName> [<clauses1>]
+
 #xtranslate ADD ALIAS NAME <aliasFldName> TO FIELD <fld> [<noPub> PRIVATE ] ;
             => ;
             ::AddFieldAlias( <aliasFldName>, <fld>, [!<.noPub.>] )
