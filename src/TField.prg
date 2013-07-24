@@ -83,6 +83,7 @@ CLASS TField FROM OORDBBASE
    DATA FModStamp INIT .F.       // Field is automatically mantained (dbf layer)
    DATA FName INIT ""
    DATA FNewValue
+   DATA FOnEvalFieldWriteBlock
    DATA FOnReset INIT .F.
    DATA FOnSetValue
    DATA FTable
@@ -946,14 +947,15 @@ METHOD PROCEDURE SetAsVariant( value ) CLASS TField
    ENDIF
 
    IF ::FCalculated
-      IF ::FFieldWriteBlock != NIL
+      IF ::FFieldWriteBlock != NIL .AND. ::FOnEvalFieldWriteBlock = NIL
+         ::FOnEvalFieldWriteBlock := .T.
          ::FTable:Alias:Eval( ::FFieldWriteBlock, ::FTable, value )
+         ::FOnEvalFieldWriteBlock := NIL
       ENDIF
       RETURN
    ENDIF
 
    IF ( ::FTable:LinkedObjField = NIL .OR. ::FTable:LinkedObjField:Table:State = dsBrowse ) .AND. ::FTable:State = dsBrowse .AND. ::FTable:autoEdit
-      // IF ::FTable:State = dsBrowse .AND. ::FTable:autoEdit
       oldState := ::FTable:State
       ::FTable:Edit()
    ENDIF
