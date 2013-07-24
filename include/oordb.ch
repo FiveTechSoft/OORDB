@@ -143,8 +143,8 @@
                             [ :Size := <nSize> ] ;;
                             [ :TimeFormat := <timeFormat> ] ;;
                             [ :SetFieldMethod( <xFieldMethod>, <.calc.> ) ] ;;
-                            [ :FieldReadBlock := <{readblock}> ] ;;
-                            [ :FieldWriteBlock := <{writeblock}> ] ;;
+                            [ :FieldReadBlock := <readblock> ] ;;
+                            [ :FieldWriteBlock := <writeblock> ] ;;
                             [ :DefaultValue := <xDefaultValue> ] ;;
                             [ :NewValue := <xNewValue> ] ;;
                             [ :Required := <.rq.> ] ;;
