@@ -157,7 +157,7 @@ CLASS TField FROM OORDBBASE
    METHOD SetDbStruct( aStruct )
    METHOD SetFieldMethod( FieldMethod, calculated )
    METHOD SetFieldReadBlock( readBlock ) INLINE ::FFieldReadBlock := readBlock
-   METHOD SetFieldWriteBlock( writeBlock ) INLINE ::FFieldWriteBlock := writeBlock
+   METHOD SetFieldWriteBlock( writeBlock )
    METHOD SetIndexExpression( indexExpression ) INLINE ::FIndexExpression := indexExpression
    METHOD SetKeyVal( keyVal )
    METHOD SetValidValues( validValues )
@@ -1372,6 +1372,26 @@ METHOD PROCEDURE SetFieldMethod( FieldMethod, calculated ) CLASS TField
    ENDSWITCH
 
    RETURN
+
+/*
+    SetFieldWriteBlock
+    Teo. Mexico 2013
+*/
+METHOD PROCEDURE SetFieldWriteBlock( writeBlock ) CLASS TField
+
+   SWITCH ValType( writeBlock )
+   CASE "C"
+      writeBlock := &("{|Self,value| ::CalcField_" + writeBlock + "( value )}")
+      EXIT
+   CASE "B"
+      EXIT
+   OTHERWISE
+      RETURN
+   ENDSWITCH
+
+   ::FFieldWriteBlock := writeBlock
+
+RETURN
 
 /*
     SetIsMasterFieldComponent
