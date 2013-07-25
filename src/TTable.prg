@@ -1228,7 +1228,7 @@ METHOD PROCEDURE CreateTableInstance() CLASS TTable
 
    ::FState := dsInactive
 
-   IF !::IndexName == ::PrimaryIndex:Name
+   IF ::PrimaryIndex != NIL .AND. !::IndexName == ::PrimaryIndex:Name
       ::SetIndex( ::PrimaryIndex )
    ENDIF
 
