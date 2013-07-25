@@ -2,6 +2,10 @@
  * $Id: ChangeLog 155 2013-06-06 03:29:32Z tfonrouge $
  */
 
+Thu Jul 25 18:13:24 UTC 2013 Teo Fonrouge (tfonrouge@gmail.com)
+  M src/TField.prg
+    * harboured source code
+
 Tue Jul 23 01:58:43 UTC 2013 Teo Fonrouge (tfonrouge@gmail.com)
   M src/TField.prg
     % small optimization by passing value parameter to Validete() method

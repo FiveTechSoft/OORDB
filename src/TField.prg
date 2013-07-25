@@ -1381,7 +1381,7 @@ METHOD PROCEDURE SetFieldWriteBlock( writeBlock ) CLASS TField
 
    SWITCH ValType( writeBlock )
    CASE "C"
-      writeBlock := &("{|Self,value| ::CalcField_" + writeBlock + "( value )}")
+      writeBlock := &( "{|Self,value| ::CalcField_" + writeBlock + "( value )}" )
       EXIT
    CASE "B"
       EXIT
@@ -1391,7 +1391,7 @@ METHOD PROCEDURE SetFieldWriteBlock( writeBlock ) CLASS TField
 
    ::FFieldWriteBlock := writeBlock
 
-RETURN
+   RETURN
 
 /*
     SetIsMasterFieldComponent
@@ -2441,7 +2441,7 @@ METHOD FUNCTION DiffSeconds( dateTimePrev ) CLASS TDateTimeField
    LOCAL t
 
    IF dateTimePrev = NIL
-      dateTimePrev := hb_dateTime()
+      dateTimePrev := hb_DateTime()
    ENDIF
 
    IF dateTimePrev = ::Value
