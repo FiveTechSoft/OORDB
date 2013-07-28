@@ -334,13 +334,13 @@ CLASS TTable FROM OORDBBASE
    PROPERTY BaseKeyField READ FBaseKeyField
    PROPERTY BaseKeyIndex READ FBaseKeyIndex
    PROPERTY BaseKeyVal READ BaseKeyField:GetKeyVal WRITE BaseKeyField:SetKeyVal
-   PROPERTY causeEditState
    PROPERTY Bof READ GetBof
    PROPERTY DataBase READ GetDataBase WRITE SetDataBase
    PROPERTY DbFilter READ FDbFilter WRITE SetDbFilter
    PROPERTY DbStruct READ GetDbStruct
    PROPERTY DELETED READ Alias:Deleted()
    PROPERTY DisplayFields READ GetDisplayFields
+   PROPERTY editStateOrigin
    PROPERTY ErrorBlock READ GetErrorBlock WRITE SetErrorBlock
    PROPERTY Eof READ GetEof
    PROPERTY FieldList READ FFieldList
@@ -648,7 +648,7 @@ METHOD FUNCTION AddRec() CLASS TTable
    ::FRecNo := ::Alias:RecNo
 
    ::SetState( dsInsert )
-   ::FcauseEditState := dsInsert
+   ::FeditStateOrigin := dsInsert
    ::FSubState := dssAdding
 
    // ::Reset() // Reset record data to default values
@@ -3001,7 +3001,7 @@ METHOD FUNCTION Post() CLASS TTable
       ENDIF
    ENDIF
 
-   ::FcauseEditState := NIL
+   ::FeditStateOrigin := NIL
 
    RETURN postOk
 
@@ -3099,7 +3099,7 @@ METHOD FUNCTION RecLock() CLASS TTable
 
    IF result
       ::SetState( dsEdit )
-      ::FcauseEditState := dsEdit
+      ::FeditStateOrigin := dsEdit
    ELSE
       ::Alias:RecUnLock()
    ENDIF
@@ -3503,7 +3503,7 @@ METHOD PROCEDURE StatePop() CLASS TTable
    ::FEof             := ::tableState[ ::tableStateLen ][ "Eof" ]
    ::FFound           := ::tableState[ ::tableStateLen ][ "Found" ]
    ::FState           := ::tableState[ ::tableStateLen ][ "State" ]
-   ::FcauseEditState  := ::tableState[ ::tableStateLen ][ "causeEditState" ]
+   ::FeditStateOrigin  := ::tableState[ ::tableStateLen ][ "editStateOrigin" ]
    ::IndexName        := ::tableState[ ::tableStateLen ][ "IndexName" ]
 
    FOR EACH tbl IN ::DetailSourceList
@@ -3549,7 +3549,7 @@ METHOD PROCEDURE StatePush() CLASS TTable
    ::tableState[ ::tableStateLen ][ "Eof" ]              := ::FEof
    ::tableState[ ::tableStateLen ][ "Found" ]            := ::FFound
    ::tableState[ ::tableStateLen ][ "State" ]            := ::FState
-   ::tableState[ ::tableStateLen ][ "causeEditState" ]   := ::FcauseEditState
+   ::tableState[ ::tableStateLen ][ "editStateOrigin" ]   := ::FeditStateOrigin
    ::tableState[ ::tableStateLen ][ "IndexName" ]        := ::IndexName
    ::tableState[ ::tableStateLen ][ "DetailSourceList" ] := hDSL
    ::tableState[ ::tableStateLen ][ "UndoList" ]         := ::FUndoList
@@ -3560,7 +3560,7 @@ METHOD PROCEDURE StatePush() CLASS TTable
    NEXT
 
    ::FState := dsBrowse
-   ::FcauseEditState := NIL
+   ::FeditStateOrigin := NIL
    ::FUndoList := NIL
 
    ::Alias:Push()
