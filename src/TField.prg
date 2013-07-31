@@ -27,7 +27,6 @@ CLASS TField FROM OORDBBASE
 
    DATA FEnabled INIT .F.
    DATA FAutoIncrementKeyIndex
-   DATA FDataOfValidValues
    DATA FDescription INIT ""
    DATA FFieldCodeBlock         // Code Block
    DATA FFieldWriteBlock         // Code Block to do WRITE
@@ -90,6 +89,7 @@ CLASS TField FROM OORDBBASE
    DATA FTableBaseClass
    DATA FType INIT "TField"
    DATA FUsingField      // Field used on Calculated Field
+   DATA FValidValues
    DATA FValType INIT "U"
    DATA FWrittenValue
 
@@ -108,6 +108,7 @@ CLASS TField FROM OORDBBASE
    METHOD GetLabel INLINE iif( ::FLabel == NIL, ::FName, ::FLabel )
    METHOD GetLinkedTable() INLINE NIL
    METHOD GetUndoValue()
+   METHOD GetValidValues()
    METHOD SetAsString( string ) INLINE ::SetAsVariant( string )
    METHOD SetBuffer( value )
    METHOD SetDBS_DEC( dec ) INLINE ::FDBS_DEC := dec
@@ -146,7 +147,6 @@ CLASS TField FROM OORDBBASE
    METHOD GetBuffer()
    METHOD GetData()
    METHOD GetKeyVal( keyVal )
-   METHOD GetValidValues
    METHOD IndexExpression VIRTUAL
    METHOD IsReadOnly() INLINE ::FTable:READONLY .OR. ::FReadOnly .OR. ( ::FTable:State != dsBrowse .AND. ::AutoIncrement )
    METHOD IsTableField()
@@ -184,6 +184,7 @@ CLASS TField FROM OORDBBASE
    PROPERTY RawNewValue READ FNewValue
    PROPERTY Size READ FSize
    PROPERTY UndoValue READ GetUndoValue
+   PROPERTY ValidValues READ GetValidValues WRITE SetValidValues
    PROPERTY Value READ GetAsVariant( ... ) WRITE SetAsVariant
    PROPERTY WrittenValue READ FWrittenValue
 
@@ -202,8 +203,6 @@ CLASS TField FROM OORDBBASE
    DATA OnBeforeChange     // executes before assign value to buffer, must return logical value on success
    DATA OnValidate   // Params: Sender: Table
    DATA OnValidateWarn     // message if OnValidate == FALSE
-
-   DATA ValidValues
 
    PROPERTY AutoIncrement READ GetAutoIncrement
    PROPERTY AutoIncrementKeyIndex READ FAutoIncrementKeyIndex WRITE SetAutoIncrementKeyIndex
@@ -348,7 +347,7 @@ METHOD FUNCTION GetAsDisplay( ... ) CLASS TField
    IF ::FcalcResult = NIL
       validValues := ::GetValidValues()
    ELSE
-      validValues := ::FcalcResult:GetValidValues()
+      validValues := ::FcalcResult:ValidValues()
    ENDIF
 
    IF HB_ISHASH( validValues )
@@ -763,20 +762,21 @@ METHOD FUNCTION GetUndoValue() CLASS TField
     Teo. Mexico 2009
 */
 METHOD FUNCTION GetValidValues() CLASS TField
+   LOCAL validValues
 
-   SWITCH ValType( ::ValidValues )
+   SWITCH ValType( ::FValidValues )
    CASE "A"
    CASE "H"
-      RETURN ::ValidValues
+      RETURN ::FValidValues
    CASE "B"
-      ::FDataOfValidValues := ::ValidValues:Eval( Self:FTable )
-      IF HB_ISOBJECT( ::FDataOfValidValues )
-         ::FDataOfValidValues := ::FDataOfValidValues:GetValidValues()
+      validValues := ::FValidValues:Eval( Self:FTable )
+      IF HB_ISOBJECT( validValues )
+         validValues := validValues:ValidValues()
       ENDIF
-      RETURN ::FDataOfValidValues
+      RETURN validValues
    CASE "O"
-      IF ::ValidValues:IsDerivedFrom( "TObjectField" )
-         RETURN ::ValidValues:GetValidValues()
+      IF ::FValidValues:IsDerivedFrom( "TObjectField" )
+         RETURN ::FValidValues:ValidValues()
       ENDIF
       EXIT
    ENDSWITCH
@@ -1519,7 +1519,7 @@ METHOD PROCEDURE SetUsingField( usingField ) CLASS TField
 */
 METHOD PROCEDURE SetValidValues( validValues ) CLASS TField
 
-   ::ValidValues := validValues
+   ::FValidValues := validValues
 
    RETURN
 
@@ -1569,7 +1569,7 @@ METHOD FUNCTION Validate( showAlert, value ) CLASS TField
          NEXT
       ENDIF
 
-      IF ::ValidValues != NIL
+      IF ::FValidValues != NIL
 
          validValues := ::GetValidValues()
 
@@ -2629,6 +2629,7 @@ CLASS TObjectField FROM TField
    METHOD GetEmptyValue() INLINE ::BaseKeyField():EmptyValue
    METHOD GetFieldReadBlock()
    METHOD GetOnDataChange()
+   METHOD GetValidValues()
    METHOD SetOnDataChange( onDataChangeBlock )
 
    PUBLIC:
@@ -2639,7 +2640,6 @@ CLASS TObjectField FROM TField
    METHOD GetKeyVal( keyVal )
    METHOD GetAsString()       // INLINE ::LinkedTable:KeyField:AsString()
    METHOD GetAsVariant( ... )
-   METHOD GetValidValues()
    METHOD IndexExpression( fieldName )
    METHOD SetClassInit( clsInit ) INLINE ::FClassInit := clsInit
    METHOD SetValidValues( validValues, labelField )
@@ -2977,7 +2977,7 @@ METHOD FUNCTION GetValidValues() CLASS TObjectField
 
    IF ::FValidValuesLabelField == .T.
       hValues := { => }
-      fld := ::LinkedTable:FieldByName( ::ValidValues )
+      fld := ::LinkedTable:FieldByName( ::FValidValues )
       ::LinkedTable:StatePush()
       ::LinkedTable:dbGoTop()
       WHILE !::LinkedTable:Eof()
@@ -3048,7 +3048,7 @@ METHOD PROCEDURE SetOnDataChange( onDataChangeBlock ) CLASS TObjectField
 */
 METHOD PROCEDURE SetValidValues( validValues, labelField ) CLASS TObjectField
 
-   ::ValidValues := validValues
+   ::Super:SetValidValues( validValues )
    ::FValidValuesLabelField := labelField
 
    RETURN

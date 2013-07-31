@@ -39,7 +39,7 @@ PROCEDURE Main()
 
   table := MyTable():New()
 
-  o := table:DisplayFields()
+  o := table:DisplayFieldList()
 
   IF table:Eof()
     Poblate( table )

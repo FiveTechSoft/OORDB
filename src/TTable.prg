@@ -97,7 +97,7 @@ CLASS TTable FROM OORDBBASE
    DATA FActive    INIT .F.
    DATA FAddress
    DATA FAlias
-   DATA FDisplayFields          // Contains a Object
+   DATA FDisplayFieldList          // Contains a Object
    DATA FHasDeletedOrder INIT .F.
    DATA FIndex              // Current TIndex in Table
    DATA FMasterSource
@@ -223,7 +223,7 @@ CLASS TTable FROM OORDBBASE
    DESTRUCTOR OnDestruct()
    // ON ERROR FUNCTION OODB_ErrorHandler( ... )
 
-   METHOD _( syncFromAlias ) INLINE ::GetDisplayFields( syncFromAlias )
+   METHOD _( syncFromAlias ) INLINE ::GetDisplayFieldList( syncFromAlias )
 
    METHOD __DefineFields() VIRTUAL         // DEFINE FIELDS
    METHOD __DefinePrimaryIndex() VIRTUAL   // DEFINE PRIMARY INDEX
@@ -265,8 +265,8 @@ CLASS TTable FROM OORDBBASE
    METHOD Get4SeekLast( xField, keyVal, index, softSeek ) INLINE ::RawGet4Seek( 0, xField, keyVal, index, softSeek )
    METHOD GetAsString
    METHOD GetCurrentRecord( idxAlias )
-   METHOD GetDisplayFieldBlock( xField )
-   METHOD GetDisplayFields( syncFromAlias )
+   METHOD GetDisplayFieldBlock( index, asDisplay )
+   METHOD GetDisplayFieldList( syncFromAlias )
    METHOD GetField( fld )
    METHOD GetKeyVal( value )
    METHOD GetMasterSourceClassName()
@@ -339,7 +339,7 @@ CLASS TTable FROM OORDBBASE
    PROPERTY DbFilter READ FDbFilter WRITE SetDbFilter
    PROPERTY DbStruct READ GetDbStruct
    PROPERTY DELETED READ Alias:Deleted()
-   PROPERTY DisplayFields READ GetDisplayFields
+   PROPERTY DisplayFieldList READ GetDisplayFieldList
    PROPERTY editStateOrigin
    PROPERTY ErrorBlock READ GetErrorBlock WRITE SetErrorBlock
    PROPERTY Eof READ GetEof
@@ -1683,7 +1683,7 @@ METHOD PROCEDURE Destroy() CLASS TTable
    NEXT
 
    ::FFieldList := NIL
-   ::FDisplayFields := NIL
+   ::FDisplayFieldList := NIL
    ::tableState := NIL
 
    ::FActive := .F.
@@ -2223,43 +2223,20 @@ METHOD FUNCTION GetDbStruct CLASS TTable
     GetDisplayFieldBlock
     Teo. Mexico 2008
 */
-METHOD FUNCTION GetDisplayFieldBlock( xField ) CLASS TTable
+METHOD FUNCTION GetDisplayFieldBlock( index, asDisplay ) CLASS TTable
 
-   LOCAL AField
-   LOCAL msgName
+   LOCAL field
 
-   SWITCH ValType( xField )
-   CASE 'C'
-      AField := ::FieldByName( xField )
-      EXIT
-   CASE 'O'
-      AField := xField
-      EXIT
-   CASE 'N'
-      AField := ::FieldList[ xField ]
-      EXIT
-   ENDSWITCH
+   field := ::FFieldList[ index ]
 
-   IF AField == NIL
-      RAISE ERROR "Wrong value"
-      RETURN NIL
-   ENDIF
-
-   msgName := AField:Name
-
-   IF ! AField:IsDerivedFrom( "TObjectField" )
+   IF ! field:IsDerivedFrom( "TObjectField" )
       RETURN ;
          {| o, ...|
       LOCAL odf
       LOCAL AField
       LOCAL result
 
-      IF hb_HHasKey( o:__FFields, msgName )
-         AField := o:__FFields[ msgName ]
-      ELSE
-         AField := o:__FObj:FieldByName( msgName )
-         o:__FFields[ msgName ] := AField
-      ENDIF
+      AField := o:__FObj:FieldList[ index ]
 
       IF o:__FSyncFromAlias
          o:__FObj:SyncRecNo( .T. )
@@ -2268,7 +2245,7 @@ METHOD FUNCTION GetDisplayFieldBlock( xField ) CLASS TTable
       odf := o
 
       WHILE odf:__FObj:LinkedObjField != NIL
-         odf := odf:__FObj:LinkedObjField:Table:GetDisplayFields()
+         odf := odf:__FObj:LinkedObjField:Table:GetDisplayFieldList()
          odf:__FLastLabel := AField:Label
       ENDDO
 
@@ -2276,7 +2253,11 @@ METHOD FUNCTION GetDisplayFieldBlock( xField ) CLASS TTable
          RETURN AField:EmptyValue
       ENDIF
 
-      result := AField:Value( ... )
+      IF !asDisplay == .T.
+         result := AField:Value( ... )
+      ELSE
+         result := AField:AsDisplay( ... )
+      ENDIF
 
       o:__FObj:Alias:SyncFromRecNo()
 
@@ -2287,37 +2268,37 @@ METHOD FUNCTION GetDisplayFieldBlock( xField ) CLASS TTable
 
    RETURN ;
       {| o|
-LOCAL AField
+         LOCAL AField
 
-IF hb_HHasKey( o:__FFields, msgName )
-AField := o:__FFields[ msgName ]
-ELSE
-AField := o:__FObj:FieldByName( msgName )
-o:__FFields[ msgName ] := AField
-ENDIF
+         AField := o:__FObj:FieldList[ index ]
 
-IF o:__FSyncFromAlias
-o:__FObj:SyncRecNo( .T. )
-ENDIF
+         IF o:__FSyncFromAlias
+            o:__FObj:SyncRecNo( .T. )
+         ENDIF
 
-   RETURN AField:DataObj:GetDisplayFields( NIL )
-}
+         RETURN AField:DataObj:GetDisplayFieldList( NIL )
+      }
 
-METHOD FUNCTION GetDisplayFields( syncFromAlias ) CLASS TTable
+METHOD FUNCTION GetDisplayFieldList( syncFromAlias ) CLASS TTable
 
-   LOCAL DisplayFieldsClass
+   LOCAL DisplayFieldListClass
+   LOCAL field
+   LOCAL index
    LOCAL msgName
+   LOCAL fieldList
    LOCAL itm
 
-   IF ::FDisplayFields == NIL
+   IF ::FDisplayFieldList == NIL
 
       IF ::FisMetaTable
          ::isMetaTable := .F.
       ENDIF
 
-      IF ::FInstances[ ::TableClass, "DisplayFieldsClass" ] == NIL
+      IF ::FInstances[ ::TableClass, "DisplayFieldListClass" ] == NIL
 
-         DisplayFieldsClass := HBClass():New( ::ClassName + "DisplayFields", { @TDisplayFields() } )
+         fieldList := { => }
+
+         DisplayFieldListClass := HBClass():New( ::ClassName + "DisplayFieldList", { @TDisplayFieldList() } )
 
          FOR EACH itm IN ::GetPublishedFieldNameList
 
@@ -2326,35 +2307,45 @@ METHOD FUNCTION GetDisplayFields( syncFromAlias ) CLASS TTable
             /* TODO: Check for a duplicate message name */
             IF !Empty( msgName ) // .AND. ! __ObjHasMsg( ef, msgName )
 
-               DisplayFieldsClass:AddInline( msgName, ::GetDisplayFieldBlock( msgName ) )
+               field := ::FieldByName( msgName, @index )
+
+               DisplayFieldListClass:AddInline( msgName, ::GetDisplayFieldBlock( index ) )
+               fieldList[ msgName ] := index
+
+               IF field != NIL .AND. ValType( field:ValidValues ) = "H"
+                  msgName += "_AsDisplay"
+                  DisplayFieldListClass:AddInline( msgName, ::GetDisplayFieldBlock( index, .T. ) )
+                  fieldList[ msgName ] := index
+               ENDIF
 
             ENDIF
 
          NEXT
 
+         DisplayFieldListClass:AddMultiClsData( , fieldList, , {"__FFields"}, .F. )
+
          // Create the MasterSource field access reference
          IF ::FMasterSource != NIL
-            DisplayFieldsClass:AddInline( "MasterSource", {| Self| ::__FObj:MasterSource:GetDisplayFields() } )
+            DisplayFieldListClass:AddInline( "MasterSource", {| Self| ::__FObj:MasterSource:GetDisplayFieldList() } )
          ENDIF
 
-         DisplayFieldsClass:Create()
+         DisplayFieldListClass:Create()
 
-         ::FInstances[ ::TableClass, "DisplayFieldsClass" ] := DisplayFieldsClass
+         ::FInstances[ ::TableClass, "DisplayFieldListClass" ] := DisplayFieldListClass
 
       ENDIF
 
-      ::FDisplayFields := ::FInstances[ ::TableClass, "DisplayFieldsClass" ]:Instance()
-      ::FDisplayFields:__FObj := Self
-      ::FDisplayFields:__FFields := { => }
-      ::FDisplayFields:__FSyncFromAlias := .F.
+      ::FDisplayFieldList := ::FInstances[ ::TableClass, "DisplayFieldListClass" ]:Instance()
+      ::FDisplayFieldList:__FObj := Self
+      ::FDisplayFieldList:__FSyncFromAlias := .F.
 
    ENDIF
 
    IF syncFromAlias != NIL
-      ::FDisplayFields:__FSyncFromAlias := syncFromAlias
+      ::FDisplayFieldList:__FSyncFromAlias := syncFromAlias
    ENDIF
 
-   RETURN ::FDisplayFields
+   RETURN ::FDisplayFieldList
 
 /*
     GetEof
@@ -2741,7 +2732,7 @@ METHOD PROCEDURE InitTable() CLASS TTable
 
       ::DefineRelations()
 
-      ::FInstances[ ::TableClass, "DisplayFieldsClass" ] := NIL
+      ::FInstances[ ::TableClass, "DisplayFieldListClass" ] := NIL
 
       ::FInstances[ ::TableClass, "Initializing" ] := .F.
 
@@ -2886,7 +2877,7 @@ METHOD PROCEDURE ordCreate( ... ) CLASS TTable
 
    LOCAL scopeTop, scopeBottom
    LOCAL masterKeyVal
-   LOCAL syncFromAlias := ::DisplayFields:__FSyncFromAlias
+   LOCAL syncFromAlias := ::DisplayFieldList:__FSyncFromAlias
 
    // LOCAL oDlg
 
@@ -2901,7 +2892,7 @@ METHOD PROCEDURE ordCreate( ... ) CLASS TTable
 
    // DbGoTop()
 
-   ::DisplayFields:__FSyncFromAlias := .T.
+   ::DisplayFieldList:__FSyncFromAlias := .T.
 
 /*
     CREATE DIALOG oDlg ;
@@ -2923,7 +2914,7 @@ METHOD PROCEDURE ordCreate( ... ) CLASS TTable
     DESTROY oDlg
 */
 
-   ::DisplayFields:__FSyncFromAlias := syncFromAlias
+   ::DisplayFieldList:__FSyncFromAlias := syncFromAlias
 
    ordCustom( NIL, NIL, .T. )
 

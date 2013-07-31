@@ -2,6 +2,21 @@
  * $Id: ChangeLog 155 2013-06-06 03:29:32Z tfonrouge $
  */
 
+Wed Jul 31 22:04:33 UTC 2013 Teo Fonrouge (tfonrouge@gmail.com)
+  M samples/buildTable/buildTable.prg
+  M samples/calcField1/calcField1.prg
+  M samples/get1/get1.prg
+    * renamed method DisplayFields to DisplayFieldList
+
+  RM src/TDisplayFields.prg -> src/TDisplayFieldList.prg
+    * renamed source per class name
+    * __FFields data made class wide
+
+  M src/TField.prg
+  M src/TTable.prg
+    % optimization on displaFieldList class
+    * simplified and made property ValidValues
+
 Wed Jul 31 00:04:29 UTC 2013 Teo Fonrouge (tfonrouge@gmail.com)
   M src/TTable.prg
     % ordering fields by name, TObjectField's at the end of the list
