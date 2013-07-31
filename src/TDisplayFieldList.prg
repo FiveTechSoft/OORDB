@@ -19,5 +19,20 @@ CLASS TDisplayFieldList
    DATA __FSyncFromAlias
 
    METHOD _ INLINE ::__FObj
+   METHOD __FieldList
 
 ENDCLASS
+
+/*
+    __FieldList
+    Teo. Mexico 2013
+*/
+METHOD FUNCTION __FieldList() CLASS TDisplayFieldList
+   LOCAL a := {}
+   LOCAL itm
+
+   FOR EACH itm IN ::__IndexFieldList
+      AAdd( a, { itm:__enumKey, ::__FObj:FieldList[ itm:__enumValue ] } )
+   NEXT
+
+RETURN a

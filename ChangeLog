@@ -2,6 +2,13 @@
  * $Id: ChangeLog 155 2013-06-06 03:29:32Z tfonrouge $
  */
 
+Wed Jul 31 22:56:32 UTC 2013 Teo Fonrouge (tfonrouge@gmail.com)
+  M src/TDisplayFieldList.prg
+    * re-implementation of method __FieldList to return array of pair of { fieldName, TField }
+
+  M src/TTable.prg
+    * method __IndexFieldList returns hash with { fieldName => indexField }
+
 Wed Jul 31 22:28:58 UTC 2013 Teo Fonrouge (tfonrouge@gmail.com)
   M src/TTable.prg
     % keep order on fieldList

@@ -2323,7 +2323,7 @@ METHOD FUNCTION GetDisplayFieldList( syncFromAlias ) CLASS TTable
 
          NEXT
 
-         DisplayFieldListClass:AddMultiClsData( , fieldList, , {"__FieldList"}, .F. )
+         DisplayFieldListClass:AddMultiClsData( , fieldList, , {"__IndexFieldList"}, .F. )
          DisplayFieldListClass:AddInline( "__FieldByIndex", {| Self,index| ::__FObj:FieldList[ index ] } )
 
          // Create the MasterSource field access reference
