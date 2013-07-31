@@ -2,6 +2,10 @@
  * $Id: ChangeLog 155 2013-06-06 03:29:32Z tfonrouge $
  */
 
+Wed Jul 31 00:04:29 UTC 2013 Teo Fonrouge (tfonrouge@gmail.com)
+  M src/TTable.prg
+    % ordering fields by name, TObjectField's at the end of the list
+
 Thu Jul 25 18:13:24 UTC 2013 Teo Fonrouge (tfonrouge@gmail.com)
   M src/TField.prg
     * harboured source code

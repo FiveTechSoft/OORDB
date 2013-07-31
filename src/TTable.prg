@@ -2609,7 +2609,7 @@ METHOD FUNCTION GetPublishedFieldNameList( typeList ) CLASS TTable
       ENDIF
    NEXT
 
-   ASort( result,,, {| x, y| x[ 2 ]:ValType < y[ 2 ]:ValType .OR. ( x[ 2 ]:ValType == y[ 2 ]:ValType .AND. x[ 1 ] < y[ 1 ] ) } )
+   ASort( result,,, {| x, y| iif( x[ 2 ]:FieldType = ftObject, "1", "0" ) + x[ 1 ] < iif( y[ 2 ]:FieldType = ftObject, "1", "0" ) + y[ 1 ] } )
 
    RETURN result
 
