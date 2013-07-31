@@ -2,6 +2,11 @@
  * $Id: ChangeLog 155 2013-06-06 03:29:32Z tfonrouge $
  */
 
+Wed Jul 31 22:28:58 UTC 2013 Teo Fonrouge (tfonrouge@gmail.com)
+  M src/TTable.prg
+    % keep order on fieldList
+    % added method to get field by index
+
 Wed Jul 31 22:04:33 UTC 2013 Teo Fonrouge (tfonrouge@gmail.com)
   M samples/buildTable/buildTable.prg
   M samples/calcField1/calcField1.prg

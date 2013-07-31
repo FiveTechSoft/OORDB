@@ -2296,7 +2296,8 @@ METHOD FUNCTION GetDisplayFieldList( syncFromAlias ) CLASS TTable
 
       IF ::FInstances[ ::TableClass, "DisplayFieldListClass" ] == NIL
 
-         fieldList := { => }
+         fieldList := {=>}
+         hb_HKeepOrder( fieldList, .T. )
 
          DisplayFieldListClass := HBClass():New( ::ClassName + "DisplayFieldList", { @TDisplayFieldList() } )
 
@@ -2322,7 +2323,8 @@ METHOD FUNCTION GetDisplayFieldList( syncFromAlias ) CLASS TTable
 
          NEXT
 
-         DisplayFieldListClass:AddMultiClsData( , fieldList, , {"__FFields"}, .F. )
+         DisplayFieldListClass:AddMultiClsData( , fieldList, , {"__FieldList"}, .F. )
+         DisplayFieldListClass:AddInline( "__FieldByIndex", {| Self,index| ::__FObj:FieldList[ index ] } )
 
          // Create the MasterSource field access reference
          IF ::FMasterSource != NIL
