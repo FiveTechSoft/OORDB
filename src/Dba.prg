@@ -85,7 +85,7 @@ FUNCTION CLEAR()
       CASE a[ i, 2 ] $ "CM"
          // fieldput(i,iif(a[i,3]==8,replicate(chr(0),8),""))
          FieldPut( i, "" )
-      CASE a[ i, 2 ] $ "NB"
+      CASE a[ i, 2 ] $ "NBI"
          FieldPut( i, 0 )
       CASE a[ i, 2 ] == "D"
          FieldPut( i, CToD( "" ) )
