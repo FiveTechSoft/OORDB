@@ -766,7 +766,7 @@ METHOD FUNCTION BuildFieldBlockFromFieldExpression( fieldExp, returnMode, field 
    NEXT
 
    BEGIN SEQUENCE WITH {| oErr| Break( oErr ) }
-      IF returnMode = NIL // returns the TField object
+      IF Empty( returnMode ) = NIL // returns the TField object
          block := &( "{|Self|" + s + "}" )
       ELSE
          block := &( "{|Self|" + s + ":" + returnMode + "}" )
@@ -775,7 +775,15 @@ METHOD FUNCTION BuildFieldBlockFromFieldExpression( fieldExp, returnMode, field 
       block := NIL
    END SEQUENCE
 
+   IF fieldExp == "EventoProd:OTrab"
+      block := {|Self| Foo( Self ) }
+   ENDIF
+
    RETURN block
+
+FUNCTION Foo( Self )
+   OutStd( e"\nevalualing FOO", ::RecNo(), ::Field_EventoProd:DataObj:Field_OTrab:DataObj:Field_Folio:Value, ::Field_EventoProd:DataObj:Field_FechaHora:Value )
+RETURN ::Field_EventoProd:DataObj:Field_OTrab:Value
 
 /*
     Cancel

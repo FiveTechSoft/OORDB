@@ -660,7 +660,7 @@ METHOD FUNCTION GetFieldReadBlock() CLASS TField
 
    IF ::FFieldReadBlock == NIL .AND. ::FCalculated
       IF ":" $ ::FFieldExpression
-         block := ::FTable:BuildFieldBlockFromFieldExpression( ::FFieldExpression, "Value" )
+         block := ::FTable:BuildFieldBlockFromFieldExpression( ::FFieldExpression )
          IF block != NIL
             ::FFieldReadBlock := block
             RETURN ::FFieldReadBlock
@@ -2924,7 +2924,12 @@ METHOD FUNCTION GetLinkedTable CLASS TObjectField
 
          ::FcalculatingLinkedTable := .T.
 
-         result := ::FTable:Alias:Eval( ::FieldReadBlock, ::FTable )
+         /* Alias can be NIL if table cannot be instanced yet */
+         IF ::FTable:Alias == NIL
+            result := ::FieldReadBlock:Eval( ::FTable )
+         ELSE
+            result := ::FTable:Alias:Eval( ::FieldReadBlock, ::FTable )
+         ENDIF
 
          IF result != NIL
             IF HB_ISOBJECT( result )
@@ -2999,6 +3004,11 @@ METHOD FUNCTION IndexExpression( fieldName ) CLASS TObjectField
    IF ::FIndexExpression != NIL
       RETURN ::FIndexExpression
    ENDIF
+
+   IF ::Calculated
+      RETURN NIL
+   ENDIF
+
    IF fieldName = NIL
       IF ::FUsingField = NIL
          fieldName := ::FFieldExpression

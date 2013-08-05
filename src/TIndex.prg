@@ -290,10 +290,12 @@ METHOD FUNCTION CustomKeyExpValue() CLASS TIndex
     Teo. Mexico 2012
 */
 METHOD PROCEDURE CustomKeyUpdate CLASS TIndex
-
+   LOCAL expValue
    IF ::FCustom
+      expValue := ::CustomKeyExpValue()
       WHILE ::FTable:Alias:ordKeyDel( ::FTagName ) ; ENDDO
-      ::FTable:Alias:ordKeyAdd( ::FTagName, , ::CustomKeyExpValue() )
+      OutStd( e"\nCustomKeyExpValue:", RecNo(), expValue )
+      ::FTable:Alias:ordKeyAdd( ::FTagName, , expValue )
    ENDIF
 
    RETURN
@@ -417,6 +419,13 @@ METHOD PROCEDURE FillCustomIndex() CLASS TIndex
       ::FTable:DbFilterPop()
       ::FResetToMasterSourceFields := resetToMasterSourceFields
    ENDIF
+
+   D_TONOTIF->( DbGoTo( 1 ) )
+
+   WHILE !D_TONOTIF->(Eof())
+      OutStd( e"\n", D_TONOTIF->(RecNo()), D_TONOTIF->(KeyVal("XOTRAB")) )
+      D_TONOTIF->(DbSkip())
+   ENDDO
 
    RETURN
 
@@ -691,32 +700,31 @@ METHOD PROCEDURE SetField( nIndex, XField ) CLASS TIndex
    LOCAL AField
    LOCAL fld
    LOCAL fieldBlock
-   LOCAL customExpression
 
    SWITCH ValType( XField )
    CASE 'C'
       AField := ::FTable:FieldByName( XField )
-      IF ":" $ XField
-         customExpression := XField
-      ELSEIF AField != NIL .AND. AField:FieldExpression != NIL .AND. ":" $ AField:FieldExpression
-         customExpression := AField:FieldExpression
-      ENDIF
-      IF customExpression != NIL
-         fieldBlock := ::FTable:BuildFieldBlockFromFieldExpression( customExpression, "Value" )
+      IF AField = NIL .AND. ":" $ XField
+
+          fieldBlock := ::FTable:BuildFieldBlockFromFieldExpression( XField, "Value", @fld )
+
          IF fieldBlock = NIL
-            RAISE ERROR "Declared Index (COMPOUND) Field '" + XField + "' doesn't exist..."
+            RAISE ERROR "Error building (COMPOUND) Index Field '" + XField + "' ..."
             RETURN
          ENDIF
-         AField := TStringField():New( ::FTable, ::FTableBaseClass )
+
+         AField := __DynSN2Sym( fld:ClassName ):Exec():New( ::FTable, ::FTableBaseClass )
          AField:Name := StrTran( XField, ":", "_" )
          AField:FieldMethod := fieldBlock
          AField:Published := .F.
-         ::SetCustomIndexExpression( XField )
-      ELSEIF AField != NIL .AND. AField:Calculated .AND. AField:IndexExpression = NIL
-         ::SetCustomIndexExpression( XField )
-      ELSEIF AField = NIL
+
+      ENDIF
+      IF AField = NIL
          RAISE ERROR "Declared Index Field '" + XField + "' doesn't exist..."
          RETURN
+      ENDIF
+      IF AField:Calculated
+         ::SetCustomIndexExpression( XField )
       ENDIF
       EXIT
    CASE 'O'

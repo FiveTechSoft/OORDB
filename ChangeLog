@@ -2,6 +2,12 @@
  * $Id: ChangeLog 155 2013-06-06 03:29:32Z tfonrouge $
  */
 
+Mon Aug  5 17:17:34 UTC 2013 Teo Fonrouge (tfonrouge@gmail.com)
+  M src/TField.prg
+  M src/TIndex.prg
+  M src/TTable.prg
+    ! work in progress, capability to use a referenced field on a index
+
 Wed Jul 31 22:56:32 UTC 2013 Teo Fonrouge (tfonrouge@gmail.com)
   M src/TDisplayFieldList.prg
     * re-implementation of method __FieldList to return array of pair of { fieldName, TField }
