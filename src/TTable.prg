@@ -245,7 +245,7 @@ CLASS TTable FROM OORDBBASE
    METHOD CreateTempIndex( index )
    METHOD CreateTable( fullFileName )
    METHOD DbFilterPop()
-   METHOD DbFilterPush()
+   METHOD DbFilterPush( ignoreMasterKey )
    METHOD DefineRelations       VIRTUAL
    METHOD Destroy()
    METHOD dbEval( bBlock, bForCondition, bWhileCondition, index, scope )
@@ -766,7 +766,7 @@ METHOD FUNCTION BuildFieldBlockFromFieldExpression( fieldExp, returnMode, field 
    NEXT
 
    BEGIN SEQUENCE WITH {| oErr| Break( oErr ) }
-      IF Empty( returnMode ) = NIL // returns the TField object
+      IF Empty( returnMode ) // returns the TField object
          block := &( "{|Self|" + s + "}" )
       ELSE
          block := &( "{|Self|" + s + ":" + returnMode + "}" )
@@ -775,15 +775,7 @@ METHOD FUNCTION BuildFieldBlockFromFieldExpression( fieldExp, returnMode, field 
       block := NIL
    END SEQUENCE
 
-   IF fieldExp == "EventoProd:OTrab"
-      block := {|Self| Foo( Self ) }
-   ENDIF
-
    RETURN block
-
-FUNCTION Foo( Self )
-   OutStd( e"\nevalualing FOO", ::RecNo(), ::Field_EventoProd:DataObj:Field_OTrab:DataObj:Field_Folio:Value, ::Field_EventoProd:DataObj:Field_FechaHora:Value )
-RETURN ::Field_EventoProd:DataObj:Field_OTrab:Value
 
 /*
     Cancel
@@ -1400,7 +1392,10 @@ METHOD PROCEDURE dbEval( bBlock, bForCondition, bWhileCondition, index, scope ) 
 */
 METHOD PROCEDURE DbFilterPop() CLASS TTable
 
-   ::FDbFilter := ATail( ::FDbFilterStack )
+   ::FDbFilter := ATail( ::FDbFilterStack )[ 1 ]
+   IF !ATail( ::FDbFilterStack )[ 2 ] == NIL
+      ::FMasterSource := ATail( ::FDbFilterStack )[ 2 ]
+   ENDIF
    hb_ADel( ::FDbFilterStack, Len( ::FDbFilterStack ), .T. )
 
    RETURN
@@ -1409,10 +1404,13 @@ METHOD PROCEDURE DbFilterPop() CLASS TTable
     DbFilterPush
     Teo. Mexico 2013
 */
-METHOD PROCEDURE DbFilterPush() CLASS TTable
+METHOD PROCEDURE DbFilterPush( ignoreMasterKey ) CLASS TTable
 
-   AAdd( ::FDbFilterStack, ::FDbFilter )
+   AAdd( ::FDbFilterStack, { ::FDbFilter, iif( ignoreMasterKey == .T., ::FMasterSource, NIL ) } )
    ::FDbFilter := NIL
+   IF ignoreMasterKey == .T.
+      ::FMasterSource := NIL
+   ENDIF
 
    RETURN
 
@@ -3505,7 +3503,9 @@ METHOD PROCEDURE StatePop() CLASS TTable
    ::FFound           := ::tableState[ ::tableStateLen ][ "Found" ]
    ::FState           := ::tableState[ ::tableStateLen ][ "State" ]
    ::FeditStateOrigin  := ::tableState[ ::tableStateLen ][ "editStateOrigin" ]
-   ::IndexName        := ::tableState[ ::tableStateLen ][ "IndexName" ]
+   IF !Empty( ::tableState[ ::tableStateLen ][ "IndexName" ] )
+      ::IndexName        := ::tableState[ ::tableStateLen ][ "IndexName" ]
+   ENDIF
 
    FOR EACH tbl IN ::DetailSourceList
       IF hb_HHasKey( ::tableState[ ::tableStateLen ][ "DetailSourceList" ], tbl:ObjectH )

@@ -85,7 +85,7 @@ CLASS TIndex FROM OORDBBASE
    METHOD AddIndex
    METHOD COUNT( bForCondition, bWhileCondition )
    METHOD CustomKeyUpdate
-   METHOD DbFilterPush()
+   METHOD DbFilterPush( ignoreMasterKey )
    METHOD DbFilterPop()
    METHOD DbGoBottom INLINE ::DbGoBottomTop( -1 )
    METHOD DbGoTop INLINE ::DbGoBottomTop( 1 )
@@ -290,12 +290,10 @@ METHOD FUNCTION CustomKeyExpValue() CLASS TIndex
     Teo. Mexico 2012
 */
 METHOD PROCEDURE CustomKeyUpdate CLASS TIndex
-   LOCAL expValue
+
    IF ::FCustom
-      expValue := ::CustomKeyExpValue()
       WHILE ::FTable:Alias:ordKeyDel( ::FTagName ) ; ENDDO
-      OutStd( e"\nCustomKeyExpValue:", RecNo(), expValue )
-      ::FTable:Alias:ordKeyAdd( ::FTagName, , expValue )
+      ::FTable:Alias:ordKeyAdd( ::FTagName, , ::CustomKeyExpValue() )
    ENDIF
 
    RETURN
@@ -316,11 +314,11 @@ METHOD PROCEDURE DbFilterPop() CLASS TIndex
     DbFilterPush
     Teo. Mexico 2013
 */
-METHOD PROCEDURE DbFilterPush() CLASS TIndex
+METHOD PROCEDURE DbFilterPush( ignoreMasterKey ) CLASS TIndex
 
    AAdd( ::FDbFilterStack, ::FDbFilter )
    ::FDbFilter := NIL
-   ::FTable:DbFilterPush()
+   ::FTable:DbFilterPush( ignoreMasterKey )
 
    RETURN
 
@@ -408,9 +406,10 @@ METHOD PROCEDURE FillCustomIndex() CLASS TIndex
    LOCAL resetToMasterSourceFields
 
    IF baseKeyIndex != NIL
+      ::FTable:StatePush()
       resetToMasterSourceFields := ::FResetToMasterSourceFields
       ::FResetToMasterSourceFields := .F.
-      ::FTable:DbFilterPush()
+      ::FTable:DbFilterPush( .T. )
       baseKeyIndex:dbGoTop()
       WHILE !baseKeyIndex:Eof()
          ::CustomKeyUpdate()
@@ -418,14 +417,8 @@ METHOD PROCEDURE FillCustomIndex() CLASS TIndex
       ENDDO
       ::FTable:DbFilterPop()
       ::FResetToMasterSourceFields := resetToMasterSourceFields
+      ::FTable:StatePop()
    ENDIF
-
-   D_TONOTIF->( DbGoTo( 1 ) )
-
-   WHILE !D_TONOTIF->(Eof())
-      OutStd( e"\n", D_TONOTIF->(RecNo()), D_TONOTIF->(KeyVal("XOTRAB")) )
-      D_TONOTIF->(DbSkip())
-   ENDDO
 
    RETURN
 

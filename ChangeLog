@@ -2,6 +2,19 @@
  * $Id: ChangeLog 155 2013-06-06 03:29:32Z tfonrouge $
  */
 
+Tue Aug  6 03:16:31 UTC 2013 Teo Fonrouge (tfonrouge@gmail.com)
+  M src/TField.prg
+    % returning value only on non TObjectField's
+
+  M src/TIndex.prg
+    % added parameter ignoreMasterKey to DbFilterPush to clear Table:MasterSource value and pass trough all
+      records without checking for masterKey scope
+    % pushing dbfilter with ignoreMasterKey value
+
+  M src/TTable.prg
+    ! check for valid index on StatePop
+    % ignoreMasterKey parameter on dbFilterPush
+
 Mon Aug  5 17:17:34 UTC 2013 Teo Fonrouge (tfonrouge@gmail.com)
   M src/TField.prg
   M src/TIndex.prg
