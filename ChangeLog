@@ -2,6 +2,16 @@
  * $Id: ChangeLog 155 2013-06-06 03:29:32Z tfonrouge $
  */
 
+Mon Aug 12 19:02:57 UTC 2013 Teo Fonrouge (tfonrouge@gmail.com)
+  M include/oordb.ch
+    % added DISPLAY clause to field definition, allows to use a code block to return AsDisplay value
+
+  M src/TField.prg
+    % using value on 'DisplayBlock' property to return AsDisplay value
+
+  M src/TTable.prg
+    % create <fieldName>_AsDisplay fields if TField:DisplayBlock is not nil
+
 Tue Aug  6 03:16:31 UTC 2013 Teo Fonrouge (tfonrouge@gmail.com)
   M src/TField.prg
     % returning value only on non TObjectField's

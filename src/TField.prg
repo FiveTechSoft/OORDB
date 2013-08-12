@@ -171,6 +171,7 @@ CLASS TField FROM OORDBBASE
    PROPERTY AsVariant READ GetAsVariant WRITE SetAsVariant
    PROPERTY Calculated READ FCalculated
    PROPERTY CloneData READ GetCloneData WRITE SetCloneData
+   PROPERTY DisplayBlock READWRITE
    PROPERTY EmptyValue READ GetEmptyValue
    PROPERTY FieldArrayIndex READ FFieldArrayIndex
    PROPERTY KeyVal READ GetKeyVal WRITE SetKeyVal
@@ -342,25 +343,29 @@ METHOD FUNCTION GetAsDisplay( ... ) CLASS TField
    LOCAL validValues
    LOCAL value
 
-   value := ::GetAsVariant( ... )
+   IF ::FDisplayBlock = NIL
 
-   IF ::FcalcResult = NIL
-      validValues := ::GetValidValues()
-   ELSE
-      validValues := ::FcalcResult:ValidValues()
-   ENDIF
+      value := ::GetAsVariant( ... )
 
-   IF HB_ISHASH( validValues )
-
-      IF hb_HHasKey( validValues, value )
-         RETURN validValues[ value ]
+      IF ::FcalcResult = NIL
+         validValues := ::GetValidValues()
+      ELSE
+         validValues := ::FcalcResult:ValidValues()
       ENDIF
 
-      RETURN "<!>"
+      IF HB_ISHASH( validValues )
+
+         IF hb_HHasKey( validValues, value )
+            RETURN validValues[ value ]
+         ENDIF
+
+         RETURN "<!>"
+
+      ENDIF
 
    ENDIF
 
-   RETURN value
+   RETURN ::FDisplayBlock:Eval( ::FTable )
 
 /*
     GetAsVariant
@@ -762,6 +767,7 @@ METHOD FUNCTION GetUndoValue() CLASS TField
     Teo. Mexico 2009
 */
 METHOD FUNCTION GetValidValues() CLASS TField
+
    LOCAL validValues
 
    SWITCH ValType( ::FValidValues )

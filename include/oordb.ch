@@ -132,6 +132,7 @@
                         [ ENABLED <enabled> ] ;
                         [ EDITABLE <editable> ] ;
                         [ INDEXEXPRESSION <indexExp> ] ;
+                        [ DISPLAY <dispBlock> ] ;
                      => ;
                         WITH OBJECT T<type>Field():New( Self, ::curClassField ) ;;
                             [ :Name := <cName> ] ;;
@@ -172,6 +173,7 @@
                             [ :Enabled := <enabled> ] ;;
                             [ :Editable := <editable> ] ;;
                             [ :SetIndexExpression( <indexExp> ) ] ;;
+                            [ :DisplayBlock := <dispBlock> ] ;;
                             :AddFieldMessage() ;;
                             :ValidateFieldInfo() ;;
                         ENDWITH
