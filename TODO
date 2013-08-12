@@ -1,0 +1,3 @@
+ ! TField : don't use NEWVALUE as DEFAULTVALUE
+ % TIndex : Create procedure to update custom indexes defined on descedant classes even when fields involved
+   are updated on base classes (a external index table to read on DEFINE INDEX ? )

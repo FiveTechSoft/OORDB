@@ -2,6 +2,10 @@
  * $Id: ChangeLog 155 2013-06-06 03:29:32Z tfonrouge $
  */
 
+Mon Aug 12 20:47:31 UTC 2013 Teo Fonrouge (tfonrouge@gmail.com)
+  A TODO
+    * TODO file
+
 Mon Aug 12 19:02:57 UTC 2013 Teo Fonrouge (tfonrouge@gmail.com)
   M include/oordb.ch
     % added DISPLAY clause to field definition, allows to use a code block to return AsDisplay value
