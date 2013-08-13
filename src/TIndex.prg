@@ -86,7 +86,7 @@ CLASS TIndex FROM OORDBBASE
    METHOD COUNT( bForCondition, bWhileCondition )
    METHOD CustomKeyUpdate
    METHOD DbFilterPush( ignoreMasterKey )
-   METHOD DbFilterPop()
+   METHOD DbFilterPull()
    METHOD DbGoBottom INLINE ::DbGoBottomTop( -1 )
    METHOD DbGoTop INLINE ::DbGoBottomTop( 1 )
    METHOD dbSkip( numRecs )
@@ -299,14 +299,14 @@ METHOD PROCEDURE CustomKeyUpdate CLASS TIndex
    RETURN
 
 /*
-    DbFilterPop
+    DbFilterPull
     Teo. Mexico 2013
 */
-METHOD PROCEDURE DbFilterPop() CLASS TIndex
+METHOD PROCEDURE DbFilterPull() CLASS TIndex
 
    ::FDbFilter := ATail( ::FDbFilterStack )
    hb_ADel( ::FDbFilterStack, Len( ::FDbFilterStack ), .T. )
-   ::FTable:DbFilterPop()
+   ::FTable:DbFilterPull()
 
    RETURN
 
@@ -350,7 +350,7 @@ METHOD FUNCTION DbGoBottomTop( n ) CLASS TIndex
    IF ::HasFilter() .OR. ::FTable:HasFilter()
       ::DbFilterPush()
       ::GetCurrentRecord()
-      ::DbFilterPop()
+      ::DbFilterPull()
       IF ::FEof() .OR. ( !::FTable:FilterEval( Self ) .AND. !::FTable:SkipFilter( n, Self ) )
          ::FTable:dbGoto( 0 )
          RETURN .F.
@@ -415,9 +415,9 @@ METHOD PROCEDURE FillCustomIndex() CLASS TIndex
          ::CustomKeyUpdate()
          baseKeyIndex:dbSkip()
       ENDDO
-      ::FTable:DbFilterPop()
+      ::FTable:DbFilterPull()
       ::FResetToMasterSourceFields := resetToMasterSourceFields
-      ::FTable:StatePop()
+      ::FTable:StatePull()
    ENDIF
 
    RETURN

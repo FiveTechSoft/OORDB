@@ -244,7 +244,7 @@ CLASS TTable FROM OORDBBASE
    METHOD CreateIndex( index )
    METHOD CreateTempIndex( index )
    METHOD CreateTable( fullFileName )
-   METHOD DbFilterPop()
+   METHOD DbFilterPull()
    METHOD DbFilterPush( ignoreMasterKey )
    METHOD DefineRelations       VIRTUAL
    METHOD Destroy()
@@ -300,7 +300,7 @@ CLASS TTable FROM OORDBBASE
    METHOD SetValue( value )
    METHOD SkipBrowse( n )
    METHOD SkipFilter( n, index )
-   METHOD StatePop()
+   METHOD StatePull()
    METHOD StatePush()
    METHOD SyncFromMasterSourceFields()
    METHOD SyncRecNo( fromAlias )
@@ -964,14 +964,14 @@ STATIC FUNCTION F_Childs( Self, ignoreAutoDelete, block, curClass, childs )
 
                IF !ChildDB:Eof() .AND. !Empty( ChildDB:BaseKeyField:Value )
                   AAdd( childs, iif( block == NIL, ChildDB:ClassName, block:Eval( ChildDB ) ) )
-                  ChildDB:StatePop()
+                  ChildDB:StatePull()
                   IF destroyChild
                      ChildDB:Destroy()
                   ENDIF
                   LOOP
                ENDIF
 
-               ChildDB:StatePop()
+               ChildDB:StatePull()
 
                IF destroyChild
                   ChildDB:Destroy()
@@ -1382,15 +1382,15 @@ METHOD PROCEDURE dbEval( bBlock, bForCondition, bWhileCondition, index, scope ) 
       ::IndexName := oldIndex
    ENDIF
 
-   ::StatePop()
+   ::StatePull()
 
    RETURN
 
 /*
-    DbFilterPop
+    DbFilterPull
     Teo. Mexico 2013
 */
-METHOD PROCEDURE DbFilterPop() CLASS TTable
+METHOD PROCEDURE DbFilterPull() CLASS TTable
 
    ::FDbFilter := ATail( ::FDbFilterStack )[ 1 ]
    IF !ATail( ::FDbFilterStack )[ 2 ] == NIL
@@ -1440,7 +1440,7 @@ METHOD FUNCTION DbGoBottomTop( n ) CLASS TTable
       IF ::HasFilter()
          ::DbFilterPush()
          ::GetCurrentRecord()
-         ::DbFilterPop()
+         ::DbFilterPull()
          IF !::FilterEval() .AND. !::SkipFilter( n )
             ::dbGoto( 0 )
             RETURN .F.
@@ -1641,7 +1641,7 @@ STATIC FUNCTION F_DeleteChilds( Self, curClass )
                   EXIT
                ENDIF
                IF !ChildDB:TTable:Delete( .T. )
-                  ChildDB:StatePop()
+                  ChildDB:StatePull()
                   IF destroyChild
                      ChildDB:Destroy()
                   ENDIF
@@ -1649,7 +1649,7 @@ STATIC FUNCTION F_DeleteChilds( Self, curClass )
                ENDIF
             ENDDO
 
-            ChildDB:StatePop()
+            ChildDB:StatePull()
 
             IF destroyChild
                ChildDB:Destroy()
@@ -3465,11 +3465,11 @@ METHOD FUNCTION SkipFilter( n, index ) CLASS TTable
    WHILE .T.
       o:DbFilterPush()
       IF !alias:dbSkip( i, tagName ) .OR. ! o:GetCurrentRecord()
-         o:DbFilterPop()
+         o:DbFilterPull()
          ::dbGoto( 0 )
          RETURN .F.
       ENDIF
-      o:DbFilterPop()
+      o:DbFilterPull()
       IF ::FilterEval( index )
          --n
       ENDIF
@@ -3481,10 +3481,10 @@ METHOD FUNCTION SkipFilter( n, index ) CLASS TTable
    RETURN .T.
 
 /*
-    StatePop
+    StatePull
     Teo. Mexico 2010
 */
-METHOD PROCEDURE StatePop() CLASS TTable
+METHOD PROCEDURE StatePull() CLASS TTable
 
    LOCAL cloneData
    LOCAL tbl
@@ -3509,7 +3509,7 @@ METHOD PROCEDURE StatePop() CLASS TTable
 
    FOR EACH tbl IN ::DetailSourceList
       IF hb_HHasKey( ::tableState[ ::tableStateLen ][ "DetailSourceList" ], tbl:ObjectH )
-         tbl:StatePop()
+         tbl:StatePull()
       ENDIF
    NEXT
 

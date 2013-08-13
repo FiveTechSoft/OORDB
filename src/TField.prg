@@ -2995,7 +2995,7 @@ METHOD FUNCTION GetValidValues() CLASS TObjectField
          hValues[ ::LinkedTable:KeyVal ] := fld:Value
          ::LinkedTable:dbSkip()
       ENDDO
-      ::LinkedTable:StatePop()
+      ::LinkedTable:StatePull()
       RETURN hValues
    ENDIF
 

@@ -2,6 +2,13 @@
  * $Id: ChangeLog 155 2013-06-06 03:29:32Z tfonrouge $
  */
 
+Tue Aug 13 03:53:00 UTC 2013 Teo Fonrouge (tfonrouge@gmail.com)
+  M src/TField.prg
+  M src/TIndex.prg
+  M src/TTable.prg
+    * renamed StatePop to StatePull
+    * renamed DbFilterPop to DbFilterPull
+
 Mon Aug 12 20:47:31 UTC 2013 Teo Fonrouge (tfonrouge@gmail.com)
   A TODO
     * TODO file
