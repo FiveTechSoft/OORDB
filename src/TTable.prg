@@ -847,6 +847,10 @@ METHOD FUNCTION CheckDbStruct() CLASS TTable
 
       ::FInstances[ ::TableClass, "DbStructValidating" ] := NIL
 
+      IF ::IsDerivedFrom("TAXDocEdoHerrYEquipo")
+        XAltD()
+      ENDIF
+
       FOR EACH AField IN ::FieldList
          IF AField:FieldMethodType = "C" .AND. !AField:Calculated .AND. AField:UsingField = NIL
 
@@ -866,9 +870,17 @@ METHOD FUNCTION CheckDbStruct() CLASS TTable
                ENDIF
             ENDIF
 
+            /* TObjectField wants assignable field type */
+            IF AField:FieldType = ftObject .AND. dbsType = "+"
+               dbsType := "I"
+            ENDIF
+
             IF n = 0
                AAdd( aDb, { AField:DBS_NAME, dbsType, dbsLen, dbsDec } )
                sResult += "Field not found '" + AField:DBS_NAME + E"'\n"
+            ELSEIF AField:FieldType = ftObject .AND. aDb[ n, 2 ] = "+"
+               sResult += "Wrong type ('" + aDb[ n, 2 ] + "') on TObjectField '" + AField:DBS_NAME + "', must be '" + dbsType + E"'\n"
+               aDb[ n, 2 ] := dbsType
             ELSEIF !aDb[ n, 2 ] == dbsType .AND. !( aDb[ n, 2 ] $ "+I" .AND. dbsType $ "+I" )
                sResult += "Wrong type ('" + aDb[ n, 2 ] + "') on field '" + AField:DBS_NAME + "', must be '" + dbsType + E"'\n"
                aDb[ n, 2 ] := dbsType

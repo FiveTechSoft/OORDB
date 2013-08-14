@@ -2,6 +2,10 @@
  * $Id: ChangeLog 155 2013-06-06 03:29:32Z tfonrouge $
  */
 
+Wed Aug 14 02:56:16 UTC 2013 Teo Fonrouge (tfonrouge@gmail.com)
+  M src/TTable.prg
+    ! check for assignable db field on new tobjectfield's
+
 Tue Aug 13 23:48:53 UTC 2013 Teo Fonrouge (tfonrouge@gmail.com)
   M TODO
     * updated
