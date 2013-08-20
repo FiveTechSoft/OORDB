@@ -126,6 +126,7 @@
                         [ ON AFTER CHANGE <bOnAfterChange> ] ;
                         [ ON AFTER POST CHANGE <bOnAfterPostChange> ] ;
                         [ ON DATA CHANGE <bOnDataChange> ] ;
+                        [ ON SETKEY <bOnSetKey> ] ;
                         [ VALIDVALUES [<vvl: LABEL>] <validValues> ] ;
                         [ USING <usingField> ] ;
                         [ <ruf: REUSEFIELD> ] ;
@@ -168,6 +169,7 @@
                             [ :OnAfterChange := <bOnAfterChange> ] ;;
                             [ :OnAfterPostChange := <bOnAfterPostChange> ] ;;
                             [ :OnDataChange := <bOnDataChange> ] ;;
+                            [ :SetKeyValBlock( <bOnSetKey> ) ] ;;
                             [ :SetValidValues( <validValues>, <.vvl.> ) ] ;;
                             [ :UsingField := <usingField> ] ;;
                             [ :Enabled := <enabled> ] ;;

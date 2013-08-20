@@ -84,6 +84,7 @@ CLASS TField FROM OORDBBASE
    DATA FNewValue
    DATA FOnEvalFieldWriteBlock
    DATA FOnReset INIT .F.
+   DATA FOnSetKeyValBlock
    DATA FOnSetValue
    DATA FTable
    DATA FTableBaseClass
@@ -109,6 +110,7 @@ CLASS TField FROM OORDBBASE
    METHOD GetLinkedTable() INLINE NIL
    METHOD GetUndoValue()
    METHOD GetValidValues()
+   METHOD OnSetKeyVal( lSeek, keyVal )
    METHOD SetAsString( string ) INLINE ::SetAsVariant( string )
    METHOD SetBuffer( value )
    METHOD SetDBS_DEC( dec ) INLINE ::FDBS_DEC := dec
@@ -160,6 +162,7 @@ CLASS TField FROM OORDBBASE
    METHOD SetFieldWriteBlock( writeBlock )
    METHOD SetIndexExpression( indexExpression ) INLINE ::FIndexExpression := indexExpression
    METHOD SetKeyVal( keyVal )
+   METHOD SetKeyValBlock( keyValBlock ) INLINE ::FOnSetKeyValBlock := keyValBlock
    METHOD SetValidValues( validValues )
    METHOD Validate( showAlert, value )
    METHOD ValidateFieldInfo VIRTUAL
@@ -795,6 +798,22 @@ METHOD FUNCTION GetValidValues() CLASS TField
 */
 METHOD FUNCTION IsTableField() CLASS TField
    RETURN ::FFieldMethodType = "C" .AND. !::FCalculated .AND. ::FUsingField = NIL
+
+/*
+    OnSetKeyVal
+    Teo. Mexico 2013
+*/
+METHOD PROCEDURE OnSetKeyVal( lSeek, keyVal ) CLASS TField
+
+    IF __objHasMsgAssigned( ::FTable, "OnSetKeyVal_Field" )
+        __objSendMsg( ::FTable, "OnSetKeyVal_Field", Self, lSeek, keyVal )
+    ELSEIF __objHasMsgAssigned( ::FTable, "OnSetKeyVal_Field_" + ::Name )
+        __objSendMsg( ::FTable, "OnSetKeyVal_Field_" + ::Name, lSeek, keyVal )
+    ELSEIF ::FOnSetKeyValBlock != NIL
+        ::FOnSetKeyValBlock:Eval( ::FTable, Self, lSeek, keyVal )
+    ENDIF
+
+RETURN
 
 /*
     Reset
@@ -1442,7 +1461,7 @@ METHOD FUNCTION SetKeyVal( keyVal ) CLASS TField
          IF !Empty( keyVal )
             keyVal := ::GetKeyVal( keyVal )
             IF !::KeyIndex:KeyVal == keyVal
-               ::KeyIndex:Seek( keyVal )
+               ::OnSetKeyVal( ::KeyIndex:Seek( keyVal ), keyVal )
             ENDIF
          ELSE
             ::FTable:dbGoto( 0 )
