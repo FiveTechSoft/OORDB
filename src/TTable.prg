@@ -847,10 +847,6 @@ METHOD FUNCTION CheckDbStruct() CLASS TTable
 
       ::FInstances[ ::TableClass, "DbStructValidating" ] := NIL
 
-      IF ::IsDerivedFrom("TAXDocEdoHerrYEquipo")
-        XAltD()
-      ENDIF
-
       FOR EACH AField IN ::FieldList
          IF AField:FieldMethodType = "C" .AND. !AField:Calculated .AND. AField:UsingField = NIL
 
