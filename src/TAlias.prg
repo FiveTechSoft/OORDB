@@ -74,7 +74,7 @@ CLASS TAlias FROM OORDBBASE
    METHOD RecCount INLINE ( ::workArea )->( RecCount() )
    METHOD RecLock( RecNo )
    METHOD RecUnLock( RecNo )
-   METHOD SEEK( cKey, indexName, softSeek )
+   METHOD Seek( cKey, indexName, softSeek )
    METHOD SeekLast( cKey, indexName, softSeek )
    METHOD SetFieldValue( fieldName, value )
    METHOD SyncFromAlias
