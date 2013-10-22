@@ -1467,7 +1467,7 @@ METHOD FUNCTION SetKeyVal( keyVal ) CLASS TField
             ::FTable:dbGoto( 0 )
          ENDIF
 
-         IF ::FTable:LinkedObjField != NIL .AND. ::FTable:LinkedObjField:Table:State > dsBrowse
+         IF ::FTable:LinkedObjField != NIL .AND. (::FTable:LinkedObjField:Calculated .OR. ::FTable:LinkedObjField:Table:State > dsBrowse)
 
             ::FTable:LinkedObjField:SetAsVariant( ::FTable:BaseKeyField:GetAsVariant() )
 
@@ -2969,6 +2969,10 @@ METHOD FUNCTION GetLinkedTable CLASS TObjectField
                ENDIF
                ::FLinkedTable:BaseKeyField:Value := result
             ENDIF
+         ENDIF
+
+         IF !::IsMasterFieldComponent .AND. ::FLinkedTable:LinkedObjField == NIL
+            ::FLinkedTable:LinkedObjField := Self
          ENDIF
 
          ::FcalculatingLinkedTable := .F.

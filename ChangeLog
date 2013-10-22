@@ -2,6 +2,11 @@
  * $Id: ChangeLog 155 2013-06-06 03:29:32Z tfonrouge $
  */
 
+Tue Oct 22 23:48:34 UTC 2013 Teo Fonrouge (tfonrouge@gmail.com)
+  M src/TField.prg
+    % allowed call to assign value on calculated fields on ::SetKeyVal
+    % assign LinkedObjField on calculated object fields
+
 Tue Oct 22 22:15:51 UTC 2013 Teo Fonrouge (tfonrouge@gmail.com)
   M src/TAlias.prg
     * minor code cleanup
