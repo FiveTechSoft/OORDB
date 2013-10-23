@@ -311,7 +311,7 @@ METHOD DbOpen( table, aliasName ) CLASS TAlias
 
    cPrefix := iif( !isTempTable .AND. netIO == .T., "net:", "" )
 
-   IF ! hb_dbExists( cPrefix + tableFullFileName ) .AND. table:AutoCreate
+   IF ! hb_dbExists( cPrefix + tableFullFileName ) .AND. HB_ISOBJECT( table ) .AND. table:AutoCreate
       IF !table:CreateTable( tableFullFileName )
          Break( "TAlias: Cannot Create Table '" + tableFullFileName + "'" )
       ENDIF
