@@ -2689,6 +2689,7 @@ METHOD FUNCTION BaseKeyField() CLASS TObjectField
    IF ::FLinkedTable != NIL .OR. !Empty( ::GetLinkedTable() )
       baseKeyField := ::FLinkedTable:BaseKeyField
       IF baseKeyField = NIL
+        OutStd(::FLinkedTable:ClassName, E"\n")
          ::No_BaseKeyField_Defined()
       ENDIF
    ENDIF
