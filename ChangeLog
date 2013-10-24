@@ -2,6 +2,10 @@
  * $Id: ChangeLog 155 2013-06-06 03:29:32Z tfonrouge $
  */
 
+Thu Oct 24 19:21:12 UTC 2013 Teo Fonrouge (tfonrouge@gmail.com)
+  M src/TField.prg
+    * removed wrong previous commit
+
 Thu Oct 24 12:45:44 UTC 2013 Teo Fonrouge (tfonrouge@gmail.com)
   M src/TField.prg
     * updated
