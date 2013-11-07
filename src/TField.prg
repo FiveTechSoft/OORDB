@@ -1359,7 +1359,7 @@ METHOD PROCEDURE SetFieldMethod( FieldMethod, calculated ) CLASS TField
 
          /* Check if the same FieldExpression is declared redeclared in the same table baseclass */
          FOR EACH AField IN ::FTable:FieldList
-            IF !Empty( AField:FieldExpression ) .AND. ;
+            IF !Empty( AField:FieldExpression ) .AND. !AField:Calculated .AND. ;
                   Upper( AField:FieldExpression ) == Upper( FieldMethod ) .AND. ;
                   AField:TableBaseClass == ::FTableBaseClass
                IF !::FReUseField
