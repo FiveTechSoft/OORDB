@@ -576,19 +576,13 @@ METHOD FUNCTION GetDefaultNewValue( index ) CLASS TField
    IF ! Empty( validValues )
       SWITCH ValType( validValues )
       CASE 'A'
-         IF value = NIL
-            value := validValues[ 1 ]
-         ELSEIF AScan( validValues, {| e| e == value } ) = 0
+         IF value != NIL .AND. AScan( validValues, {| e| e == value } ) = 0
             RAISE ERROR "On field <" + ::Table:ClassName() + ":" + ::Name + ">, " + labelValue + " value '" + value + "' is not in valid values array list"
          ENDIF
          EXIT
       CASE 'H'
-         IF value = NIL
-            value := hb_HKeys( validValues )[ 1 ]
-         ELSE
-            IF !hb_HHasKey( validValues, value )
-               RAISE ERROR "On field <" + ::Table:ClassName() + ":" + ::Name + ">, " + labelValue + " value '" + value + "' is not in valid values hash list"
-            ENDIF
+         IF value != NIL .AND. !hb_HHasKey( validValues, value )
+            RAISE ERROR "On field <" + ::Table:ClassName() + ":" + ::Name + ">, " + labelValue + " value '" + value + "' is not in valid values hash list"
          ENDIF
          EXIT
       ENDSWITCH
