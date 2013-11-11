@@ -148,7 +148,7 @@ CLASS TField FROM OORDBBASE
    METHOD GetAsVariant( ... )
    METHOD GetBuffer()
    METHOD GetData()
-   METHOD GetKeyVal( keyVal )
+   METHOD GetKeyVal( keyVal, keyFlags )
    METHOD IndexExpression VIRTUAL
    METHOD IsReadOnly() INLINE ::FTable:READONLY .OR. ::FReadOnly .OR. ( ::FTable:State != dsBrowse .AND. ::AutoIncrement )
    METHOD IsTableField()
@@ -709,7 +709,7 @@ METHOD FUNCTION GetKeyIndex() CLASS TField
     GetKeyVal
     Teo. Mexico 2010
 */
-METHOD FUNCTION GetKeyVal( keyVal ) CLASS TField
+METHOD FUNCTION GetKeyVal( keyVal, keyFlags ) CLASS TField
 
    LOCAL AField
    LOCAL i, start, size, value
@@ -718,7 +718,7 @@ METHOD FUNCTION GetKeyVal( keyVal ) CLASS TField
       IF keyVal = NIL
          keyVal := ""
          FOR EACH i IN ::FFieldArrayIndex
-            keyVal += ::FTable:FieldList[ i ]:GetKeyVal()
+            keyVal += ::FTable:FieldList[ i ]:GetKeyVal( NIL, keyFlags )
          NEXT
       ELSE
          keyVal := PadR( keyVal, Min( Len( keyVal ), ::Size ) )
@@ -727,7 +727,7 @@ METHOD FUNCTION GetKeyVal( keyVal ) CLASS TField
             AField := ::FTable:FieldList[ i ]
             size := AField:Size
             value := SubStr( keyVal, start, size )
-            value := AField:GetKeyVal( value )
+            value := AField:GetKeyVal( value, keyFlags )
             keyVal := Stuff( keyVal, start, size, value )
             start += Len( value )
          NEXT
@@ -738,6 +738,7 @@ METHOD FUNCTION GetKeyVal( keyVal ) CLASS TField
       ENDIF
       IF HB_ISCHAR( keyVal )
          IF ::IsKeyIndex
+            IF keyFlags != NIL .AND. keyFlags
             IF !::KeyIndex:CaseSensitive
                keyVal := Upper( keyVal )
             ENDIF

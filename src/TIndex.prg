@@ -62,6 +62,7 @@ CLASS TIndex FROM OORDBBASE
    DATA FEof INIT .T.
    DATA FFound INIT .F.
    DATA FIndexType
+   DATA FKeyFlags
    DATA FRecNo
    DATA FResetToMasterSourceFields INIT .T.
    DATA FTableBaseClass
@@ -222,7 +223,9 @@ METHOD FUNCTION __Seek( direction, keyValue, lSoftSeek ) CLASS TIndex
     AddIndex
     Teo. Mexico 2008
 */
-METHOD AddIndex( cMasterKeyField, ai, un, cKeyField, ForKey, cs, de, acceptEmptyUnique, useIndex, temporary, rightJust /*, cu*/ )
+METHOD AddIndex( cMasterKeyField, ai, un, cKeyField, keyFlags, ForKey, cs, de, acceptEmptyUnique, useIndex, temporary, rightJust /*, cu*/ )
+
+   ::FKeyFlags := keyFlags
 
    ::MasterKeyField := cMasterKeyField
 
@@ -516,7 +519,7 @@ METHOD FUNCTION GetKeyVal() CLASS TIndex
       RETURN ""
    ENDIF
 
-   RETURN ::FKeyField:GetKeyVal
+   RETURN ::FKeyField:GetKeyVal( NIL, ::FKeyFlags )
 
 /*
     GetMasterKeyVal
@@ -542,12 +545,12 @@ METHOD FUNCTION GetMasterKeyVal( keyField ) CLASS TIndex
       NEXT
    ELSE
       IF ::FTable:MasterSource = NIL
-         RETURN keyField:GetKeyVal( keyField:DefaultValue )
+         RETURN keyField:GetKeyVal( keyField:DefaultValue, ::FKeyFlags )
       ELSE
          IF keyField:DefaultValue = NIL .AND. ( field := ::FTable:FindMasterSourceField( keyField ) ) != NIL
             RETURN field:KeyVal
          ELSE
-            RETURN keyField:GetKeyVal( keyField:DefaultValue )
+            RETURN keyField:GetKeyVal( keyField:DefaultValue, ::FKeyFlags )
          ENDIF
       ENDIF
    ENDIF

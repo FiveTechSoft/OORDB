@@ -269,6 +269,7 @@
 #xtranslate DEFINE INDEX [TAG] <tagName> [NAME <name>] ;
                         [ MASTERKEYFIELD <cMasterKeyField> ] ;
                         [ KEYFIELD <cKeyField> ] ;
+                        [ KEYFLAGS <keyFlags> ] ;
                         [ FOR <ForKey> ] ;
                         [ <ncs: NO_CASE_SENSITIVE> ] ;
                         [ <rj: RJUST> ] ;
@@ -282,13 +283,14 @@
                         [ ON KEYVIOLATION WARN <errorMsg> ] ;
                         => ;
                         WITH OBJECT TIndex():New( Self , <tagName>, [<name>], __typeIndex__, iif( __typeIndex__ == "PRIMARY", ::curClassPrimaryIndex, ::curClassIndex ), <errorMsg> ) ;;
-                            :AddIndex( [<cMasterKeyField>], [<.ai.>], [<.un.>], [<cKeyField>], [<ForKey>], !<.ncs.>, [<.de.>], [<.acceptEmptyUnique.>], [<useIndex>], [<.tm.>], [<.rj.>], [<.cu.>] ) ;;
+                            :AddIndex( [<cMasterKeyField>], [<.ai.>], [<.un.>], [<cKeyField>], [<keyFlags>], [<ForKey>], !<.ncs.>, [<.de.>], [<.acceptEmptyUnique.>], [<useIndex>], [<.tm.>], [<.rj.>], [<.cu.>] ) ;;
                         ENDWITH
                         
 #xtranslate CREATE <type: PRIMARY,SECONDARY> INDEX [TAG] <tagName> [NAME <name>] ;
                         [ MASTERKEYFIELD <cMasterKeyField> ] ;
                         [ KEYFIELD <cKeyField> ] ;
                         [ FOR <ForKey> ] ;
+                        [ KEYFLAGS <keyFlags> ] ;
                         [ <ncs: NO_CASE_SENSITIVE> ] ;
                         [ <rj: RJUST> ] ;
                         [ <de: DESCENDING> ] ;
@@ -300,7 +302,7 @@
                         [ <acceptEmptyUnique: ACCEPT_EMPTY_UNIQUE> ] ;
                         => ;
                         WITH OBJECT TIndex():New( Self , <tagName>, [<name>], <"type">, ::curClassIndex ) ;;
-                                :AddIndex( [<cMasterKeyField>], [<.ai.>], [<.un.>], [<cKeyField>], [<ForKey>], !<.ncs.>, [<.de.>], [<.acceptEmptyUnique.>], [<useIndex>], [<.tm.>], [<.rj.>], [<.cu.>] ) ;;
+                                :AddIndex( [<cMasterKeyField>], [<.ai.>], [<.un.>], [<cKeyField>], [<keyFlags>], [<ForKey>], !<.ncs.>, [<.de.>], [<.acceptEmptyUnique.>], [<useIndex>], [<.tm.>], [<.rj.>], [<.cu.>] ) ;;
                         ENDWITH
                         
 #xtranslate DEFINE EXTERNAL INDEX <name> WITH <table> GET_RECNO <getRecNo> SET_RECNO <setRecNo> ;

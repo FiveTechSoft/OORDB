@@ -2,6 +2,13 @@
  * $Id: ChangeLog 155 2013-06-06 03:29:32Z tfonrouge $
  */
 
+Mon Nov 11 01:53:17 UTC 2013 Teo Fonrouge (tfonrouge@gmail.com)
+  M include/oordb.ch
+  M src/TField.prg
+  M src/TIndex.prg
+    % added clause KEYFLAGS to INDEX command to set special flags on index creation
+    ; work in progress
+
 Thu Oct 24 19:21:12 UTC 2013 Teo Fonrouge (tfonrouge@gmail.com)
   M src/TField.prg
     * removed wrong previous commit
