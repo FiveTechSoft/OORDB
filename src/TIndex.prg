@@ -91,7 +91,7 @@ CLASS TIndex FROM OORDBBASE
    METHOD DbGoBottom INLINE ::DbGoBottomTop( -1 )
    METHOD DbGoTop INLINE ::DbGoBottomTop( 1 )
    METHOD dbSkip( numRecs )
-   METHOD GetKeyVal()
+   METHOD GetKeyVal( keyVal )
    METHOD ExistKey( keyValue )
    METHOD FillCustomIndex()
    METHOD Get4Seek( blk, keyVal, softSeek )
@@ -120,6 +120,7 @@ CLASS TIndex FROM OORDBBASE
    PROPERTY Found READ FFound
    PROPERTY IdxAlias READ GetIdxAlias WRITE SetIdxAlias
    PROPERTY IndexType READ FIndexType
+   PROPERTY KeyFlags READ FKeyFlags
    PROPERTY KeyVal READ GetKeyVal WRITE SetKeyVal
    PROPERTY RecNo READ FRecNo
    PROPERTY Scope READ GetScope WRITE SetScope
@@ -513,13 +514,13 @@ METHOD FUNCTION GetIdxAlias() CLASS TIndex
     GetKeyVal
     Teo. Mexico 2009
 */
-METHOD FUNCTION GetKeyVal() CLASS TIndex
+METHOD FUNCTION GetKeyVal( keyVal ) CLASS TIndex
 
    IF ::FKeyField == NIL
       RETURN ""
    ENDIF
 
-   RETURN ::FKeyField:GetKeyVal( NIL, ::FKeyFlags )
+   RETURN ::FKeyField:GetKeyVal( keyVal, ::FKeyFlags )
 
 /*
     GetMasterKeyVal
@@ -548,7 +549,7 @@ METHOD FUNCTION GetMasterKeyVal( keyField ) CLASS TIndex
          RETURN keyField:GetKeyVal( keyField:DefaultValue, ::FKeyFlags )
       ELSE
          IF keyField:DefaultValue = NIL .AND. ( field := ::FTable:FindMasterSourceField( keyField ) ) != NIL
-            RETURN field:KeyVal
+            RETURN field:GetKeyVal( NIL, ::FKeyFlags )
          ELSE
             RETURN keyField:GetKeyVal( keyField:DefaultValue, ::FKeyFlags )
          ENDIF

@@ -737,8 +737,13 @@ METHOD FUNCTION GetKeyVal( keyVal, keyFlags ) CLASS TField
          keyVal := ::GetAsVariant()
       ENDIF
       IF HB_ISCHAR( keyVal )
-         IF ::IsKeyIndex
-            IF keyFlags != NIL .AND. keyFlags
+         IF keyFlags != NIL .AND. hb_HHasKey( keyFlags, ::Name )
+            SWITCH keyFlags[ ::Name ]
+            CASE "U"
+               keyVal := Upper( keyVal )
+               EXIT
+            ENDSWITCH
+         ELSEIF ::IsKeyIndex
             IF !::KeyIndex:CaseSensitive
                keyVal := Upper( keyVal )
             ENDIF
@@ -1148,7 +1153,7 @@ METHOD PROCEDURE SetData( value, initialize ) CLASS TField
       nTries := 1000
       WHILE .T.
          value := ::GetAutoIncrementValue()
-         IF !::FAutoIncrementKeyIndex:ExistKey( ::GetKeyVal( value ) )
+         IF !::FAutoIncrementKeyIndex:ExistKey( ::GetKeyVal( value, ::FAutoIncrementKeyIndex:KeyFlags ) )
             EXIT
          ENDIF
          IF ( --nTries = 0 )
@@ -1221,7 +1226,7 @@ METHOD PROCEDURE SetData( value, initialize ) CLASS TField
          * Check for a key violation
          */
       FOR EACH INDEX IN ::FUniqueKeyIndexList
-         IF ::IsPrimaryKeyField .AND. index:ExistKey( ::GetKeyVal() )
+         IF ::IsPrimaryKeyField .AND. index:ExistKey( ::GetKeyVal( NIL, index:KeyFlags ) )
             RAISE TFIELD ::Name ERROR "Key violation."
          ENDIF
       NEXT
@@ -1460,7 +1465,7 @@ METHOD FUNCTION SetKeyVal( keyVal ) CLASS TField
          ENDIF
 
          IF !Empty( keyVal )
-            keyVal := ::GetKeyVal( keyVal )
+            keyVal := ::GetKeyVal( keyVal, ::KeyIndex:KeyFlags )
             IF !::KeyIndex:KeyVal == keyVal
                ::OnSetKeyVal( ::KeyIndex:Seek( keyVal ), keyVal )
             ENDIF
@@ -1585,7 +1590,7 @@ METHOD FUNCTION Validate( showAlert, value ) CLASS TField
          ENDIF
          FOR EACH INDEX IN ::FUniqueKeyIndexList
             indexWarnMsg := index:WarnMsg
-            IF !Empty( value ) .AND. index:ExistKey( ::GetKeyVal( value ) )
+            IF !Empty( value ) .AND. index:ExistKey( ::GetKeyVal( value, index:KeyFlags ) )
                result := ::FTable:ClassName + ": " + iif( !Empty( indexWarnMsg ), indexWarnMsg, "'" + ::GetLabel() + "' <key value already exists> '" + AsString( value ) + "'" )
                IF showAlert == .T.
                   SHOW WARN result

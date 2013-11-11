@@ -2,6 +2,11 @@
  * $Id: ChangeLog 155 2013-06-06 03:29:32Z tfonrouge $
  */
 
+Mon Nov 11 04:06:41 UTC 2013 Teo Fonrouge (tfonrouge@gmail.com)
+  M src/TField.prg
+  M src/TIndex.prg
+    * using KEYFLAGS on calculating keyVal value
+
 Mon Nov 11 01:53:17 UTC 2013 Teo Fonrouge (tfonrouge@gmail.com)
   M include/oordb.ch
   M src/TField.prg
