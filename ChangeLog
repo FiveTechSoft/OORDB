@@ -2,6 +2,10 @@
  * $Id: ChangeLog 155 2013-06-06 03:29:32Z tfonrouge $
  */
 
+Tue Nov 19 23:59:17 UTC 2013 Teo Fonrouge (tfonrouge@gmail.com)
+  M src/TField.prg
+    % capability to return field type per locale setting
+
 Mon Nov 11 19:05:40 UTC 2013 Teo Fonrouge (tfonrouge@gmail.com)
   M src/TField.prg
     ! don't set default/new value when empty property and field has hash/array default values

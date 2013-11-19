@@ -89,6 +89,7 @@ CLASS TField FROM OORDBBASE
    DATA FTable
    DATA FTableBaseClass
    DATA FType INIT "TField"
+   DATA FtypeNameList
    DATA FUsingField      // Field used on Calculated Field
    DATA FValidValues
    DATA FValType INIT "U"
@@ -239,7 +240,7 @@ CLASS TField FROM OORDBBASE
    PROPERTY Required READ FRequired WRITE SetRequired
    PROPERTY Table READ FTable
    PROPERTY TableBaseClass READ FTableBaseClass
-   PROPERTY TYPE READ FType
+   METHOD Type( locale )
    PROPERTY UNIQUE READ GetUnique
    PROPERTY UniqueKeyIndexList READ FUniqueKeyIndexList
    PROPERTY UsingField READ FUsingField WRITE SetUsingField
@@ -1549,6 +1550,19 @@ METHOD PROCEDURE SetValidValues( validValues ) CLASS TField
    RETURN
 
 /*
+    Type
+    Teo. Mexico 2013
+*/
+METHOD Type( locale ) CLASS TField
+    LOCAL type := ::FType
+
+    IF !Empty( locale ) .AND. !Empty( ::FtypeNameList ) .AND. hb_HHasKey( ::FtypeNameList, locale )
+        type := ::FtypeNameList[ locale ]
+    ENDIF
+
+RETURN type
+
+/*
     Validate
     Teo. Mexico 2011
 */
@@ -1703,6 +1717,7 @@ CLASS TStringField FROM TField
    DATA FDBS_TYPE INIT "C"
    DATA FSize
    DATA FType INIT "String"
+   DATA FtypeNameList INIT hb_hSetCaseMatch( {"es"=>"Texto"} )
    DATA FValType INIT "C"
    METHOD GetEmptyValue INLINE Space( ::Size )
    METHOD GetAsNumeric INLINE Val( ::GetAsVariant() )
@@ -1868,6 +1883,7 @@ CLASS TMemoField FROM TStringField
    DATA FFieldType INIT ftMemo
    DATA FSize INIT 0
    DATA FType INIT "Memo"
+   DATA FtypeNameList INIT hb_hSetCaseMatch( {"es"=>"Memo"} )
    PUBLIC:
    PUBLISHED:
 
@@ -1891,6 +1907,7 @@ CLASS TNumericField FROM TField
    DATA FDBS_TYPE INIT "N"
    DATA FSize
    DATA FType INIT "Numeric"
+   DATA FtypeNameList INIT hb_hSetCaseMatch( {"es"=>"Numero"} )
    DATA FValType INIT "N"
    METHOD GetEmptyValue BLOCK {|| 0 }
    METHOD StrFormat( value ) INLINE Str( value )
@@ -2001,6 +2018,7 @@ CLASS TIntegerField FROM TNumericField
    DATA FDBS_TYPE INIT "I"
    DATA FSize INIT 4
    DATA FType INIT "Integer"
+   DATA FtypeNameList INIT hb_hSetCaseMatch( {"es"=>"Numero Entero"} )
    METHOD StrFormat( value ) INLINE hb_StrFormat( "%d", value )
    PUBLIC:
 
@@ -2080,6 +2098,7 @@ CLASS TAutoIncField FROM TIntegerField
    PROTECTED:
    DATA FDBS_TYPE INIT "+"
    DATA FType INIT "AutoInc"
+   DATA FtypeNameList INIT hb_hSetCaseMatch( {"es"=>"AutoInc"} )
    DATA FFieldType INIT ftAutoInc
    PUBLIC:
    PUBLISHED:
@@ -2105,6 +2124,7 @@ CLASS TTimeField FROM TField
    DATA FSize INIT 4
    DATA FTime AS OBJECT
    DATA FType INIT "Time"
+   DATA FtypeNameList INIT hb_hSetCaseMatch( {"es"=>"Tiempo"} )
    METHOD GetAs( index )
    METHOD GetAsVariant( ... )
    METHOD GetEmptyValue INLINE ::Time:AsSeconds := 0, ::Time
@@ -2240,6 +2260,7 @@ CLASS TFloatField FROM TNumericField
    DATA FDBS_DEC INIT 2
    DATA FDBS_TYPE INIT "B"
    DATA FType INIT "Float"
+   DATA FtypeNameList INIT hb_hSetCaseMatch( {"es"=>"Numerico Decimal"} )
    METHOD StrFormat( value ) INLINE hb_StrFormat( "%10." + Chr( 48 + ::FDBS_DEC ) + "f", value )
    PUBLIC:
    PUBLISHED:
@@ -2264,6 +2285,7 @@ CLASS TLogicalField FROM TField
    DATA FDBS_TYPE INIT "L"
    DATA FSize INIT 1
    DATA FType INIT "Logical"
+   DATA FtypeNameList INIT hb_hSetCaseMatch( {"es"=>"Logico"} )
    DATA FValType INIT "L"
    METHOD GetEmptyValue BLOCK {|| .F. }
    PUBLIC:
@@ -2339,6 +2361,7 @@ CLASS TDateField FROM TField
    DATA FDefaultValue INIT {|| Date() }
    DATA FSize INIT 8     // Size on index is 8 = len of DToS()
    DATA FType INIT "Date"
+   DATA FtypeNameList INIT hb_hSetCaseMatch( {"es"=>"Fecha"} )
    DATA FValType INIT "D"
    METHOD GetEmptyValue BLOCK {|| CToD( "" ) }
    PUBLIC:
@@ -2425,6 +2448,7 @@ CLASS TDateTimeField FROM TField
    DATA FFormatDate
    DATA FFormatTime
    DATA FType INIT "DateTime"
+   DATA FtypeNameList INIT hb_hSetCaseMatch( {"es"=>"Fecha Hora"} )
    DATA FValType INIT "C"
    METHOD GetAsDate() INLINE hb_TToD( ::Value )
    METHOD GetEmptyValue BLOCK {|| hb_CToT( "" ) }
@@ -2610,6 +2634,7 @@ CLASS TModTimeField FROM TDateTimeField
    DATA FDBS_TYPE INIT "="
    DATA FModStamp INIT .T.        // Field is automatically mantained (dbf layer)
    DATA FType INIT "ModTime"
+   DATA FtypeNameList INIT hb_hSetCaseMatch( {"es"=>"ModTime"} )
    PUBLIC:
    PUBLISHED:
 
@@ -2645,6 +2670,7 @@ CLASS TObjectField FROM TField
    DATA FonDataChangeBlock
    DATA FonDataObj
    DATA FType INIT "ObjectField"
+   DATA FtypeNameList INIT hb_hSetCaseMatch( {"es"=>"Documento"} )
    DATA FValidValuesLabelField
    DATA FValType INIT "O"
    METHOD GetDBS_LEN INLINE ::BaseKeyField():DBS_LEN
@@ -3106,6 +3132,7 @@ CLASS TVariantField FROM TField
 
    PROTECTED:
    DATA FType INIT "Variant"
+   DATA FtypeNameList INIT hb_hSetCaseMatch( {"es"=>"Variante"} )
    PUBLIC:
    PUBLISHED:
 
