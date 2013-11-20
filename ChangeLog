@@ -2,6 +2,11 @@
  * $Id: ChangeLog 155 2013-06-06 03:29:32Z tfonrouge $
  */
 
+Wed Nov 20 20:37:00 UTC 2013 Teo Fonrouge (tfonrouge@gmail.com)
+  M src/TField.prg
+  M src/TTable.prg
+    % implemented checking of valid values when getting data to field object
+
 Tue Nov 19 23:59:17 UTC 2013 Teo Fonrouge (tfonrouge@gmail.com)
   M src/TField.prg
     % capability to return field type per locale setting

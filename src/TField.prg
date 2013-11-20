@@ -95,6 +95,7 @@ CLASS TField FROM OORDBBASE
    DATA FValType INIT "U"
    DATA FWrittenValue
 
+   METHOD CheckForValidValue( value )
    METHOD GetAsExpression INLINE hb_StrToExp( ::GetAsString )
    METHOD GetCloneData( cloneData )
    METHOD GetDBS_LEN INLINE ::FDBS_LEN
@@ -296,6 +297,41 @@ METHOD FUNCTION CheckEditable( flag ) CLASS TField
    ::FCheckEditable := flag
 
    RETURN oldFlag
+
+/*
+    CheckForValidValue
+    Teo. Mexico 2013
+*/
+METHOD FUNCTION CheckForValidValue( value ) CLASS TField
+    LOCAL result := .T.
+    LOCAL validValues
+
+    IF ::FValidValues != NIL
+
+        validValues := ::GetValidValues()
+
+        BEGIN SEQUENCE WITH ::FTable:ErrorBlock
+
+            SWITCH ValType( validValues )
+            CASE 'A'
+                result := AScan( validValues, {| e| e == value } ) > 0
+                EXIT
+            CASE 'H'
+                result := AScan( hb_HKeys( validValues ), {| e| e == value } ) > 0
+                EXIT
+            OTHERWISE
+                result := NIL
+            ENDSWITCH
+
+        RECOVER
+
+            result := NIL
+
+        END SEQUENCE
+
+    ENDIF
+
+RETURN result
 
 /*
     Clear
@@ -503,37 +539,42 @@ METHOD FUNCTION GetCloneData( cloneData ) CLASS TField
     GetData
     Teo. Mexico 2006
 */
-METHOD PROCEDURE GetData() CLASS TField
-
+METHOD FUNCTION GetData() CLASS TField
    LOCAL i
+   LOCAL result := .T.
 
    /* this is called for Table:GetCurrentRecord, used field has been read */
    IF ::FUsingField != NIL
-      RETURN
+      RETURN result
    ENDIF
 
    SWITCH ::FFieldMethodType
    CASE 'B'
-      ::SetBuffer( ::GetAsVariant() )
+      result := ::SetBuffer( ::GetAsVariant() )
       EXIT
    CASE 'C'
       IF ::FCalculated
-         ::SetBuffer( ::GetAsVariant() )
+         result := ::SetBuffer( ::GetAsVariant() )
       ELSE
-         ::SetBuffer( ::Table:Alias:Eval( ::FieldReadBlock ) )
+         result := ::SetBuffer( ::Table:Alias:Eval( ::FieldReadBlock ) )
          ::FChanged := .F.
       ENDIF
       EXIT
    CASE 'A'
       FOR EACH i IN ::FFieldArrayIndex
-         ::FTable:FieldList[ i ]:GetData()
+         IF !::FTable:FieldList[ i ]:GetData()
+            result := .F.
+            EXIT
+         ENDIF
       NEXT
       EXIT
    ENDSWITCH
 
-   ::FWrittenValue := NIL
+   IF result
+      ::FWrittenValue := NIL
+   ENDIF
 
-   RETURN
+   RETURN result
 
 /*
     GetDefaultNewValue
@@ -1030,35 +1071,41 @@ METHOD PROCEDURE SetAsVariant( value ) CLASS TField
     SetBuffer
     Teo. Mexico 2009
 */
-METHOD PROCEDURE SetBuffer( value ) CLASS TField
+METHOD FUNCTION SetBuffer( value ) CLASS TField
+    LOCAL result
+    LOCAL itm
 
-   LOCAL itm
+    value := ::TranslateToValue( value )
 
-   value := ::TranslateToValue( value )
+    result := ::CheckForValidValue( value ) == .T.
 
-   IF !::FCalculated
-      /* FieldArray's doesn't have a absolute FBuffer */
-      IF ::FFieldMethodType = "A"
-         SWITCH ValType( value )
-         CASE 'A'
-            FOR EACH itm IN value
-               ::FTable:FieldList[ ::FFieldArrayIndex[ itm:__enumIndex ] ]:SetBuffer( itm )
-            NEXT
-            EXIT
-         ENDSWITCH
-         RETURN
-      ENDIF
+    IF result
 
-      IF !( HB_ISNIL( value ) .OR. ValType( value ) = ::FValType ) .AND. ;
-            ( ::IsDerivedFrom( "TStringField" ) .AND. AScan( { "C", "M" }, ValType( value ) ) = 0 )
-         RAISE TFIELD ::Name ERROR "Wrong Type Assign: [" + value:ClassName + "] to <" + ::ClassName + ">"
-      ENDIF
+        IF !::FCalculated
+            /* FieldArray's doesn't have a absolute FBuffer */
+            IF ::FFieldMethodType = "A"
+                SWITCH ValType( value )
+                CASE 'A'
+                    FOR EACH itm IN value
+                       IF !::FTable:FieldList[ ::FFieldArrayIndex[ itm:__enumIndex ] ]:SetBuffer( itm )
+                          result := .F.
+                          EXIT
+                       ENDIF
+                     NEXT
+                    EXIT
+                ENDSWITCH
+                RETURN result
+            ENDIF
+            IF !( HB_ISNIL( value ) .OR. ValType( value ) = ::FValType ) .AND. ( ::IsDerivedFrom( "TStringField" ) .AND. AScan( { "C", "M" }, ValType( value ) ) = 0 )
+                RAISE TFIELD ::Name ERROR "Wrong Type Assign: [" + value:ClassName + "] to <" + ::ClassName + ">"
+            ENDIF
+        ENDIF
 
-   ENDIF
+        ::FBuffer := value
 
-   ::FBuffer := value
+    ENDIF
 
-   RETURN
+    RETURN result
 
 /*
     SetCloneData
@@ -1568,7 +1615,6 @@ RETURN type
 */
 METHOD FUNCTION Validate( showAlert, value ) CLASS TField
 
-   LOCAL validValues
    LOCAL result := NIL
    LOCAL l
    LOCAL INDEX
@@ -1608,48 +1654,22 @@ METHOD FUNCTION Validate( showAlert, value ) CLASS TField
          NEXT
       ENDIF
 
-      IF ::FValidValues != NIL
+      l := ::CheckForValidValue( value )
 
-         validValues := ::GetValidValues()
-
-         IF !Empty( validValues )
-
-            BEGIN SEQUENCE WITH ::FTable:ErrorBlock
-
-               SWITCH ValType( validValues )
-               CASE 'A'
-                  l := AScan( validValues, {| e| e == value } ) > 0
-                  EXIT
-               CASE 'H'
-                  l := AScan( hb_HKeys( validValues ), {| e| e == value } ) > 0
-                  EXIT
-               OTHERWISE
-                  l := NIL
-               ENDSWITCH
-
-            RECOVER
-
-               l := NIL
-
-            END SEQUENCE
-
-            IF l = NIL
-               result := ::FTable:ClassName + ": '" + ::GetLabel() + "' <Illegal value in 'ValidValues'> "
-               IF showAlert == .T.
-                  SHOW WARN result
-               ENDIF
-               RETURN result
-            ENDIF
-
-            IF !l
-               result := ::FTable:ClassName + ": '" + ::GetLabel() + "' <value given not in 'ValidValues'> : '" + AsString( value ) + "'"
-               IF showAlert == .T.
-                  SHOW WARN result
-               ENDIF
-               RETURN result
-            ENDIF
+      IF l = NIL
+         result := ::FTable:ClassName + ": '" + ::GetLabel() + "' <Illegal value in 'ValidValues'> "
+         IF showAlert == .T.
+            SHOW WARN result
          ENDIF
+         RETURN result
+      ENDIF
 
+      IF !l
+         result := ::FTable:ClassName + ": '" + ::GetLabel() + "' <value given not in 'ValidValues'> : '" + AsString( value ) + "'"
+         IF showAlert == .T.
+            SHOW WARN result
+         ENDIF
+         RETURN result
       ENDIF
 
       IF ::OnValidate != NIL
@@ -1816,17 +1836,17 @@ METHOD FUNCTION IndexExpression( fieldName, isMasterFieldComponent ) CLASS TStri
     SetBuffer
     Teo. Mexico 2009
 */
-METHOD PROCEDURE SetBuffer( buffer ) CLASS TStringField
+METHOD FUNCTION SetBuffer( buffer ) CLASS TStringField
 
    LOCAL size := ::Size
 
    IF ::FFieldType = ftMemo .OR. Len( buffer ) = size
-      ::Super:SetBuffer( buffer )
+      RETURN ::Super:SetBuffer( buffer )
    ELSE
-      ::Super:SetBuffer( PadR( buffer, size ) )
+      RETURN ::Super:SetBuffer( PadR( buffer, size ) )
    ENDIF
 
-   RETURN
+   RETURN .F.
 
 /*
     SetDBS_LEN

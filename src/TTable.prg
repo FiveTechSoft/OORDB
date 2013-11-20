@@ -2176,7 +2176,10 @@ METHOD FUNCTION GetCurrentRecord( idxAlias ) CLASS TTable
 
                IF AField:Enabled
                   IF AField:FieldMethodType = "C" .AND. !AField:Calculated // .AND. !AField:IsMasterFieldComponent
-                     AField:GetData()
+                     IF !AField:GetData()
+                        Result := .F.
+                        EXIT
+                    ENDIF
                   ENDIF
 
                   IF AField:FieldType = ftObject .AND. AField:Calculated .AND. AField:LinkedTableAssigned
@@ -2190,8 +2193,10 @@ METHOD FUNCTION GetCurrentRecord( idxAlias ) CLASS TTable
             NEXT
 
          ENDIF
+        
+      ENDIF
 
-      ELSEIF !Result .OR. !::FilterEval()
+      IF !Result .OR. !::FilterEval()
          ::FEof := .T.
          ::FBof := .T.
          ::FFound := .F.
