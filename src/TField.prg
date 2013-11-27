@@ -1077,8 +1077,7 @@ METHOD FUNCTION SetBuffer( value ) CLASS TField
 
     value := ::TranslateToValue( value )
 
-//    result := ::CheckForValidValue( value ) == .T.
-    result := .T.
+    result := ::CheckForValidValue( value ) == .T.
 
     IF result
 

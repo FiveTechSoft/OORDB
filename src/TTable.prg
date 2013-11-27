@@ -2176,9 +2176,9 @@ METHOD FUNCTION GetCurrentRecord( idxAlias ) CLASS TTable
 
                IF AField:Enabled
                   IF AField:FieldMethodType = "C" .AND. !AField:Calculated // .AND. !AField:IsMasterFieldComponent
-                     IF !AField:GetData()
-//                        Result := .F.
-//                        EXIT
+                     IF !AField:GetData() .AND. AField:IsMasterFieldComponent
+                        Result := .F.
+                        EXIT
                     ENDIF
                   ENDIF
 
