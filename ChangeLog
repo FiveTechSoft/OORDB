@@ -2,6 +2,14 @@
  * $Id: ChangeLog 155 2013-06-06 03:29:32Z tfonrouge $
  */
 
+Wed Nov 27 16:24:44 UTC 2013 Teo Fonrouge (tfonrouge@gmail.com)
+  M samples/buildTable/buildTable.prg
+    * fixed
+
+  M src/TField.prg
+  M src/TTable.prg
+    ! reverted change on checking for field validvalues
+
 Wed Nov 20 20:37:00 UTC 2013 Teo Fonrouge (tfonrouge@gmail.com)
   M src/TField.prg
   M src/TTable.prg

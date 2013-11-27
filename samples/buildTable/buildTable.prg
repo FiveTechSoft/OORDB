@@ -29,7 +29,7 @@ BEGIN FIELDS CLASS MyTable
 
   ADD STRING FIELD "Gender" SIZE 1 ;
     VALIDVALUES {"M"=>"Male","F"=>"Female"} ;
-    DEFAULT "M"
+    DEFAULTVALUE "M"
 
 END FIELDS CLASS
 
