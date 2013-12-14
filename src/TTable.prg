@@ -231,7 +231,7 @@ CLASS TTable FROM OORDBBASE
 
    METHOD __Seek( direction, Value, index, lSoftSeek )
    METHOD BaseSeek( baseKeyValue ) INLINE ::FBaseKeyIndex:Seek( baseKeyValue )
-   METHOD BuildFieldBlockFromFieldExpression( fieldExp, returnMode, field )
+   METHOD BuildFieldBlockFromFieldExpression( fieldExp, returnMode, field, index )
    METHOD AddCustomIndex( index )
    METHOD AddFieldAlias( nameAlias, fld, private )
    METHOD AddFieldMessage( messageName, AField, isAlias )
@@ -728,12 +728,11 @@ METHOD PROCEDURE AssociateTableIndex( table, name, getRecNo, setRecNo ) CLASS TT
     BuildFieldBlockFromFieldExpression
     Teo. Mexico 2012
 */
-METHOD FUNCTION BuildFieldBlockFromFieldExpression( fieldExp, returnMode, field ) CLASS TTable
+METHOD FUNCTION BuildFieldBlockFromFieldExpression( fieldExp, returnMode, field, index ) CLASS TTable
 
    LOCAL nTokens
    LOCAL i
    LOCAL s
-   LOCAL INDEX
    LOCAL table
    LOCAL fldName
    LOCAL block

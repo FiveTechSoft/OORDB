@@ -2,6 +2,10 @@
  * $Id: ChangeLog 155 2013-06-06 03:29:32Z tfonrouge $
  */
 
+Sat Dec 14 19:30:04 UTC 2013 Teo Fonrouge (tfonrouge@gmail.com)
+  M src/TTable.prg
+    % added index parameter to BuildFieldBlockFromFieldExpression()
+
 Wed Nov 27 17:15:45 UTC 2013 Teo Fonrouge (tfonrouge@gmail.com)
   M src/TField.prg
   M src/TTable.prg
