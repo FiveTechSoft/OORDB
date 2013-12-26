@@ -2,6 +2,12 @@
  * $Id: ChangeLog 155 2013-06-06 03:29:32Z tfonrouge $
  */
 
+Thu Dec 26 18:06:47 UTC 2013 Teo Fonrouge (tfonrouge@gmail.com)
+  M src/TField.prg
+  M src/TIndex.prg
+  M src/TTable.prg
+    % SetKeyVal() returns !::Eof
+
 Sat Dec 14 19:30:04 UTC 2013 Teo Fonrouge (tfonrouge@gmail.com)
   M src/TTable.prg
     % added index parameter to BuildFieldBlockFromFieldExpression()

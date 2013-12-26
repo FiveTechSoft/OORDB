@@ -1531,7 +1531,7 @@ METHOD FUNCTION SetKeyVal( keyVal ) CLASS TField
 
    ENDIF
 
-   RETURN Self
+   RETURN !::FTable:Eof
 
 /*
     SetName

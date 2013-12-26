@@ -818,9 +818,7 @@ METHOD PROCEDURE SetIdxAlias( alias ) CLASS TIndex
 */
 METHOD FUNCTION SetKeyVal( keyVal ) CLASS TIndex
 
-   ::FKeyField:SetKeyVal( keyVal )
-
-   RETURN Self
+   RETURN ::FKeyField:SetKeyVal( keyVal )
 
 /*
     SetScope

@@ -3274,9 +3274,7 @@ METHOD PROCEDURE SetisMetaTable( isMetaTable ) CLASS TTable
 */
 METHOD FUNCTION SetKeyVal( keyVal ) CLASS TTable
 
-   ::GetKeyField():SetKeyVal( keyVal )
-
-   RETURN Self
+   RETURN ::GetKeyField():SetKeyVal( keyVal )
 
 /*
     SetMasterSource
