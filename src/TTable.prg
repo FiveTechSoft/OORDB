@@ -340,7 +340,7 @@ CLASS TTable FROM OORDBBASE
    PROPERTY DbStruct READ GetDbStruct
    PROPERTY DELETED READ Alias:Deleted()
    PROPERTY DisplayFieldList READ GetDisplayFieldList
-   PROPERTY editStateOrigin
+   PROPERTY editStatePrevious
    PROPERTY ErrorBlock READ GetErrorBlock WRITE SetErrorBlock
    PROPERTY Eof READ GetEof
    PROPERTY FieldList READ FFieldList
@@ -648,7 +648,7 @@ METHOD FUNCTION AddRec() CLASS TTable
    ::FRecNo := ::Alias:RecNo
 
    ::SetState( dsInsert )
-   ::FeditStateOrigin := dsInsert
+   ::FeditStatePrevious := dsInsert
    ::FSubState := dssAdding
 
    // ::Reset() // Reset record data to default values
@@ -3012,7 +3012,7 @@ METHOD FUNCTION Post() CLASS TTable
       ENDIF
    ENDIF
 
-   ::FeditStateOrigin := NIL
+   ::FeditStatePrevious := NIL
 
    RETURN postOk
 
@@ -3110,7 +3110,7 @@ METHOD FUNCTION RecLock() CLASS TTable
 
    IF result
       ::SetState( dsEdit )
-      ::FeditStateOrigin := dsEdit
+      ::FeditStatePrevious := dsEdit
    ELSE
       ::Alias:RecUnLock()
    ENDIF
@@ -3512,7 +3512,7 @@ METHOD PROCEDURE StatePull() CLASS TTable
    ::FEof             := ::tableState[ ::tableStateLen ][ "Eof" ]
    ::FFound           := ::tableState[ ::tableStateLen ][ "Found" ]
    ::FState           := ::tableState[ ::tableStateLen ][ "State" ]
-   ::FeditStateOrigin  := ::tableState[ ::tableStateLen ][ "editStateOrigin" ]
+   ::FeditStatePrevious  := ::tableState[ ::tableStateLen ][ "editStatePrevious" ]
    IF !Empty( ::tableState[ ::tableStateLen ][ "IndexName" ] )
       ::IndexName        := ::tableState[ ::tableStateLen ][ "IndexName" ]
    ENDIF
@@ -3560,7 +3560,7 @@ METHOD PROCEDURE StatePush() CLASS TTable
    ::tableState[ ::tableStateLen ][ "Eof" ]              := ::FEof
    ::tableState[ ::tableStateLen ][ "Found" ]            := ::FFound
    ::tableState[ ::tableStateLen ][ "State" ]            := ::FState
-   ::tableState[ ::tableStateLen ][ "editStateOrigin" ]   := ::FeditStateOrigin
+   ::tableState[ ::tableStateLen ][ "editStatePrevious" ]   := ::FeditStatePrevious
    ::tableState[ ::tableStateLen ][ "IndexName" ]        := ::IndexName
    ::tableState[ ::tableStateLen ][ "DetailSourceList" ] := hDSL
    ::tableState[ ::tableStateLen ][ "UndoList" ]         := ::FUndoList
@@ -3571,7 +3571,7 @@ METHOD PROCEDURE StatePush() CLASS TTable
    NEXT
 
    ::FState := dsBrowse
-   ::FeditStateOrigin := NIL
+   ::FeditStatePrevious := NIL
    ::FUndoList := NIL
 
    ::Alias:Push()

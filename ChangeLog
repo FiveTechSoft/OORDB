@@ -2,6 +2,10 @@
  * $Id: ChangeLog 155 2013-06-06 03:29:32Z tfonrouge $
  */
 
+Fri Dec 27 19:48:08 UTC 2013 Teo Fonrouge (tfonrouge@gmail.com)
+  M src/TTable.prg
+    * renamed ppty
+
 Thu Dec 26 18:06:47 UTC 2013 Teo Fonrouge (tfonrouge@gmail.com)
   M src/TField.prg
   M src/TIndex.prg
