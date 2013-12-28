@@ -339,6 +339,7 @@ CLASS TTable FROM OORDBBASE
    PROPERTY DbFilter READ FDbFilter WRITE SetDbFilter
    PROPERTY DbStruct READ GetDbStruct
    PROPERTY DELETED READ Alias:Deleted()
+   PROPERTY DeletingChilds INIT .F.
    PROPERTY DisplayFieldList READ GetDisplayFieldList
    PROPERTY editStatePrevious
    PROPERTY ErrorBlock READ GetErrorBlock WRITE SetErrorBlock
@@ -1596,7 +1597,15 @@ METHOD FUNCTION DELETE( lDeleteChilds ) CLASS TTable
     Teo. Mexico 2013
 */
 METHOD FUNCTION DeleteChilds() CLASS TTable
-   RETURN F_DeleteChilds( Self )
+   LOCAL result
+
+   ::FdeletingChilds := .T.
+
+   result := F_DeleteChilds( Self )
+
+   ::FdeletingChilds := .F.
+
+   RETURN result
 
 /*
     F_DeleteChilds

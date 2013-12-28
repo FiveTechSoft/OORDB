@@ -2,6 +2,11 @@
  * $Id: ChangeLog 155 2013-06-06 03:29:32Z tfonrouge $
  */
 
+Sat Dec 28 18:54:37 UTC 2013 Teo Fonrouge (tfonrouge@gmail.com)
+  M src/TTable.prg
+    % property:
+      + DeletingChilds : .T. when table is deleting childs
+
 Fri Dec 27 19:48:08 UTC 2013 Teo Fonrouge (tfonrouge@gmail.com)
   M src/TTable.prg
     * renamed ppty
