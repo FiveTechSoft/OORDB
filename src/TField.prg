@@ -42,7 +42,7 @@ CLASS TField FROM OORDBBASE
    DATA FUniqueKeyIndexList INIT {}
 
    METHOD GetAutoIncrement INLINE ::FAutoIncrementKeyIndex != NIL
-   METHOD GetAutoIncrementValue
+   METHOD GetAutoIncrementValue()
    METHOD GetFieldMethod
    METHOD GetIsPrimaryKeyField INLINE ::Table:KeyField == Self
    METHOD GetReadOnly INLINE ::FReadOnly
@@ -470,12 +470,16 @@ METHOD FUNCTION GetAsVariant( ... ) CLASS TField
     GetAutoIncrementValue
     Teo. Mexico 2009
 */
-METHOD FUNCTION GetAutoIncrementValue CLASS TField
+METHOD FUNCTION GetAutoIncrementValue() CLASS TField
 
    LOCAL AIndex
    LOCAL value
 
-   AIndex := ::FAutoIncrementKeyIndex
+   IF ::FAutoIncrementKeyIndex = NIL
+      AIndex := ::KeyIndex
+   ELSE
+      AIndex := ::FAutoIncrementKeyIndex
+   ENDIF
 
    value := ::Table:Alias:Get4SeekLast( ::FieldReadBlock, AIndex:MasterKeyVal, AIndex:TagName )
 
