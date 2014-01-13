@@ -212,6 +212,7 @@ CLASS TField FROM OORDBBASE
 
    PROPERTY AutoIncrement READ GetAutoIncrement
    PROPERTY AutoIncrementKeyIndex READ FAutoIncrementKeyIndex WRITE SetAutoIncrementKeyIndex
+   PROPERTY AutoIncrementValue READ GetAutoIncrementValue
    PROPERTY Changed READ FChanged
    PROPERTY DBS_DEC READ FDBS_DEC WRITE SetDBS_DEC
    PROPERTY DBS_LEN READ GetDBS_LEN WRITE SetDBS_LEN
