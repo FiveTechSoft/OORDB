@@ -2004,11 +2004,13 @@ METHOD FUNCTION FindMasterSourceField( detailField ) CLASS TTable
 METHOD FUNCTION FixDbStruct( aNewStruct, message ) CLASS TTable
 
    LOCAL fileName
+   LOCAL indexName
    LOCAL tempName
    LOCAL sPath, sName, sExt, sDrv
    LOCAL sPath2, sName2, sExt2, sDrv2
    LOCAL result
    LOCAL recNo
+   LOCAL errObj
 
    IF message = NIL
       message := ""
@@ -2029,7 +2031,11 @@ METHOD FUNCTION FixDbStruct( aNewStruct, message ) CLASS TTable
 
       recNo := ::Alias:RecNo
 
+      indexName := ::Alias:dbOrderInfo( DBOI_FULLPATH )
+
       ::Alias:dbCloseArea()
+
+      FErase( indexName )
 
       FClose( hb_FTempCreateEx( @tempName, sPath, "tmp", sExt ) )
 
@@ -2071,9 +2077,11 @@ METHOD FUNCTION FixDbStruct( aNewStruct, message ) CLASS TTable
 
          hb_HDel( ::FInstances[ ::TableClass ], "DbStruct" )
 
-      RECOVER
+      RECOVER USING errObj
 
          result := .F.
+
+        SHOW ERROR errObj
 
       END SEQUENCE
 
