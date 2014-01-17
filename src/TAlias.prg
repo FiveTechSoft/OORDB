@@ -62,6 +62,7 @@ CLASS TAlias FROM OORDBBASE
    METHOD ordCondSet( ... )
    METHOD ordCreate( ... )
    METHOD ordCustom( Name, cBag, KeyVal )
+   METHOD ordDescend( Name, cBag, lDescend )
    METHOD ordKeyAdd( Name, cBag, KeyVal )
    METHOD ordKeyDel( Name, cBag, KeyVal )
    METHOD ordKeyNo( ... )
@@ -480,6 +481,16 @@ METHOD FUNCTION ordCustom( Name, cBag, KeyVal ) CLASS TAlias
    ::SyncFromRecNo()
 
    RETURN ( ::workArea )->( ordCustom( Name, cBag, KeyVal ) )
+
+/*
+    ordDescend
+    Teo. Mexico 2007
+*/
+METHOD FUNCTION ordDescend( Name, cBag, lDescend ) CLASS TAlias
+
+   ::SyncFromRecNo()
+
+   RETURN ( ::workArea )->( ordDescend( Name, cBag, lDescend ) )
 
 /*
     OrdKeyAdd

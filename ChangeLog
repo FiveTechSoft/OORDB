@@ -2,6 +2,10 @@
  * $Id: ChangeLog 155 2013-06-06 03:29:32Z tfonrouge $
  */
 
+Fri Jan 17 17:42:18 UTC 2014 Teo Fonrouge (tfonrouge@gmail.com)
+  M src/TAlias.prg
+    % ordDescend
+
 Wed Jan 15 17:15:55 UTC 2014 Teo Fonrouge (tfonrouge@gmail.com)
   M src/TTable.prg
     % delete current index on table to be updated
