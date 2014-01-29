@@ -1098,6 +1098,7 @@ METHOD FUNCTION CreateIndex( index ) CLASS TTable
    LOCAL temporary := .F.
    LOCAL bagName := NIL
    LOCAL unique := .F.
+   LOCAL oErr
 
    recNo := ::Alias:RecNo
 
@@ -1136,7 +1137,22 @@ METHOD FUNCTION CreateIndex( index ) CLASS TTable
          NIL, ;
          temporary )
 
-      ordCreate( bagName, index:TagName, indexExp, indexExp, unique )
+      BEGIN SEQUENCE WITH ::ErrorBlock
+
+         ordCreate( bagName, index:TagName, indexExp, indexExp, unique )
+
+      RECOVER USING oErr
+
+         ui_Alert( ;
+            "CreateIndex() Error in " + ::ClassName + ", Table: " + ::TableFileName + ";" + ;
+            " Index Tag Name: " + index:TagName + ";" + ;
+            "IndexExpression: " + indexExp + ";" + ;
+            "  Index For Key: " + AsString( index:ForKey ) ;
+             )
+
+         Break( oErr )
+
+      END SEQUENCE
 
    ENDIF
 
