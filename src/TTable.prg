@@ -184,6 +184,7 @@ CLASS TTable FROM OORDBBASE
    METHOD GetEof()
    METHOD GetErrorBlock() INLINE iif( FErrorBlock = NIL, FErrorBlock := {| oErr| ErrorBlockOORDB( oErr ) }, FErrorBlock )
    METHOD GetFound()
+   METHOD GetId() INLINE ::FBaseKeyField:KeyVal()
    METHOD GetIndex()
    METHOD GetRecNo()
    METHOD InitDataBase INLINE TDataBase():New()
@@ -191,6 +192,7 @@ CLASS TTable FROM OORDBBASE
    METHOD RawGet4Seek( direction, xField, keyVal, index, softSeek )
    METHOD SetDataBase( dataBase )
    METHOD SetErrorBlock( errorBlock ) INLINE FErrorBlock := errorBlock
+   METHOD SetId( id ) INLINE ::FBaseKeyField:SetKeyVal( id )
    METHOD SetisMetaTable( isMetaTable )
    METHOD SetTableFileName( tableFileName ) INLINE ::FTableFileName := tableFileName
    METHOD UpdateCustomIndexes()
@@ -347,6 +349,7 @@ CLASS TTable FROM OORDBBASE
    PROPERTY FieldList READ FFieldList
    PROPERTY Found READ GetFound
    PROPERTY FieldTypes READ GetFieldTypes
+   PROPERTY Id READ GetId WRITE SetId
    PROPERTY Initialized READ FInitialized
    PROPERTY Instance READ GetInstance
    PROPERTY Instances READ FInstances

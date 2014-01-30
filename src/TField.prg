@@ -1520,7 +1520,7 @@ METHOD FUNCTION SetKeyVal( keyVal ) CLASS TField
             ::FTable:dbGoto( 0 )
          ENDIF
 
-         IF ::FTable:LinkedObjField != NIL .AND. (::FTable:LinkedObjField:Calculated .OR. ::FTable:LinkedObjField:Table:State > dsBrowse)
+         IF ::FTable:LinkedObjField != NIL .AND. (::FTable:LinkedObjField:Calculated .OR. ::FTable:LinkedObjField:Table:State > dsBrowse .OR. ::FTable:LinkedObjField:Table:autoEdit)
 
             ::FTable:LinkedObjField:SetAsVariant( ::FTable:BaseKeyField:GetAsVariant() )
 

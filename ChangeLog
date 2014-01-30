@@ -2,6 +2,14 @@
  * $Id: ChangeLog 155 2013-06-06 03:29:32Z tfonrouge $
  */
 
+Thu Jan 30 17:56:42 UTC 2014 Teo Fonrouge (tfonrouge@gmail.com)
+  M src/TField.prg
+    % allow to write to field who's table has autoEdit property true
+
+  M src/TTable.prg
+    % added property
+      + Id : has the base key field value (get/set)
+
 Wed Jan 29 23:44:44 UTC 2014 Teo Fonrouge (tfonrouge@gmail.com)
   M src/TTable.prg
     % enhanced error message on index creation
