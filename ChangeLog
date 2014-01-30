@@ -2,6 +2,10 @@
  * $Id: ChangeLog 155 2013-06-06 03:29:32Z tfonrouge $
  */
 
+Thu Jan 30 19:39:13 UTC 2014 Teo Fonrouge (tfonrouge@gmail.com)
+  M src/Dba.prg
+    * rename function Clear() to RecClear()
+
 Thu Jan 30 17:56:42 UTC 2014 Teo Fonrouge (tfonrouge@gmail.com)
   M src/TField.prg
     % allow to write to field who's table has autoEdit property true

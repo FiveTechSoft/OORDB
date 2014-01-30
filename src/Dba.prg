@@ -72,10 +72,10 @@ FUNCTION AddRec( nrec, index )
    RETURN .F.         // Not locked
 
 /*
-    Clear
+    RecClear
     Teo. Mexico 2008
 */
-FUNCTION CLEAR()
+FUNCTION RecCLEAR()
 
    LOCAL i, a := dbStruct(), j
 
