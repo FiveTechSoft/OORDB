@@ -253,7 +253,7 @@ STATIC FUNCTION GetNextEmpty( index )
       ( DbSkipX( 0, index ) )
       IF dbRLock( RecNo() ) .AND. Empty( KeyVal( index ) )
          // IF rlock() .AND. empty(KeyVal(index))
-         CLEAR()
+         RecClear()
          RETURN .T.
       ELSE
          dbRUnlock( RecNo() )
