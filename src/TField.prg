@@ -2772,7 +2772,11 @@ METHOD PROCEDURE BuildLinkedTable() CLASS TObjectField
          ::FLinkedTable := ::FTable:MasterSource
       ELSE
          IF ::FLinkedTableMasterSource != NIL
-            masterSource := ::FLinkedTableMasterSource
+            IF ValType( ::FLinkedTableMasterSource ) = "B"
+                masterSource := ::FLinkedTableMasterSource:Eval( ::FTable )
+            ELSE
+                masterSource := ::FLinkedTableMasterSource
+            ENDIF
          ELSEIF ::FTable:IsDerivedFrom( ::Table:GetMasterSourceClassName() ) // ( ::FObjClass ) )
             masterSource := ::FTable
          ENDIF

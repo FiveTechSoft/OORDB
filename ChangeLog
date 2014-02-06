@@ -2,6 +2,10 @@
  * $Id: ChangeLog 155 2013-06-06 03:29:32Z tfonrouge $
  */
 
+Thu Feb  6 21:22:25 UTC 2014 Teo Fonrouge (tfonrouge@gmail.com)
+  M src/TField.prg
+    % evaluate codeblock passed to get mastersource in TObject field
+
 Mon Feb  3 00:40:29 UTC 2014 Teo Fonrouge (tfonrouge@gmail.com)
   M src/Dba.prg
     * renamed Clear() a meanigful RecClear()
