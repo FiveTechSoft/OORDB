@@ -3212,7 +3212,7 @@ METHOD PROCEDURE Reset() CLASS TTable
     SetBaseKeyIndex
     Teo. Mexico 2012
 */
-METHOD PROCEDURE SetBaseKeyIndex( baseKeyIndex ) CLASS TTable
+METHOD FUNCTION SetBaseKeyIndex( baseKeyIndex ) CLASS TTable
 
    LOCAL className
    LOCAL tableBaseClass
@@ -3234,13 +3234,13 @@ METHOD PROCEDURE SetBaseKeyIndex( baseKeyIndex ) CLASS TTable
       AAdd( BaseKeyFieldList, { tableBaseClass, baseKeyField:DBS_TYPE, baseKeyField:DBS_LEN, baseKeyField:DBS_DEC, baseKeyField:Size } )
    ENDIF
 
-   RETURN
+   RETURN baseKeyIndex
 
 /*
     SetDataBase
     Teo. Mexico 2010
 */
-METHOD PROCEDURE SetDataBase( dataBase ) CLASS TTable
+METHOD FUNCTION SetDataBase( dataBase ) CLASS TTable
 
    IF dataBase = NIL
       ::FDataBaseClass := NIL
@@ -3251,25 +3251,25 @@ METHOD PROCEDURE SetDataBase( dataBase ) CLASS TTable
       ENDIF
    ENDIF
 
-   RETURN
+   RETURN dataBase
 
 /*
     SetIndex
     Teo. Mexico 2010
 */
-METHOD PROCEDURE SetIndex( index ) CLASS TTable
+METHOD FUNCTION SetIndex( index ) CLASS TTable
 
    IF !Empty( index ) .AND. !::GetIndex() == index
       ::FIndex := index
    ENDIF
 
-   RETURN
+   RETURN ::FIndex
 
 /*
     SetIndexName
     Teo. Mexico 2007
 */
-METHOD PROCEDURE SetIndexName( indexName ) CLASS TTable
+METHOD FUNCTION SetIndexName( indexName ) CLASS TTable
 
    LOCAL INDEX
 
@@ -3279,20 +3279,20 @@ METHOD PROCEDURE SetIndexName( indexName ) CLASS TTable
 
       IF index != NIL
          ::SetIndex( index )
-         RETURN
+         RETURN ::GetIndexName
       ENDIF
 
       RAISE ERROR  "<" + ::ClassName + ">: Index name '" + indexName + "' doesn't exist..."
 
    ENDIF
 
-   RETURN
+   RETURN ::GetIndexName
 
 /*
     SetisMetaTable
     Teo. Mexico 2013
 */
-METHOD PROCEDURE SetisMetaTable( isMetaTable ) CLASS TTable
+METHOD FUNCTION SetisMetaTable( isMetaTable ) CLASS TTable
 
    IF ::FisMetaTable .AND. !isMetaTable
 
@@ -3302,7 +3302,7 @@ METHOD PROCEDURE SetisMetaTable( isMetaTable ) CLASS TTable
 
    ENDIF
 
-   RETURN
+   RETURN isMetaTable
 
 /*
     SetKeyVal
@@ -3316,10 +3316,10 @@ METHOD FUNCTION SetKeyVal( keyVal ) CLASS TTable
     SetMasterSource
     Teo. Mexico 2007
 */
-METHOD PROCEDURE SetMasterSource( masterSource ) CLASS TTable
+METHOD FUNCTION SetMasterSource( masterSource ) CLASS TTable
 
    IF ::FMasterSource == masterSource
-      RETURN
+      RETURN ::FMasterSource
    ENDIF
 
    ::FMasterSource := masterSource
@@ -3341,7 +3341,7 @@ METHOD PROCEDURE SetMasterSource( masterSource ) CLASS TTable
       EXIT
    CASE 'U'
       ::FMasterSourceType := rxMasterSourceTypeNone
-      RETURN
+      RETURN masterSource
    OTHERWISE
       RAISE ERROR "Invalid type in assigning MasterSource..."
    ENDSWITCH
@@ -3371,17 +3371,17 @@ METHOD PROCEDURE SetMasterSource( masterSource ) CLASS TTable
 
    ::SyncFromMasterSourceFields()
 
-   RETURN
+   RETURN masterSource
 
 /*
     SetPrimaryIndex
     Teo. Mexico 2010
 */
-METHOD PROCEDURE SetPrimaryIndex( primaryIndex ) CLASS TTable
+METHOD FUNCTION SetPrimaryIndex( primaryIndex ) CLASS TTable
 
    ::FPrimaryIndex := primaryIndex
 
-   RETURN
+   RETURN primaryIndex
 
 /*
     SetPrimaryIndexList
@@ -3397,7 +3397,7 @@ METHOD PROCEDURE SetPrimaryIndexList( clsName, name ) CLASS TTable
     SetReadOnly
     Teo. Mexico 2009
 */
-METHOD PROCEDURE SetReadOnly( readOnly ) CLASS TTable
+METHOD FUNCTION SetReadOnly( readOnly ) CLASS TTable
 
    IF ! HB_ISLOGICAL( readOnly )
       RAISE ERROR "Invalid value on SetReadOnly..."
@@ -3406,13 +3406,13 @@ METHOD PROCEDURE SetReadOnly( readOnly ) CLASS TTable
       ::FReadOnly := readOnly
    ENDIF
 
-   RETURN
+   RETURN readOnly
 
 /*
     SetState
     Teo. Mexico 2009
 */
-METHOD PROCEDURE SetState( state ) CLASS TTable
+METHOD FUNCTION SetState( state ) CLASS TTable
 
    LOCAL oldState
 
@@ -3425,17 +3425,17 @@ METHOD PROCEDURE SetState( state ) CLASS TTable
       ::OnStateChange( oldState )
    ENDIF
 
-   RETURN
+   RETURN state
 
 /*
     SetValue
     Teo. Mexico 2011
 */
-METHOD PROCEDURE SetValue( value ) CLASS TTable
+METHOD FUNCTION SetValue( value ) CLASS TTable
 
    ::FBaseKeyField:Value := value
 
-   RETURN
+   RETURN ::FBaseKeyField:Value
 
 /*
     SkipBrowse : BROWSE skipblock

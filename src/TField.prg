@@ -998,7 +998,7 @@ METHOD PROCEDURE RevertValue() CLASS TField
     SetAsVariant
     Teo. Mexico 2010
 */
-METHOD PROCEDURE SetAsVariant( value ) CLASS TField
+METHOD FUNCTION SetAsVariant( value ) CLASS TField
 
    LOCAL oldState
 
@@ -1007,7 +1007,7 @@ METHOD PROCEDURE SetAsVariant( value ) CLASS TField
    ENDIF
 
    IF ::IsReadOnly .OR. ::FTable:State = dsInactive .OR. !::Enabled
-      RETURN
+      RETURN value
    ENDIF
 
    IF ::FOnSetValue == NIL
@@ -1024,7 +1024,7 @@ METHOD PROCEDURE SetAsVariant( value ) CLASS TField
          ::FTable:Alias:Eval( ::FFieldWriteBlock, ::FTable, value )
          ::FOnEvalFieldWriteBlock := NIL
       ENDIF
-      RETURN
+      RETURN value
    ENDIF
 
    IF ( ::FTable:LinkedObjField = NIL .OR. ::FTable:LinkedObjField:Table:State = dsBrowse ) .AND. ::FTable:State = dsBrowse .AND. ::FTable:autoEdit
@@ -1070,7 +1070,7 @@ METHOD PROCEDURE SetAsVariant( value ) CLASS TField
       ::FTable:Post()
    ENDIF
 
-   RETURN
+   RETURN value
 
 /*
     SetBuffer
