@@ -2,6 +2,11 @@
  * $Id: ChangeLog 155 2013-06-06 03:29:32Z tfonrouge $
  */
 
+Wed Feb 19 07:12:50 UTC 2014 Teo Fonrouge (tfonrouge@gmail.com)
+  M src/TField.prg
+  M src/TIndex.prg
+    % added 2nd parameter lSoftSeek, to SetKeyVal function
+
 Wed Feb 19 06:21:07 UTC 2014 Teo Fonrouge (tfonrouge@gmail.com)
   M src/TField.prg
     % TFloatField uses StrZero to create index, DBS_LEN, DBS_DEC are parameters to StrZero

@@ -112,7 +112,7 @@ CLASS TIndex FROM OORDBBASE
    METHOD RawSeek( Value )
 
    METHOD SetDbFilter( filter ) INLINE ::FDbFilter := filter
-   METHOD SetKeyVal( keyVal )
+   METHOD SetKeyVal( keyVal, lSoftSeek )
 
    PROPERTY Bof READ FBof
    PROPERTY DbFilter READ FDbFilter WRITE SetDbFilter
@@ -816,9 +816,9 @@ METHOD PROCEDURE SetIdxAlias( alias ) CLASS TIndex
     SetKeyVal
     Teo. Mexico 2010
 */
-METHOD FUNCTION SetKeyVal( keyVal ) CLASS TIndex
+METHOD FUNCTION SetKeyVal( keyVal, lSoftSeek ) CLASS TIndex
 
-   RETURN ::FKeyField:SetKeyVal( keyVal )
+   RETURN ::FKeyField:SetKeyVal( keyVal, lSoftSeek )
 
 /*
     SetScope

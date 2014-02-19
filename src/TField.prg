@@ -163,7 +163,7 @@ CLASS TField FROM OORDBBASE
    METHOD SetFieldReadBlock( readBlock ) INLINE ::FFieldReadBlock := readBlock
    METHOD SetFieldWriteBlock( writeBlock )
    METHOD SetIndexExpression( indexExpression ) INLINE ::FIndexExpression := indexExpression
-   METHOD SetKeyVal( keyVal )
+   METHOD SetKeyVal( keyVal, lSoftSeek )
    METHOD SetKeyValBlock( keyValBlock ) INLINE ::FOnSetKeyValBlock := keyValBlock
    METHOD SetValidValues( validValues )
    METHOD Validate( showAlert, value )
@@ -1503,7 +1503,7 @@ METHOD PROCEDURE SetIsMasterFieldComponent( IsMasterFieldComponent ) CLASS TFiel
     SetKeyVal
     Teo. Mexico 2010
 */
-METHOD FUNCTION SetKeyVal( keyVal ) CLASS TField
+METHOD FUNCTION SetKeyVal( keyVal, lSoftSeek ) CLASS TField
 
    IF !::FTable:OnActiveSetKeyVal()
 
@@ -1518,7 +1518,7 @@ METHOD FUNCTION SetKeyVal( keyVal ) CLASS TField
          IF !Empty( keyVal )
             keyVal := ::GetKeyVal( keyVal, ::KeyIndex:KeyFlags )
             IF !::KeyIndex:KeyVal == keyVal
-               ::OnSetKeyVal( ::KeyIndex:Seek( keyVal ), keyVal )
+               ::OnSetKeyVal( ::KeyIndex:Seek( keyVal, lSoftSeek ), keyVal )
             ENDIF
          ELSE
             ::FTable:dbGoto( 0 )
