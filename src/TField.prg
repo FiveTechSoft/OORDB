@@ -1319,7 +1319,11 @@ METHOD PROCEDURE SetData( value, initialize ) CLASS TField
 METHOD PROCEDURE SetDbStruct( aStruct ) CLASS TField
 
    ::FModStamp := aStruct[ 2 ] $ "=^+"
-   ::SetDBS_LEN( aStruct[ 3 ] )
+
+   IF !::IsDerivedFrom("TFloatField")
+      ::SetDBS_LEN( aStruct[ 3 ] )
+   ENDIF
+
    ::SetDBS_DEC( aStruct[ 4 ] )
 
    RETURN
@@ -1984,7 +1988,7 @@ METHOD FUNCTION GetKeyVal( keyVal ) CLASS TNumericField
    CASE 'C'
       RETURN keyVal
    CASE 'N'
-      RETURN Str( keyVal, ::FDBS_LEN )
+      RETURN StrZero( keyVal, ::FDBS_LEN, ::FDBS_DEC )
    CASE 'U'
       RETURN Str( ::GetAsVariant(), ::FDBS_LEN )
    ENDSWITCH
@@ -2006,7 +2010,7 @@ METHOD FUNCTION IndexExpression( fieldName ) CLASS TNumericField
       fieldName := ::FFieldExpression
    ENDIF
 
-   RETURN "Str(" + fieldName + ")"
+   RETURN "StrZero(" + fieldName + "," +  HB_NToS( ::FDBS_LEN ) + "," + HB_NToS( ::FDBS_DEC ) + ")"
 
 /*
     SetAsVariant
