@@ -237,6 +237,7 @@ CLASS TField FROM OORDBBASE
    PROPERTY Name READ FName WRITE SetName
    PROPERTY NewValue INDEX 2 READ GetDefaultNewValue WRITE SetDefaultNewValue
    PROPERTY PrimaryKeyComponent READ FPrimaryKeyComponent WRITE SetPrimaryKeyComponent
+   PROPERTY PrimaryKeyIndex
    PROPERTY Published READ FPublished WRITE SetPublished
    PROPERTY READONLY READ GetReadOnly WRITE SetReadOnly
    PROPERTY Required READ FRequired WRITE SetRequired
@@ -278,6 +279,10 @@ METHOD PROCEDURE AddFieldMessage() CLASS TField
    Teo. Mexico 2013
 */
 METHOD PROCEDURE AddKeyIndex( index ) CLASS TField
+
+    IF index:IsPrimaryIndex
+        ::FPrimaryKeyIndex := index
+    ENDIF
 
    IF AScan( ::FIndexKeyList, {| e| e == index } ) = 0
       hb_AIns( ::FIndexKeyList, 1, index, .T. )
@@ -739,6 +744,10 @@ METHOD FUNCTION GetFieldReadBlock() CLASS TField
     Teo. Mexico 2012
 */
 METHOD FUNCTION GetKeyIndex() CLASS TField
+
+    IF ::FPrimaryKeyIndex != NIL
+        RETURN ::FPrimaryKeyIndex
+    ENDIF
 
    IF Len( ::FIndexKeyList ) > 0
       RETURN ::FIndexKeyList[ 1 ]

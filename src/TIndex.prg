@@ -141,6 +141,7 @@ CLASS TIndex FROM OORDBBASE
    PROPERTY CustomIndexExpression READ FCustomIndexExpression
    PROPERTY Descend READ FDescend WRITE SetDescend
    PROPERTY ForKey READ FForKey WRITE SetForKey
+   PROPERTY IsPrimaryIndex
    PROPERTY KeyField INDEX 3 READ GetField WRITE SetField
    PROPERTY UniqueKeyField INDEX 2 READ GetField WRITE SetField
    PROPERTY Name READ FName
@@ -187,7 +188,9 @@ METHOD New( Table, tagName, name, indexType, curClass, warnMsg ) CLASS TIndex
 
    ::FTable:IndexList[ curClass, name ] := Self
 
-   IF "PRIMARY" = indexType
+   ::FIsPrimaryIndex := indexType = "PRIMARY"
+
+   IF ::FIsPrimaryIndex
       ::FTable:SetPrimaryIndexList( curClass, name )
       ::FTable:SetPrimaryIndex( Self )
    ENDIF
@@ -790,7 +793,7 @@ METHOD PROCEDURE SetField( nIndex, XField ) CLASS TIndex
       ENDIF
       AField:AddKeyIndex( Self )
       ::FKeyField := AField
-      IF ::FIndexType == "PRIMARY" .AND. ::FTable:BaseKeyIndex = NIL
+      IF ::FIsPrimaryIndex .AND. ::FTable:BaseKeyIndex = NIL
          ::FTable:SetBaseKeyIndex( Self )
       ENDIF
       EXIT

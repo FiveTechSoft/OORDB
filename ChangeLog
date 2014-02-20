@@ -2,6 +2,13 @@
  * $Id: ChangeLog 155 2013-06-06 03:29:32Z tfonrouge $
  */
 
+Thu Feb 20 06:03:28 UTC 2014 Teo Fonrouge (tfonrouge@gmail.com)
+  M src/TField.prg
+    + property PrimaryKeyIndex
+
+  M src/TIndex.prg
+    + property IsPrimaryIndex
+
 Wed Feb 19 21:02:03 UTC 2014 Teo Fonrouge (tfonrouge@gmail.com)
   M src/TField.prg
     ! stupid bug
