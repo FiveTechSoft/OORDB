@@ -69,6 +69,7 @@ CLASS TField FROM OORDBBASE
    DATA FDBS_LEN
    DATA FDBS_NAME
    DATA FDBS_TYPE
+   DATA FdefaultValueList
    DATA FEditable
    DATA FEvtOnBeforeChange
    DATA FFieldArrayIndex        // Array of TField's indexes in FieldList
@@ -142,6 +143,8 @@ CLASS TField FROM OORDBBASE
    METHOD AddKeyIndex( index )
    METHOD CheckEditable( flag )
    METHOD CLEAR()
+   METHOD DefaultValuePull()
+   METHOD DefaultValuePush( newDefaultValue )
    METHOD DELETE()
    METHOD GetAsString() INLINE "<" + ::ClassName + ">"
    METHOD GetAsUTF8 INLINE hb_StrToUTF8( ::GetAsString() )
@@ -350,6 +353,37 @@ METHOD PROCEDURE CLEAR() CLASS TField
    ::FWrittenValue := NIL
 
    RETURN
+
+/*
+    DefaultValuePull
+    Teo. Mexico 2014
+*/
+METHOD FUNCTION DefaultValuePull() CLASS TField
+    LOCAL oldDefaultValue := ::FDefaultValue
+
+    ::DefaultValue := ATail( ::FdefaultValueList )
+
+    HB_ADel( ::FdefaultValueList, Len( ::FdefaultValueList ), .T. )
+
+RETURN oldDefaultValue
+
+/*
+    DefaultValuePush
+    Teo. Mexico 2014
+*/
+METHOD PROCEDURE DefaultValuePush( newDefaultValue ) CLASS TField
+
+    IF ::FdefaultValueList = NIL
+        ::FdefaultValueList := {}
+    ENDIF
+
+    AAdd( ::FdefaultValueList, ::FDefaultValue )
+
+    IF PCount() > 0
+        ::DefaultValue := newDefaultValue
+    ENDIF
+
+RETURN
 
 /*
     Delete
