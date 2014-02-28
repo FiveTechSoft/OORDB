@@ -2,6 +2,10 @@
  * $Id: ChangeLog 155 2013-06-06 03:29:32Z tfonrouge $
  */
 
+Fri Feb 28 05:43:47 UTC 2014 Teo Fonrouge (tfonrouge@gmail.com)
+  M src/TTable.prg
+    % public ::SetId()
+
 Thu Feb 27 16:15:57 UTC 2014 Teo Fonrouge (tfonrouge@gmail.com)
   M src/TField.prg
     % implemented:

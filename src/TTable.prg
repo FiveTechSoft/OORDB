@@ -192,7 +192,6 @@ CLASS TTable FROM OORDBBASE
    METHOD RawGet4Seek( direction, xField, keyVal, index, softSeek )
    METHOD SetDataBase( dataBase )
    METHOD SetErrorBlock( errorBlock ) INLINE FErrorBlock := errorBlock
-   METHOD SetId( id ) INLINE ::FBaseKeyField:SetKeyVal( id )
    METHOD SetisMetaTable( isMetaTable )
    METHOD SetTableFileName( tableFileName ) INLINE ::FTableFileName := tableFileName
    METHOD UpdateCustomIndexes()
@@ -299,6 +298,7 @@ CLASS TTable FROM OORDBBASE
    METHOD SetKeyVal( keyVal )
    METHOD SetPrimaryIndex( primaryIndex )
    METHOD SetPrimaryIndexList( clsName, name )
+   METHOD SetId( id ) INLINE ::FBaseKeyField:SetKeyVal( id )
    METHOD SetValue( value )
    METHOD SkipBrowse( n )
    METHOD SkipFilter( n, index )
