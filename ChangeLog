@@ -2,6 +2,10 @@
  * $Id: ChangeLog 155 2013-06-06 03:29:32Z tfonrouge $
  */
 
+Sun Mar  2 22:17:44 UTC 2014 Teo Fonrouge (tfonrouge@gmail.com)
+  M src/TField.prg
+    ! write unique field right after validate it to avoid error on possible race condition
+
 Fri Feb 28 05:43:47 UTC 2014 Teo Fonrouge (tfonrouge@gmail.com)
   M src/TTable.prg
     % public ::SetId()
