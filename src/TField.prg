@@ -1244,8 +1244,6 @@ METHOD PROCEDURE SetData( value, initialize ) CLASS TField
       WHILE .T.
          value := ::GetAutoIncrementValue()
          IF !::FAutoIncrementKeyIndex:ExistKey( ::GetKeyVal( value, ::FAutoIncrementKeyIndex:KeyFlags ) )
-           /* The physical write to the field */
-           ::FTable:Alias:Eval( ::FFieldWriteBlock, ::TranslateToFieldValue( value ) )
             EXIT
          ENDIF
          IF ( --nTries = 0 )
