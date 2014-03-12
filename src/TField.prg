@@ -2208,6 +2208,7 @@ CLASS TTimeField FROM TField
 
    METHOD GetAsDisplay() INLINE ::GetAsVariant():AsString
    METHOD GetAsDisplayEmptyValue INLINE ::GetEmptyValue:AsString
+   METHOD GetAsString INLINE ::GetAsVariant:AsString
    METHOD GetKeyVal( keyVal )
    METHOD IndexExpression( fieldName )
    METHOD SetAsVariant( variant )
