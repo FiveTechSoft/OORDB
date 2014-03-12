@@ -2,6 +2,10 @@
  * $Id: ChangeLog 155 2013-06-06 03:29:32Z tfonrouge $
  */
 
+Wed Mar 12 19:37:20 UTC 2014 Teo Fonrouge (tfonrouge@gmail.com)
+  M src/TField.prg
+    % implemented assigning types "C","N" to TTimeField
+
 Wed Mar  5 18:51:00 UTC 2014 Teo Fonrouge (tfonrouge@gmail.com)
   M src/TField.prg
     ! reverted, not useful at all

@@ -2203,12 +2203,14 @@ CLASS TTimeField FROM TField
    METHOD GetTime INLINE iif( ::FTime = NIL, ::FTime := TTime():New( "00:00:00", "HH:MM:SS" ), ::FTime )
    METHOD TranslateToFieldValue( value )
    METHOD TranslateToValue( value )
+
    PUBLIC:
 
    METHOD GetAsDisplay() INLINE ::GetAsVariant():AsString
    METHOD GetAsDisplayEmptyValue INLINE ::GetEmptyValue:AsString
    METHOD GetKeyVal( keyVal )
    METHOD IndexExpression( fieldName )
+   METHOD SetAsVariant( variant )
 
    PROPERTY AsHours   INDEX 1 READ GetAs
    PROPERTY AsMinutes INDEX 2 READ GetAs
@@ -2291,6 +2293,33 @@ METHOD FUNCTION IndexExpression( fieldName ) CLASS TTimeField
    ENDIF
 
    RETURN "HB_NumToHex(" + fieldName + ",8)"
+
+/*
+    SetAsVariant
+    Teo. Mexico 2014
+*/
+METHOD PROCEDURE SetAsVariant( variant ) CLASS TTimeField
+    LOCAL time
+    LOCAL vt
+
+    SWITCH ( vt := ValType( variant ) )
+    CASE "O"
+        time := variant
+        EXIT
+    CASE "C"
+    CASE "N"
+        time := TTime():New( , ::Time:Format )
+        IF vt = "C"
+            time:AsString := variant
+        ELSE
+            time:AsSeconds := variant
+        ENDIF
+        EXIT
+    ENDSWITCH
+
+    ::Super:SetAsVariant( time )
+
+RETURN
 
 /*
     TranslateToFieldValue
