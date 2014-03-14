@@ -17,7 +17,7 @@ PROCEDURE Main()
     ? registro:Count
     ? registro:Field_Inspection:DataObj:Count
 
-    WAIT "end test..."
+    WAIT "end test was Ok ..."
 
 RETURN
 

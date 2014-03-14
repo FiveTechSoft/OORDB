@@ -6,7 +6,7 @@
 
 CLASS Table1 FROM TTable
 
-  PROPERTY TableFileName VALUE "data/test"
+  PROPERTY TableFileName VALUE "test"
 
   DEFINE FIELDS
   DEFINE PRIMARY INDEX

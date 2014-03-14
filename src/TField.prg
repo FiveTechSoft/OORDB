@@ -2274,7 +2274,7 @@ METHOD FUNCTION GetAsVariant( ... ) CLASS TTimeField
 */
 METHOD FUNCTION GetKeyVal( keyVal ) CLASS TTimeField
 
-   IF PCount() = 0
+   IF keyVal = NIL
       keyVal := ::GetAsVariant()
    ENDIF
 

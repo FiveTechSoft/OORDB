@@ -8,6 +8,7 @@ CLASS MyTable FROM TTable
 PROTECTED:
 
   DEFINE FIELDS
+  DEFINE PRIMARY INDEX
 
   PROPERTY TableFileName VALUE "mytable"
 
@@ -15,6 +16,8 @@ EXPORT:
 ENDCLASS
 
 BEGIN FIELDS CLASS MyTable
+
+  ADD AUTOINC FIELD "RecordId"
 
   ADD STRING FIELD "Name" SIZE 40
 
@@ -24,7 +27,7 @@ BEGIN FIELDS CLASS MyTable
 
   ADD STRING FIELD "Gender" SIZE 1 ;
     VALIDVALUES {"M"=>"Male","F"=>"Female"} ;
-    DEFAULT "M"
+    DEFAULTVALUE"M"
 
   /* CalcField's */
 
@@ -34,6 +37,12 @@ BEGIN FIELDS CLASS MyTable
   ADD CALCULATED MEMO FIELD {|Self| RTrim( ::Field_Name:Value ) + " " + RTrim( ::Field_LastName:Value ) } NAME "FullName"
 
 END FIELDS CLASS
+
+BEGIN PRIMARY INDEX CLASS MyTable
+
+    DEFINE INDEX "Primary" KEYFIELD "RecordId"
+
+END PRIMARY INDEX CLASS
 
 PROCEDURE Main()
   LOCAL table

@@ -2,6 +2,21 @@
  * $Id: ChangeLog 155 2013-06-06 03:29:32Z tfonrouge $
  */
 
+Fri Mar 14 05:41:03 UTC 2014 Teo Fonrouge (tfonrouge@gmail.com)
+  M samples/TimeField/TimeField.prg
+  M samples/buildTable/buildTable.prg
+  M samples/calcField1/calcField1.prg
+  M samples/cs1/table1.prg
+  M samples/dbf1/dbf1.prg
+  M tests/test01.prg
+    * updated
+
+  D samples/simpleParentChild1/simpleParentChild1.prg
+    * removed
+
+  M src/TField.prg
+    ! fixed getting default value on TTimeField:GetKeyVal
+
 Fri Mar 14 04:59:51 UTC 2014 Teo Fonrouge (tfonrouge@gmail.com)
   M samples/get1/get1.prg
     ! updated sample
