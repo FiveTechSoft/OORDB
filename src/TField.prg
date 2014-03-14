@@ -747,7 +747,7 @@ METHOD FUNCTION GetFieldReadBlock() CLASS TField
    LOCAL block
 
    IF ::FFieldReadBlock == NIL .AND. ::FCalculated
-      IF ":" $ ::FFieldExpression
+      IF !Empty( ::FFieldExpression ) .AND. ":" $ ::FFieldExpression
          block := ::FTable:BuildFieldBlockFromFieldExpression( ::FFieldExpression, iif( ::FieldType = ftObject, NIL, "Value" ) )
          IF block != NIL
             ::FFieldReadBlock := block

@@ -2,6 +2,13 @@
  * $Id: ChangeLog 155 2013-06-06 03:29:32Z tfonrouge $
  */
 
+Fri Mar 14 04:59:51 UTC 2014 Teo Fonrouge (tfonrouge@gmail.com)
+  M samples/get1/get1.prg
+    ! updated sample
+
+  M src/TField.prg
+    ! fixed conditional. Thanks to Francesco Perillo
+
 Wed Mar 12 19:54:39 UTC 2014 Teo Fonrouge (tfonrouge@gmail.com)
   M src/TField.prg
     % implemented TTimeField:GetAsString

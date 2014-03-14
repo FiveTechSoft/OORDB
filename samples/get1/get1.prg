@@ -8,32 +8,51 @@ CLASS MyTable FROM TTable
 PROTECTED:
 
   DEFINE FIELDS
+  DEFINE PRIMARY INDEX
 
   PROPERTY TableFileName VALUE "mytable"
 
 EXPORT:
+
+  PROPERTY autoEdit INIT .T.
+
 ENDCLASS
 
 BEGIN FIELDS CLASS MyTable
 
-  ADD STRING FIELD "Name" SIZE 40
+  /* RecordId : primary base key field */
+  ADD AUTOINC FIELD "RecordId"
 
-  ADD STRING FIELD "LastName" SIZE 40
+  /* Age */
+  ADD CALCULATED FLOAT FIELD {|Self| ( Date() - ::Field_Birth:Value ) / 365  } NAME "Age"
 
+  /* Birth */
   ADD DATE FIELD "Birth"
 
-  ADD STRING FIELD "Gender" SIZE 1 ;
-    VALIDVALUES {"M"=>"Male","F"=>"Female"} ;
-    DEFAULT "M"
-
-  /* CalcField's */
-
-  ADD CALCULATED FLOAT FIELD {|Self| ( Date() - ::Field_Birth:Value ) / 365  } NAME "Age"
-  ADD CALCULATED FLOAT FIELD {|Self| ::Field_Age:Value * ( 60 * 60 * 24 * 365 ) } NAME "Seconds" PICTURE "9,999,999,999"
-
+  /* FullName */
   ADD CALCULATED MEMO FIELD {|Self| RTrim( ::Field_Name:Value ) + " " + RTrim( ::Field_LastName:Value ) } NAME "FullName"
 
+  /* Gender */
+  ADD STRING FIELD "Gender" SIZE 1 ;
+    VALIDVALUES {" "=>"Undefined","M"=>"Male","F"=>"Female"} ;
+    DEFAULTVALUE " "
+
+  /* LastName */
+  ADD STRING FIELD "LastName" SIZE 40
+
+  /* Name */
+  ADD STRING FIELD "Name" SIZE 40
+
+  /* Seconds */
+  ADD CALCULATED FLOAT FIELD {|Self| ::Field_Age:Value * ( 60 * 60 * 24 * 365 ) } NAME "Seconds" PICTURE "9,999,999,999"
+
 END FIELDS CLASS
+
+BEGIN PRIMARY INDEX CLASS MyTable
+
+    DEFINE INDEX "Primary" KEYFIELD "RecordId"
+
+END PRIMARY INDEX CLASS
 
 PROCEDURE Main()
   LOCAL table
@@ -50,9 +69,7 @@ PROCEDURE Main()
 
   CLS
 
-  table:Edit()
-
-  @ 0, 0 SAY "Editing Record #" + NTrim( table:RecNo )
+  @ 0, 0 SAY "Editing Record #:" GET table:RecNo
 
   @ 2, 0 SAY "    Name:" GET table:Field_Name:Value
   @ 3, 0 SAY "LastName:" GET table:Field_LastName:Value
