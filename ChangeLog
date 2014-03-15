@@ -2,6 +2,12 @@
  * $Id: ChangeLog 155 2013-06-06 03:29:32Z tfonrouge $
  */
 
+Sat Mar 15 06:03:37 UTC 2014 Teo Fonrouge (tfonrouge@gmail.com)
+  A samples/customIndex/customIndex.hbp
+  A samples/customIndex/customIndex.prg
+  A samples/customIndex/test.dbf
+    * sample to show custom indexes (based on calculated field's)
+
 Fri Mar 14 05:41:03 UTC 2014 Teo Fonrouge (tfonrouge@gmail.com)
   M samples/TimeField/TimeField.prg
   M samples/buildTable/buildTable.prg
