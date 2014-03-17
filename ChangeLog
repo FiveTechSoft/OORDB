@@ -2,6 +2,10 @@
  * $Id: ChangeLog 155 2013-06-06 03:29:32Z tfonrouge $
  */
 
+Mon Mar 17 21:48:24 UTC 2014 Teo Fonrouge (tfonrouge@gmail.com)
+  M src/TTime.prg
+    % added logical operators: >, >=, <, <=
+
 Sat Mar 15 06:03:37 UTC 2014 Teo Fonrouge (tfonrouge@gmail.com)
   A samples/customIndex/customIndex.hbp
   A samples/customIndex/customIndex.prg

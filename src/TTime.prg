@@ -46,6 +46,10 @@ CLASS TTime
    METHOD Op_Mult( timeToMult )    OPERATOR "*"
    OPERATOR "==" FUNCTION TTime_Op_Equal()
    OPERATOR "=" FUNCTION TTime_Op_Equal()
+   OPERATOR ">" FUNCTION TTIME_Op_Gt()
+   OPERATOR ">=" FUNCTION TTIME_Op_GtEq()
+   OPERATOR "<" FUNCTION TTIME_Op_Mi()
+   OPERATOR "<=" FUNCTION TTIME_Op_MiEq()
 
 ENDCLASS
 
@@ -55,9 +59,61 @@ STATIC FUNCTION  TTime_Op_Equal( equalTo )
 
    SWITCH ValType( equalTo )
    CASE "O"
-      RETURN equalTo:AsSeconds = ::AsSeconds
+      RETURN ::AsSeconds = equalTo:AsSeconds
    CASE "N"
-      RETURN Int( equalTo ) = ::AsSeconds
+      RETURN ::AsSeconds = Int( equalTo )
+   ENDSWITCH
+
+   RETURN .F.
+
+STATIC FUNCTION  TTIME_Op_Gt( gtThan )
+
+   LOCAL Self := QSelf()
+
+   SWITCH ValType( gtThan )
+   CASE "O"
+      RETURN ::AsSeconds > gtThan:AsSeconds
+   CASE "N"
+      RETURN ::AsSeconds > Int( gtThan )
+   ENDSWITCH
+
+   RETURN .F.
+
+STATIC FUNCTION  TTIME_Op_GtEq( gtEqThan )
+
+   LOCAL Self := QSelf()
+
+   SWITCH ValType( gtEqThan )
+   CASE "O"
+      RETURN ::AsSeconds >= gtEqThan:AsSeconds
+   CASE "N"
+      RETURN ::AsSeconds >= Int( gtEqThan )
+   ENDSWITCH
+
+   RETURN .F.
+
+STATIC FUNCTION  TTIME_Op_Mi( miThan )
+
+   LOCAL Self := QSelf()
+
+   SWITCH ValType( miThan )
+   CASE "O"
+      RETURN ::AsSeconds < miThan:AsSeconds
+   CASE "N"
+      RETURN ::AsSeconds < Int( miThan )
+   ENDSWITCH
+
+   RETURN .F.
+
+STATIC FUNCTION  TTIME_Op_MiEq( miEqThan )
+
+   LOCAL Self := QSelf()
+
+   SWITCH ValType( miEqThan )
+   CASE "O"
+      RETURN ::AsSeconds <= miEqThan:AsSeconds
+   CASE "N"
+      RETURN ::AsSeconds <= Int( miEqThan )
    ENDSWITCH
 
    RETURN .F.
