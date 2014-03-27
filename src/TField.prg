@@ -2553,13 +2553,14 @@ CLASS TDateTimeField FROM TField
    DATA FtypeNameList INIT hb_hSetCaseMatch( {"es"=>"Fecha Hora"} )
    DATA FValType INIT "C"
    METHOD GetAsDate() INLINE hb_TToD( ::Value )
+   METHOD GetAsTime()
    METHOD GetEmptyValue BLOCK {|| hb_CToT( "" ) }
    METHOD GetFormatDate INLINE iif( ::FFormatDate = NIL, ::ClsFmtDate, ::FFormatDate )
    METHOD GetFormatTime INLINE iif( ::FFormatTime = NIL, ::ClsFmtTime, ::FFormatTime )
-   METHOD GetTime
+   METHOD SetAsDate( date ) INLINE ::Value := hb_DToT( date, ::GetAsTime )
+   METHOD SetAsTime( cTime )
    METHOD SetFormatDate( formatDate ) INLINE ::FFormatDate := formatDate
    METHOD SetFormatTime( formatTime ) INLINE ::FFormatTime := formatTime
-   METHOD SetTime( cTime )
    PUBLIC:
 
    CLASSDATA ClsFmtDate INIT "YYYY-MM-DD"
@@ -2573,10 +2574,10 @@ CLASS TDateTimeField FROM TField
    METHOD IndexExpression( fieldName )
    METHOD SetAsVariant( variant )
 
-   PROPERTY AsDate READ GetAsDate
+   PROPERTY AsDate READ GetAsDate WRITE SetAsDate
+   PROPERTY AsTime READ GetAsTime WRITE SetAsTime
    PROPERTY FormatDate READ GetFormatDate WRITE SetFormatDate
    PROPERTY FormatTime READ GetFormatTime WRITE SetFormatTime
-   PROPERTY Time READ GetTime WRITE SetTime
 
    PUBLISHED:
 
@@ -2625,6 +2626,23 @@ METHOD FUNCTION GetAsString( value ) CLASS TDateTimeField
    RETURN hb_TToC( value, ::FormatDate, ::FormatTime )
 
 /*
+    GetAsTime
+    Teo. Mexico 2011
+*/
+METHOD GetAsTime() CLASS TDateTimeField
+
+   LOCAL cTime := "00:00:00"
+   LOCAL time
+
+   time := ::GetAsVariant()
+
+   IF !Empty( time )
+      HB_TToD( time, @cTime, ::FormatTime )
+   ENDIF
+
+   RETURN cTime
+
+/*
     GetKeyVal
     Teo. Mexico 2010
 */
@@ -2644,24 +2662,6 @@ METHOD FUNCTION GetKeyVal( keyVal ) CLASS TDateTimeField
    RETURN hb_TToS( keyVal )
 
 /*
-    GetTime
-    Teo. Mexico 2011
-*/
-METHOD GetTime CLASS TDateTimeField
-
-   LOCAL cTime := "00:00:00"
-   LOCAL time
-
-   time := ::GetAsVariant()
-
-   IF !Empty( time )
-      cTime := SubStr( hb_TToS( time ), 9, 6 )
-      cTime := Left( cTime, 2 ) + ":" + SubStr( cTime, 3, 2 ) + ":" + SubStr( cTime, 5, 2 )
-   ENDIF
-
-   RETURN cTime
-
-/*
     IndexExpression
     Teo. Mexico 2010
 */
@@ -2677,12 +2677,20 @@ METHOD FUNCTION IndexExpression( fieldName ) CLASS TDateTimeField
    RETURN "HB_TToS(" + fieldName + ")"
 
 /*
+    SetAsTime
+    Teo. Mexico 2011
+*/
+METHOD PROCEDURE SetAsTime( cTime ) CLASS TDateTimeField
+
+   ::SetAsVariant( hb_DToT( ::Value, cTime ) )
+
+   RETURN
+
+/*
     SetAsVariant
     Teo. Mexico 2009
 */
 METHOD PROCEDURE SetAsVariant( variant ) CLASS TDateTimeField
-
-   LOCAL cTime
 
    SWITCH ValType( variant )
    CASE 'T'
@@ -2691,30 +2699,19 @@ METHOD PROCEDURE SetAsVariant( variant ) CLASS TDateTimeField
    CASE 'C'
       variant := RTrim( variant )
       IF NumToken( variant ) > 1
-         variant := hb_CToT( variant, ::ClsFmtDate, ::ClsFmtTime )
+         variant := hb_CToT( variant, ::FormatDate, ::FormatTime )
       ELSE
          variant := hb_SToT( variant )
       ENDIF
       ::Super:SetAsVariant( variant )
       EXIT
    CASE 'D'
-      cTime := ::GetTime()
-      ::Super:SetAsVariant( hb_DToT( variant, cTime ) )
+      ::Super:SetAsVariant( hb_DToT( variant, ::GetAsTime() ) )
       EXIT
    CASE 'N'
       ::Super:SetAsVariant( hb_NToT( variant ) )
       EXIT
    ENDSWITCH
-
-   RETURN
-
-/*
-    SetTime
-    Teo. Mexico 2011
-*/
-METHOD PROCEDURE SetTime( cTime ) CLASS TDateTimeField
-
-   ::SetAsVariant( hb_DToT( ::Value, cTime ) )
 
    RETURN
 

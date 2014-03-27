@@ -1875,11 +1875,11 @@ STATIC PROCEDURE F_FillPrimaryIndexes( Self, curClass )
                AField:GetData()
             ELSE
                IF AField:FieldMethodType = "A"
-                  isEmpty := .F.
+                  isEmpty := .T.
                   FOR EACH itm IN AField:FieldArrayIndex
                      ::FieldList[ itm ]:Reset()
-                     IF Empty( ::FieldList[ itm ]:Value )
-                        isEmpty := .T.
+                     IF !Empty( ::FieldList[ itm ]:Value )
+                        isEmpty := .F.
                         EXIT
                      ENDIF
                   NEXT

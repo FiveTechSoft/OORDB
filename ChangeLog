@@ -2,6 +2,14 @@
  * $Id: ChangeLog 155 2013-06-06 03:29:32Z tfonrouge $
  */
 
+Thu Mar 27 16:13:15 UTC 2014 Teo Fonrouge (tfonrouge@gmail.com)
+  M src/TField.prg
+    * TDateTimeField : renamed ppty 'Time' to 'AsTime'
+    * ppty's: AsDate, AsTime, retrieve the Date and the Time (string) respectively from TDateTimeField value
+
+  M src/TTable.prg
+    ! Fixed detecting of empty value assign on a primary index key field
+
 Mon Mar 17 21:48:24 UTC 2014 Teo Fonrouge (tfonrouge@gmail.com)
   M src/TTime.prg
     % added logical operators: >, >=, <, <=
