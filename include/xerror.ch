@@ -4,7 +4,6 @@
 
 /*
     xerror.ch - eXtended error manager
-    Teo. Mexico 2007
 */
 
 #ifndef __XERROR_CH__

@@ -180,7 +180,6 @@ METHOD FUNCTION GetAsString( format ) CLASS TTime
 
 /*
     Op_Add : ~ Format after "99:59:59" will return wrong string
-    Teo. Mexico 2013
 */
 METHOD Op_Add( timeToAdd ) CLASS TTime
 
@@ -196,7 +195,6 @@ METHOD Op_Add( timeToAdd ) CLASS TTime
 
 /*
     Op_Div
-    Teo. Mexico 2013
 */
 METHOD Op_Div( timeToDiv ) CLASS TTime
 
@@ -208,7 +206,6 @@ METHOD Op_Div( timeToDiv ) CLASS TTime
 
 /*
     Op_Minus : ~ if time to substract is > Self, then time will be set to 0
-    Teo. Mexico 2013
 */
 METHOD Op_Minus( timeToMinus ) CLASS TTime
 
@@ -224,7 +221,6 @@ METHOD Op_Minus( timeToMinus ) CLASS TTime
 
 /*
     Op_Mult
-    Teo. Mexico 2013
 */
 METHOD Op_Mult( timeToMult ) CLASS TTime
 

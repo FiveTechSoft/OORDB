@@ -4,7 +4,6 @@
 
 /*
     TTable
-    Teo. Mexico 2007
 */
 
 #include "oordb.ch"
@@ -41,14 +40,12 @@ FUNCTION OordbErrorNew( Self, description, args )
 
 /*
     __ClsInstFromName (Just UpperCase in __ClsInstName)
-    Teo. Mexico 2007
 */
 FUNCTION __ClsInstFromName( ClassName )
    RETURN __ClsInstName( Upper( ClassName ) )
 
 /*
     ErrorBlockOORDB
-    Teo. Mexico 2012
 */
 FUNCTION ErrorBlockOORDB( oErr )
 
@@ -85,7 +82,6 @@ FUNCTION ErrorBlockOORDB( oErr )
 
 /*
     TTable
-    Teo. Mexico 2007
 */
 CLASS TTable FROM OORDBBASE
 
@@ -391,7 +387,6 @@ ENDCLASS
 
 /*
     New
-    Teo. Mexico 2006
 */
 METHOD New( masterSource, tableName ) CLASS TTable
 
@@ -471,7 +466,6 @@ METHOD New( masterSource, tableName ) CLASS TTable
 
 /*
     OnDestruct
-    Teo. Mexico 2010
 */
 METHOD PROCEDURE OnDestruct() CLASS TTable
 
@@ -491,7 +485,6 @@ METHOD PROCEDURE OnDestruct() CLASS TTable
 
 /*
     __CheckIndexes
-    Teo. Mexico 2013
 */
 METHOD PROCEDURE __CheckIndexes() CLASS TTable
 
@@ -521,7 +514,6 @@ METHOD PROCEDURE __CheckIndexes() CLASS TTable
 
 /*
     __Seek
-    Teo. Mexico 2007
 */
 METHOD FUNCTION __Seek( direction, Value, index, lSoftSeek ) CLASS TTable
 
@@ -533,7 +525,6 @@ METHOD FUNCTION __Seek( direction, Value, index, lSoftSeek ) CLASS TTable
 
 /*
     AddCustomIndex
-    Teo. Mexico 2012
 */
 METHOD PROCEDURE AddCustomIndex( index ) CLASS TTable
 
@@ -545,7 +536,6 @@ METHOD PROCEDURE AddCustomIndex( index ) CLASS TTable
 
 /*
     AddFieldAlias
-    Teo. Mexico 2010
 */
 METHOD PROCEDURE AddFieldAlias( nameAlias, fld, private ) CLASS TTable
 
@@ -579,7 +569,6 @@ METHOD PROCEDURE AddFieldAlias( nameAlias, fld, private ) CLASS TTable
 
 /*
     AddFieldMessage
-    Teo. Mexico 2006
 */
 METHOD PROCEDURE AddFieldMessage( messageName, AField, isAlias ) CLASS TTable
 
@@ -617,7 +606,6 @@ METHOD PROCEDURE AddFieldMessage( messageName, AField, isAlias ) CLASS TTable
 
 /*
     AddRec
-    Teo. Mexico 2006
 */
 METHOD FUNCTION AddRec() CLASS TTable
 
@@ -706,7 +694,6 @@ METHOD FUNCTION AddRec() CLASS TTable
 
 /*
     AssociateTableIndex
-    Teo. Mexico 2010
 */
 METHOD PROCEDURE AssociateTableIndex( table, name, getRecNo, setRecNo ) CLASS TTable
 
@@ -730,7 +717,6 @@ METHOD PROCEDURE AssociateTableIndex( table, name, getRecNo, setRecNo ) CLASS TT
 
 /*
     BuildFieldBlockFromFieldExpression
-    Teo. Mexico 2012
 */
 METHOD FUNCTION BuildFieldBlockFromFieldExpression( fieldExp, returnMode, field, index ) CLASS TTable
 
@@ -782,7 +768,6 @@ METHOD FUNCTION BuildFieldBlockFromFieldExpression( fieldExp, returnMode, field,
 
 /*
     Cancel
-    Teo. Mexico 2006
 */
 METHOD PROCEDURE Cancel CLASS TTable
 
@@ -830,7 +815,6 @@ METHOD PROCEDURE Cancel CLASS TTable
 
 /*
     CheckDbStruct
-    Teo. Mexico 2010
 */
 METHOD FUNCTION CheckDbStruct() CLASS TTable
 
@@ -919,14 +903,12 @@ METHOD FUNCTION CheckDbStruct() CLASS TTable
 
 /*
     Childs
-    Teo. Mexico 2013
 */
 METHOD FUNCTION Childs( ignoreAutoDelete, block, curClass, childs ) CLASS TTable
    RETURN F_Childs( Self, ignoreAutoDelete, block, curClass, childs )
 
 /*
     F_Childs
-    Teo. Mexico 2013
 */
 STATIC FUNCTION F_Childs( Self, ignoreAutoDelete, block, curClass, childs )
 
@@ -1002,7 +984,6 @@ STATIC FUNCTION F_Childs( Self, ignoreAutoDelete, block, curClass, childs )
 
 /*
     ChildSource
-    Teo. Mexico 2008
 */
 METHOD FUNCTION ChildSource( tableName, destroyChild ) CLASS TTable
 
@@ -1030,7 +1011,6 @@ METHOD FUNCTION ChildSource( tableName, destroyChild ) CLASS TTable
 
 /*
     CopyRecord
-    Teo. Mexico 2007
 */
 METHOD FUNCTION CopyRecord( origin ) CLASS TTable
 
@@ -1074,7 +1054,6 @@ METHOD FUNCTION CopyRecord( origin ) CLASS TTable
 
 /*
     Count : number of records
-    Teo. Mexico 2008
 */
 METHOD FUNCTION COUNT( bForCondition, bWhileCondition, index, scope ) CLASS TTable
 
@@ -1086,7 +1065,6 @@ METHOD FUNCTION COUNT( bForCondition, bWhileCondition, index, scope ) CLASS TTab
 
 /*
     CreateIndex
-    Teo. Mexico 2010
 */
 METHOD FUNCTION CreateIndex( index ) CLASS TTable
 
@@ -1165,7 +1143,6 @@ METHOD FUNCTION CreateIndex( index ) CLASS TTable
 
 /*
     CreateTable
-    Teo. Mexico 2010
 */
 METHOD FUNCTION CreateTable( fullFileName ) CLASS TTable
 
@@ -1222,7 +1199,6 @@ METHOD FUNCTION CreateTable( fullFileName ) CLASS TTable
 
 /*
     CreateTableInstance
-    Teo. Mexico 2013
 */
 METHOD PROCEDURE CreateTableInstance() CLASS TTable
 
@@ -1269,7 +1245,6 @@ METHOD PROCEDURE CreateTableInstance() CLASS TTable
 
 /*
     CreateTempIndex
-    Teo. Mexico 2010
 */
 METHOD FUNCTION CreateTempIndex( index ) CLASS TTable
 
@@ -1365,7 +1340,6 @@ METHOD FUNCTION CreateTempIndex( index ) CLASS TTable
 
 /*
     DbEval
-    Teo. Mexico 2008
 */
 METHOD PROCEDURE dbEval( bBlock, bForCondition, bWhileCondition, index, scope ) CLASS TTable
 
@@ -1415,7 +1389,6 @@ METHOD PROCEDURE dbEval( bBlock, bForCondition, bWhileCondition, index, scope ) 
 
 /*
     DbFilterPull
-    Teo. Mexico 2013
 */
 METHOD PROCEDURE DbFilterPull() CLASS TTable
 
@@ -1429,7 +1402,6 @@ METHOD PROCEDURE DbFilterPull() CLASS TTable
 
 /*
     DbFilterPush
-    Teo. Mexico 2013
 */
 METHOD PROCEDURE DbFilterPush( ignoreMasterKey ) CLASS TTable
 
@@ -1443,7 +1415,6 @@ METHOD PROCEDURE DbFilterPush( ignoreMasterKey ) CLASS TTable
 
 /*
     DbGoBottomTop
-    Teo. Mexico 2007
 */
 METHOD FUNCTION DbGoBottomTop( n ) CLASS TTable
 
@@ -1480,7 +1451,6 @@ METHOD FUNCTION DbGoBottomTop( n ) CLASS TTable
 
 /*
     DbGoTo
-    Teo. Mexico 2007
 */
 METHOD FUNCTION dbGoto( RecNo ) CLASS TTable
 
@@ -1490,7 +1460,6 @@ METHOD FUNCTION dbGoto( RecNo ) CLASS TTable
 
 /*
     DbSkip
-    Teo. Mexico 2011
 */
 METHOD FUNCTION dbSkip( numRecs ) CLASS TTable
 
@@ -1514,7 +1483,6 @@ METHOD FUNCTION dbSkip( numRecs ) CLASS TTable
 
 /*
     FIELDS END
-    Teo. Mexico 2010
 */
 METHOD PROCEDURE DefineFieldsFromDb() CLASS TTable
 
@@ -1545,7 +1513,6 @@ METHOD PROCEDURE DefineFieldsFromDb() CLASS TTable
 
 /*
     Delete
-    Teo. Mexico 2006
 */
 METHOD FUNCTION DELETE( lDeleteChilds ) CLASS TTable
 
@@ -1613,7 +1580,6 @@ METHOD FUNCTION DELETE( lDeleteChilds ) CLASS TTable
 
 /*
     DeleteChilds
-    Teo. Mexico 2013
 */
 METHOD FUNCTION DeleteChilds() CLASS TTable
    LOCAL result
@@ -1628,7 +1594,6 @@ METHOD FUNCTION DeleteChilds() CLASS TTable
 
 /*
     F_DeleteChilds
-    Teo. Mexico 2013
 */
 STATIC FUNCTION F_DeleteChilds( Self, curClass )
 
@@ -1702,7 +1667,6 @@ STATIC FUNCTION F_DeleteChilds( Self, curClass )
 
 /*
     Destroy
-    Teo. Mexico 2008
 */
 METHOD PROCEDURE Destroy() CLASS TTable
 
@@ -1738,7 +1702,6 @@ METHOD PROCEDURE Destroy() CLASS TTable
 
 /*
     Edit
-    Teo. Mexico 2006
 */
 METHOD FUNCTION Edit() CLASS TTable
 
@@ -1755,7 +1718,6 @@ METHOD FUNCTION Edit() CLASS TTable
 
 /*
     FieldByName
-    Teo. Mexico 2006
 */
 METHOD FUNCTION FieldByName( name, index ) CLASS TTable
 
@@ -1780,7 +1742,6 @@ METHOD FUNCTION FieldByName( name, index ) CLASS TTable
 
 /*
     FieldByObjClass
-    Teo. Mexico 2010
 */
 METHOD FUNCTION FieldByObjClass( objClass, derived, index ) CLASS TTable
 
@@ -1812,7 +1773,6 @@ METHOD FUNCTION FieldByObjClass( objClass, derived, index ) CLASS TTable
 
 /*
     FillFieldList
-    Teo. Mexico 2010
 */
 METHOD PROCEDURE FillFieldList() CLASS TTable
 
@@ -1828,7 +1788,6 @@ METHOD PROCEDURE FillFieldList() CLASS TTable
 
 /*
     FillPrimaryIndexes
-    Teo. Mexico 2013
 */
 METHOD PROCEDURE FillPrimaryIndexes( curClass ) CLASS TTable
 
@@ -1838,7 +1797,6 @@ METHOD PROCEDURE FillPrimaryIndexes( curClass ) CLASS TTable
 
 /*
     F_FillPrimaryIndexes
-    Teo. Mexico 2009
 */
 STATIC PROCEDURE F_FillPrimaryIndexes( Self, curClass )
 
@@ -1900,7 +1858,6 @@ STATIC PROCEDURE F_FillPrimaryIndexes( Self, curClass )
 
 /*
     FilterEval
-    Teo. Mexico 2010
 */
 METHOD FUNCTION FilterEval( index ) CLASS TTable
 
@@ -1924,7 +1881,6 @@ METHOD FUNCTION FilterEval( index ) CLASS TTable
 
 /*
     FindIndex
-    Teo. Mexico 2010
 */
 METHOD FUNCTION FindIndex( index ) CLASS TTable
 
@@ -1954,7 +1910,6 @@ METHOD FUNCTION FindIndex( index ) CLASS TTable
 
 /*
     FindMasterSourceField
-    Teo. Mexico 2007
 */
 METHOD FUNCTION FindMasterSourceField( detailField ) CLASS TTable
 
@@ -2018,7 +1973,6 @@ METHOD FUNCTION FindMasterSourceField( detailField ) CLASS TTable
 
 /*
     FixDbStruct
-    Teo. Mexico 2010
 */
 METHOD FUNCTION FixDbStruct( aNewStruct, message ) CLASS TTable
 
@@ -2113,7 +2067,6 @@ METHOD FUNCTION FixDbStruct( aNewStruct, message ) CLASS TTable
 
 /*
     GetAlias
-    Teo. Mexico 2008
 */
 METHOD FUNCTION GetAlias CLASS TTable
 
@@ -2125,7 +2078,6 @@ METHOD FUNCTION GetAlias CLASS TTable
 
 /*
     GetAsString
-    Teo. Mexico 2009
 */
 METHOD FUNCTION GetAsString() CLASS TTable
 
@@ -2139,7 +2091,6 @@ METHOD FUNCTION GetAsString() CLASS TTable
 
 /*
     GetBof
-    Teo. Mexico 2013
 */
 METHOD FUNCTION GetBof() CLASS TTable
 
@@ -2151,7 +2102,6 @@ METHOD FUNCTION GetBof() CLASS TTable
 
 /*
     GetCurrentRecord
-    Teo. Mexico 2010
 */
 METHOD FUNCTION GetCurrentRecord( idxAlias ) CLASS TTable
 
@@ -2251,7 +2201,6 @@ METHOD FUNCTION GetCurrentRecord( idxAlias ) CLASS TTable
 
 /*
     GetDataBase
-    Teo. Mexico 2010
 */
 METHOD FUNCTION GetDataBase() CLASS TTable
 
@@ -2263,7 +2212,6 @@ METHOD FUNCTION GetDataBase() CLASS TTable
 
 /*
     GetDbStruct
-    Teo. Mexico 2007
 */
 METHOD FUNCTION GetDbStruct CLASS TTable
 
@@ -2275,7 +2223,6 @@ METHOD FUNCTION GetDbStruct CLASS TTable
 
 /*
     GetDisplayFieldBlock
-    Teo. Mexico 2008
 */
 METHOD FUNCTION GetDisplayFieldBlock( index, asDisplay ) CLASS TTable
 
@@ -2405,7 +2352,6 @@ METHOD FUNCTION GetDisplayFieldList( syncFromAlias ) CLASS TTable
 
 /*
     GetEof
-    Teo. Mexico 2013
 */
 METHOD FUNCTION GetEof() CLASS TTable
 
@@ -2417,7 +2363,6 @@ METHOD FUNCTION GetEof() CLASS TTable
 
 /*
     GetFieldTypes
-    Teo. Mexico 2008
 */
 METHOD FUNCTION GetFieldTypes CLASS TTable
 
@@ -2455,7 +2400,6 @@ METHOD FUNCTION GetFieldTypes CLASS TTable
 
 /*
     GetField
-    Teo. Mexico 2009
 */
 METHOD FUNCTION GetField( fld ) CLASS TTable
 
@@ -2476,7 +2420,6 @@ METHOD FUNCTION GetField( fld ) CLASS TTable
 
 /*
     GetFound
-    Teo. Mexico 2013
 */
 METHOD FUNCTION GetFound() CLASS TTable
 
@@ -2488,7 +2431,6 @@ METHOD FUNCTION GetFound() CLASS TTable
 
 /*
     GetIndex
-    Teo. Mexico 2013
 */
 METHOD FUNCTION GetIndex() CLASS TTable
 
@@ -2500,7 +2442,6 @@ METHOD FUNCTION GetIndex() CLASS TTable
 
 /*
     GetInstance
-    Teo. Mexico 2008
 */
 METHOD FUNCTION GetInstance CLASS TTable
 
@@ -2519,7 +2460,6 @@ METHOD FUNCTION GetInstance CLASS TTable
 
 /*
     GetKeyExpression
-    Teo. Mexico 2011
 */
 METHOD FUNCTION GetKeyExpression() CLASS TTable
 
@@ -2531,7 +2471,6 @@ METHOD FUNCTION GetKeyExpression() CLASS TTable
 
 /*
     GetKeyField
-    Teo. Mexico 2010
 */
 METHOD FUNCTION GetKeyField() CLASS TTable
 
@@ -2543,7 +2482,6 @@ METHOD FUNCTION GetKeyField() CLASS TTable
 
 /*
     GetKeyVal
-    Teo. Mexico 2010
 */
 METHOD FUNCTION GetKeyVal( value ) CLASS TTable
 
@@ -2558,7 +2496,6 @@ METHOD FUNCTION GetKeyVal( value ) CLASS TTable
 
 /*
     GetMasterKeyExpression
-    Teo. Mexico 2011
 */
 METHOD FUNCTION GetMasterKeyExpression() CLASS TTable
 
@@ -2570,7 +2507,6 @@ METHOD FUNCTION GetMasterKeyExpression() CLASS TTable
 
 /*
     GetMasterKeyField
-    Teo. Mexico 2009
 */
 METHOD FUNCTION GetMasterKeyField() CLASS TTable
 
@@ -2582,7 +2518,6 @@ METHOD FUNCTION GetMasterKeyField() CLASS TTable
 
 /*
     GetMasterSource
-    Teo. Mexico 2009
 */
 METHOD FUNCTION GetMasterSource() CLASS TTable
 
@@ -2599,7 +2534,6 @@ METHOD FUNCTION GetMasterSource() CLASS TTable
 
 /*
     GetMasterSourceClassName
-    Teo. Mexico 2008
 */
 METHOD FUNCTION GetMasterSourceClassName() CLASS TTable
 
@@ -2624,7 +2558,6 @@ METHOD FUNCTION GetMasterSourceClassName() CLASS TTable
 
 /*
     GetPublishedFieldNameList
-    Teo. Mexico 2012
 */
 METHOD FUNCTION GetPublishedFieldNameList( typeList ) CLASS TTable
 
@@ -2662,7 +2595,6 @@ METHOD FUNCTION GetPublishedFieldNameList( typeList ) CLASS TTable
 
 /*
     GetRecNo
-    Teo. Mexico 2013
 */
 METHOD FUNCTION GetRecNo() CLASS TTable
 
@@ -2674,7 +2606,6 @@ METHOD FUNCTION GetRecNo() CLASS TTable
 
 /*
     GetTableFileName
-    Teo. Mexico 2010
 */
 METHOD FUNCTION GetTableFileName() CLASS TTable
 
@@ -2689,14 +2620,12 @@ METHOD FUNCTION GetTableFileName() CLASS TTable
 
 /*
     GetValue
-    Teo. Mexico 2011
 */
 METHOD FUNCTION GetValue CLASS TTable
    RETURN ::FBaseKeyField:Value
 
 /*
     ImportField
-    Teo. Mexico 2012
 */
 METHOD FUNCTION ImportField( fromField, fieldDbName, fieldName ) CLASS TTable
 
@@ -2729,7 +2658,6 @@ METHOD FUNCTION ImportField( fromField, fieldDbName, fieldName ) CLASS TTable
 
 /*
     IndexByName
-    Teo. Mexico 2013
 */
 METHOD FUNCTION IndexByName( indexName, curClass ) CLASS TTable
 
@@ -2741,7 +2669,6 @@ METHOD FUNCTION IndexByName( indexName, curClass ) CLASS TTable
 
 /*
     F_IndexByName
-    Teo. Mexico 2013
 */
 STATIC FUNCTION F_IndexByName( Self, indexName, curClass )
 
@@ -2763,7 +2690,6 @@ STATIC FUNCTION F_IndexByName( Self, indexName, curClass )
 
 /*
     InitTable
-    Teo. Mexico 2009
 */
 METHOD PROCEDURE InitTable() CLASS TTable
 
@@ -2798,7 +2724,6 @@ METHOD PROCEDURE InitTable() CLASS TTable
 
 /*
     Insert
-    Teo. Mexico 2006
 */
 METHOD FUNCTION Insert() CLASS TTable
 
@@ -2826,7 +2751,6 @@ METHOD FUNCTION Insert() CLASS TTable
 
 /*
     InsertRecord
-    Teo. Mexico 2007
 */
 METHOD FUNCTION InsertRecord( origin ) CLASS TTable
 
@@ -2848,7 +2772,6 @@ METHOD FUNCTION InsertRecord( origin ) CLASS TTable
 
 /*
     InsideScope
-    Teo. Mexico 2008
 */
 METHOD FUNCTION InsideScope( ignoreFilters ) CLASS TTable
 
@@ -2860,7 +2783,6 @@ METHOD FUNCTION InsideScope( ignoreFilters ) CLASS TTable
 
 /*
     OnActiveSetKeyVal
-    Teo. Mexico 2011
 */
 METHOD FUNCTION OnActiveSetKeyVal( value ) CLASS TTable
 
@@ -2873,7 +2795,6 @@ METHOD FUNCTION OnActiveSetKeyVal( value ) CLASS TTable
 
 /*
     OnDataChange
-    Teo. Mexico 2010
 */
 METHOD PROCEDURE OnDataChange() CLASS TTable
 
@@ -2885,7 +2806,6 @@ METHOD PROCEDURE OnDataChange() CLASS TTable
 
 /*
     Open
-    Teo. Mexico 2008
 */
 METHOD FUNCTION Open() CLASS TTable
 
@@ -2920,14 +2840,12 @@ METHOD FUNCTION Open() CLASS TTable
 
 /*
     OrdCondSet
-    Teo. Mexico 2010
 */
 METHOD FUNCTION ordCondSet( ... ) CLASS TTable
    RETURN ::Alias:ordCondSet( ... )
 
 /*
     OrdCreate
-    Teo. Mexico 2010
 */
 METHOD PROCEDURE ordCreate( ... ) CLASS TTable
 
@@ -2978,7 +2896,6 @@ METHOD PROCEDURE ordCreate( ... ) CLASS TTable
 
 /*
     Post
-    Teo. Mexico 2010
 */
 METHOD FUNCTION Post() CLASS TTable
 
@@ -3054,7 +2971,6 @@ METHOD FUNCTION Post() CLASS TTable
 
 /*
     Process_TableName
-    Teo. Mexico 2008
 */
 METHOD PROCEDURE Process_TableName( tableName ) CLASS TTable
 
@@ -3093,7 +3009,6 @@ METHOD PROCEDURE Process_TableName( tableName ) CLASS TTable
 
 /*
     RawGet4Seek
-    Teo. Mexico 2009
 */
 METHOD FUNCTION RawGet4Seek( direction, xField, keyVal, index, softSeek ) CLASS TTable
 
@@ -3103,14 +3018,12 @@ METHOD FUNCTION RawGet4Seek( direction, xField, keyVal, index, softSeek ) CLASS 
 
 /*
     RawSeek
-    Teo. Mexico 2008
 */
 METHOD FUNCTION RawSeek( Value, index ) CLASS TTable
    RETURN ::FindIndex( index ):RawSeek( Value )
 
 /*
     RecLock
-    Teo. Mexico 2006
 */
 METHOD FUNCTION RecLock() CLASS TTable
 
@@ -3157,7 +3070,6 @@ METHOD FUNCTION RecLock() CLASS TTable
 
 /*
     RecUnLock
-    Teo. Mexico 2006
 */
 METHOD FUNCTION RecUnLock() CLASS TTable
 
@@ -3173,7 +3085,6 @@ METHOD FUNCTION RecUnLock() CLASS TTable
 
 /*
     Refresh
-    Teo. Mexico 2007
 */
 METHOD PROCEDURE Refresh CLASS TTable
 
@@ -3186,7 +3097,6 @@ METHOD PROCEDURE Refresh CLASS TTable
 
 /*
     Reset
-    Teo. Mexico 2006
 */
 METHOD PROCEDURE Reset() CLASS TTable
 
@@ -3210,7 +3120,6 @@ METHOD PROCEDURE Reset() CLASS TTable
 
 /*
     SetBaseKeyIndex
-    Teo. Mexico 2012
 */
 METHOD FUNCTION SetBaseKeyIndex( baseKeyIndex ) CLASS TTable
 
@@ -3238,7 +3147,6 @@ METHOD FUNCTION SetBaseKeyIndex( baseKeyIndex ) CLASS TTable
 
 /*
     SetDataBase
-    Teo. Mexico 2010
 */
 METHOD FUNCTION SetDataBase( dataBase ) CLASS TTable
 
@@ -3255,7 +3163,6 @@ METHOD FUNCTION SetDataBase( dataBase ) CLASS TTable
 
 /*
     SetIndex
-    Teo. Mexico 2010
 */
 METHOD FUNCTION SetIndex( index ) CLASS TTable
 
@@ -3267,7 +3174,6 @@ METHOD FUNCTION SetIndex( index ) CLASS TTable
 
 /*
     SetIndexName
-    Teo. Mexico 2007
 */
 METHOD FUNCTION SetIndexName( indexName ) CLASS TTable
 
@@ -3290,7 +3196,6 @@ METHOD FUNCTION SetIndexName( indexName ) CLASS TTable
 
 /*
     SetisMetaTable
-    Teo. Mexico 2013
 */
 METHOD FUNCTION SetisMetaTable( isMetaTable ) CLASS TTable
 
@@ -3306,7 +3211,6 @@ METHOD FUNCTION SetisMetaTable( isMetaTable ) CLASS TTable
 
 /*
     SetKeyVal
-    Teo. Mexico 2010
 */
 METHOD FUNCTION SetKeyVal( keyVal ) CLASS TTable
 
@@ -3314,7 +3218,6 @@ METHOD FUNCTION SetKeyVal( keyVal ) CLASS TTable
 
 /*
     SetMasterSource
-    Teo. Mexico 2007
 */
 METHOD FUNCTION SetMasterSource( masterSource ) CLASS TTable
 
@@ -3375,7 +3278,6 @@ METHOD FUNCTION SetMasterSource( masterSource ) CLASS TTable
 
 /*
     SetPrimaryIndex
-    Teo. Mexico 2010
 */
 METHOD FUNCTION SetPrimaryIndex( primaryIndex ) CLASS TTable
 
@@ -3385,7 +3287,6 @@ METHOD FUNCTION SetPrimaryIndex( primaryIndex ) CLASS TTable
 
 /*
     SetPrimaryIndexList
-    Teo. Mexico 2011
 */
 METHOD PROCEDURE SetPrimaryIndexList( clsName, name ) CLASS TTable
 
@@ -3395,7 +3296,6 @@ METHOD PROCEDURE SetPrimaryIndexList( clsName, name ) CLASS TTable
 
 /*
     SetReadOnly
-    Teo. Mexico 2009
 */
 METHOD FUNCTION SetReadOnly( readOnly ) CLASS TTable
 
@@ -3410,7 +3310,6 @@ METHOD FUNCTION SetReadOnly( readOnly ) CLASS TTable
 
 /*
     SetState
-    Teo. Mexico 2009
 */
 METHOD FUNCTION SetState( state ) CLASS TTable
 
@@ -3429,7 +3328,6 @@ METHOD FUNCTION SetState( state ) CLASS TTable
 
 /*
     SetValue
-    Teo. Mexico 2011
 */
 METHOD FUNCTION SetValue( value ) CLASS TTable
 
@@ -3439,7 +3337,6 @@ METHOD FUNCTION SetValue( value ) CLASS TTable
 
 /*
     SkipBrowse : BROWSE skipblock
-    Teo. Mexico 2008
 */
 METHOD FUNCTION SkipBrowse( n ) CLASS TTable
 
@@ -3475,7 +3372,6 @@ METHOD FUNCTION SkipBrowse( n ) CLASS TTable
 
 /*
     SkipFilter
-    Teo. Mexico 2010
 */
 METHOD FUNCTION SkipFilter( n, index ) CLASS TTable
 
@@ -3528,7 +3424,6 @@ METHOD FUNCTION SkipFilter( n, index ) CLASS TTable
 
 /*
     StatePull
-    Teo. Mexico 2010
 */
 METHOD PROCEDURE StatePull() CLASS TTable
 
@@ -3569,7 +3464,6 @@ METHOD PROCEDURE StatePull() CLASS TTable
 
 /*
     StatePush
-    Teo. Mexico 2010
 */
 METHOD PROCEDURE StatePush() CLASS TTable
 
@@ -3616,7 +3510,6 @@ METHOD PROCEDURE StatePush() CLASS TTable
 
 /*
     SyncFromMasterSourceFields
-    Teo. Mexico 2007
 */
 METHOD PROCEDURE SyncFromMasterSourceFields() CLASS TTable
 
@@ -3664,7 +3557,6 @@ METHOD PROCEDURE SyncFromMasterSourceFields() CLASS TTable
 
 /*
     SyncRecNo
-    Teo. Mexico 2007
 */
 METHOD PROCEDURE SyncRecNo( fromAlias ) CLASS TTable
 
@@ -3682,7 +3574,6 @@ METHOD PROCEDURE SyncRecNo( fromAlias ) CLASS TTable
 
 /*
     UpdateCustomIndexes
-    Teo. Mexico 2012
 */
 METHOD PROCEDURE UpdateCustomIndexes() CLASS TTable
 
@@ -3696,7 +3587,6 @@ METHOD PROCEDURE UpdateCustomIndexes() CLASS TTable
 
 /*
     Validate
-    Teo. Mexico 2009
 */
 METHOD FUNCTION Validate( showAlert ) CLASS TTable
 
@@ -3716,7 +3606,6 @@ METHOD FUNCTION Validate( showAlert ) CLASS TTable
 
 /*
     FindTableBaseClass
-    Teo. Mexico 2012
 */
 STATIC FUNCTION FindTableBaseClass( AField )
 

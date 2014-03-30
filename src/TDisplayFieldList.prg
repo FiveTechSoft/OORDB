@@ -8,7 +8,6 @@
 
 /*
     TDisplayFieldList : Simple Class to display fields
-    Teo. Mexico 2013
 */
 CLASS TDisplayFieldList
 
@@ -25,7 +24,6 @@ ENDCLASS
 
 /*
     __FieldList
-    Teo. Mexico 2013
 */
 METHOD FUNCTION __FieldList() CLASS TDisplayFieldList
    LOCAL a := {}

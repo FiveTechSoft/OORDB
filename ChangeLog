@@ -2,6 +2,20 @@
  * $Id: ChangeLog 155 2013-06-06 03:29:32Z tfonrouge $
  */
 
+Sun Mar 30 16:44:39 UTC 2014 Teo Fonrouge (tfonrouge@gmail.com)
+  M include/oordb.ch
+  M include/xerror.ch
+  M src/Dba.prg
+  M src/TAlias.prg
+  M src/TDatabase.prg
+  M src/TDisplayFieldList.prg
+  M src/TField.prg
+  M src/TIndex.prg
+  M src/TTable.prg
+  M src/TTime.prg
+  M src/common.prg
+    * removed unneeded signature
+
 Thu Mar 27 16:13:15 UTC 2014 Teo Fonrouge (tfonrouge@gmail.com)
   M src/TField.prg
     * TDateTimeField : renamed ppty 'Time' to 'AsTime'

@@ -4,7 +4,6 @@
 
 /*
     TIndex
-    Teo. Mexico 2007
 */
 
 #include "oordb.ch"
@@ -12,7 +11,6 @@
 
 /*
     CLASS TIndex
-    Teo. Mexico 2006
 */
 CLASS TIndex FROM OORDBBASE
 
@@ -156,7 +154,6 @@ ENDCLASS
 
 /*
     New
-    Teo. Mexico 2006
 */
 METHOD New( Table, tagName, name, indexType, curClass, warnMsg ) CLASS TIndex
 
@@ -199,7 +196,6 @@ METHOD New( Table, tagName, name, indexType, curClass, warnMsg ) CLASS TIndex
 
 /*
     __Seek
-    Teo. Mexico 2007
 */
 METHOD FUNCTION __Seek( direction, keyValue, lSoftSeek ) CLASS TIndex
 
@@ -225,7 +221,6 @@ METHOD FUNCTION __Seek( direction, keyValue, lSoftSeek ) CLASS TIndex
 
 /*
     AddIndex
-    Teo. Mexico 2008
 */
 METHOD AddIndex( cMasterKeyField, ai, un, cKeyField, keyFlags, ForKey, cs, de, acceptEmptyUnique, useIndex, temporary, rightJust /*, cu*/ )
 
@@ -270,7 +265,6 @@ METHOD AddIndex( cMasterKeyField, ai, un, cKeyField, keyFlags, ForKey, cs, de, a
 
 /*
     Count
-    Teo. Mexico 2013
 */
 METHOD FUNCTION COUNT( bForCondition, bWhileCondition ) CLASS TIndex
 
@@ -282,7 +276,6 @@ METHOD FUNCTION COUNT( bForCondition, bWhileCondition ) CLASS TIndex
 
 /*
     CustomKeyExpValue
-    Teo. Mexico 2012
 */
 METHOD FUNCTION CustomKeyExpValue() CLASS TIndex
 
@@ -294,7 +287,6 @@ METHOD FUNCTION CustomKeyExpValue() CLASS TIndex
 
 /*
     CustomKeyUpdate
-    Teo. Mexico 2012
 */
 METHOD PROCEDURE CustomKeyUpdate CLASS TIndex
 
@@ -307,7 +299,6 @@ METHOD PROCEDURE CustomKeyUpdate CLASS TIndex
 
 /*
     DbFilterPull
-    Teo. Mexico 2013
 */
 METHOD PROCEDURE DbFilterPull() CLASS TIndex
 
@@ -319,7 +310,6 @@ METHOD PROCEDURE DbFilterPull() CLASS TIndex
 
 /*
     DbFilterPush
-    Teo. Mexico 2013
 */
 METHOD PROCEDURE DbFilterPush( ignoreMasterKey ) CLASS TIndex
 
@@ -331,7 +321,6 @@ METHOD PROCEDURE DbFilterPush( ignoreMasterKey ) CLASS TIndex
 
 /*
     DbGoBottomTop
-    Teo. Mexico 2008
 */
 METHOD FUNCTION DbGoBottomTop( n ) CLASS TIndex
 
@@ -368,7 +357,6 @@ METHOD FUNCTION DbGoBottomTop( n ) CLASS TIndex
 
 /*
     DbSkip
-    Teo. Mexico 2007
 */
 METHOD FUNCTION dbSkip( numRecs ) CLASS TIndex
 
@@ -391,7 +379,6 @@ METHOD FUNCTION dbSkip( numRecs ) CLASS TIndex
 
 /*
     ExistKey
-    Teo. Mexico 2007
 */
 METHOD FUNCTION ExistKey( keyValue ) CLASS TIndex
    RETURN ::GetAlias():ExistKey( ::MasterKeyVal + keyValue, ::FTagName, ;
@@ -405,7 +392,6 @@ ENDIF
 
 /*
     FillCustomIndex
-    Teo. Mexico 2012
 */
 METHOD PROCEDURE FillCustomIndex() CLASS TIndex
 
@@ -431,21 +417,18 @@ METHOD PROCEDURE FillCustomIndex() CLASS TIndex
 
 /*
     Get4Seek
-    Teo. Mexico 2009
 */
 METHOD FUNCTION Get4Seek( blk, keyVal, softSeek ) CLASS TIndex
    RETURN ::RawGet4Seek( 1, blk, keyVal, softSeek )
 
 /*
     Get4SeekLast
-    Teo. Mexico 2009
 */
 METHOD FUNCTION Get4SeekLast( blk, keyVal, softSeek ) CLASS TIndex
    RETURN ::RawGet4Seek( 0, blk, keyVal, softSeek )
 
 /*
     GetAlias
-    Teo. Mexico 2010
 */
 METHOD FUNCTION GetAlias() CLASS TIndex
 
@@ -457,7 +440,6 @@ METHOD FUNCTION GetAlias() CLASS TIndex
 
 /*
     GetCurrentRecord
-    Teo. Mexico 2010
 */
 METHOD FUNCTION GetCurrentRecord() CLASS TIndex
 
@@ -478,7 +460,6 @@ METHOD FUNCTION GetCurrentRecord() CLASS TIndex
 
 /*
     GetField
-    Teo. Mexico 2006
 */
 METHOD FUNCTION GetField( nIndex ) CLASS TIndex
 
@@ -503,7 +484,6 @@ METHOD FUNCTION GetField( nIndex ) CLASS TIndex
 
 /*
     GetIdxAlias
-    Teo. Mexico 2010
 */
 METHOD FUNCTION GetIdxAlias() CLASS TIndex
 
@@ -515,7 +495,6 @@ METHOD FUNCTION GetIdxAlias() CLASS TIndex
 
 /*
     GetKeyVal
-    Teo. Mexico 2009
 */
 METHOD FUNCTION GetKeyVal( keyVal ) CLASS TIndex
 
@@ -527,7 +506,6 @@ METHOD FUNCTION GetKeyVal( keyVal ) CLASS TIndex
 
 /*
     GetMasterKeyVal
-    Teo. Mexico 2009
 */
 METHOD FUNCTION GetMasterKeyVal( keyField ) CLASS TIndex
 
@@ -563,7 +541,6 @@ METHOD FUNCTION GetMasterKeyVal( keyField ) CLASS TIndex
 
 /*
     IndexExpression
-    Teo. Mexico 2010
 */
 METHOD FUNCTION IndexExpression() CLASS TIndex
 
@@ -584,7 +561,6 @@ METHOD FUNCTION IndexExpression() CLASS TIndex
 
 /*
     InsideScope
-    Teo. Mexico 2008
 */
 METHOD FUNCTION InsideScope( ignoreFilters ) CLASS TIndex
 
@@ -615,7 +591,6 @@ METHOD FUNCTION InsideScope( ignoreFilters ) CLASS TIndex
 
 /*
     KeyExpression
-    Teo. Mexico 2010
 */
 METHOD FUNCTION KeyExpression() CLASS TIndex
 
@@ -627,7 +602,6 @@ METHOD FUNCTION KeyExpression() CLASS TIndex
 
 /*
     MasterKeyExpression
-    Teo. Mexico 2011
 */
 METHOD FUNCTION MasterKeyExpression() CLASS TIndex
 
@@ -639,7 +613,6 @@ METHOD FUNCTION MasterKeyExpression() CLASS TIndex
 
 /*
     RawGet4Seek
-    Teo. Mexico 2009
 */
 METHOD FUNCTION RawGet4Seek( direction, blk, keyVal, softSeek ) CLASS TIndex
 
@@ -653,7 +626,6 @@ METHOD FUNCTION RawGet4Seek( direction, blk, keyVal, softSeek ) CLASS TIndex
 
 /*
     RawSeek
-    Teo. Mexico 2008
 */
 METHOD FUNCTION RawSeek( Value ) CLASS TIndex
 
@@ -669,7 +641,6 @@ METHOD FUNCTION RawSeek( Value ) CLASS TIndex
 
 /*
     SetCustom
-    Teo. Mexico 2006
 */
 METHOD PROCEDURE SetCustom( Custom ) CLASS TIndex
 
@@ -681,7 +652,6 @@ METHOD PROCEDURE SetCustom( Custom ) CLASS TIndex
 
 /*
     SetCustomIndexExpression
-    Teo. Mexico 2012
 */
 METHOD PROCEDURE SetCustomIndexExpression( customIndexExpression ) CLASS TIndex
 
@@ -693,7 +663,6 @@ METHOD PROCEDURE SetCustomIndexExpression( customIndexExpression ) CLASS TIndex
 
 /*
     SetField
-    Teo. Mexico 2006
 */
 METHOD PROCEDURE SetField( nIndex, XField ) CLASS TIndex
 
@@ -803,7 +772,6 @@ METHOD PROCEDURE SetField( nIndex, XField ) CLASS TIndex
 
 /*
     SetIdxAlias
-    Teo. Mexico 2010
 */
 METHOD PROCEDURE SetIdxAlias( alias ) CLASS TIndex
 
@@ -817,7 +785,6 @@ METHOD PROCEDURE SetIdxAlias( alias ) CLASS TIndex
 
 /*
     SetKeyVal
-    Teo. Mexico 2010
 */
 METHOD FUNCTION SetKeyVal( keyVal, lSoftSeek ) CLASS TIndex
 
@@ -825,7 +792,6 @@ METHOD FUNCTION SetKeyVal( keyVal, lSoftSeek ) CLASS TIndex
 
 /*
     SetScope
-    Teo. Mexico 2008
 */
 METHOD FUNCTION SetScope( value ) CLASS TIndex
 
@@ -843,7 +809,6 @@ METHOD FUNCTION SetScope( value ) CLASS TIndex
 
 /*
     SetScopeBottom
-    Teo. Mexico 2008
 */
 METHOD FUNCTION SetScopeBottom( value ) CLASS TIndex
 
@@ -855,7 +820,6 @@ METHOD FUNCTION SetScopeBottom( value ) CLASS TIndex
 
 /*
     SetScopeTop
-    Teo. Mexico 2008
 */
 METHOD FUNCTION SetScopeTop( value ) CLASS TIndex
 

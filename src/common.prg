@@ -6,7 +6,6 @@ STATIC BaseArray := "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ"
 
 /*
     __ClsInstName
-    Teo. Mexico 2007
 */
 FUNCTION __ClsInstName( className )
 
@@ -18,7 +17,6 @@ FUNCTION __ClsInstName( className )
 
 /*
     AsCodeBlock : Convierte la cadena a un code block
-    Teo. Mexico 2012
 */
 FUNCTION AsCodeBlock( cStr, xDefaultVal )
 
@@ -30,7 +28,6 @@ FUNCTION AsCodeBlock( cStr, xDefaultVal )
 
 /*
     AsDate
-    Teo. Mexico 2004
 */
 FUNCTION AsDate( xVal, sTemplate )
 
@@ -48,7 +45,6 @@ FUNCTION AsDate( xVal, sTemplate )
 
 /*
     AsLogical
-    Teo. Mexico 2005
 */
 FUNCTION AsLogical( xVal )
 
@@ -63,7 +59,6 @@ FUNCTION AsLogical( xVal )
 
 /*
     AsNumeric
-    Teo. Mexico 2004
 */
 FUNCTION AsNumeric( xVal )
 
@@ -78,7 +73,6 @@ FUNCTION AsNumeric( xVal )
 
 /*
     AsString
-    Teo. Mexico 2004
 */
 FUNCTION AsString( xVal )
 
@@ -138,7 +132,6 @@ FUNCTION Base2N( sBase, nBase, l, cFill )
 
 /*
     Dec
-    Teo. Mexico 2005
 */
 FUNCTION Dec( p, base, fill, n )
 
@@ -188,7 +181,6 @@ FUNCTION Dec( p, base, fill, n )
 
 /*
     Exec : Evalua la cadena y regresa el resultado
-    Teo. Mexico 2012
 */
 FUNCTION Exec( cStr, xDefaultVal )
 
@@ -217,7 +209,6 @@ FUNCTION Exec( cStr, xDefaultVal )
 /*
     FDate2F() : Regresa un valor DATE como cadena en formato:
                             MM-DD-YYYY, D$-M$-Y$ ... D$ DD de M$ de Y$
-    Teo. 1995
 */
 FUNCTION FDate2F( d, p )
 
@@ -263,7 +254,6 @@ FUNCTION FDate2F( d, p )
 
 /*
     FDateS
-    Teo. Mexico 2008
 */
 FUNCTION FDateS( d )
 
@@ -275,7 +265,6 @@ FUNCTION FDateS( d )
 
 /*
     Inc
-    Teo. Mexico 2005
 */
 FUNCTION Inc( p, base, fill, n )
 
@@ -324,7 +313,6 @@ FUNCTION Inc( p, base, fill, n )
 
 /*
     MyErrorNew
-    Teo. Mexico 2007
 */
 FUNCTION MyErrorNew( SubSystem, Operation, Description, Args, ProcFile, ProcName, ProcLine )
 
@@ -368,7 +356,6 @@ FUNCTION N2Base( nVal, nBase, l, cFill )
 
 /*
     SToJ
-    Teo. Mexico 2004
 */
 FUNCTION SToJ( cDate )
    RETURN Str2Date( cDate, "YYYYMMDD" )
@@ -477,7 +464,6 @@ FUNCTION Str2Date( sDate, sTemplate, sReturn )
 
 /*
     SwapToken :
-    Teo. Mexico 2004
 */
 FUNCTION SwapToken( cString, cDelims, nOccur, cSwapStr )
 
@@ -501,7 +487,6 @@ FUNCTION SwapToken( cString, cDelims, nOccur, cSwapStr )
 
 /*
     ui_ShowError
-    Teo. Mexico 2012
 */
 FUNCTION ui_ShowError( errObj )
 
@@ -517,7 +502,6 @@ FUNCTION ui_ShowError( errObj )
 
 /*
     ui_Alert
-    Teo. Mexico 2012
 */
 FUNCTION ui_Alert( msgWarn )
 
@@ -533,7 +517,6 @@ FUNCTION ui_Alert( msgWarn )
 
 /*
     ui_AlertYesNo
-    Teo. Mexico 2012
 */
 FUNCTION ui_AlertYesNo( msgWarn )
 

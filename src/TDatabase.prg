@@ -12,7 +12,6 @@
 
 /*
     TDataBase
-    Teo. Mexico 2008
 */
 CLASS TDataBase FROM OORDBBASE
 
@@ -55,7 +54,6 @@ ENDCLASS
 
 /*
     New
-    Teo. Mexico 2008
 */
 METHOD New( databaseName ) CLASS TDataBase
 
@@ -73,7 +71,6 @@ METHOD New( databaseName ) CLASS TDataBase
 
 /*
     AddParentChild
-    Teo. Mexico 2008
 */
 METHOD AddParentChild( parentTableName, childTableName, indexName, virtual, autoDelete ) CLASS TDataBase
 
@@ -98,7 +95,6 @@ METHOD AddParentChild( parentTableName, childTableName, indexName, virtual, auto
 
 /*
     cmdAddTable
-    Teo. Mexico 2008
 */
 METHOD PROCEDURE cmdAddTable( tableName, indexName, virtual, autoDelete ) CLASS TDataBase
 
@@ -112,7 +108,6 @@ METHOD PROCEDURE cmdAddTable( tableName, indexName, virtual, autoDelete ) CLASS 
 
 /*
     cmdDefineChild
-    Teo. Mexico 2008
 */
 METHOD PROCEDURE cmdDefineChild() CLASS TDataBase
 
@@ -122,7 +117,6 @@ METHOD PROCEDURE cmdDefineChild() CLASS TDataBase
 
 /*
     cmdEndChild
-    Teo. Mexico 2008
 */
 METHOD PROCEDURE cmdEndChild() CLASS TDataBase
 
@@ -133,7 +127,6 @@ METHOD PROCEDURE cmdEndChild() CLASS TDataBase
 /*
     GetParentChildList
     Exclude VIRTUAL Tables
-    Teo. Mexico 2008
 */
 METHOD FUNCTION GetParentChildList( tableName, Result ) CLASS TDataBase
 
@@ -170,7 +163,6 @@ METHOD FUNCTION GetParentChildList( tableName, Result ) CLASS TDataBase
 
 /*
     TableIsChildOf
-    Teo. Mexico 2008
 */
 METHOD FUNCTION TableIsChildOf( table, fromTable ) CLASS TDataBase
 

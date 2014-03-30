@@ -4,7 +4,6 @@
 
 /*
     TAlias
-    Teo. Mexico 2007
 */
 
 #include "oordb.ch"
@@ -101,7 +100,6 @@ ENDCLASS
 
 /*
     New
-    Teo. Mexico 2007
 */
 METHOD New( table, aliasName ) CLASS TAlias
 
@@ -141,14 +139,12 @@ METHOD New( table, aliasName ) CLASS TAlias
 
 /*
     __DbZap
-    Teo. Mexico 2010
 */
 METHOD FUNCTION __dbZap() CLASS TAlias
    RETURN ( ::workArea )->( __dbZap() )
 
 /*
     AddRec
-    Teo. Mexico 2007
 */
 METHOD FUNCTION AddRec( index ) CLASS TAlias
 
@@ -161,7 +157,6 @@ METHOD FUNCTION AddRec( index ) CLASS TAlias
 
 /*
     DbCloseArea
-    Teo. Mexico 2010
 */
 METHOD PROCEDURE dbCloseArea() CLASS TAlias
 
@@ -174,7 +169,6 @@ METHOD PROCEDURE dbCloseArea() CLASS TAlias
 
 /*
     DbDelete
-    Teo. Mexico 2009
 */
 METHOD PROCEDURE dbDelete() CLASS TAlias
 
@@ -185,7 +179,6 @@ METHOD PROCEDURE dbDelete() CLASS TAlias
 
 /*
     DbGoBottom
-    Teo. Mexico 2007
 */
 METHOD FUNCTION dbGoBottom( indexName ) CLASS TAlias
 
@@ -202,7 +195,6 @@ METHOD FUNCTION dbGoBottom( indexName ) CLASS TAlias
 
 /*
     DbGoTo
-    Teo. Mexico 2007
 */
 METHOD FUNCTION dbGoto( RecNo ) CLASS TAlias
 
@@ -215,7 +207,6 @@ METHOD FUNCTION dbGoto( RecNo ) CLASS TAlias
 
 /*
     DbGoTop
-    Teo. Mexico 2007
 */
 METHOD FUNCTION dbGoTop( indexName ) CLASS TAlias
 
@@ -232,7 +223,6 @@ METHOD FUNCTION dbGoTop( indexName ) CLASS TAlias
 
 /*
     DbInfo
-    Teo. Mexico 2010
 */
 METHOD FUNCTION dbInfo( ... ) CLASS TAlias
 
@@ -242,7 +232,6 @@ METHOD FUNCTION dbInfo( ... ) CLASS TAlias
 
 /*
     DbOpen
-    Teo. Mexico 2008
 */
 METHOD DbOpen( table, aliasName ) CLASS TAlias
 
@@ -338,7 +327,6 @@ METHOD DbOpen( table, aliasName ) CLASS TAlias
 
 /*
     DbOrderInfo
-    Teo. Mexico 2010
 */
 METHOD FUNCTION dbOrderInfo( ... ) CLASS TAlias
 
@@ -348,7 +336,6 @@ METHOD FUNCTION dbOrderInfo( ... ) CLASS TAlias
 
 /*
     DbRecall
-    Teo. Mexico 2009
 */
 METHOD PROCEDURE dbRecall() CLASS TAlias
 
@@ -359,7 +346,6 @@ METHOD PROCEDURE dbRecall() CLASS TAlias
 
 /*
     DbSkip
-    Teo. Mexico 2007
 */
 METHOD FUNCTION dbSkip( nRecords, indexName ) CLASS TAlias
 
@@ -379,14 +365,12 @@ METHOD FUNCTION dbSkip( nRecords, indexName ) CLASS TAlias
 
 /*
     DbStruct
-    Teo. Mexico 2010
 */
 METHOD FUNCTION dbStruct() CLASS TAlias
    RETURN ( ::workArea )->( dbStruct() )
 
 /*
     Deleted
-    Teo. Mexico 2009
 */
 METHOD FUNCTION Deleted() CLASS TAlias
 
@@ -396,7 +380,6 @@ METHOD FUNCTION Deleted() CLASS TAlias
 
 /*
     Eval
-    Teo. Mexico 2007
 */
 METHOD FUNCTION Eval( codeBlock, ... ) CLASS TAlias
 
@@ -406,28 +389,24 @@ METHOD FUNCTION Eval( codeBlock, ... ) CLASS TAlias
 
 /*
     ExistKey
-    Teo. Mexico 2007
 */
 METHOD FUNCTION ExistKey( KeyValue, IndexName, RecNo ) CLASS TAlias
    RETURN ( ::workArea )->( ExistKey( KeyValue, IndexName, RecNo ) )
 
 /*
     Get4Seek
-    Teo. Mexico 2008
 */
 METHOD FUNCTION Get4Seek( xVal, keyVal, indexName, softSeek ) CLASS TAlias
    RETURN ::RawGet4Seek( 1, xVal, keyVal, indexName, softSeek )
 
 /*
     Get4SeekLast
-    Teo. Mexico 2007
 */
 METHOD FUNCTION Get4SeekLast( xVal, keyVal, indexName, softSeek ) CLASS TAlias
    RETURN ::RawGet4Seek( 0, xVal, keyVal, indexName, softSeek )
 
 /*
     GetFieldValue
-    Teo. Mexico 2007
 */
 METHOD FUNCTION GetFieldValue( fieldName ) CLASS TAlias
 
@@ -437,14 +416,12 @@ METHOD FUNCTION GetFieldValue( fieldName ) CLASS TAlias
 
 /*
     IsLocked
-    Teo. Mexico 2007
 */
 METHOD FUNCTION IsLocked( RecNo ) CLASS TAlias
    RETURN ( ::workArea )->( IsLocked( iif( RecNo == NIL, ::FRecNo, RecNo ) ) )
 
 /*
     KeyVal
-    Teo. Mexico 2007
 */
 METHOD FUNCTION KeyVal( indexName ) CLASS TAlias
 
@@ -454,7 +431,6 @@ METHOD FUNCTION KeyVal( indexName ) CLASS TAlias
 
 /*
     OrdCondSet
-    Teo. Mexico 2010
 */
 METHOD FUNCTION ordCondSet( ... ) CLASS TAlias
 
@@ -464,7 +440,6 @@ METHOD FUNCTION ordCondSet( ... ) CLASS TAlias
 
 /*
     OrdCreate
-    Teo. Mexico 2010
 */
 METHOD FUNCTION ordCreate( ... ) CLASS TAlias
 
@@ -474,7 +449,6 @@ METHOD FUNCTION ordCreate( ... ) CLASS TAlias
 
 /*
     OrdCustom
-    Teo. Mexico 2007
 */
 METHOD FUNCTION ordCustom( Name, cBag, KeyVal ) CLASS TAlias
 
@@ -484,7 +458,6 @@ METHOD FUNCTION ordCustom( Name, cBag, KeyVal ) CLASS TAlias
 
 /*
     ordDescend
-    Teo. Mexico 2007
 */
 METHOD FUNCTION ordDescend( Name, cBag, lDescend ) CLASS TAlias
 
@@ -494,7 +467,6 @@ METHOD FUNCTION ordDescend( Name, cBag, lDescend ) CLASS TAlias
 
 /*
     OrdKeyAdd
-    Teo. Mexico 2007
 */
 METHOD FUNCTION ordKeyAdd( Name, cBag, KeyVal ) CLASS TAlias
 
@@ -504,7 +476,6 @@ METHOD FUNCTION ordKeyAdd( Name, cBag, KeyVal ) CLASS TAlias
 
 /*
     OrdKeyDel
-    Teo. Mexico 2007
 */
 METHOD FUNCTION ordKeyDel( Name, cBag, KeyVal ) CLASS TAlias
 
@@ -514,7 +485,6 @@ METHOD FUNCTION ordKeyDel( Name, cBag, KeyVal ) CLASS TAlias
 
 /*
     OrdKeyNo
-    Teo. Mexico 2010
 */
 METHOD FUNCTION ordKeyNo( ... ) CLASS TAlias
 
@@ -524,7 +494,6 @@ METHOD FUNCTION ordKeyNo( ... ) CLASS TAlias
 
 /*
     OrdKeyVal
-    Teo. Mexico 2012
 */
 METHOD FUNCTION ordKeyVal() CLASS TAlias
 
@@ -534,7 +503,6 @@ METHOD FUNCTION ordKeyVal() CLASS TAlias
 
 /*
     OrdNumber
-    Teo. Mexico 2009
 */
 METHOD FUNCTION ordNumber( ordName, ordBagName ) CLASS TAlias
 
@@ -544,7 +512,6 @@ METHOD FUNCTION ordNumber( ordName, ordBagName ) CLASS TAlias
 
 /*
     OrdSetFocus
-    Teo. Mexico 2007
 */
 METHOD FUNCTION ordSetFocus( Name, cBag ) CLASS TAlias
 
@@ -554,7 +521,6 @@ METHOD FUNCTION ordSetFocus( Name, cBag ) CLASS TAlias
 
 /*
     Pop
-    Teo. Mexico 2009
 */
 METHOD PROCEDURE Pop() CLASS TAlias
 
@@ -571,7 +537,6 @@ METHOD PROCEDURE Pop() CLASS TAlias
 
 /*
     Push
-    Teo. Mexico 2009
 */
 METHOD PROCEDURE Push() CLASS TAlias
 
@@ -588,7 +553,6 @@ METHOD PROCEDURE Push() CLASS TAlias
 
 /*
     RawGet4Seek
-    Teo. Mexico 2009
 */
 METHOD FUNCTION RawGet4Seek( direction, xVal, keyVal, indexName, softSeek ) CLASS TAlias
 
@@ -608,7 +572,6 @@ METHOD FUNCTION RawGet4Seek( direction, xVal, keyVal, indexName, softSeek ) CLAS
 
 /*
     RecLock
-    Teo. Mexico 2007
 */
 METHOD FUNCTION RecLock( RecNo ) CLASS TAlias
 
@@ -632,7 +595,6 @@ METHOD FUNCTION RecLock( RecNo ) CLASS TAlias
 
 /*
     RecUnLock
-    Teo. Mexico 2007
 */
 METHOD FUNCTION RecUnLock( RecNo ) CLASS TAlias
 
@@ -653,7 +615,6 @@ METHOD FUNCTION RecUnLock( RecNo ) CLASS TAlias
 
 /*
     Seek
-    Teo. Mexico 2007
 */
 METHOD FUNCTION SEEK( cKey, indexName, softSeek ) CLASS TAlias
 
@@ -666,7 +627,6 @@ METHOD FUNCTION SEEK( cKey, indexName, softSeek ) CLASS TAlias
 
 /*
     SeekLast
-    Teo. Mexico 2007
 */
 METHOD FUNCTION SeekLast( cKey, indexName, softSeek ) CLASS TAlias
 
@@ -679,7 +639,6 @@ METHOD FUNCTION SeekLast( cKey, indexName, softSeek ) CLASS TAlias
 
 /*
     SetFieldValue
-    Teo. Mexico 2007
 */
 METHOD FUNCTION SetFieldValue( fieldName, value ) CLASS TAlias
 
@@ -689,7 +648,6 @@ METHOD FUNCTION SetFieldValue( fieldName, value ) CLASS TAlias
 
 /*
     SetWorkArea
-    Teo. Mexico 2010
 */
 METHOD PROCEDURE SetWorkArea( workArea ) CLASS TAlias
 
@@ -701,7 +659,6 @@ METHOD PROCEDURE SetWorkArea( workArea ) CLASS TAlias
 
 /*
     SyncFromAlias
-    Teo. Mexico 2007
 */
 METHOD PROCEDURE SyncFromAlias CLASS TAlias
 
@@ -714,7 +671,6 @@ METHOD PROCEDURE SyncFromAlias CLASS TAlias
 
 /*
     SyncFromRecNo
-    Teo. Mexico 2007
 */
 METHOD PROCEDURE SyncFromRecNo CLASS TAlias
 

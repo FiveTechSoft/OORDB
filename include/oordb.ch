@@ -4,7 +4,6 @@
 
 /*
     Arelds.ch
-    Teo. Mexico 2008
 */
 
 #ifndef _OORDB_H_

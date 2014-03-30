@@ -19,7 +19,6 @@
 
 /*
     TField
-    Teo. Mexico 2009
 */
 CLASS TField FROM OORDBBASE
 
@@ -256,7 +255,6 @@ ENDCLASS
 
 /*
     New
-    Teo. Mexico 2006
 */
 METHOD New( Table, curBaseClass ) CLASS TField
 
@@ -269,7 +267,6 @@ METHOD New( Table, curBaseClass ) CLASS TField
 
 /*
     AddFieldMessage
-    Teo. Mexico 2010
 */
 METHOD PROCEDURE AddFieldMessage() CLASS TField
 
@@ -279,7 +276,6 @@ METHOD PROCEDURE AddFieldMessage() CLASS TField
 
 /*
    AddKeyIndex
-   Teo. Mexico 2013
 */
 METHOD PROCEDURE AddKeyIndex( index ) CLASS TField
 
@@ -297,7 +293,6 @@ METHOD PROCEDURE AddKeyIndex( index ) CLASS TField
 
 /*
     CheckEditable
-    Teo. Mexico 2011
 */
 METHOD FUNCTION CheckEditable( flag ) CLASS TField
 
@@ -309,7 +304,6 @@ METHOD FUNCTION CheckEditable( flag ) CLASS TField
 
 /*
     CheckForValidValue
-    Teo. Mexico 2013
 */
 METHOD FUNCTION CheckForValidValue( value ) CLASS TField
     LOCAL result := .T.
@@ -344,7 +338,6 @@ RETURN result
 
 /*
     Clear
-    Teo. Mexico 2012
 */
 METHOD PROCEDURE CLEAR() CLASS TField
 
@@ -356,7 +349,6 @@ METHOD PROCEDURE CLEAR() CLASS TField
 
 /*
     DefaultValuePull
-    Teo. Mexico 2014
 */
 METHOD FUNCTION DefaultValuePull() CLASS TField
     LOCAL oldDefaultValue := ::FDefaultValue
@@ -369,7 +361,6 @@ RETURN oldDefaultValue
 
 /*
     DefaultValuePush
-    Teo. Mexico 2014
 */
 METHOD PROCEDURE DefaultValuePush( newDefaultValue ) CLASS TField
 
@@ -387,7 +378,6 @@ RETURN
 
 /*
     Delete
-    Teo. Mexico 2009
 */
 METHOD PROCEDURE DELETE() CLASS TField
 
@@ -416,7 +406,6 @@ METHOD PROCEDURE DELETE() CLASS TField
 
 /*
     GetAsDisplay
-    Teo. Mexico 2013
 */
 METHOD FUNCTION GetAsDisplay( ... ) CLASS TField
 
@@ -449,7 +438,6 @@ METHOD FUNCTION GetAsDisplay( ... ) CLASS TField
 
 /*
     GetAsVariant
-    Teo. Mexico 2006
 */
 METHOD FUNCTION GetAsVariant( ... ) CLASS TField
 
@@ -507,7 +495,6 @@ METHOD FUNCTION GetAsVariant( ... ) CLASS TField
 
 /*
     GetAutoIncrementValue
-    Teo. Mexico 2009
 */
 METHOD FUNCTION GetAutoIncrementValue() CLASS TField
 
@@ -536,7 +523,6 @@ METHOD FUNCTION GetAutoIncrementValue() CLASS TField
 
 /*
     GetBuffer
-    Teo. Mexico 2009
 */
 METHOD FUNCTION GetBuffer() CLASS TField
 
@@ -563,7 +549,6 @@ METHOD FUNCTION GetBuffer() CLASS TField
 
 /*
     GetCloneData
-    Teo. Mexico 2010
 */
 METHOD FUNCTION GetCloneData( cloneData ) CLASS TField
 
@@ -581,7 +566,6 @@ METHOD FUNCTION GetCloneData( cloneData ) CLASS TField
 
 /*
     GetData
-    Teo. Mexico 2006
 */
 METHOD FUNCTION GetData() CLASS TField
    LOCAL i
@@ -622,7 +606,6 @@ METHOD FUNCTION GetData() CLASS TField
 
 /*
     GetDefaultNewValue
-    Teo. Mexico 2009
 */
 METHOD FUNCTION GetDefaultNewValue( index ) CLASS TField
 
@@ -678,7 +661,6 @@ METHOD FUNCTION GetDefaultNewValue( index ) CLASS TField
 
 /*
     GetEditable
-    Teo. Mexico 2011
 */
 METHOD FUNCTION GetEditable CLASS TField
 
@@ -693,7 +675,6 @@ METHOD FUNCTION GetEditable CLASS TField
 
 /*
     GetEnabled
-    Teo. Mexico 2011
 */
 METHOD FUNCTION GetEnabled() CLASS TField
 
@@ -708,7 +689,6 @@ METHOD FUNCTION GetEnabled() CLASS TField
 
 /*
     GetFieldArray
-    Teo. Mexico 2010
 */
 METHOD FUNCTION GetFieldArray() CLASS TField
 
@@ -723,7 +703,6 @@ METHOD FUNCTION GetFieldArray() CLASS TField
 
 /*
     GetFieldMethod
-    Teo. Mexico 2006
 */
 METHOD FUNCTION GetFieldMethod CLASS TField
 
@@ -740,7 +719,6 @@ METHOD FUNCTION GetFieldMethod CLASS TField
 
 /*
     GetFieldReadBlock
-    Teo. Mexico 2010
 */
 METHOD FUNCTION GetFieldReadBlock() CLASS TField
 
@@ -775,7 +753,6 @@ METHOD FUNCTION GetFieldReadBlock() CLASS TField
 
 /*
     GetKeyIndex
-    Teo. Mexico 2012
 */
 METHOD FUNCTION GetKeyIndex() CLASS TField
 
@@ -791,7 +768,6 @@ METHOD FUNCTION GetKeyIndex() CLASS TField
 
 /*
     GetKeyVal
-    Teo. Mexico 2010
 */
 METHOD FUNCTION GetKeyVal( keyVal, keyFlags ) CLASS TField
 
@@ -845,7 +821,6 @@ METHOD FUNCTION GetKeyVal( keyVal, keyFlags ) CLASS TField
 
 /*
     GetUndoValue
-    Teo. Mexico 2009
 */
 METHOD FUNCTION GetUndoValue() CLASS TField
 
@@ -857,7 +832,6 @@ METHOD FUNCTION GetUndoValue() CLASS TField
 
 /*
     GetValidValues
-    Teo. Mexico 2009
 */
 METHOD FUNCTION GetValidValues() CLASS TField
 
@@ -884,14 +858,12 @@ METHOD FUNCTION GetValidValues() CLASS TField
 
 /*
     IsTableField
-    Teo. Mexico 2010
 */
 METHOD FUNCTION IsTableField() CLASS TField
    RETURN ::FFieldMethodType = "C" .AND. !::FCalculated .AND. ::FUsingField = NIL
 
 /*
     OnSetKeyVal
-    Teo. Mexico 2013
 */
 METHOD PROCEDURE OnSetKeyVal( lSeek, keyVal ) CLASS TField
 
@@ -907,7 +879,6 @@ RETURN
 
 /*
     Reset
-    Teo. Mexico 2009
 */
 METHOD FUNCTION Reset() CLASS TField
 
@@ -1029,7 +1000,6 @@ METHOD FUNCTION Reset() CLASS TField
 
 /*
     RevertValue
-    Teo. Mexico 2010
 */
 METHOD PROCEDURE RevertValue() CLASS TField
 
@@ -1039,7 +1009,6 @@ METHOD PROCEDURE RevertValue() CLASS TField
 
 /*
     SetAsVariant
-    Teo. Mexico 2010
 */
 METHOD FUNCTION SetAsVariant( value ) CLASS TField
 
@@ -1117,7 +1086,6 @@ METHOD FUNCTION SetAsVariant( value ) CLASS TField
 
 /*
     SetBuffer
-    Teo. Mexico 2009
 */
 METHOD FUNCTION SetBuffer( value ) CLASS TField
     LOCAL result
@@ -1157,7 +1125,6 @@ METHOD FUNCTION SetBuffer( value ) CLASS TField
 
 /*
     SetCloneData
-    Teo. Mexico 2010
 */
 METHOD PROCEDURE SetCloneData( cloneData ) CLASS TField
 
@@ -1171,7 +1138,6 @@ METHOD PROCEDURE SetCloneData( cloneData ) CLASS TField
 
 /*
     SetData
-    Teo. Mexico 2006
 */
 METHOD PROCEDURE SetData( value, initialize ) CLASS TField
 
@@ -1357,7 +1323,6 @@ METHOD PROCEDURE SetData( value, initialize ) CLASS TField
 
 /*
     SetDbStruct
-    Teo. Mexico 2010
 */
 METHOD PROCEDURE SetDbStruct( aStruct ) CLASS TField
 
@@ -1373,7 +1338,6 @@ METHOD PROCEDURE SetDbStruct( aStruct ) CLASS TField
 
 /*
     SetDefaultNewValue
-    Teo. Mexico 2012
 */
 METHOD PROCEDURE SetDefaultNewValue( index, value ) CLASS TField
 
@@ -1387,7 +1351,6 @@ METHOD PROCEDURE SetDefaultNewValue( index, value ) CLASS TField
 
 /*
     SetEnabled
-    Teo. Mexico 2011
 */
 METHOD PROCEDURE SetEnabled( enabled ) CLASS TField
 
@@ -1400,7 +1363,6 @@ METHOD PROCEDURE SetEnabled( enabled ) CLASS TField
 
 /*
     SetFieldMethod
-    Teo. Mexico 2006
 */
 METHOD PROCEDURE SetFieldMethod( FieldMethod, calculated ) CLASS TField
 
@@ -1500,7 +1462,6 @@ METHOD PROCEDURE SetFieldMethod( FieldMethod, calculated ) CLASS TField
 
 /*
     SetFieldWriteBlock
-    Teo. Mexico 2013
 */
 METHOD PROCEDURE SetFieldWriteBlock( writeBlock ) CLASS TField
 
@@ -1520,7 +1481,6 @@ METHOD PROCEDURE SetFieldWriteBlock( writeBlock ) CLASS TField
 
 /*
     SetIsMasterFieldComponent
-    Teo. Mexico 2009
 */
 METHOD PROCEDURE SetIsMasterFieldComponent( IsMasterFieldComponent ) CLASS TField
 
@@ -1544,7 +1504,6 @@ METHOD PROCEDURE SetIsMasterFieldComponent( IsMasterFieldComponent ) CLASS TFiel
 
 /*
     SetKeyVal
-    Teo. Mexico 2010
 */
 METHOD FUNCTION SetKeyVal( keyVal, lSoftSeek ) CLASS TField
 
@@ -1587,7 +1546,6 @@ METHOD FUNCTION SetKeyVal( keyVal, lSoftSeek ) CLASS TField
 
 /*
     SetName
-    Teo. Mexico 2006
 */
 METHOD PROCEDURE SetName( name ) CLASS TField
 
@@ -1605,7 +1563,6 @@ METHOD PROCEDURE SetName( name ) CLASS TField
 
 /*
     SetPrimaryKeyComponent
-    Teo. Mexico 2009
 */
 METHOD PROCEDURE SetPrimaryKeyComponent( PrimaryKeyComponent ) CLASS TField
 
@@ -1626,7 +1583,6 @@ METHOD PROCEDURE SetPrimaryKeyComponent( PrimaryKeyComponent ) CLASS TField
 
 /*
     SetUsingField
-    Teo. Mexico 2009
 */
 METHOD PROCEDURE SetUsingField( usingField ) CLASS TField
 
@@ -1640,7 +1596,6 @@ METHOD PROCEDURE SetUsingField( usingField ) CLASS TField
 
 /*
     SetValidValues
-    Teo. Mexico 2011
 */
 METHOD PROCEDURE SetValidValues( validValues ) CLASS TField
 
@@ -1650,7 +1605,6 @@ METHOD PROCEDURE SetValidValues( validValues ) CLASS TField
 
 /*
     Type
-    Teo. Mexico 2013
 */
 METHOD Type( locale ) CLASS TField
     LOCAL type := ::FType
@@ -1663,7 +1617,6 @@ RETURN type
 
 /*
     Validate
-    Teo. Mexico 2011
 */
 METHOD FUNCTION Validate( showAlert, value ) CLASS TField
 
@@ -1749,7 +1702,6 @@ METHOD FUNCTION Validate( showAlert, value ) CLASS TField
 
 /*
     WriteToTable
-    Teo. Mexico 2010
 */
 METHOD PROCEDURE WriteToTable( value, oldBuffer ) CLASS TField
 
@@ -1777,7 +1729,6 @@ METHOD PROCEDURE WriteToTable( value, oldBuffer ) CLASS TField
 
 /*
     TStringField
-    Teo. Mexico 2006
 */
 CLASS TStringField FROM TField
 
@@ -1810,7 +1761,6 @@ ENDCLASS
 
 /*
     GetAsString
-    Teo. Mexico 2009
 */
 METHOD FUNCTION GetAsString() CLASS TStringField
 
@@ -1831,7 +1781,6 @@ METHOD FUNCTION GetAsString() CLASS TStringField
 
 /*
     GetSize
-    Teo. Mexico 2010
 */
 METHOD FUNCTION GetSize() CLASS TStringField
 
@@ -1850,7 +1799,6 @@ METHOD FUNCTION GetSize() CLASS TStringField
 
 /*
     IndexExpression
-    Teo. Mexico 2010
 */
 METHOD FUNCTION IndexExpression( fieldName, isMasterFieldComponent ) CLASS TStringField
 
@@ -1886,7 +1834,6 @@ METHOD FUNCTION IndexExpression( fieldName, isMasterFieldComponent ) CLASS TStri
 
 /*
     SetBuffer
-    Teo. Mexico 2009
 */
 METHOD FUNCTION SetBuffer( buffer ) CLASS TStringField
 
@@ -1902,7 +1849,6 @@ METHOD FUNCTION SetBuffer( buffer ) CLASS TStringField
 
 /*
     SetDBS_LEN
-    Teo. Mexico 2010
 */
 METHOD PROCEDURE SetDBS_LEN( dbs_Len ) CLASS TStringField
 
@@ -1915,7 +1861,6 @@ METHOD PROCEDURE SetDBS_LEN( dbs_Len ) CLASS TStringField
 
 /*
     SetDefaultValue
-    Teo. Mexico 2006
 */
 METHOD PROCEDURE SetDefaultValue( DefaultValue ) CLASS TStringField
 
@@ -1927,7 +1872,6 @@ METHOD PROCEDURE SetDefaultValue( DefaultValue ) CLASS TStringField
 
 /*
     SetSize
-    Teo. Mexico 2010
 */
 METHOD PROCEDURE SetSize( size ) CLASS TStringField
 
@@ -1942,7 +1886,6 @@ METHOD PROCEDURE SetSize( size ) CLASS TStringField
 
 /*
     TMemoField
-    Teo. Mexico 2006
 */
 CLASS TMemoField FROM TStringField
 
@@ -1967,7 +1910,6 @@ ENDCLASS
 
 /*
     TNumericField
-    Teo. Mexico 2006
 */
 CLASS TNumericField FROM TField
 
@@ -1998,7 +1940,6 @@ ENDCLASS
 
 /*
     GetAsString
-    Teo. Mexico 2009
 */
 METHOD FUNCTION GetAsString( value ) CLASS TNumericField
 
@@ -2023,7 +1964,6 @@ METHOD FUNCTION GetAsString( value ) CLASS TNumericField
 
 /*
     GetKeyVal
-    Teo. Mexico 2010
 */
 METHOD FUNCTION GetKeyVal( keyVal ) CLASS TNumericField
 
@@ -2042,7 +1982,6 @@ METHOD FUNCTION GetKeyVal( keyVal ) CLASS TNumericField
 
 /*
     IndexExpression
-    Teo. Mexico 2010
 */
 METHOD FUNCTION IndexExpression( fieldName ) CLASS TNumericField
 
@@ -2057,7 +1996,6 @@ METHOD FUNCTION IndexExpression( fieldName ) CLASS TNumericField
 
 /*
     SetAsVariant
-    Teo. Mexico 2009
 */
 METHOD PROCEDURE SetAsVariant( variant ) CLASS TNumericField
 
@@ -2078,7 +2016,6 @@ METHOD PROCEDURE SetAsVariant( variant ) CLASS TNumericField
 
 /*
     TIntegerField
-    Teo. Mexico 2009
 */
 CLASS TIntegerField FROM TNumericField
 
@@ -2106,7 +2043,6 @@ ENDCLASS
 
 /*
     GetKeyVal
-    Teo. Mexico 2010
 */
 METHOD FUNCTION GetKeyVal( keyVal ) CLASS TIntegerField
 
@@ -2125,7 +2061,6 @@ METHOD FUNCTION GetKeyVal( keyVal ) CLASS TIntegerField
 
 /*
     IndexExpression
-    Teo. Mexico 2010
 */
 METHOD FUNCTION IndexExpression( fieldName ) CLASS TIntegerField
 
@@ -2140,7 +2075,6 @@ METHOD FUNCTION IndexExpression( fieldName ) CLASS TIntegerField
 
 /*
     SetAsVariant
-    Teo. Mexico 2009
 */
 METHOD PROCEDURE SetAsVariant( variant ) CLASS TIntegerField
 
@@ -2161,7 +2095,6 @@ METHOD PROCEDURE SetAsVariant( variant ) CLASS TIntegerField
 
 /*
     TAutoIncField
-    Teo. Mexico 2012
 */
 CLASS TAutoIncField FROM TIntegerField
 
@@ -2182,7 +2115,6 @@ ENDCLASS
 
 /*
     TTimeField
-    Teo. Mexico 2012
 */
 CLASS TTimeField FROM TField
 
@@ -2228,7 +2160,6 @@ ENDCLASS
 
 /*
     GetAs
-    Teo. Mexico 2012
 */
 METHOD FUNCTION GetAs( index ) CLASS TTimeField
 
@@ -2246,7 +2177,6 @@ METHOD FUNCTION GetAs( index ) CLASS TTimeField
 
 /*
     GetAsVariant
-    Teo. Mexico 2013
 */
 METHOD FUNCTION GetAsVariant( ... ) CLASS TTimeField
 
@@ -2270,7 +2200,6 @@ METHOD FUNCTION GetAsVariant( ... ) CLASS TTimeField
 
 /*
     GetKeyVal
-    Teo. Mexico 2012
 */
 METHOD FUNCTION GetKeyVal( keyVal ) CLASS TTimeField
 
@@ -2282,7 +2211,6 @@ METHOD FUNCTION GetKeyVal( keyVal ) CLASS TTimeField
 
 /*
     IndexExpression
-    Teo. Mexico 2012
 */
 METHOD FUNCTION IndexExpression( fieldName ) CLASS TTimeField
 
@@ -2297,7 +2225,6 @@ METHOD FUNCTION IndexExpression( fieldName ) CLASS TTimeField
 
 /*
     SetAsVariant
-    Teo. Mexico 2014
 */
 METHOD PROCEDURE SetAsVariant( variant ) CLASS TTimeField
     LOCAL time
@@ -2324,14 +2251,12 @@ RETURN
 
 /*
     TranslateToFieldValue
-    Teo. Mexico 2013
 */
 METHOD FUNCTION TranslateToFieldValue( value ) CLASS TTimeField
    RETURN value:AsSeconds
 
 /*
     TranslateToValue
-    Teo. Mexico 2013
 */
 METHOD FUNCTION TranslateToValue( value ) CLASS TTimeField
 
@@ -2351,7 +2276,6 @@ METHOD FUNCTION TranslateToValue( value ) CLASS TTimeField
 
 /*
     TFloatField
-    Teo. Mexico 2010
 */
 CLASS TFloatField FROM TNumericField
 
@@ -2375,7 +2299,6 @@ ENDCLASS
 
 /*
     TLogicalField
-    Teo. Mexico 2006
 */
 CLASS TLogicalField FROM TField
 
@@ -2404,14 +2327,12 @@ ENDCLASS
 
 /*
     GetAsString
-    Teo. Mexico 2012
 */
 METHOD FUNCTION GetAsString() CLASS TLogicalField
    RETURN iif( ::Value, ".T.", ".F." )
 
 /*
     GetKeyVal
-    Teo. Mexico 2010
 */
 METHOD FUNCTION GetKeyVal( keyVal ) CLASS TLogicalField
 
@@ -2430,7 +2351,6 @@ METHOD FUNCTION GetKeyVal( keyVal ) CLASS TLogicalField
 
 /*
     IndexExpression
-    Teo. Mexico 2010
 */
 METHOD FUNCTION IndexExpression( fieldName ) CLASS TLogicalField
 
@@ -2449,7 +2369,6 @@ METHOD FUNCTION IndexExpression( fieldName ) CLASS TLogicalField
 
 /*
     TDateField
-    Teo. Mexico 2006
 */
 CLASS TDateField FROM TField
 
@@ -2479,7 +2398,6 @@ ENDCLASS
 
 /*
     GetKeyVal
-    Teo. Mexico 2010
 */
 METHOD FUNCTION GetKeyVal( keyVal ) CLASS TDateField
 
@@ -2498,7 +2416,6 @@ METHOD FUNCTION GetKeyVal( keyVal ) CLASS TDateField
 
 /*
     IndexExpression
-    Teo. Mexico 2010
 */
 METHOD FUNCTION IndexExpression( fieldName ) CLASS TDateField
 
@@ -2513,7 +2430,6 @@ METHOD FUNCTION IndexExpression( fieldName ) CLASS TDateField
 
 /*
     SetAsVariant
-    Teo. Mexico 2009
 */
 METHOD PROCEDURE SetAsVariant( variant ) CLASS TDateField
 
@@ -2534,7 +2450,6 @@ METHOD PROCEDURE SetAsVariant( variant ) CLASS TDateField
 
 /*
     TDateTimeField
-    Teo. Mexico 2009
 */
 CLASS TDateTimeField FROM TField
 
@@ -2585,7 +2500,6 @@ ENDCLASS
 
 /*
     DiffSeconds
-    Teo. Mexico 2011
 */
 METHOD FUNCTION DiffSeconds( dateTimePrev ) CLASS TDateTimeField
 
@@ -2612,7 +2526,6 @@ METHOD FUNCTION DiffSeconds( dateTimePrev ) CLASS TDateTimeField
 
 /*
     GetAsString
-    Teo. Mexico 2012
 */
 METHOD FUNCTION GetAsString( value ) CLASS TDateTimeField
 
@@ -2627,7 +2540,6 @@ METHOD FUNCTION GetAsString( value ) CLASS TDateTimeField
 
 /*
     GetAsTime
-    Teo. Mexico 2011
 */
 METHOD GetAsTime() CLASS TDateTimeField
 
@@ -2644,7 +2556,6 @@ METHOD GetAsTime() CLASS TDateTimeField
 
 /*
     GetKeyVal
-    Teo. Mexico 2010
 */
 METHOD FUNCTION GetKeyVal( keyVal ) CLASS TDateTimeField
 
@@ -2663,7 +2574,6 @@ METHOD FUNCTION GetKeyVal( keyVal ) CLASS TDateTimeField
 
 /*
     IndexExpression
-    Teo. Mexico 2010
 */
 METHOD FUNCTION IndexExpression( fieldName ) CLASS TDateTimeField
 
@@ -2678,7 +2588,6 @@ METHOD FUNCTION IndexExpression( fieldName ) CLASS TDateTimeField
 
 /*
     SetAsTime
-    Teo. Mexico 2011
 */
 METHOD PROCEDURE SetAsTime( cTime ) CLASS TDateTimeField
 
@@ -2688,7 +2597,6 @@ METHOD PROCEDURE SetAsTime( cTime ) CLASS TDateTimeField
 
 /*
     SetAsVariant
-    Teo. Mexico 2009
 */
 METHOD PROCEDURE SetAsVariant( variant ) CLASS TDateTimeField
 
@@ -2721,7 +2629,6 @@ METHOD PROCEDURE SetAsVariant( variant ) CLASS TDateTimeField
 
 /*
     TModTimeField
-    Teo. Mexico 2009
 */
 CLASS TModTimeField FROM TDateTimeField
 
@@ -2745,7 +2652,6 @@ ENDCLASS
 
 /*
     TObjectField
-    Teo. Mexico 2009
 */
 CLASS TObjectField FROM TField
 
@@ -2805,7 +2711,6 @@ ENDCLASS
 
 /*
     BaseKeyField
-    Teo. Mexico 2011
 */
 METHOD FUNCTION BaseKeyField() CLASS TObjectField
 
@@ -2822,7 +2727,6 @@ METHOD FUNCTION BaseKeyField() CLASS TObjectField
 
 /*
     BuildLinkedTable
-    Teo. Mexico 2011
 */
 METHOD PROCEDURE BuildLinkedTable() CLASS TObjectField
 
@@ -2914,7 +2818,6 @@ METHOD PROCEDURE BuildLinkedTable() CLASS TObjectField
 /*
     DataObj
     Syncs the Table with the key in buffer
-    Teo. Mexico 2009
 */
 METHOD FUNCTION DataObj CLASS TObjectField
 
@@ -2985,14 +2888,12 @@ METHOD FUNCTION DataObj CLASS TObjectField
 
 /*
     GetAsString
-    Teo. Mexico 2009
 */
 METHOD FUNCTION GetAsString() CLASS TObjectField
    RETURN ::DataObj:GetAsString()
 
 /*
     GetAsVariant
-    Teo. Mexico 2010
 */
 METHOD FUNCTION GetAsVariant( ... ) CLASS TObjectField
 
@@ -3020,7 +2921,6 @@ METHOD FUNCTION GetAsVariant( ... ) CLASS TObjectField
 
 /*
     GetFieldReadBlock
-    Teo. Mexico 2010
 */
 METHOD FUNCTION GetFieldReadBlock() CLASS TObjectField
 
@@ -3039,7 +2939,6 @@ METHOD FUNCTION GetFieldReadBlock() CLASS TObjectField
 
 /*
     GetKeyVal
-    Teo. Mexico 2009
 */
 METHOD FUNCTION GetKeyVal( keyVal ) CLASS TObjectField
 
@@ -3051,7 +2950,6 @@ METHOD FUNCTION GetKeyVal( keyVal ) CLASS TObjectField
 
 /*
     GetLabel
-    Teo. Mexico 2012
 */
 METHOD FUNCTION GetLabel() CLASS TObjectField
 
@@ -3066,7 +2964,6 @@ METHOD FUNCTION GetLabel() CLASS TObjectField
 
 /*
     GetLinkedTable
-    Teo. Mexico 2009
 */
 METHOD FUNCTION GetLinkedTable CLASS TObjectField
 
@@ -3124,14 +3021,12 @@ METHOD FUNCTION GetLinkedTable CLASS TObjectField
 
 /*
     GetOnDataChange
-    Teo. Mexico 2011
 */
 METHOD FUNCTION GetOnDataChange() CLASS TObjectField
    RETURN ::GetLinkedTable:OnDataChangeBlock
 
 /*
     GetValidValues
-    Teo. Mexico 2009
 */
 METHOD FUNCTION GetValidValues() CLASS TObjectField
 
@@ -3155,7 +3050,6 @@ METHOD FUNCTION GetValidValues() CLASS TObjectField
 
 /*
     IndexExpression
-    Teo. Mexico 2010
 */
 METHOD FUNCTION IndexExpression( fieldName ) CLASS TObjectField
 
@@ -3179,7 +3073,6 @@ METHOD FUNCTION IndexExpression( fieldName ) CLASS TObjectField
 
 /*
     SetLinkedTableMasterSource
-    Teo. Mexico 2011
 */
 METHOD PROCEDURE SetLinkedTableMasterSource( linkedTable ) CLASS TObjectField
 
@@ -3202,7 +3095,6 @@ METHOD PROCEDURE SetLinkedTableMasterSource( linkedTable ) CLASS TObjectField
 
 /*
     SetOnDataChange
-    Teo. Mexico 2011
 */
 METHOD PROCEDURE SetOnDataChange( onDataChangeBlock ) CLASS TObjectField
 
@@ -3212,7 +3104,6 @@ METHOD PROCEDURE SetOnDataChange( onDataChangeBlock ) CLASS TObjectField
 
 /*
     SetValidValues
-    Teo. Mexico 2011
 */
 METHOD PROCEDURE SetValidValues( validValues, labelField ) CLASS TObjectField
 
@@ -3227,7 +3118,6 @@ METHOD PROCEDURE SetValidValues( validValues, labelField ) CLASS TObjectField
 
 /*
     TVariantField
-    Teo. Mexico 2010
 */
 CLASS TVariantField FROM TField
 

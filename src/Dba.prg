@@ -4,7 +4,6 @@
 
 /*
     dba : database access
-    Teo. Mexico 2008
 */
 
 #include "inkey.ch"
@@ -14,7 +13,6 @@ STATIC aws := {}                  // stack de PushWS/PopWS
 
 /*
     AddRec
-    Teo. Mexico 2008
 */
 FUNCTION AddRec( nrec, index )
 
@@ -73,7 +71,6 @@ FUNCTION AddRec( nrec, index )
 
 /*
     RecClear
-    Teo. Mexico 2008
 */
 FUNCTION RecCLEAR()
 
@@ -123,7 +120,6 @@ FUNCTION DbSkipX( n, ord )
 
 /*
     ExistKey() : Checa si existe key en indice dado
-    Teo. Mexico 1996
 */
 FUNCTION ExistKey( cKey, xOrder, nRec, bFor, bEval )
 
@@ -218,7 +214,6 @@ FUNCTION Get4SeekLast( var, xs, no, ss )
 
 /*
     GetNextEmpty
-    Teo. Mexico 2008
 */
 STATIC FUNCTION GetNextEmpty( index )
 
@@ -267,7 +262,6 @@ STATIC FUNCTION GetNextEmpty( index )
 
 /*
     DbGoBottom
-    Teo. Mexico 2008
 */
 FUNCTION DbGoBottomX( ord )
 
@@ -286,7 +280,6 @@ FUNCTION DbGoBottomX( ord )
 
 /*
     DbGoTopX
-    Teo. Mexico 2008
 */
 FUNCTION DbGoTopX( ord )
 
@@ -305,7 +298,6 @@ FUNCTION DbGoTopX( ord )
 
 /*
     IsLocked
-    Teo. Mexico 2008
 */
 FUNCTION IsLocked( recNo )
    RETURN dbRecordInfo( DBRI_LOCKED, recNo )
@@ -331,7 +323,6 @@ FUNCTION KeyVal( ord )
 
 /*
     PopWS
-    Teo. Mexico 2008
 */
 FUNCTION PopWS( n )
 
@@ -366,7 +357,6 @@ FUNCTION PopWS( n )
 
 /*
     PushWS
-    Teo. Mexico 2008
 */
 FUNCTION PushWS( p )
 
@@ -384,7 +374,6 @@ FUNCTION PushWS( p )
 
 /*
     RecLock
-    Teo. Mexico 2008
 */
 FUNCTION RecLock( nr, n )
 
@@ -424,7 +413,6 @@ FUNCTION RecLock( nr, n )
 
 /*
     RecUnLock
-    Teo. Mexico 2008
 */
 FUNCTION RecUnLock( n )
 
