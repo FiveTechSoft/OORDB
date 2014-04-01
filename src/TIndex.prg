@@ -147,6 +147,7 @@ CLASS TIndex FROM OORDBBASE
    PROPERTY MasterKeyVal READ GetMasterKeyVal
    PROPERTY RightJustified READ FRightJustified WRITE SetRightJustified
    PROPERTY Table READ FTable
+   PROPERTY TableBaseClass READ FTableBaseClass
    PROPERTY TagName READ FTagName
    PROPERTY UNIQUE READ GetUnique
 

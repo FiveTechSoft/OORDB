@@ -2,6 +2,14 @@
  * $Id: ChangeLog 155 2013-06-06 03:29:32Z tfonrouge $
  */
 
+Tue Apr  1 04:28:11 UTC 2014 Teo Fonrouge (tfonrouge@gmail.com)
+  M src/TIndex.prg
+    + ppty 'TableBaseClass'
+
+  M src/TTable.prg
+    + ppty 'TableBaseClass'
+    % using ftType to check field type
+
 Sun Mar 30 16:44:39 UTC 2014 Teo Fonrouge (tfonrouge@gmail.com)
   M include/oordb.ch
   M include/xerror.ch

@@ -365,6 +365,7 @@ CLASS TTable FROM OORDBBASE
    PROPERTY State READ FState
    PROPERTY SubState READ FSubState
    PROPERTY SyncingToContainerField READ FSyncingToContainerField WRITE SetSyncingToContainerField
+   PROPERTY TableBaseClass READ BaseKeyIndex:TableBaseClass
    PROPERTY TableFileName READ GetTableFileName WRITE SetTableFileName
    PROPERTY UndoList READ FUndoList
 
@@ -1751,7 +1752,7 @@ METHOD FUNCTION FieldByObjClass( objClass, derived, index ) CLASS TTable
 
    IF derived == .T.
       FOR EACH fld IN ::FFieldList
-         IF fld:IsDerivedFrom( "TObjectField" )
+         IF fld:FieldType = ftObject
             IF fld:LinkedTable:IsDerivedFrom( objClass )
                index := fld:__enumIndex
                RETURN fld
@@ -1760,7 +1761,7 @@ METHOD FUNCTION FieldByObjClass( objClass, derived, index ) CLASS TTable
       NEXT
    ELSE
       FOR EACH fld IN ::FFieldList
-         IF fld:IsDerivedFrom( "TObjectField" )
+         IF fld:FieldType = ftObject
             IF fld:LinkedTable:ClassName() == objClass
                index := fld:__enumIndex
                RETURN fld
