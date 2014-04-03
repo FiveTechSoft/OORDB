@@ -2,6 +2,10 @@
  * $Id: ChangeLog 155 2013-06-06 03:29:32Z tfonrouge $
  */
 
+Thu Apr  3 00:47:05 UTC 2014 Teo Fonrouge (tfonrouge@gmail.com)
+  M src/TField.prg
+    % show error on validating value
+
 Tue Apr  1 04:28:11 UTC 2014 Teo Fonrouge (tfonrouge@gmail.com)
   M src/TIndex.prg
     + ppty 'TableBaseClass'

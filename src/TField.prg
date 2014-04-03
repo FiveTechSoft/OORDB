@@ -95,7 +95,7 @@ CLASS TField FROM OORDBBASE
    DATA FValType INIT "U"
    DATA FWrittenValue
 
-   METHOD CheckForValidValue( value )
+   METHOD CheckForValidValue( value, showAlert, errorStr )
    METHOD GetAsExpression INLINE hb_StrToExp( ::GetAsString )
    METHOD GetCloneData( cloneData )
    METHOD GetDBS_LEN INLINE ::FDBS_LEN
@@ -305,7 +305,7 @@ METHOD FUNCTION CheckEditable( flag ) CLASS TField
 /*
     CheckForValidValue
 */
-METHOD FUNCTION CheckForValidValue( value ) CLASS TField
+METHOD FUNCTION CheckForValidValue( value, showAlert, errorStr ) CLASS TField
     LOCAL result := .T.
     LOCAL validValues
 
@@ -333,6 +333,22 @@ METHOD FUNCTION CheckForValidValue( value ) CLASS TField
         END SEQUENCE
 
     ENDIF
+
+    IF ! result == .T.
+
+        IF result = NIL
+            errorStr := ::FTable:ClassName + ": '" + ::GetLabel() + "' <Illegal data in 'ValidValues'> "
+            IF showAlert == .T.
+                SHOW WARN errorStr
+            ENDIF
+        ELSE
+            errorStr := ::FTable:ClassName + ": '" + ::GetLabel() + "' <value given not in 'ValidValues'> : '" + AsString( value ) + "'"
+            IF showAlert == .T.
+                SHOW WARN errorStr
+            ENDIF
+        ENDIF
+
+   ENDIF
 
 RETURN result
 
@@ -1093,7 +1109,7 @@ METHOD FUNCTION SetBuffer( value ) CLASS TField
 
     value := ::TranslateToValue( value )
 
-    result := ::CheckForValidValue( value ) == .T.
+    result := ::CheckForValidValue( value, .T. ) == .T.
 
     IF result
 
@@ -1659,21 +1675,9 @@ METHOD FUNCTION Validate( showAlert, value ) CLASS TField
          NEXT
       ENDIF
 
-      l := ::CheckForValidValue( value )
+      l := ::CheckForValidValue( value, showAlert, @result )
 
-      IF l = NIL
-         result := ::FTable:ClassName + ": '" + ::GetLabel() + "' <Illegal value in 'ValidValues'> "
-         IF showAlert == .T.
-            SHOW WARN result
-         ENDIF
-         RETURN result
-      ENDIF
-
-      IF !l
-         result := ::FTable:ClassName + ": '" + ::GetLabel() + "' <value given not in 'ValidValues'> : '" + AsString( value ) + "'"
-         IF showAlert == .T.
-            SHOW WARN result
-         ENDIF
+      IF ! l == .T.
          RETURN result
       ENDIF
 
