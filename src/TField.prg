@@ -14,7 +14,7 @@
       RAISE ERROR E"\nTable: <" + ::FTable:ClassName() + ">, FieldExpression: <" + < name > + ">" + ;
       E"\n" + ;
       < cDescription > + E"\n" ;
-      SUBSYSTEM ::ClassName + "<'" + ::GetLabel() + "'>" ;
+      SUBSYSTEM ::ClassName + "<'" + ::Name + "'>" ;
       OPERATION E"\n" + ProcName( 0 ) + "(" + LTrim( Str( ProcLine( 0 ) ) ) + ")"
 
 /*
@@ -337,12 +337,12 @@ METHOD FUNCTION CheckForValidValue( value, showAlert, errorStr ) CLASS TField
     IF ! result == .T.
 
         IF result = NIL
-            errorStr := ::FTable:ClassName + ": '" + ::GetLabel() + "' <Illegal data in 'ValidValues'> "
+            errorStr := ::FTable:ClassName + ": '" + ::Name + "' <Illegal data in 'ValidValues'> "
             IF showAlert == .T.
                 SHOW WARN errorStr
             ENDIF
         ELSE
-            errorStr := ::FTable:ClassName + ": '" + ::GetLabel() + "' <value given not in 'ValidValues'> : '" + AsString( value ) + "'"
+            errorStr := ::FTable:ClassName + ": '" + ::Name + "' <value given not in 'ValidValues'> : '" + AsString( value ) + "'"
             IF showAlert == .T.
                 SHOW WARN errorStr
             ENDIF
@@ -1248,7 +1248,7 @@ METHOD PROCEDURE SetData( value, initialize ) CLASS TField
    ENDIF
 
    IF ::FCheckEditable .AND. !::Editable()
-      SHOW WARN ::FTable:ClassName + ": '" + ::GetLabel() + "' <field is not editable>"
+      SHOW WARN ::FTable:ClassName + ": '" + ::Name + "' <field is not editable>"
       RETURN
    ENDIF
 
@@ -1256,7 +1256,7 @@ METHOD PROCEDURE SetData( value, initialize ) CLASS TField
     /* TODO: Check childs for KeyField
     IF ::FTable:PrimaryIndex != NIL .AND. ::FTable:PrimaryIndex:UniqueKeyField == Self .AND. ::FWrittenValue != NIL
         IF !Empty( ::FTable:Childs() )
-            SHOW WARN "Can't modify key <'"+::GetLabel()+"'> with " + AsString( Value ) + ";Has dependant child tables."
+            SHOW WARN "Can't modify key <'"+::Name+"'> with " + AsString( Value ) + ";Has dependant child tables."
             RETURN
         ENDIF
     ENDIF
@@ -1266,7 +1266,7 @@ METHOD PROCEDURE SetData( value, initialize ) CLASS TField
       BEGIN SEQUENCE WITH ::FTable:ErrorBlock
          result := ::OnBeforeChange:Eval( ::FTable, value )
       RECOVER
-         SHOW WARN ::FTable:ClassName + ": '" + ::GetLabel() + "' <Error at 'OnBeforeChange'>"
+         SHOW WARN ::FTable:ClassName + ": '" + ::Name + "' <Error at 'OnBeforeChange'>"
          result := .F.
       END SEQUENCE
       IF !result
@@ -1550,7 +1550,7 @@ METHOD FUNCTION SetKeyVal( keyVal, lSoftSeek ) CLASS TField
 
       ELSE
 
-         SHOW WARN "Field '" + ::GetLabel() + "' has no Index in the '" + ::FTable:ClassName() + "' Table..."
+         SHOW WARN "Field '" + ::Name + "' has no Index in the '" + ::FTable:ClassName() + "' Table..."
 
       ENDIF
 
@@ -1648,7 +1648,7 @@ METHOD FUNCTION Validate( showAlert, value ) CLASS TField
       ENDIF
 
       IF ::FRequired .AND. Empty( value )
-         result := ::FTable:ClassName + ": '" + ::GetLabel() + "' <empty field required value>"
+         result := ::FTable:ClassName + ": '" + ::Name + "' <empty field required value>"
          IF showAlert == .T.
             SHOW WARN result
          ENDIF
@@ -1657,7 +1657,7 @@ METHOD FUNCTION Validate( showAlert, value ) CLASS TField
 
       IF ::Unique
          IF Empty( value ) .AND. !::AcceptEmptyUnique
-            result := ::FTable:ClassName + ": '" + ::GetLabel() + "' <empty UNIQUE INDEX key value>"
+            result := ::FTable:ClassName + ": '" + ::Name + "' <empty UNIQUE INDEX key value>"
             IF showAlert == .T.
                SHOW WARN result
             ENDIF
@@ -1666,7 +1666,7 @@ METHOD FUNCTION Validate( showAlert, value ) CLASS TField
          FOR EACH INDEX IN ::FUniqueKeyIndexList
             indexWarnMsg := index:WarnMsg
             IF !Empty( value ) .AND. index:ExistKey( ::GetKeyVal( value, index:KeyFlags ) )
-               result := ::FTable:ClassName + ": " + iif( !Empty( indexWarnMsg ), indexWarnMsg, "'" + ::GetLabel() + "' <key value already exists> '" + AsString( value ) + "'" )
+               result := ::FTable:ClassName + ": " + iif( !Empty( indexWarnMsg ), indexWarnMsg, "'" + ::Name + "' <key value already exists> '" + AsString( value ) + "'" )
                IF showAlert == .T.
                   SHOW WARN result
                ENDIF
@@ -1688,12 +1688,12 @@ METHOD FUNCTION Validate( showAlert, value ) CLASS TField
             l := NIL
          END SEQUENCE
          IF l = NIL
-            result := ::FTable:ClassName + ": '" + ::GetLabel() + "' <Error at 'OnValidate'> "
+            result := ::FTable:ClassName + ": '" + ::Name + "' <Error at 'OnValidate'> "
             IF showAlert == .T.
                SHOW WARN result
             ENDIF
          ELSEIF !l
-            result := ::FTable:ClassName + ": '" + ::GetLabel() + E"' OnValidate:\n<" + iif( ::OnValidateWarn = NIL, "Value Not Valid", ::OnValidateWarn ) + "> "
+            result := ::FTable:ClassName + ": '" + ::Name + E"' OnValidate:\n<" + iif( ::OnValidateWarn = NIL, "Value Not Valid", ::OnValidateWarn ) + "> "
             IF showAlert == .T.
                SHOW WARN result
             ENDIF
@@ -1980,7 +1980,7 @@ METHOD FUNCTION GetKeyVal( keyVal ) CLASS TNumericField
       RETURN StrZero( ::GetAsVariant(), ::FDBS_LEN, ::FDBS_DEC )
    ENDSWITCH
 
-   RAISE TFIELD ::GetLabel() ERROR "Don't know how to convert to key value..."
+   RAISE TFIELD ::Name ERROR "Don't know how to convert to key value..."
 
    RETURN NIL
 
@@ -2059,7 +2059,7 @@ METHOD FUNCTION GetKeyVal( keyVal ) CLASS TIntegerField
       RETURN hb_NumToHex( ::GetAsVariant(), 8 )
    ENDSWITCH
 
-   RAISE TFIELD ::GetLabel() ERROR "Don't know how to convert to key value ('" + ValType( keyVal ) + "')..."
+   RAISE TFIELD ::Name ERROR "Don't know how to convert to key value ('" + ValType( keyVal ) + "')..."
 
    RETURN NIL
 
@@ -2349,7 +2349,7 @@ METHOD FUNCTION GetKeyVal( keyVal ) CLASS TLogicalField
       RETURN iif( ::GetAsVariant(), "T", "F" )
    ENDSWITCH
 
-   RAISE TFIELD ::GetLabel() ERROR "Don't know how to convert to key value..."
+   RAISE TFIELD ::Name ERROR "Don't know how to convert to key value..."
 
    RETURN NIL
 
@@ -2414,7 +2414,7 @@ METHOD FUNCTION GetKeyVal( keyVal ) CLASS TDateField
       RETURN DToS( ::GetAsVariant() )
    ENDSWITCH
 
-   RAISE TFIELD ::GetLabel() ERROR "Don't know how to convert to key value..."
+   RAISE TFIELD ::Name ERROR "Don't know how to convert to key value..."
 
    RETURN NIL
 
@@ -2572,7 +2572,7 @@ METHOD FUNCTION GetKeyVal( keyVal ) CLASS TDateTimeField
       RETURN hb_TToS( ::GetAsVariant() )
    ENDSWITCH
 
-   RAISE TFIELD ::GetLabel() ERROR "Don't know how to convert to key value..."
+   RAISE TFIELD ::Name ERROR "Don't know how to convert to key value..."
 
    RETURN hb_TToS( keyVal )
 
