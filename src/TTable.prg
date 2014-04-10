@@ -644,6 +644,8 @@ METHOD FUNCTION AddRec() CLASS TTable
    ::FeditStatePrevious := dsInsert
    ::FSubState := dssAdding
 
+    XAltD()
+
    // ::Reset() // Reset record data to default values
    FOR EACH AField IN ::FFieldList
       IF !AField:Calculated .AND. AField:FieldMethodType = "C"
@@ -1804,8 +1806,6 @@ STATIC PROCEDURE F_FillPrimaryIndexes( Self, curClass )
    LOCAL className
    LOCAL AIndex
    LOCAL AField
-   LOCAL isEmpty
-   LOCAL itm
 
    className := curClass:ClassName()
 
@@ -1833,22 +1833,8 @@ STATIC PROCEDURE F_FillPrimaryIndexes( Self, curClass )
             IF AField:FieldType = ftAutoInc
                AField:GetData()
             ELSE
-               IF AField:FieldMethodType = "A"
-                  isEmpty := .T.
-                  FOR EACH itm IN AField:FieldArrayIndex
-                     ::FieldList[ itm ]:Reset()
-                     IF !Empty( ::FieldList[ itm ]:Value )
-                        isEmpty := .F.
-                        EXIT
-                     ENDIF
-                  NEXT
-               ELSE
-                  AField:Reset()
-                  isEmpty := Empty( AField:Value )
-               ENDIF
-               IF AIndex:AutoIncrement .OR. !isEmpty
-                  AField:SetData(, .T. )
-               ENDIF
+                AField:Reset()
+                AField:SetData(, .T. )
             ENDIF
          ENDIF
       ENDIF

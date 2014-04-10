@@ -947,9 +947,7 @@ METHOD FUNCTION Reset() CLASS TField
                result := .T.
 
                FOR EACH i IN ::FFieldArrayIndex
-                  IF result
-                     result := ::FTable:FieldList[ i ]:Reset()
-                  ENDIF
+                  result := ::FTable:FieldList[ i ]:Reset() .AND. result
                NEXT
 
                ::FOnReset := .F.
@@ -992,6 +990,11 @@ METHOD FUNCTION Reset() CLASS TField
          ENDIF
 
       ELSE
+
+         /* On a TObjectField with a Table with MasterSource in the same Table, allows to Reset it first */
+         IF ::FieldType = ftObject .AND. ::LinkedTable:MasterSource != NIL .AND. ::LinkedTable:MasterSource:LinkedObjField != NIL .AND. ::LinkedTable:MasterSource:LinkedObjField:Table == ::FTable
+            ::LinkedTable:MasterSource:LinkedObjField:Reset()
+         ENDIF
 
          IF ::FTable:State = dsInsert
             value := ::NewValue
