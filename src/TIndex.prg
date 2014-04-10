@@ -90,7 +90,7 @@ CLASS TIndex FROM OORDBBASE
    METHOD DbGoTop INLINE ::DbGoBottomTop( 1 )
    METHOD dbSkip( numRecs )
    METHOD GetKeyVal( keyVal )
-   METHOD ExistKey( keyValue )
+   METHOD ExistKey( keyValue, recNo )
    METHOD FillCustomIndex()
    METHOD Get4Seek( blk, keyVal, softSeek )
    METHOD Get4SeekLast( blk, keyVal, softSeek )
@@ -381,15 +381,8 @@ METHOD FUNCTION dbSkip( numRecs ) CLASS TIndex
 /*
     ExistKey
 */
-METHOD FUNCTION ExistKey( keyValue ) CLASS TIndex
-   RETURN ::GetAlias():ExistKey( ::MasterKeyVal + keyValue, ::FTagName, ;
-      {||
-IF ::IdxAlias = NIL
-RETURN ::FTable:RecNo
-ENDIF
-
-   RETURN ( ::IdxAlias:workArea )->RecNo
-} )
+METHOD FUNCTION ExistKey( keyValue, recNo ) CLASS TIndex
+   RETURN ::GetAlias():ExistKey( ::MasterKeyVal + keyValue, ::FTagName, recNo )
 
 /*
     FillCustomIndex
