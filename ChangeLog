@@ -2,6 +2,10 @@
  * $Id: ChangeLog 155 2013-06-06 03:29:32Z tfonrouge $
  */
 
+Sat Apr 12 00:58:39 UTC 2014 Teo Fonrouge (tfonrouge@gmail.com)
+  M src/TTable.prg
+    * unneeded
+
 Thu Apr 10 23:53:03 UTC 2014 Teo Fonrouge (tfonrouge@gmail.com)
   M src/TField.prg
     ! do reset on all fields on a Field array type

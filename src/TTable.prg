@@ -644,8 +644,6 @@ METHOD FUNCTION AddRec() CLASS TTable
    ::FeditStatePrevious := dsInsert
    ::FSubState := dssAdding
 
-    XAltD()
-
    // ::Reset() // Reset record data to default values
    FOR EACH AField IN ::FFieldList
       IF !AField:Calculated .AND. AField:FieldMethodType = "C"
