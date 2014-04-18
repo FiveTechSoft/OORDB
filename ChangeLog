@@ -2,6 +2,10 @@
  * $Id: ChangeLog 155 2013-06-06 03:29:32Z tfonrouge $
  */
 
+Fri Apr 18 16:44:47 UTC 2014 Teo Fonrouge (tfonrouge@gmail.com)
+  M src/TField.prg
+    ! added protection against NIL value returned by a calculated TObjectField
+
 Sat Apr 12 00:58:39 UTC 2014 Teo Fonrouge (tfonrouge@gmail.com)
   M src/TTable.prg
     * unneeded

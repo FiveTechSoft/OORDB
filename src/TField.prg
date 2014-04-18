@@ -3004,7 +3004,7 @@ METHOD FUNCTION GetLinkedTable CLASS TObjectField
             ENDIF
          ENDIF
 
-         IF !::IsMasterFieldComponent .AND. ::FLinkedTable:LinkedObjField == NIL
+         IF !::IsMasterFieldComponent .AND. ::FLinkedTable != NIL .AND. ::FLinkedTable:LinkedObjField == NIL
             ::FLinkedTable:LinkedObjField := Self
          ENDIF
 
