@@ -133,6 +133,7 @@
                         [ EDITABLE <editable> ] ;
                         [ INDEXEXPRESSION <indexExp> ] ;
                         [ DISPLAY <dispBlock> ] ;
+                        [ <aeu: ACCEPT_EMPTY_UNIQUE> ] ;
                      => ;
                         WITH OBJECT T<type>Field():New( Self, ::curClassField ) ;;
                             [ :Name := <cName> ] ;;
@@ -175,6 +176,7 @@
                             [ :Editable := <editable> ] ;;
                             [ :SetIndexExpression( <indexExp> ) ] ;;
                             [ :DisplayBlock := <dispBlock> ] ;;
+                            [ :acceptEmptyUnique := <.aeu.> ] ;;
                             :AddFieldMessage() ;;
                             :ValidateFieldInfo() ;;
                         ENDWITH

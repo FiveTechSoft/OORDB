@@ -2,6 +2,10 @@
  * $Id: ChangeLog 155 2013-06-06 03:29:32Z tfonrouge $
  */
 
+Tue Apr 22 21:28:59 UTC 2014 Teo Fonrouge (tfonrouge@gmail.com)
+  M include/oordb.ch
+    * added clause ACCEPT_EMPTY_UNIQUE to ADD FIELD ...
+
 Fri Apr 18 16:44:47 UTC 2014 Teo Fonrouge (tfonrouge@gmail.com)
   M src/TField.prg
     ! added protection against NIL value returned by a calculated TObjectField
