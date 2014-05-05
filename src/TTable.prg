@@ -2910,7 +2910,7 @@ METHOD FUNCTION Post() CLASS TTable
                   ENDIF
                   changed := .T.
                ENDIF
-               result := AField:Validate()
+               result := AField:ValidateResult()
                IF result != NIL
                   RAISE ERROR "Post: Invalid data on Field: " + result
                ENDIF

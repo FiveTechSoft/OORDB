@@ -168,7 +168,8 @@ CLASS TField FROM OORDBBASE
    METHOD SetKeyVal( keyVal, lSoftSeek )
    METHOD SetKeyValBlock( keyValBlock ) INLINE ::FOnSetKeyValBlock := keyValBlock
    METHOD SetValidValues( validValues )
-   METHOD Validate( showAlert, value )
+   METHOD Validate( showAlert ) INLINE ::ValidateResult( showAlert ) = NIL
+   METHOD ValidateResult( showAlert, value )
    METHOD ValidateFieldInfo VIRTUAL
 
    PROPERTY AsDisplay READ GetAsDisplay
@@ -1290,7 +1291,7 @@ METHOD PROCEDURE SetData( value, initialize ) CLASS TField
    ::SetBuffer( value )
 
    /* Validate before the physical writting */
-   IF !initialize == .T. .AND. !Empty( ::Validate( .T., value ) )
+   IF !initialize == .T. .AND. !Empty( ::ValidateResult( .T., value ) )
       ::SetBuffer( buffer )  // revert the change
       RETURN
    ENDIF
@@ -1635,9 +1636,9 @@ METHOD Type( locale ) CLASS TField
 RETURN type
 
 /*
-    Validate
+    ValidateResult
 */
-METHOD FUNCTION Validate( showAlert, value ) CLASS TField
+METHOD FUNCTION ValidateResult( showAlert, value ) CLASS TField
 
    LOCAL result := NIL
    LOCAL l

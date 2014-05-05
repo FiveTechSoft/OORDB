@@ -2,6 +2,14 @@
  * $Id: ChangeLog 155 2013-06-06 03:29:32Z tfonrouge $
  */
 
+Mon May  5 22:29:18 UTC 2014 Teo Fonrouge (tfonrouge@gmail.com)
+  M src/TField.prg
+    * renamed Validate() -> ValidateResult()
+    + Validate() -> ValidateResult() = NIL
+
+  M src/TTable.prg
+    * using ValidateResult()
+
 Tue Apr 22 21:28:59 UTC 2014 Teo Fonrouge (tfonrouge@gmail.com)
   M include/oordb.ch
     * added clause ACCEPT_EMPTY_UNIQUE to ADD FIELD ...
