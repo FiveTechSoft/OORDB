@@ -1182,7 +1182,7 @@ METHOD PROCEDURE SetData( value, initialize ) CLASS TField
       ENDIF
 
       FOR EACH i IN ::FFieldArrayIndex
-         ::FTable:FieldList[ i ]:SetData()
+         ::FTable:FieldList[ i ]:SetData( , initialize )
       NEXT
 
       RETURN

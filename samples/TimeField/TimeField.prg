@@ -31,7 +31,6 @@ PROCEDURE Main()
 
   t := MyTable():New()
 
-  AltD()
   t:Insert()
   t:Field_Time:AsString := "12:30"
   t:Post()
