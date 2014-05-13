@@ -374,6 +374,7 @@ CLASS TTable FROM OORDBBASE
    DATA Cargo
 
    PROPERTY ChildReferenceList READ FInstances[ ::TableClass, "ChildReferenceList" ]
+   PROPERTY CustomIndexList READ FCustomIndexList
    PROPERTY INDEX READ GetIndex WRITE SetIndex
    PROPERTY IndexList READ FIndexList
    PROPERTY IndexName READ GetIndexName WRITE SetIndexName
@@ -3064,6 +3065,7 @@ METHOD FUNCTION RecUnLock() CLASS TTable
       ::SetState( dsBrowse )
       ::OnDataChange()
    ENDIF
+
    ::UpdateCustomIndexes()
 
    RETURN Result

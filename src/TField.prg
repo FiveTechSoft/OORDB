@@ -1334,10 +1334,10 @@ METHOD PROCEDURE SetData( value, initialize ) CLASS TField
 
    END SEQUENCE
 
-   /* masterkey field's aren't changed here */
-   IF !::AutoIncrement .AND. ::IsMasterFieldComponent
-      ::Reset()  /* retrieve the masterfield value */
-   ENDIF
+//   /* masterkey field's aren't changed here */
+//   IF !::AutoIncrement .AND. ::IsMasterFieldComponent
+//      ::Reset()  /* retrieve the masterfield value */
+//   ENDIF
 
    RETURN
 
@@ -1812,6 +1812,7 @@ METHOD FUNCTION IndexExpression( fieldName, isMasterFieldComponent ) CLASS TStri
 
    LOCAL exp
    LOCAL i
+   LOCAL keyFlags
 
    IF ::FIndexExpression != NIL
       RETURN ::FIndexExpression
@@ -1828,7 +1829,17 @@ METHOD FUNCTION IndexExpression( fieldName, isMasterFieldComponent ) CLASS TStri
       NEXT
    ELSE
       IF isMasterFieldComponent == .T. .OR. ::IsMasterFieldComponent .OR. ( ::IsKeyIndex .AND. ::KeyIndex:CaseSensitive )
-         exp := fieldName
+         keyFlags := ::KeyIndex:KeyFlags
+         IF keyFlags != NIL .AND. hb_HHasKey( keyFlags, ::Name )
+            SWITCH keyFlags[ ::Name ]
+            CASE "U"
+               exp := "Upper(" + fieldName + ")"
+               EXIT
+            ENDSWITCH
+         ENDIF
+         IF exp = NIL
+            exp := fieldName
+         ENDIF
       ELSE
          IF ::FFieldExpression = NIL
             exp := "<error: IndexExpression on '" + ::Name + "'>"

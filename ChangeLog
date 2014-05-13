@@ -2,6 +2,14 @@
  * $Id: ChangeLog 155 2013-06-06 03:29:32Z tfonrouge $
  */
 
+Tue May 13 03:05:36 UTC 2014 Teo Fonrouge (tfonrouge@gmail.com)
+  M src/TField.prg
+    % processing keyflag "U" (upper case)
+
+  M src/TTable.prg
+    + public ppty CustomIndexList
+    * minor code cleanup
+
 Tue May  6 22:14:53 UTC 2014 Teo Fonrouge (tfonrouge@gmail.com)
   M samples/TimeField/TimeField.prg
     * removed AltD()
