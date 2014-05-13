@@ -2,6 +2,10 @@
  * $Id: ChangeLog 155 2013-06-06 03:29:32Z tfonrouge $
  */
 
+Tue May 13 03:21:31 UTC 2014 Teo Fonrouge (tfonrouge@gmail.com)
+  M src/TField.prg
+    ! stupid typo, not all fields are indexes
+
 Tue May 13 03:05:36 UTC 2014 Teo Fonrouge (tfonrouge@gmail.com)
   M src/TField.prg
     % processing keyflag "U" (upper case)

@@ -1829,13 +1829,15 @@ METHOD FUNCTION IndexExpression( fieldName, isMasterFieldComponent ) CLASS TStri
       NEXT
    ELSE
       IF isMasterFieldComponent == .T. .OR. ::IsMasterFieldComponent .OR. ( ::IsKeyIndex .AND. ::KeyIndex:CaseSensitive )
-         keyFlags := ::KeyIndex:KeyFlags
-         IF keyFlags != NIL .AND. hb_HHasKey( keyFlags, ::Name )
-            SWITCH keyFlags[ ::Name ]
-            CASE "U"
-               exp := "Upper(" + fieldName + ")"
-               EXIT
-            ENDSWITCH
+         IF ::KeyIndex != NIL
+            keyFlags := ::KeyIndex:KeyFlags
+            IF keyFlags != NIL .AND. hb_HHasKey( keyFlags, ::Name )
+               SWITCH keyFlags[ ::Name ]
+               CASE "U"
+                  exp := "Upper(" + fieldName + ")"
+                  EXIT
+               ENDSWITCH
+            ENDIF
          ENDIF
          IF exp = NIL
             exp := fieldName
