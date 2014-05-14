@@ -2,6 +2,14 @@
  * $Id: ChangeLog 155 2013-06-06 03:29:32Z tfonrouge $
  */
 
+Wed May 14 23:17:44 UTC 2014 Teo Fonrouge (tfonrouge@gmail.com)
+  M include/oordb.ch
+  M src/TField.prg
+  RM src/TFieldObject.prg -> src/TFieldTable.prg
+  M src/TIndex.prg
+  M src/TTable.prg
+    * renamed class TFieldObject to TFieldTable for more readability
+
 Wed May 14 21:35:21 UTC 2014 Teo Fonrouge (tfonrouge@gmail.com)
   M src/TFieldArray.prg
     ! allow passing calculated values

@@ -202,7 +202,7 @@ CLASS TTable FROM OORDBBASE
    DATA autoOpen           INIT .T.
    DATA dataIsOEM          INIT .T.
     /*!
-        array of possible TFieldObject's that have this (SELF) object referenced
+        array of possible TFieldTable's that have this (SELF) object referenced
      */
    DATA DetailSourceList INIT { => }
    DATA ExternalIndexList INIT { => }
@@ -744,7 +744,7 @@ METHOD FUNCTION BuildFieldBlockFromFieldExpression( fieldExp, returnMode, field,
          ELSE
             s += ":DataObj:FieldList[" + NTrim( index ) + "]"
          ENDIF
-         IF field:IsDerivedFrom( "TFieldObject" )
+         IF field:IsDerivedFrom( "TFieldTable" )
             IF field:LinkedTable:isMetaTable
                table := field:LinkedTable
             ELSE
@@ -841,7 +841,7 @@ METHOD FUNCTION CheckDbStruct() CLASS TTable
 
             n := AScan( aDb, {| e| Upper( e[ 1 ] ) == Upper( AField:DBS_NAME ) } )
 
-            IF AField:FieldType = ftObject .AND. ( i := FindTableBaseClass( AField ) ) > 0
+            IF AField:FieldType = ftTable .AND. ( i := FindTableBaseClass( AField ) ) > 0
                dbsType := BaseKeyFieldList[ i, 2 ]
                dbsLen  := BaseKeyFieldList[ i, 3 ]
                dbsDec  := BaseKeyFieldList[ i, 4 ]
@@ -855,16 +855,16 @@ METHOD FUNCTION CheckDbStruct() CLASS TTable
                ENDIF
             ENDIF
 
-            /* TFieldObject wants assignable field type */
-            IF AField:FieldType = ftObject .AND. dbsType = "+"
+            /* TFieldTable wants assignable field type */
+            IF AField:FieldType = ftTable .AND. dbsType = "+"
                dbsType := "I"
             ENDIF
 
             IF n = 0
                AAdd( aDb, { AField:DBS_NAME, dbsType, dbsLen, dbsDec } )
                sResult += "Field not found '" + AField:DBS_NAME + E"'\n"
-            ELSEIF AField:FieldType = ftObject .AND. aDb[ n, 2 ] = "+"
-               sResult += "Wrong type ('" + aDb[ n, 2 ] + "') on TFieldObject '" + AField:DBS_NAME + "', must be '" + dbsType + E"'\n"
+            ELSEIF AField:FieldType = ftTable .AND. aDb[ n, 2 ] = "+"
+               sResult += "Wrong type ('" + aDb[ n, 2 ] + "') on TFieldTable '" + AField:DBS_NAME + "', must be '" + dbsType + E"'\n"
                aDb[ n, 2 ] := dbsType
             ELSEIF !aDb[ n, 2 ] == dbsType .AND. !( aDb[ n, 2 ] $ "+I" .AND. dbsType $ "+I" )
                sResult += "Wrong type ('" + aDb[ n, 2 ] + "') on field '" + AField:DBS_NAME + "', must be '" + dbsType + E"'\n"
@@ -1160,7 +1160,7 @@ METHOD FUNCTION CreateTable( fullFileName ) CLASS TTable
 
    FOR EACH fld IN ::FieldList
       IF fld:IsTableField .AND. !fld:ReUseField
-         IF fld:FieldType = ftObject
+         IF fld:FieldType = ftTable
             n := FindTableBaseClass( fld )
             IF n > 0
                dbsType := iif( BaseKeyFieldList[ n, 2 ] = "+", "I", BaseKeyFieldList[ n, 2 ] )
@@ -1753,7 +1753,7 @@ METHOD FUNCTION FieldByObjClass( objClass, derived, index ) CLASS TTable
 
    IF derived == .T.
       FOR EACH fld IN ::FFieldList
-         IF fld:FieldType = ftObject
+         IF fld:FieldType = ftTable
             IF fld:LinkedTable:IsDerivedFrom( objClass )
                index := fld:__enumIndex
                RETURN fld
@@ -1762,7 +1762,7 @@ METHOD FUNCTION FieldByObjClass( objClass, derived, index ) CLASS TTable
       NEXT
    ELSE
       FOR EACH fld IN ::FFieldList
-         IF fld:FieldType = ftObject
+         IF fld:FieldType = ftTable
             IF fld:LinkedTable:ClassName() == objClass
                index := fld:__enumIndex
                RETURN fld
@@ -1937,14 +1937,14 @@ METHOD FUNCTION FindMasterSourceField( detailField ) CLASS TTable
          RETURN masterSource:FieldList[ itm ]
       ENDIF
    ELSEIF vt = "O"
-      IF detailField:FieldType = ftObject
+      IF detailField:FieldType = ftTable
          IF detailField:LinkedTable:IsDerivedFrom( masterSource:BaseKeyField:TableBaseClass )
             masterSource:FieldByName( masterSource:BaseKeyField:Name, @index )
             ::FMasterSourceFieldBuffer[ name ] := index
             RETURN masterSource:BaseKeyField
          ENDIF
          FOR EACH itm IN masterSource:FieldList
-            IF itm:FieldType = ftObject .AND. detailField:LinkedTable:IsDerivedFrom( itm:BaseKeyField:TableBaseClass )
+            IF itm:FieldType = ftTable .AND. detailField:LinkedTable:IsDerivedFrom( itm:BaseKeyField:TableBaseClass )
                ::FMasterSourceFieldBuffer[ name ] := itm:__enumIndex
                RETURN itm
             ENDIF
@@ -2153,7 +2153,7 @@ METHOD FUNCTION GetCurrentRecord( idxAlias ) CLASS TTable
                     ENDIF
                   ENDIF
 
-                  IF AField:FieldType = ftObject .AND. AField:Calculated .AND. AField:LinkedTableAssigned
+                  IF AField:FieldType = ftTable .AND. AField:Calculated .AND. AField:LinkedTableAssigned
                      table := AField:LinkedTable
                      IF table:LinkedObjField != NIL .AND. table:LinkedObjField:Calculated .AND. !table:MasterSource == Self .AND. table:MasterSource == table:LinkedObjField:Table:KeyField:LinkedTable
                         table:LinkedObjField:Table:KeyField:DataObj()
@@ -2216,7 +2216,7 @@ METHOD FUNCTION GetDisplayFieldBlock( index, asDisplay ) CLASS TTable
 
    field := ::FFieldList[ index ]
 
-   IF ! field:IsDerivedFrom( "TFieldObject" )
+   IF ! field:IsDerivedFrom( "TFieldTable" )
       RETURN ;
          {| o, ...|
       LOCAL odf
@@ -2575,7 +2575,7 @@ METHOD FUNCTION GetPublishedFieldNameList( typeList ) CLASS TTable
       ENDIF
    NEXT
 
-   ASort( result,,, {| x, y| iif( x[ 2 ]:FieldType = ftObject, "1", "0" ) + x[ 1 ] < iif( y[ 2 ]:FieldType = ftObject, "1", "0" ) + y[ 1 ] } )
+   ASort( result,,, {| x, y| iif( x[ 2 ]:FieldType = ftTable, "1", "0" ) + x[ 1 ] < iif( y[ 2 ]:FieldType = ftTable, "1", "0" ) + y[ 1 ] } )
 
    RETURN result
 
@@ -2634,7 +2634,7 @@ METHOD FUNCTION ImportField( fromField, fieldDbName, fieldName ) CLASS TTable
    fld:Name := fieldName
    fld:FieldMethod := fieldDbName
 
-   IF fld:IsDerivedFrom( "TFieldObject" )
+   IF fld:IsDerivedFrom( "TFieldTable" )
       fld:ObjClass := fromField:ObjClass
    ENDIF
 
@@ -3218,7 +3218,7 @@ METHOD FUNCTION SetMasterSource( masterSource ) CLASS TTable
    CASE 'O'
       IF masterSource:IsDerivedFrom( "TTable" )
          ::FMasterSourceType := rxMasterSourceTypeTTable
-      ELSEIF masterSource:IsDerivedFrom( "TFieldObject" )
+      ELSEIF masterSource:IsDerivedFrom( "TFieldTable" )
          ::FMasterSourceType := rxMasterSourceTypeTField
       ELSEIF masterSource:IsDerivedFrom( "TField" )
          RAISE ERROR "need to specify TField generic syncing..."

@@ -692,7 +692,7 @@ METHOD PROCEDURE SetField( nIndex, XField ) CLASS TIndex
       EXIT
    CASE 'O'
       IF !XField:IsDerivedFrom( "TField" )
-         ::Error_Not_TField_Type_Object()
+         ::Error_Not_TField_Type_Table()
          RETURN
       ENDIF
       AField := XField
@@ -742,8 +742,8 @@ METHOD PROCEDURE SetField( nIndex, XField ) CLASS TIndex
       IF AField:FieldMethodType = 'A'
          RAISE ERROR "Array of Fields are not Allowed as AutoIncrement Index Key..."
       ENDIF
-      IF AField:IsDerivedFrom( "TFieldObject" )
-         RAISE ERROR "TFieldObject's are not Allowed as AutoIncrement Index Key..."
+      IF AField:IsDerivedFrom( "TFieldTable" )
+         RAISE ERROR "TFieldTable's are not Allowed as AutoIncrement Index Key..."
       ENDIF
       AField:AutoIncrementKeyIndex := Self
       ::FAutoIncrementKeyField := AField

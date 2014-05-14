@@ -24,7 +24,7 @@
 #define dssPosting  2
 
 #define ftBase      0
-#define ftObject    1
+#define ftTable     1
 #define ftMemo      2
 #define ftTime      3
 #define ftAutoInc   4
@@ -89,13 +89,13 @@
                         ADD [<clauses0>] _NUMERIC FIELD <xFieldMethod> [<clauses1>] LEN <nLen> DEC <nDec> [<clauses2>]
 #xtranslate TField_Numeric => TFieldNumeric
 
-/* To REQUIRE CLASS in TFieldObject */
-#xtranslate ADD [<clauses0,...>] OBJECT FIELD <xFieldMethod> [<clauses1,...>] CLASS <objClass> [<clauses2,...>] ;
+/* To REQUIRE CLASS in TFieldTable */
+#xtranslate ADD [<clauses0,...>] TABLE FIELD <xFieldMethod> [<clauses1,...>] CLASS <objClass> [<clauses2,...>] ;
                         => ;
-                        ADD [<clauses0>] _OBJECT FIELD <xFieldMethod> [<clauses1>] CLASS <objClass> [<clauses2>]
-#xtranslate TField_Object => TFieldObject
+                        ADD [<clauses0>] _TABLE FIELD <xFieldMethod> [<clauses1>] CLASS <objClass> [<clauses2>]
+#xtranslate TField_Table => TFieldTable
 
-#xtranslate ADD [<calc: CALCULATED>] <type: _STRING, MEMO, _NUMERIC, FLOAT, INTEGER, AUTOINC, LOGICAL, _TIME, DATE, DATETIME, MODTIME, _OBJECT, VARIANT, ARRAY> FIELD [<xFieldMethod>] ;
+#xtranslate ADD [<calc: CALCULATED>] <type: _STRING, MEMO, _NUMERIC, FLOAT, INTEGER, AUTOINC, LOGICAL, _TIME, DATE, DATETIME, MODTIME, _TABLE, VARIANT, ARRAY> FIELD [<xFieldMethod>] ;
                         [ NAME <cName> ] ;
                         [ LABEL <label> ] ;
                         [ <ro: READONLY> ] ;
