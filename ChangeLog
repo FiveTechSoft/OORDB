@@ -2,6 +2,11 @@
  * $Id: ChangeLog 155 2013-06-06 03:29:32Z tfonrouge $
  */
 
+Wed May 14 21:35:21 UTC 2014 Teo Fonrouge (tfonrouge@gmail.com)
+  M src/TFieldArray.prg
+    ! allow passing calculated values
+    * minor code cleanup
+
 Wed May 14 20:10:40 UTC 2014 Teo Fonrouge (tfonrouge@gmail.com)
   M include/oordb.ch
     * missing on previous commit

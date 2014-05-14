@@ -10,20 +10,20 @@
 */
 CLASS TFieldArray FROM TField
 
-   PROTECTED:
+    PROTECTED:
 
-   DATA FDBS_LEN INIT 4
-   DATA FDBS_DEC INIT 0
-   DATA FDBS_TYPE INIT "M"
-   DATA FFieldType INIT ftArray
-   DATA FSize INIT 0
-   DATA FType INIT "Array"
-   DATA FtypeNameList INIT hb_hSetCaseMatch( {"es"=>"Array"} )
+    DATA FDBS_LEN INIT 4
+    DATA FDBS_DEC INIT 0
+    DATA FDBS_TYPE INIT "M"
+    DATA FFieldType INIT ftArray
+    DATA FSize INIT 0
+    DATA FType INIT "Array"
+    DATA FtypeNameList INIT hb_hSetCaseMatch( {"es"=>"Array"} )
 
-   METHOD GetAsVariant( ... )
-   METHOD SetAsVariant( array )
+    METHOD GetAsVariant( ... )
+    METHOD SetAsVariant( array )
 
-   PUBLIC:
+    PUBLIC:
 
 ENDCLASS
 
@@ -32,13 +32,23 @@ ENDCLASS
 */
 METHOD FUNCTION GetAsVariant( ... ) CLASS TFieldArray
 
-   LOCAL array
+    LOCAL array
 
-   array := HB_DeSerialize( ::Super:GetAsVariant( ... ) )
+    array := ::Super:GetAsVariant( ... )
 
-   IF ValType( array ) != "A"
-      array := {}
-   ENDIF
+    SWITCH ValType( array )
+    CASE "A"
+        EXIT
+    CASE "C"
+        array := HB_DeSerialize( array )
+        EXIT
+    OTHERWISE
+        array := {}
+    ENDSWITCH
+
+    IF ValType( array ) != "A"
+        array := {}
+    ENDIF
 
 RETURN array
 
