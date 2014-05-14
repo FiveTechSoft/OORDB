@@ -6,9 +6,9 @@
 #include "xerror.ch"
 
 /*
-    TDateTimeField
+    TFieldDateTime
 */
-CLASS TDateTimeField FROM TField
+CLASS TFieldDateTime FROM TField
 
    PRIVATE:
 
@@ -58,7 +58,7 @@ ENDCLASS
 /*
     DiffSeconds
 */
-METHOD FUNCTION DiffSeconds( dateTimePrev ) CLASS TDateTimeField
+METHOD FUNCTION DiffSeconds( dateTimePrev ) CLASS TFieldDateTime
 
    LOCAL t1, t2
    LOCAL t
@@ -84,7 +84,7 @@ METHOD FUNCTION DiffSeconds( dateTimePrev ) CLASS TDateTimeField
 /*
     GetAsString
 */
-METHOD FUNCTION GetAsString( value ) CLASS TDateTimeField
+METHOD FUNCTION GetAsString( value ) CLASS TFieldDateTime
 
    IF value = NIL
       value := ::Value
@@ -98,7 +98,7 @@ METHOD FUNCTION GetAsString( value ) CLASS TDateTimeField
 /*
     GetAsTime
 */
-METHOD GetAsTime() CLASS TDateTimeField
+METHOD GetAsTime() CLASS TFieldDateTime
 
    LOCAL cTime := "00:00:00"
    LOCAL time
@@ -114,7 +114,7 @@ METHOD GetAsTime() CLASS TDateTimeField
 /*
     GetKeyVal
 */
-METHOD FUNCTION GetKeyVal( keyVal ) CLASS TDateTimeField
+METHOD FUNCTION GetKeyVal( keyVal ) CLASS TFieldDateTime
 
    SWITCH ValType( keyVal )
    CASE 'C'
@@ -132,7 +132,7 @@ METHOD FUNCTION GetKeyVal( keyVal ) CLASS TDateTimeField
 /*
     IndexExpression
 */
-METHOD FUNCTION IndexExpression( fieldName ) CLASS TDateTimeField
+METHOD FUNCTION IndexExpression( fieldName ) CLASS TFieldDateTime
 
    IF ::FIndexExpression != NIL
       RETURN ::FIndexExpression
@@ -146,7 +146,7 @@ METHOD FUNCTION IndexExpression( fieldName ) CLASS TDateTimeField
 /*
     SetAsTime
 */
-METHOD PROCEDURE SetAsTime( cTime ) CLASS TDateTimeField
+METHOD PROCEDURE SetAsTime( cTime ) CLASS TFieldDateTime
 
    ::SetAsVariant( hb_DToT( ::Value, cTime ) )
 
@@ -155,7 +155,7 @@ METHOD PROCEDURE SetAsTime( cTime ) CLASS TDateTimeField
 /*
     SetAsVariant
 */
-METHOD PROCEDURE SetAsVariant( variant ) CLASS TDateTimeField
+METHOD PROCEDURE SetAsVariant( variant ) CLASS TFieldDateTime
 
    SWITCH ValType( variant )
    CASE 'T'
@@ -181,5 +181,5 @@ METHOD PROCEDURE SetAsVariant( variant ) CLASS TDateTimeField
    RETURN
 
 /*
-    EndClass TDateTimeField
+    EndClass TFieldDateTime
 */

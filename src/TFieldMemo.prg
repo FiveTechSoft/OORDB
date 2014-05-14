@@ -6,9 +6,9 @@
 #include "xerror.ch"
 
 /*
-    TMemoField
+    TFieldMemo
 */
-CLASS TMemoField FROM TStringField
+CLASS TFieldMemo FROM TFieldString
 
    PRIVATE:
 
@@ -26,5 +26,5 @@ CLASS TMemoField FROM TStringField
 ENDCLASS
 
 /*
-    ENDCLASS TMemoField
+    ENDCLASS TFieldMemo
 */

@@ -6,9 +6,9 @@
 #include "xerror.ch"
 
 /*
-    TModTimeField
+    TFieldModTime
 */
-CLASS TModTimeField FROM TDateTimeField
+CLASS TFieldModTime FROM TFieldDateTime
 
    PRIVATE:
 
@@ -25,5 +25,5 @@ CLASS TModTimeField FROM TDateTimeField
 ENDCLASS
 
 /*
-    EndClass TModTimeField
+    EndClass TFieldModTime
 */

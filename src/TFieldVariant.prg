@@ -6,9 +6,9 @@
 #include "xerror.ch"
 
 /*
-    TVariantField
+    TFieldVariant
 */
-CLASS TVariantField FROM TField
+CLASS TFieldVariant FROM TField
 
    PRIVATE:
 
@@ -21,5 +21,5 @@ CLASS TVariantField FROM TField
 ENDCLASS
 
 /*
-    ENDCLASS TVariantField
+    ENDCLASS TFieldVariant
 */

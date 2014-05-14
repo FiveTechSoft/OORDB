@@ -6,9 +6,9 @@
 #include "xerror.ch"
 
 /*
-    TFloatField
+    TFieldFloat
 */
-CLASS TFloatField FROM TNumericField
+CLASS TFieldFloat FROM TFieldNumeric
 
    PRIVATE:
 
@@ -25,5 +25,5 @@ CLASS TFloatField FROM TNumericField
 ENDCLASS
 
 /*
-    ENDCLASS TFloatField
+    ENDCLASS TFieldFloat
 */

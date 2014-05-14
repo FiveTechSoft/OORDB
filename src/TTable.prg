@@ -202,7 +202,7 @@ CLASS TTable FROM OORDBBASE
    DATA autoOpen           INIT .T.
    DATA dataIsOEM          INIT .T.
     /*!
-        array of possible TObjectField's that have this (SELF) object referenced
+        array of possible TFieldObject's that have this (SELF) object referenced
      */
    DATA DetailSourceList INIT { => }
    DATA ExternalIndexList INIT { => }
@@ -744,7 +744,7 @@ METHOD FUNCTION BuildFieldBlockFromFieldExpression( fieldExp, returnMode, field,
          ELSE
             s += ":DataObj:FieldList[" + NTrim( index ) + "]"
          ENDIF
-         IF field:IsDerivedFrom( "TObjectField" )
+         IF field:IsDerivedFrom( "TFieldObject" )
             IF field:LinkedTable:isMetaTable
                table := field:LinkedTable
             ELSE
@@ -855,7 +855,7 @@ METHOD FUNCTION CheckDbStruct() CLASS TTable
                ENDIF
             ENDIF
 
-            /* TObjectField wants assignable field type */
+            /* TFieldObject wants assignable field type */
             IF AField:FieldType = ftObject .AND. dbsType = "+"
                dbsType := "I"
             ENDIF
@@ -864,7 +864,7 @@ METHOD FUNCTION CheckDbStruct() CLASS TTable
                AAdd( aDb, { AField:DBS_NAME, dbsType, dbsLen, dbsDec } )
                sResult += "Field not found '" + AField:DBS_NAME + E"'\n"
             ELSEIF AField:FieldType = ftObject .AND. aDb[ n, 2 ] = "+"
-               sResult += "Wrong type ('" + aDb[ n, 2 ] + "') on TObjectField '" + AField:DBS_NAME + "', must be '" + dbsType + E"'\n"
+               sResult += "Wrong type ('" + aDb[ n, 2 ] + "') on TFieldObject '" + AField:DBS_NAME + "', must be '" + dbsType + E"'\n"
                aDb[ n, 2 ] := dbsType
             ELSEIF !aDb[ n, 2 ] == dbsType .AND. !( aDb[ n, 2 ] $ "+I" .AND. dbsType $ "+I" )
                sResult += "Wrong type ('" + aDb[ n, 2 ] + "') on field '" + AField:DBS_NAME + "', must be '" + dbsType + E"'\n"
@@ -1498,10 +1498,10 @@ METHOD PROCEDURE DefineFieldsFromDb() CLASS TTable
          AField := __ClsInstFromName( ::FieldTypes[ fld[ 2 ] ] ):New( Self )
 
          AField:FieldMethod := fld[ 1 ]
-         IF AField:IsDerivedFrom( "TStringField" )
+         IF AField:IsDerivedFrom( "TFieldString" )
             AField:Size := fld[ 3 ]
          ENDIF
-         IF AField:IsDerivedFrom( "TNumericField" )
+         IF AField:IsDerivedFrom( "TFieldNumeric" )
             AField:DBS_LEN := fld[ 3 ]
             AField:DBS_DEC := fld[ 4 ]
          ENDIF
@@ -2216,7 +2216,7 @@ METHOD FUNCTION GetDisplayFieldBlock( index, asDisplay ) CLASS TTable
 
    field := ::FFieldList[ index ]
 
-   IF ! field:IsDerivedFrom( "TObjectField" )
+   IF ! field:IsDerivedFrom( "TFieldObject" )
       RETURN ;
          {| o, ...|
       LOCAL odf
@@ -2356,30 +2356,30 @@ METHOD FUNCTION GetFieldTypes CLASS TTable
 
    IF ::FFieldTypes == NIL
       ::FFieldTypes := { => }
-      ::FFieldTypes[ 'C' ] := "TStringField"  /* HB_FT_STRING */
-      ::FFieldTypes[ 'L' ] := "TLogicalField"  /* HB_FT_LOGICAL */
-      ::FFieldTypes[ 'D' ] := "TDateField"   /* HB_FT_DATE */
-      ::FFieldTypes[ 'I' ] := "TIntegerField"  /* HB_FT_INTEGER */
-      ::FFieldTypes[ 'Y' ] := "TNumericField"  /* HB_FT_CURRENCY */
-      ::FFieldTypes[ '2' ] := "TIntegerField"  /* HB_FT_INTEGER */
-      ::FFieldTypes[ '4' ] := "TIntegerField"  /* HB_FT_INTEGER */
-      ::FFieldTypes[ 'N' ] := "TNumericField"  /* HB_FT_LONG */
-      ::FFieldTypes[ 'F' ] := "TNumericField"  /* HB_FT_FLOAT */
-      ::FFieldTypes[ '8' ] := "TFloatField"   /* HB_FT_DOUBLE */
-      ::FFieldTypes[ 'B' ] := "TFloatField"   /* HB_FT_DOUBLE */
+      ::FFieldTypes[ 'C' ] := "TFieldString"  /* HB_FT_STRING */
+      ::FFieldTypes[ 'L' ] := "TFieldLogical"  /* HB_FT_LOGICAL */
+      ::FFieldTypes[ 'D' ] := "TFieldDate"   /* HB_FT_DATE */
+      ::FFieldTypes[ 'I' ] := "TFieldInteger"  /* HB_FT_INTEGER */
+      ::FFieldTypes[ 'Y' ] := "TFieldNumeric"  /* HB_FT_CURRENCY */
+      ::FFieldTypes[ '2' ] := "TFieldInteger"  /* HB_FT_INTEGER */
+      ::FFieldTypes[ '4' ] := "TFieldInteger"  /* HB_FT_INTEGER */
+      ::FFieldTypes[ 'N' ] := "TFieldNumeric"  /* HB_FT_LONG */
+      ::FFieldTypes[ 'F' ] := "TFieldNumeric"  /* HB_FT_FLOAT */
+      ::FFieldTypes[ '8' ] := "TFieldFloat"   /* HB_FT_DOUBLE */
+      ::FFieldTypes[ 'B' ] := "TFieldFloat"   /* HB_FT_DOUBLE */
 
-      ::FFieldTypes[ 'T' ] := "TTimeField"   /* HB_FT_TIME(4) */
-      ::FFieldTypes[ '@' ] := "TDateTimeField"  /* HB_FT_TIMESTAMP */
-      ::FFieldTypes[ '=' ] := "TModTimeField"  /* HB_FT_MODTIME */
-      ::FFieldTypes[ '^' ] := "TRowVerField"  /* HB_FT_ROWVER */
-      ::FFieldTypes[ '+' ] := "TAutoIncField"  /* HB_FT_AUTOINC */
-      ::FFieldTypes[ 'Q' ] := "TVarLengthField"  /* HB_FT_VARLENGTH */
-      ::FFieldTypes[ 'V' ] := "TVarLengthField"  /* HB_FT_VARLENGTH */
-      ::FFieldTypes[ 'M' ] := "TMemoField"   /* HB_FT_MEMO */
-      ::FFieldTypes[ 'P' ] := "TImageField"   /* HB_FT_IMAGE */
-      ::FFieldTypes[ 'W' ] := "TBlobField"   /* HB_FT_BLOB */
-      ::FFieldTypes[ 'G' ] := "TOleField"   /* HB_FT_OLE */
-      ::FFieldTypes[ '0' ] := "TVarLengthField"  /* HB_FT_VARLENGTH (NULLABLE) */
+      ::FFieldTypes[ 'T' ] := "TFieldTime"   /* HB_FT_TIME(4) */
+      ::FFieldTypes[ '@' ] := "TFieldDateTime"  /* HB_FT_TIMESTAMP */
+      ::FFieldTypes[ '=' ] := "TFieldModTime"  /* HB_FT_MODTIME */
+      ::FFieldTypes[ '^' ] := "TFieldRowVer"  /* HB_FT_ROWVER */
+      ::FFieldTypes[ '+' ] := "TFieldAutoInc"  /* HB_FT_AUTOINC */
+      ::FFieldTypes[ 'Q' ] := "TFieldVarLength"  /* HB_FT_VARLENGTH */
+      ::FFieldTypes[ 'V' ] := "TFieldVarLength"  /* HB_FT_VARLENGTH */
+      ::FFieldTypes[ 'M' ] := "TFieldMemo"   /* HB_FT_MEMO */
+      ::FFieldTypes[ 'P' ] := "TFieldImage"   /* HB_FT_IMAGE */
+      ::FFieldTypes[ 'W' ] := "TFieldBlob"   /* HB_FT_BLOB */
+      ::FFieldTypes[ 'G' ] := "TFieldOle"   /* HB_FT_OLE */
+      ::FFieldTypes[ '0' ] := "TFieldVarLength"  /* HB_FT_VARLENGTH (NULLABLE) */
    ENDIF
 
    RETURN ::FFieldTypes
@@ -2634,7 +2634,7 @@ METHOD FUNCTION ImportField( fromField, fieldDbName, fieldName ) CLASS TTable
    fld:Name := fieldName
    fld:FieldMethod := fieldDbName
 
-   IF fld:IsDerivedFrom( "TObjectField" )
+   IF fld:IsDerivedFrom( "TFieldObject" )
       fld:ObjClass := fromField:ObjClass
    ENDIF
 
@@ -3218,7 +3218,7 @@ METHOD FUNCTION SetMasterSource( masterSource ) CLASS TTable
    CASE 'O'
       IF masterSource:IsDerivedFrom( "TTable" )
          ::FMasterSourceType := rxMasterSourceTypeTTable
-      ELSEIF masterSource:IsDerivedFrom( "TObjectField" )
+      ELSEIF masterSource:IsDerivedFrom( "TFieldObject" )
          ::FMasterSourceType := rxMasterSourceTypeTField
       ELSEIF masterSource:IsDerivedFrom( "TField" )
          RAISE ERROR "need to specify TField generic syncing..."

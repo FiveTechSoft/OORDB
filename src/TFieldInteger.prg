@@ -6,9 +6,9 @@
 #include "xerror.ch"
 
 /*
-    TIntegerField
+    TFieldInteger
 */
-CLASS TIntegerField FROM TNumericField
+CLASS TFieldInteger FROM TFieldNumeric
 
    PRIVATE:
 
@@ -35,7 +35,7 @@ ENDCLASS
 /*
     GetKeyVal
 */
-METHOD FUNCTION GetKeyVal( keyVal ) CLASS TIntegerField
+METHOD FUNCTION GetKeyVal( keyVal ) CLASS TFieldInteger
 
    SWITCH ValType( keyVal )
    CASE 'C'
@@ -53,7 +53,7 @@ METHOD FUNCTION GetKeyVal( keyVal ) CLASS TIntegerField
 /*
     IndexExpression
 */
-METHOD FUNCTION IndexExpression( fieldName ) CLASS TIntegerField
+METHOD FUNCTION IndexExpression( fieldName ) CLASS TFieldInteger
 
    IF ::FIndexExpression != NIL
       RETURN ::FIndexExpression
@@ -67,7 +67,7 @@ METHOD FUNCTION IndexExpression( fieldName ) CLASS TIntegerField
 /*
     SetAsVariant
 */
-METHOD PROCEDURE SetAsVariant( variant ) CLASS TIntegerField
+METHOD PROCEDURE SetAsVariant( variant ) CLASS TFieldInteger
 
    SWITCH ValType( variant )
    CASE 'C'
@@ -81,5 +81,5 @@ METHOD PROCEDURE SetAsVariant( variant ) CLASS TIntegerField
    RETURN
 
 /*
-    ENDCLASS TIntegerField
+    ENDCLASS TFieldInteger
 */

@@ -698,8 +698,8 @@ METHOD PROCEDURE SetField( nIndex, XField ) CLASS TIndex
       AField := XField
       EXIT
    CASE 'A'
-      /* Array of fields are stored in a TStringField (for the index nature) */
-      AField := TStringField():New( ::FTable, ::FTableBaseClass )
+      /* Array of fields are stored in a TFieldString (for the index nature) */
+      AField := TFieldString():New( ::FTable, ::FTableBaseClass )
       AField:FieldMethod := XField
       AField:Published := .F.
       fld := ::FTable:FieldByName( AField:Name )
@@ -742,8 +742,8 @@ METHOD PROCEDURE SetField( nIndex, XField ) CLASS TIndex
       IF AField:FieldMethodType = 'A'
          RAISE ERROR "Array of Fields are not Allowed as AutoIncrement Index Key..."
       ENDIF
-      IF AField:IsDerivedFrom( "TObjectField" )
-         RAISE ERROR "TObjectField's are not Allowed as AutoIncrement Index Key..."
+      IF AField:IsDerivedFrom( "TFieldObject" )
+         RAISE ERROR "TFieldObject's are not Allowed as AutoIncrement Index Key..."
       ENDIF
       AField:AutoIncrementKeyIndex := Self
       ::FAutoIncrementKeyField := AField
@@ -751,7 +751,7 @@ METHOD PROCEDURE SetField( nIndex, XField ) CLASS TIndex
       AAdd( AField:UniqueKeyIndexList, Self )
       ::FUniqueKeyField := AField
    CASE 3  /* KeyField */
-      IF AField:IsDerivedFrom( "TStringField" ) .AND. Len( AField ) = 0
+      IF AField:IsDerivedFrom( "TFieldString" ) .AND. Len( AField ) = 0
          RAISE ERROR ::FTable:ClassName + ": Master key field <" + AField:Name + "> needs a size > zero..."
       ENDIF
       AField:AddKeyIndex( Self )

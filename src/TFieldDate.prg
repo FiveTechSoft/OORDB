@@ -6,9 +6,9 @@
 #include "xerror.ch"
 
 /*
-    TDateField
+    TFieldDate
 */
-CLASS TDateField FROM TField
+CLASS TFieldDate FROM TField
 
    PRIVATE:
 
@@ -37,7 +37,7 @@ ENDCLASS
 /*
     GetKeyVal
 */
-METHOD FUNCTION GetKeyVal( keyVal ) CLASS TDateField
+METHOD FUNCTION GetKeyVal( keyVal ) CLASS TFieldDate
 
    SWITCH ValType( keyVal )
    CASE 'C'
@@ -55,7 +55,7 @@ METHOD FUNCTION GetKeyVal( keyVal ) CLASS TDateField
 /*
     IndexExpression
 */
-METHOD FUNCTION IndexExpression( fieldName ) CLASS TDateField
+METHOD FUNCTION IndexExpression( fieldName ) CLASS TFieldDate
 
    IF ::FIndexExpression != NIL
       RETURN ::FIndexExpression
@@ -69,7 +69,7 @@ METHOD FUNCTION IndexExpression( fieldName ) CLASS TDateField
 /*
     SetAsVariant
 */
-METHOD PROCEDURE SetAsVariant( variant ) CLASS TDateField
+METHOD PROCEDURE SetAsVariant( variant ) CLASS TFieldDate
 
    SWITCH ValType( variant )
    CASE 'C'
@@ -83,5 +83,5 @@ METHOD PROCEDURE SetAsVariant( variant ) CLASS TDateField
    RETURN
 
 /*
-    ENDCLASS TDateField
+    ENDCLASS TFieldDate
 */

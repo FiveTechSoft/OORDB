@@ -480,7 +480,7 @@ METHOD FUNCTION GetAsVariant( ... ) CLASS TField
       SWITCH ::FFieldMethodType
       CASE "A"
             /*
-             * This will ONLY work when all the items are of TStringField type
+             * This will ONLY work when all the items are of TFieldString type
              */
          result := ""
          FOR EACH i IN ::FFieldArrayIndex
@@ -749,7 +749,7 @@ METHOD FUNCTION GetFieldReadBlock() CLASS TField
             IF __objHasMsgAssigned( ::FTable:MasterSource, "CalcField_" + ::FName )
                ::FFieldReadBlock := &( "{|o,...|" + "o:MasterSource:CalcField_" + ::FName + "( ... ) }" )
             ELSE
-               IF !::IsDerivedFrom( "TObjectField" )
+               IF !::IsDerivedFrom( "TFieldObject" )
                   THROW ERROR OODB_ERR__CALCULATED_FIELD_CANNOT_BE_SOLVED
                ENDIF
             ENDIF
@@ -858,7 +858,7 @@ METHOD FUNCTION GetValidValues() CLASS TField
       ENDIF
       RETURN validValues
    CASE "O"
-      IF ::FValidValues:IsDerivedFrom( "TObjectField" )
+      IF ::FValidValues:IsDerivedFrom( "TFieldObject" )
          RETURN ::FValidValues:ValidValues()
       ENDIF
       EXIT
@@ -950,7 +950,7 @@ METHOD FUNCTION Reset() CLASS TField
 
             ELSE
 
-               IF ::IsDerivedFrom( "TObjectField" ) .AND. ::IsMasterFieldComponent
+               IF ::IsDerivedFrom( "TFieldObject" ) .AND. ::IsMasterFieldComponent
                   IF ::FTable:MasterSource = NIL
                      // RAISE ERROR "MasterField component '" + ::Table:ClassName + ":" + ::Name + "' needs a MasterSource Table."
                   ELSE
@@ -958,7 +958,7 @@ METHOD FUNCTION Reset() CLASS TField
                   ENDIF
                ENDIF
 
-               IF ::IsDerivedFrom( "TObjectField" ) .AND. ::LinkedTable:KeyField != NIL
+               IF ::IsDerivedFrom( "TFieldObject" ) .AND. ::LinkedTable:KeyField != NIL
                   IF ::FTable:State = dsInsert
                      value := ::LinkedTable:BaseKeyField:NewValue
                   ELSE
@@ -985,7 +985,7 @@ METHOD FUNCTION Reset() CLASS TField
 
       ELSE
 
-         /* On a TObjectField with a Table with MasterSource in the same Table, allows to Reset it first */
+         /* On a TFieldObject with a Table with MasterSource in the same Table, allows to Reset it first */
          IF ::FieldType = ftObject .AND. ::LinkedTable:MasterSource != NIL .AND. ::LinkedTable:MasterSource:LinkedObjField != NIL .AND. ::LinkedTable:MasterSource:LinkedObjField:Table == ::FTable
             ::LinkedTable:MasterSource:LinkedObjField:Reset()
          ENDIF
@@ -1125,7 +1125,7 @@ METHOD FUNCTION SetBuffer( value ) CLASS TField
                 ENDSWITCH
                 RETURN result
             ENDIF
-            IF !( HB_ISNIL( value ) .OR. ValType( value ) = ::FValType ) .AND. ( ::IsDerivedFrom( "TStringField" ) .AND. AScan( { "C", "M" }, ValType( value ) ) = 0 )
+            IF !( HB_ISNIL( value ) .OR. ValType( value ) = ::FValType ) .AND. ( ::IsDerivedFrom( "TFieldString" ) .AND. AScan( { "C", "M" }, ValType( value ) ) = 0 )
                 RAISE TFIELD ::Name ERROR "Wrong Type Assign: [" + value:ClassName + "] to <" + ::ClassName + ">"
             ENDIF
         ENDIF
@@ -1341,7 +1341,7 @@ METHOD PROCEDURE SetDbStruct( aStruct ) CLASS TField
 
    ::FModStamp := aStruct[ 2 ] $ "=^+"
 
-   IF !::IsDerivedFrom("TFloatField")
+   IF !::IsDerivedFrom("TFieldFloat")
       ::SetDBS_LEN( aStruct[ 3 ] )
    ENDIF
 
@@ -1509,7 +1509,7 @@ METHOD PROCEDURE SetIsMasterFieldComponent( IsMasterFieldComponent ) CLASS TFiel
       ::FEnabled := .T.
    ENDSWITCH
 
-   IF ::IsDerivedFrom( "TObjectField" ) .AND. Empty( ::FTable:GetMasterSourceClassName() )
+   IF ::IsDerivedFrom( "TFieldObject" ) .AND. Empty( ::FTable:GetMasterSourceClassName() )
       // RAISE TFIELD ::Name ERROR "ObjectField's needs a valid MasterSource table."
    ENDIF
 

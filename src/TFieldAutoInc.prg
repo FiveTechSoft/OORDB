@@ -6,9 +6,9 @@
 #include "xerror.ch"
 
 /*
-    TAutoIncField
+    TFieldAutoInc
 */
-CLASS TAutoIncField FROM TIntegerField
+CLASS TFieldAutoInc FROM TFieldInteger
 
    PRIVATE:
 
@@ -22,5 +22,5 @@ CLASS TAutoIncField FROM TIntegerField
 
 ENDCLASS
 /*
-    ENDCLASS TAutoIncField
+    ENDCLASS TFieldAutoInc
 */

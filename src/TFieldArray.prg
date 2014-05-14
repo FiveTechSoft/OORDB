@@ -6,9 +6,9 @@
 #include "xerror.ch"
 
 /*
-    TArrayField
+    TFieldArray
 */
-CLASS TArrayField FROM TField
+CLASS TFieldArray FROM TField
 
    PROTECTED:
 
@@ -30,7 +30,7 @@ ENDCLASS
 /*
     GetAsVariant
 */
-METHOD FUNCTION GetAsVariant( ... ) CLASS TArrayField
+METHOD FUNCTION GetAsVariant( ... ) CLASS TFieldArray
 
    LOCAL array
 
@@ -45,7 +45,7 @@ RETURN array
 /*
     SetAsVariant
 */
-METHOD PROCEDURE SetAsVariant( array ) CLASS TArrayField
+METHOD PROCEDURE SetAsVariant( array ) CLASS TFieldArray
 
     LOCAL ser
 
@@ -60,5 +60,5 @@ METHOD PROCEDURE SetAsVariant( array ) CLASS TArrayField
 RETURN
 
 /*
-    ENDCLASS TArrayField
+    ENDCLASS TFieldArray
 */

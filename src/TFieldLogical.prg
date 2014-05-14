@@ -6,9 +6,9 @@
 #include "xerror.ch"
 
 /*
-    TLogicalField
+    TFieldLogical
 */
-CLASS TLogicalField FROM TField
+CLASS TFieldLogical FROM TField
 
    PRIVATE:
 
@@ -36,13 +36,13 @@ ENDCLASS
 /*
     GetAsString
 */
-METHOD FUNCTION GetAsString() CLASS TLogicalField
+METHOD FUNCTION GetAsString() CLASS TFieldLogical
    RETURN iif( ::Value, ".T.", ".F." )
 
 /*
     GetKeyVal
 */
-METHOD FUNCTION GetKeyVal( keyVal ) CLASS TLogicalField
+METHOD FUNCTION GetKeyVal( keyVal ) CLASS TFieldLogical
 
    SWITCH ValType( keyVal )
    CASE 'C'
@@ -60,7 +60,7 @@ METHOD FUNCTION GetKeyVal( keyVal ) CLASS TLogicalField
 /*
     IndexExpression
 */
-METHOD FUNCTION IndexExpression( fieldName ) CLASS TLogicalField
+METHOD FUNCTION IndexExpression( fieldName ) CLASS TFieldLogical
 
    IF ::FIndexExpression != NIL
       RETURN ::FIndexExpression
@@ -72,5 +72,5 @@ METHOD FUNCTION IndexExpression( fieldName ) CLASS TLogicalField
    RETURN "iif(" + fieldName + ",'T','F')"
 
 /*
-    ENDCLASS TLogicalField
+    ENDCLASS TFieldLogical
 */

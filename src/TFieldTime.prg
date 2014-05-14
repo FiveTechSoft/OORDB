@@ -6,9 +6,9 @@
 #include "xerror.ch"
 
 /*
-    TTimeField
+    TFieldTime
 */
-CLASS TTimeField FROM TField
+CLASS TFieldTime FROM TField
 
    PRIVATE:
 
@@ -53,7 +53,7 @@ ENDCLASS
 /*
     GetAs
 */
-METHOD FUNCTION GetAs( index ) CLASS TTimeField
+METHOD FUNCTION GetAs( index ) CLASS TFieldTime
 
    ::Time:AsString := ::GetAsVariant()
    SWITCH INDEX
@@ -70,7 +70,7 @@ METHOD FUNCTION GetAs( index ) CLASS TTimeField
 /*
     GetAsVariant
 */
-METHOD FUNCTION GetAsVariant( ... ) CLASS TTimeField
+METHOD FUNCTION GetAsVariant( ... ) CLASS TFieldTime
 
    LOCAL time
 
@@ -93,7 +93,7 @@ METHOD FUNCTION GetAsVariant( ... ) CLASS TTimeField
 /*
     GetKeyVal
 */
-METHOD FUNCTION GetKeyVal( keyVal ) CLASS TTimeField
+METHOD FUNCTION GetKeyVal( keyVal ) CLASS TFieldTime
 
    IF keyVal = NIL
       keyVal := ::GetAsVariant()
@@ -104,7 +104,7 @@ METHOD FUNCTION GetKeyVal( keyVal ) CLASS TTimeField
 /*
     IndexExpression
 */
-METHOD FUNCTION IndexExpression( fieldName ) CLASS TTimeField
+METHOD FUNCTION IndexExpression( fieldName ) CLASS TFieldTime
 
    IF ::FIndexExpression != NIL
       RETURN ::FIndexExpression
@@ -118,7 +118,7 @@ METHOD FUNCTION IndexExpression( fieldName ) CLASS TTimeField
 /*
     SetAsVariant
 */
-METHOD PROCEDURE SetAsVariant( variant ) CLASS TTimeField
+METHOD PROCEDURE SetAsVariant( variant ) CLASS TFieldTime
     LOCAL time
     LOCAL vt
 
@@ -144,13 +144,13 @@ RETURN
 /*
     TranslateToFieldValue
 */
-METHOD FUNCTION TranslateToFieldValue( value ) CLASS TTimeField
+METHOD FUNCTION TranslateToFieldValue( value ) CLASS TFieldTime
    RETURN value:AsSeconds
 
 /*
     TranslateToValue
 */
-METHOD FUNCTION TranslateToValue( value ) CLASS TTimeField
+METHOD FUNCTION TranslateToValue( value ) CLASS TFieldTime
 
    SWITCH ValType( value )
    CASE "C"
@@ -167,5 +167,5 @@ METHOD FUNCTION TranslateToValue( value ) CLASS TTimeField
    RETURN ::FTime
 
 /*
-    ENDCLASS TTimeField
+    ENDCLASS TFieldTime
 */

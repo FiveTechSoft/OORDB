@@ -6,9 +6,9 @@
 #include "xerror.ch"
 
 /*
-    TStringField
+    TFieldString
 */
-CLASS TStringField FROM TField
+CLASS TFieldString FROM TField
 
    PRIVATE:
 
@@ -40,7 +40,7 @@ ENDCLASS
 /*
     GetAsString
 */
-METHOD FUNCTION GetAsString() CLASS TStringField
+METHOD FUNCTION GetAsString() CLASS TFieldString
 
    LOCAL Result := ""
    LOCAL i
@@ -60,7 +60,7 @@ METHOD FUNCTION GetAsString() CLASS TStringField
 /*
     GetSize
 */
-METHOD FUNCTION GetSize() CLASS TStringField
+METHOD FUNCTION GetSize() CLASS TFieldString
 
    LOCAL i
 
@@ -78,7 +78,7 @@ METHOD FUNCTION GetSize() CLASS TStringField
 /*
     IndexExpression
 */
-METHOD FUNCTION IndexExpression( fieldName, isMasterFieldComponent ) CLASS TStringField
+METHOD FUNCTION IndexExpression( fieldName, isMasterFieldComponent ) CLASS TFieldString
 
    LOCAL exp
    LOCAL i
@@ -126,7 +126,7 @@ METHOD FUNCTION IndexExpression( fieldName, isMasterFieldComponent ) CLASS TStri
 /*
     SetBuffer
 */
-METHOD FUNCTION SetBuffer( buffer ) CLASS TStringField
+METHOD FUNCTION SetBuffer( buffer ) CLASS TFieldString
 
    LOCAL size := ::Size
 
@@ -141,7 +141,7 @@ METHOD FUNCTION SetBuffer( buffer ) CLASS TStringField
 /*
     SetDBS_LEN
 */
-METHOD PROCEDURE SetDBS_LEN( dbs_Len ) CLASS TStringField
+METHOD PROCEDURE SetDBS_LEN( dbs_Len ) CLASS TFieldString
 
    ::FDBS_LEN := dbs_Len
    IF ::FSize = NIL
@@ -153,7 +153,7 @@ METHOD PROCEDURE SetDBS_LEN( dbs_Len ) CLASS TStringField
 /*
     SetDefaultValue
 */
-METHOD PROCEDURE SetDefaultValue( DefaultValue ) CLASS TStringField
+METHOD PROCEDURE SetDefaultValue( DefaultValue ) CLASS TFieldString
 
    ::FDefaultValue := DefaultValue
 
@@ -164,7 +164,7 @@ METHOD PROCEDURE SetDefaultValue( DefaultValue ) CLASS TStringField
 /*
     SetSize
 */
-METHOD PROCEDURE SetSize( size ) CLASS TStringField
+METHOD PROCEDURE SetSize( size ) CLASS TFieldString
 
    ::FSize := size
    ::FDBS_LEN := size
@@ -172,5 +172,5 @@ METHOD PROCEDURE SetSize( size ) CLASS TStringField
    RETURN
 
 /*
-    ENDCLASS TStringField
+    ENDCLASS TFieldString
 */

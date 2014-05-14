@@ -6,9 +6,9 @@
 #include "xerror.ch"
 
 /*
-    TObjectField
+    TFieldObject
 */
-CLASS TObjectField FROM TField
+CLASS TFieldObject FROM TField
 
    PRIVATE:
 
@@ -45,7 +45,7 @@ CLASS TObjectField FROM TField
 
    PUBLIC:
 
-   METHOD BaseKeyField() // Returns the non-TObjectField associated to this obj
+   METHOD BaseKeyField() // Returns the non-TFieldObject associated to this obj
    METHOD DataObj
    METHOD GetAsDisplay() INLINE ::GetKeyVal()
    METHOD GetKeyVal( keyVal )
@@ -67,7 +67,7 @@ ENDCLASS
 /*
     BaseKeyField
 */
-METHOD FUNCTION BaseKeyField() CLASS TObjectField
+METHOD FUNCTION BaseKeyField() CLASS TFieldObject
 
    LOCAL baseKeyField
 
@@ -83,7 +83,7 @@ METHOD FUNCTION BaseKeyField() CLASS TObjectField
 /*
     BuildLinkedTable
 */
-METHOD PROCEDURE BuildLinkedTable() CLASS TObjectField
+METHOD PROCEDURE BuildLinkedTable() CLASS TFieldObject
 
    LOCAL masterSource
    LOCAL className
@@ -95,7 +95,7 @@ METHOD PROCEDURE BuildLinkedTable() CLASS TObjectField
       ::buildingLinkedTable := .T.
 
       IF Empty( ::FObjClass )
-         RAISE TFIELD ::Name ERROR "TObjectField has not a ObjClass value."
+         RAISE TFIELD ::Name ERROR "TFieldObject has not a ObjClass value."
       ENDIF
 
         /*
@@ -117,14 +117,14 @@ METHOD PROCEDURE BuildLinkedTable() CLASS TObjectField
          ::FLinkedTable := __ClsInstFromName( ::FObjClass )
 
          IF ::FLinkedTable:IsDerivedFrom( ::FTable:ClassName() )
-            RAISE TFIELD ::Name ERROR "Denied: To create TObjectField's linked table derived from the same field's table class."
+            RAISE TFIELD ::Name ERROR "Denied: To create TFieldObject's linked table derived from the same field's table class."
          ENDIF
 
          IF !::FLinkedTable:IsDerivedFrom( "TTable" )
-            RAISE TFIELD ::Name ERROR "Denied: To create TObjectField's linked table NOT derived from a TTable class."
+            RAISE TFIELD ::Name ERROR "Denied: To create TFieldObject's linked table NOT derived from a TTable class."
          ENDIF
 
-         /* check if we still need a mastersource and it exists in TObjectField's Table */
+         /* check if we still need a mastersource and it exists in TFieldObject's Table */
          IF Empty( masterSource )
             className := ::FLinkedTable:GetMasterSourceClassName()
             IF ::FTable:IsDerivedFrom( className )
@@ -147,15 +147,15 @@ METHOD PROCEDURE BuildLinkedTable() CLASS TObjectField
          */
       IF !::IsMasterFieldComponent .AND. ::FLinkedTable:LinkedObjField == NIL
             /*
-             * LinkedObjField is linked to the FIRST TObjectField were it is referenced
+             * LinkedObjField is linked to the FIRST TFieldObject were it is referenced
              * this has to be the most top level MasterSource table
              */
          ::FLinkedTable:LinkedObjField := Self
       ELSE
             /*
              * We need to set this field as READONLY, because their LinkedTable
-             * belongs to a some TObjectField in some MasterSource table
-             * so this TObjectField cannot modify the physical database here
+             * belongs to a some TFieldObject in some MasterSource table
+             * so this TFieldObject cannot modify the physical database here
              */
          // ::ReadOnly := .T.
       ENDIF
@@ -174,7 +174,7 @@ METHOD PROCEDURE BuildLinkedTable() CLASS TObjectField
     DataObj
     Syncs the Table with the key in buffer
 */
-METHOD FUNCTION DataObj CLASS TObjectField
+METHOD FUNCTION DataObj CLASS TFieldObject
 
    LOCAL linkedTable
    LOCAL linkedObjField
@@ -204,7 +204,7 @@ METHOD FUNCTION DataObj CLASS TObjectField
             ELSE
                 /*
                     to sure a resync with linkedTable mastersource table
-                    on TObjectField's that have a mastersource field (another TObjectField)
+                    on TFieldObject's that have a mastersource field (another TFieldObject)
                     in the same table
                 */
                IF !Empty( linkedTable:MasterSource ) .AND. !Empty( linkedTable:MasterSource:LinkedObjField ) .AND. linkedTable:MasterSource:LinkedObjField:Table == ::FTable
@@ -244,13 +244,13 @@ METHOD FUNCTION DataObj CLASS TObjectField
 /*
     GetAsString
 */
-METHOD FUNCTION GetAsString() CLASS TObjectField
+METHOD FUNCTION GetAsString() CLASS TFieldObject
    RETURN ::DataObj:GetAsString()
 
 /*
     GetAsVariant
 */
-METHOD FUNCTION GetAsVariant( ... ) CLASS TObjectField
+METHOD FUNCTION GetAsVariant( ... ) CLASS TFieldObject
 
    LOCAL variant
 
@@ -258,7 +258,7 @@ METHOD FUNCTION GetAsVariant( ... ) CLASS TObjectField
 
    IF HB_ISOBJECT( variant )
 
-      IF variant:IsDerivedFrom( "TObjectField" )
+      IF variant:IsDerivedFrom( "TFieldObject" )
          // RETURN variant:DataObj:GetAsVariant()
          RETURN variant:GetAsVariant()
       ELSEIF variant:IsDerivedFrom( "TTable" )
@@ -277,7 +277,7 @@ METHOD FUNCTION GetAsVariant( ... ) CLASS TObjectField
 /*
     GetFieldReadBlock
 */
-METHOD FUNCTION GetFieldReadBlock() CLASS TObjectField
+METHOD FUNCTION GetFieldReadBlock() CLASS TFieldObject
 
    IF ::FFieldReadBlock = NIL .AND. ::Super:GetFieldReadBlock() = NIL
       IF ::FLinkedTable = NIL
@@ -295,7 +295,7 @@ METHOD FUNCTION GetFieldReadBlock() CLASS TObjectField
 /*
     GetKeyVal
 */
-METHOD FUNCTION GetKeyVal( keyVal ) CLASS TObjectField
+METHOD FUNCTION GetKeyVal( keyVal ) CLASS TFieldObject
 
    IF keyVal = NIL
       keyVal := ::GetAsVariant()
@@ -306,7 +306,7 @@ METHOD FUNCTION GetKeyVal( keyVal ) CLASS TObjectField
 /*
     GetLabel
 */
-METHOD FUNCTION GetLabel() CLASS TObjectField
+METHOD FUNCTION GetLabel() CLASS TFieldObject
 
    IF !Empty( ::FLabel )
       RETURN ::FLabel
@@ -320,7 +320,7 @@ METHOD FUNCTION GetLabel() CLASS TObjectField
 /*
     GetLinkedTable
 */
-METHOD FUNCTION GetLinkedTable CLASS TObjectField
+METHOD FUNCTION GetLinkedTable CLASS TFieldObject
 
    LOCAL result
 
@@ -341,7 +341,7 @@ METHOD FUNCTION GetLinkedTable CLASS TObjectField
             IF HB_ISOBJECT( result )
                IF result:IsDerivedFrom( "TTable" )
                   ::FLinkedTable := result
-               ELSEIF result:IsDerivedFrom( "TObjectField" )
+               ELSEIF result:IsDerivedFrom( "TFieldObject" )
                   ::FLinkedTable := result:DataObj()
                ENDIF
             ELSE /* the basekey field value is returned for the calculated field */
@@ -377,13 +377,13 @@ METHOD FUNCTION GetLinkedTable CLASS TObjectField
 /*
     GetOnDataChange
 */
-METHOD FUNCTION GetOnDataChange() CLASS TObjectField
+METHOD FUNCTION GetOnDataChange() CLASS TFieldObject
    RETURN ::GetLinkedTable:OnDataChangeBlock
 
 /*
     GetValidValues
 */
-METHOD FUNCTION GetValidValues() CLASS TObjectField
+METHOD FUNCTION GetValidValues() CLASS TFieldObject
 
    LOCAL hValues
    LOCAL fld
@@ -406,7 +406,7 @@ METHOD FUNCTION GetValidValues() CLASS TObjectField
 /*
     IndexExpression
 */
-METHOD FUNCTION IndexExpression( fieldName ) CLASS TObjectField
+METHOD FUNCTION IndexExpression( fieldName ) CLASS TFieldObject
 
    IF ::FIndexExpression != NIL
       RETURN ::FIndexExpression
@@ -429,13 +429,13 @@ METHOD FUNCTION IndexExpression( fieldName ) CLASS TObjectField
 /*
     SetLinkedTableMasterSource
 */
-METHOD PROCEDURE SetLinkedTableMasterSource( linkedTable ) CLASS TObjectField
+METHOD PROCEDURE SetLinkedTableMasterSource( linkedTable ) CLASS TFieldObject
 
    SWITCH ValType( linkedTable )
    CASE "C"
       linkedTable := ::Table:FieldByName( linkedTable )
    CASE "O"
-      IF linkedTable:IsDerivedFrom( "TObjectField" ) .OR. linkedTable:IsDerivedFrom( "TTable" )
+      IF linkedTable:IsDerivedFrom( "TFieldObject" ) .OR. linkedTable:IsDerivedFrom( "TTable" )
          EXIT
       ENDIF
    CASE "B"
@@ -451,7 +451,7 @@ METHOD PROCEDURE SetLinkedTableMasterSource( linkedTable ) CLASS TObjectField
 /*
     SetOnDataChange
 */
-METHOD PROCEDURE SetOnDataChange( onDataChangeBlock ) CLASS TObjectField
+METHOD PROCEDURE SetOnDataChange( onDataChangeBlock ) CLASS TFieldObject
 
    ::FonDataChangeBlock := onDataChangeBlock
 
@@ -460,7 +460,7 @@ METHOD PROCEDURE SetOnDataChange( onDataChangeBlock ) CLASS TObjectField
 /*
     SetValidValues
 */
-METHOD PROCEDURE SetValidValues( validValues, labelField ) CLASS TObjectField
+METHOD PROCEDURE SetValidValues( validValues, labelField ) CLASS TFieldObject
 
    ::Super:SetValidValues( validValues )
    ::FValidValuesLabelField := labelField
@@ -468,6 +468,6 @@ METHOD PROCEDURE SetValidValues( validValues, labelField ) CLASS TObjectField
    RETURN
 
 /*
-    ENDCLASS TObjectField
+    ENDCLASS TFieldObject
 */
 
