@@ -2,6 +2,34 @@
  * $Id: ChangeLog 155 2013-06-06 03:29:32Z tfonrouge $
  */
 
+Wed May 14 16:16:37 UTC 2014 Teo Fonrouge (tfonrouge@gmail.com)
+  M include/oordb.ch
+    % added array field TArrayField class type
+
+  M include/xerror.ch
+    * added error pp
+
+  M src/TField.prg
+    * moved field classes to their own source file
+
+  A src/TFieldArray.prg
+    % field array class
+ 
+  A src/TFieldAutoInc.prg
+  A src/TFieldDate.prg
+  A src/TFieldDateTime.prg
+  A src/TFieldFloat.prg
+  A src/TFieldInteger.prg
+  A src/TFieldLogical.prg
+  A src/TFieldMemo.prg
+  A src/TFieldModTime.prg
+  A src/TFieldNumeric.prg
+  A src/TFieldObject.prg
+  A src/TFieldString.prg
+  A src/TFieldTime.prg
+  A src/TFieldVariant.prg
+    * new sources for existing classes
+
 Tue May 13 03:21:31 UTC 2014 Teo Fonrouge (tfonrouge@gmail.com)
   M src/TField.prg
     ! stupid typo, not all fields are indexes

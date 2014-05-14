@@ -48,4 +48,12 @@
 
           //::<errId>( <args> )
           //__objSendMsg( iif( <.obj.>, <obj>, Self ), "__Err_"[ , <args> ], <errId> )
+
+#xcommand RAISE TFIELD <name> ERROR <cDescription> => ;
+      RAISE ERROR E"\nTable: <" + ::FTable:ClassName() + ">, FieldExpression: <" + < name > + ">" + ;
+      E"\n" + ;
+      < cDescription > + E"\n" ;
+      SUBSYSTEM ::ClassName + "<'" + ::Name + "'>" ;
+      OPERATION E"\n" + ProcName( 0 ) + "(" + LTrim( Str( ProcLine( 0 ) ) ) + ")"
+
 #endif
