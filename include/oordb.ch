@@ -71,29 +71,29 @@
             => ;
             ::AddParentChild( <parentTableName>, <childTableName>, [ <indexName> ] )
 
-/* To REQUIRE FORMAT in TTimeField */
+/* To REQUIRE FORMAT in TFieldTime */
 #xtranslate ADD [<clauses0,...>] TIME FIELD <xFieldMethod> [<clauses1,...>] FORMAT <timeFormat> [<clauses2,...>] ;
                         => ;
                         ADD [<clauses0>] _TIME FIELD <xFieldMethod> [<clauses1>] FORMAT <timeFormat> [<clauses2>]
-#xtranslate T_TimeField => TTimeField
+#xtranslate TField_Time => TFieldTime
 
-/* To REQUIRE SIZE in TStringField */
+/* To REQUIRE SIZE in TFieldString */
 #xtranslate ADD [<clauses0,...>] STRING FIELD <xFieldMethod> [<clauses1,...>] SIZE <nsize> [<clauses2,...>] ;
                         => ;
                         ADD [<clauses0>] _STRING FIELD <xFieldMethod> [<clauses1>] SIZE <nsize> [<clauses2>]
-#xtranslate T_StringField => TStringField
+#xtranslate TField_String => TFieldString
 
-/* To REQUIRE LEN DEC in TNumericField */
+/* To REQUIRE LEN DEC in TFieldNumeric */
 #xtranslate ADD [<clauses0,...>] NUMERIC FIELD <xFieldMethod> [<clauses1,...>] LEN <nLen> DEC <nDec> [<clauses2,...>] ;
                         => ;
                         ADD [<clauses0>] _NUMERIC FIELD <xFieldMethod> [<clauses1>] LEN <nLen> DEC <nDec> [<clauses2>]
-#xtranslate T_NumericField => TNumericField
+#xtranslate TField_Numeric => TFieldNumeric
 
-/* To REQUIRE CLASS in TObjectField */
+/* To REQUIRE CLASS in TFieldObject */
 #xtranslate ADD [<clauses0,...>] OBJECT FIELD <xFieldMethod> [<clauses1,...>] CLASS <objClass> [<clauses2,...>] ;
                         => ;
                         ADD [<clauses0>] _OBJECT FIELD <xFieldMethod> [<clauses1>] CLASS <objClass> [<clauses2>]
-#xtranslate T_ObjectField => TObjectField
+#xtranslate TField_Object => TFieldObject
 
 #xtranslate ADD [<calc: CALCULATED>] <type: _STRING, MEMO, _NUMERIC, FLOAT, INTEGER, AUTOINC, LOGICAL, _TIME, DATE, DATETIME, MODTIME, _OBJECT, VARIANT, ARRAY> FIELD [<xFieldMethod>] ;
                         [ NAME <cName> ] ;
@@ -136,7 +136,7 @@
                         [ DISPLAY <dispBlock> ] ;
                         [ <aeu: ACCEPT_EMPTY_UNIQUE> ] ;
                      => ;
-                        WITH OBJECT T<type>Field():New( Self, ::curClassField ) ;;
+                        WITH OBJECT TField<type>():New( Self, ::curClassField ) ;;
                             [ :Name := <cName> ] ;;
                             [ :Label := <label> ] ;;
                             [ :ReadOnly := <.ro.> ] ;;
