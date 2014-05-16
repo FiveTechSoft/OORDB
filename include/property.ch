@@ -1,5 +1,5 @@
 /*
- * $Id: property.ch 21 2012-03-14 19:07:45Z tfonrouge $
+ *
  */
 
 /*

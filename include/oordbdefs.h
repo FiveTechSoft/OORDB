@@ -1,5 +1,5 @@
 /*
- * $Id: oordbdefs.h 4 2012-02-29 01:55:47Z tfonrouge $
+ *
  */
 
 /*

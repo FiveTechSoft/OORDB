@@ -1,5 +1,5 @@
 /*
- * $Id: TDisplayFieldList.prg 104 2013-03-02 21:25:49Z tfonrouge $
+ *
  */
 
 #include "hbclass.ch"

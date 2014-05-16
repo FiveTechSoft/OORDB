@@ -1,5 +1,5 @@
 /*
- * $Id: common.prg 122 2013-04-05 01:59:12Z tfonrouge $
+ *
  */
 
 STATIC BaseArray := "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ"

@@ -1,5 +1,5 @@
 /*
- * $Id: TAlias.prg 144 2013-05-13 14:56:50Z tfonrouge $
+ *
  */
 
 /*

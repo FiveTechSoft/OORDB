@@ -1,5 +1,5 @@
 /*
- * $Id: TField.prg 155 2013-06-06 03:29:32Z tfonrouge $
+ *
  */
 
 #include "oordb.ch"

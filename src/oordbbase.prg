@@ -1,5 +1,5 @@
 /*
- * $Id: oordbbase.prg 5 2012-02-29 02:47:36Z tfonrouge $
+ *
  */
 
 #include "hbclass.ch"

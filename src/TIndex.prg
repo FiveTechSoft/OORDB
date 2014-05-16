@@ -1,5 +1,5 @@
 /*
- * $Id: TIndex.prg 143 2013-05-10 13:45:21Z tfonrouge $
+ *
  */
 
 /*

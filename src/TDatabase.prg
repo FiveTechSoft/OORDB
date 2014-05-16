@@ -1,5 +1,5 @@
 /*
- * $Id: TDatabase.prg 17 2012-03-07 18:25:47Z tfonrouge $
+ *
  * TDataBase
  */
 

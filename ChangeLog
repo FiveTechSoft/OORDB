@@ -2,6 +2,26 @@
  * $Id: ChangeLog 155 2013-06-06 03:29:32Z tfonrouge $
  */
 
+Fri May 16 22:33:01 UTC 2014 Teo Fonrouge (tfonrouge@gmail.com)
+  M include/oordb.ch
+  M include/oordbdefs.h
+  M include/property.ch
+  M include/xerror.ch
+  M src/Dba.prg
+  M src/TAlias.prg
+  M src/TDatabase.prg
+  M src/TDisplayFieldList.prg
+  M src/TField.prg
+  M src/TIndex.prg
+  M src/TTime.prg
+  M src/common.prg
+  M src/oordbbase.prg
+    * removed old Id line
+
+  A src/TRecordList.prg
+  M src/TTable.prg
+    * simple class to hold a list of records for a table
+
 Fri May 16 02:53:26 UTC 2014 Teo Fonrouge (tfonrouge@gmail.com)
   M src/TTable.prg
     + property MainIndex : is the main index defined by the table class, it can be an secondary index

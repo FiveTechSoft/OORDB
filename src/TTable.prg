@@ -1,5 +1,5 @@
 /*
- * $Id: TTable.prg 154 2013-06-04 20:50:27Z tfonrouge $
+ *
  */
 
 /*
@@ -162,6 +162,7 @@ CLASS TTable FROM OORDBBASE
    DATA FPrimaryIndex
    DATA FPrimaryIndexList INIT hb_HSetOrder( hb_HSetCaseMatch( { => }, .F. ), .T. )  // <className> => <indexName>
    DATA FRecNo    INIT 0
+   DATA FRecordList
    DATA FTableFileName     INIT "" // to be assigned (INIT) on inherited classes
    DATA tableState INIT {}
    DATA tableStateLen INIT 0
@@ -183,6 +184,7 @@ CLASS TTable FROM OORDBBASE
    METHOD GetId() INLINE ::FBaseKeyField:KeyVal()
    METHOD GetIndex()
    METHOD GetRecNo()
+   METHOD GetRecordList
    METHOD InitDataBase INLINE TDataBase():New()
    METHOD InitTable()
    METHOD RawGet4Seek( direction, xField, keyVal, index, softSeek )
@@ -363,6 +365,7 @@ CLASS TTable FROM OORDBBASE
    PROPERTY RDOClient READ FRDOClient
    PROPERTY RecCount READ GetAlias:RecCount()
    PROPERTY RecNo READ GetRecNo WRITE DbGoTo
+   PROPERTY RecordList READ GetRecordList
    PROPERTY State READ FState
    PROPERTY SubState READ FSubState
    PROPERTY SyncingToContainerField READ FSyncingToContainerField WRITE SetSyncingToContainerField
@@ -2599,6 +2602,15 @@ METHOD FUNCTION GetRecNo() CLASS TTable
    ENDIF
 
    RETURN ::FRecNo
+
+/*
+    GetRecordList
+*/
+METHOD FUNCTION GetRecordList() CLASS TTable
+    IF ::FRecordList = NIL
+        ::FRecordList := TRecordList():New( Self )
+    ENDIF
+RETURN ::FRecordList
 
 /*
     GetTableFileName
