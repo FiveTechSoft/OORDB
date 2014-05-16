@@ -292,6 +292,7 @@ CLASS TTable FROM OORDBBASE
    METHOD SetBaseKeyIndex( baseKeyIndex )
    METHOD SetDbFilter( filter ) INLINE ::FDbFilter := filter
    METHOD SetKeyVal( keyVal )
+   METHOD SetMainIndex( mainIndex )
    METHOD SetPrimaryIndex( primaryIndex )
    METHOD SetPrimaryIndexList( clsName, name )
    METHOD SetId( id ) INLINE ::FBaseKeyField:SetKeyVal( id )
@@ -378,6 +379,7 @@ CLASS TTable FROM OORDBBASE
    PROPERTY INDEX READ GetIndex WRITE SetIndex
    PROPERTY IndexList READ FIndexList
    PROPERTY IndexName READ GetIndexName WRITE SetIndexName
+   PROPERTY MainIndex       /* child table can miss a primary index but a secondary one sets dependency */
    PROPERTY MasterKeyField READ GetMasterKeyField
    PROPERTY MasterSource READ GetMasterSource WRITE SetMasterSource
    PROPERTY PrimaryIndex READ FPrimaryIndex
@@ -949,12 +951,12 @@ STATIC FUNCTION F_Childs( Self, ignoreAutoDelete, block, curClass, childs )
 
                ChildDB:StatePush()
 
-               ChildDB:PrimaryIndex:Scope := NIL
+               ChildDB:MainIndex:Scope := NIL
 
-               IF ChildDB:PrimaryIndex:Descend
-                  ChildDB:PrimaryIndex:dbGoTop()
+               IF ChildDB:MainIndex:Descend
+                  ChildDB:MainIndex:dbGoTop()
                ELSE
-                  ChildDB:PrimaryIndex:dbGoBottom()
+                  ChildDB:MainIndex:dbGoBottom()
                ENDIF
 
                IF !ChildDB:Eof() .AND. !Empty( ChildDB:BaseKeyField:Value )
@@ -1233,14 +1235,16 @@ METHOD PROCEDURE CreateTableInstance() CLASS TTable
 
    ::FState := dsInactive
 
-   IF Empty( ::IndexName )
-      IF hb_HHasKey( ::FIndexList, ::ClassName )
-         ::SetIndex( HB_HValueAt( ::FIndexList[ ::ClassName ], 1 ) )
-      ELSE
-         IF ::PrimaryIndex != NIL
-            ::SetIndex( ::PrimaryIndex )
-         ENDIF
+   IF hb_HHasKey( ::FIndexList, ::ClassName )
+      ::FMainIndex := HB_HValueAt( ::FIndexList[ ::ClassName ], 1 )
+   ELSE
+      IF ::PrimaryIndex != NIL
+         ::FMainIndex := ::PrimaryIndex
       ENDIF
+   ENDIF
+
+   IF Empty( ::IndexName )
+      ::SetIndex( ::FMainIndex )
    ENDIF
 
    ::OnCreate()
@@ -1637,13 +1641,13 @@ STATIC FUNCTION F_DeleteChilds( Self, curClass )
 
             ChildDB:StatePush()
 
-            ChildDB:PrimaryIndex:Scope := NIL
+            ChildDB:MainIndex:Scope := NIL
 
             WHILE .T.
-               IF ChildDB:PrimaryIndex:Descend
-                  ChildDB:PrimaryIndex:dbGoTop()
+               IF ChildDB:MainIndex:Descend
+                  ChildDB:MainIndex:dbGoTop()
                ELSE
-                  ChildDB:PrimaryIndex:dbGoBottom()
+                  ChildDB:MainIndex:dbGoBottom()
                ENDIF
                IF ChildDB:Eof() .OR. Empty( ChildDB:BaseKeyField:Value )
                   EXIT
@@ -3208,6 +3212,17 @@ METHOD FUNCTION SetisMetaTable( isMetaTable ) CLASS TTable
 METHOD FUNCTION SetKeyVal( keyVal ) CLASS TTable
 
    RETURN ::GetKeyField():SetKeyVal( keyVal )
+
+/*
+    SetMainIndex
+*/
+METHOD FUNCTION SetMainIndex( mainIndex ) CLASS TTable
+
+   IF ::FMainIndex = NIL
+      ::FMainIndex := mainIndex
+   ENDIF
+
+   RETURN mainIndex
 
 /*
     SetMasterSource
