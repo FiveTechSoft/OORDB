@@ -2,6 +2,15 @@
  * $Id: ChangeLog 155 2013-06-06 03:29:32Z tfonrouge $
  */
 
+Wed May 21 13:22:11 UTC 2014 Teo Fonrouge (tfonrouge@gmail.com)
+  M include/oordb.ch
+  M src/TFieldArray.prg
+    * added TFieldHash
+    ! Simplified TArrayField
+
+  A src/TFieldHash.prg
+    % hash field
+
 Fri May 16 22:33:01 UTC 2014 Teo Fonrouge (tfonrouge@gmail.com)
   M include/oordb.ch
   M include/oordbdefs.h

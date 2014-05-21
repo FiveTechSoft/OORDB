@@ -6,19 +6,19 @@
 #include "xerror.ch"
 
 /*
-    TFieldArray
+    TFieldHash
 */
-CLASS TFieldArray FROM TField
+CLASS TFieldHash FROM TField
 
     PROTECTED:
 
     DATA FDBS_LEN INIT 4
     DATA FDBS_DEC INIT 0
     DATA FDBS_TYPE INIT "M"
-    DATA FFieldType INIT ftArray
+    DATA FFieldType INIT ftHash
     DATA FSize INIT 0
-    DATA FType INIT "Array"
-    DATA FtypeNameList INIT hb_hSetCaseMatch( {"es"=>"Array"} )
+    DATA FType INIT "Hash"
+    DATA FtypeNameList INIT hb_hSetCaseMatch( {"es"=>"Hash"} )
 
     METHOD TranslateToFieldValue( value )
     METHOD TranslateToValue( value )
@@ -30,27 +30,27 @@ ENDCLASS
 /*
     TranslateToFieldValue
 */
-METHOD FUNCTION TranslateToFieldValue( value ) CLASS TFieldArray
-    IF ValType( value ) != "A"
-        value := {}
+METHOD FUNCTION TranslateToFieldValue( value ) CLASS TFieldHash
+    IF ValType( value ) != "H"
+        value := {=>}
     ENDIF
 RETURN HB_Serialize( value )
 
 /*
     TranslateToValue
 */
-METHOD FUNCTION TranslateToValue( value ) CLASS TFieldArray
+METHOD FUNCTION TranslateToValue( value ) CLASS TFieldHash
     SWITCH ValType( value )
-    CASE "A"
+    CASE "H"
         EXIT
     CASE "C"
         value := ::TranslateToValue( HB_DeSerialize( value ) )
         EXIT
     OTHERWISE
-        value := {}
+        value := {=>}
     ENDSWITCH
 RETURN value
 
 /*
-    ENDCLASS TFieldArray
+    ENDCLASS TFieldHash
 */
