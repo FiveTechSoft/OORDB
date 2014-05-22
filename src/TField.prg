@@ -1239,8 +1239,8 @@ METHOD PROCEDURE SetData( value, initialize ) CLASS TField
 
    ENDIF
 
-   /* Don't bother... */
-   IF value == ::FWrittenValue
+   /* Don't bother... all except ftArray, ftHash : always must be written */
+   IF !(::FieldType = ftArray .OR. ::FieldType = ftHash) .AND. value == ::FWrittenValue
       RETURN
    ENDIF
 

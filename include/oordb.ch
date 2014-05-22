@@ -183,10 +183,15 @@
                             :ValidateFieldInfo() ;;
                         ENDWITH
                         
-/* Calculated field with READWRITE method */
-#xtranslate ADD CALCULATED [<clauses0,...>] FIELD <fldName> READWRITE <mthd> [<clauses1,...>] ;
+/* Calculated field with CALCREAD method */
+#xtranslate ADD CALCULATED [<clauses0,...>] FIELD <fldName> CALCREAD <mthd> [<clauses1,...>] ;
                         => ;
-                        ADD CALCULATED [<clauses0>] FIELD <fldName> READ \{|Self| ::<mthd>(<fldName>) } WRITE {|Self,value| ::<mthd>( <fldName>, value ) } [<clauses1>]
+                        ADD CALCULATED [<clauses0>] FIELD <fldName> READ {|Self,...| ::<mthd>(<fldName>,...) } [<clauses1>]
+
+/* Calculated field with CALCREADWRITE method */
+#xtranslate ADD CALCULATED [<clauses0,...>] FIELD <fldName> CALCREADWRITE <mthd> [<clauses1,...>] ;
+                        => ;
+                        ADD CALCULATED [<clauses0>] FIELD <fldName> READ {|Self| ::<mthd>(<fldName>) } WRITE {|Self,...| ::<mthd>( <fldName>,... ) } [<clauses1>]
 
 /* Calculated field with ALLOW_WRITE method */
 #xtranslate ADD CALCULATED [<clauses0,...>] FIELD <fldName> ALLOW_WRITE [<clauses1,...>] ;
