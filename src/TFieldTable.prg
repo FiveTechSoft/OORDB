@@ -53,7 +53,7 @@ CLASS TFieldTable FROM TField
    METHOD GetAsVariant( ... )
    METHOD IndexExpression( fieldName )
    METHOD SetClassInit( clsInit ) INLINE ::FClassInit := clsInit
-   METHOD SetValidValues( validValues, labelField )
+   METHOD SetValidValues( validValues, ignoreUndetermined, labelField )
    PROPERTY LinkedTable READ GetLinkedTable
    PROPERTY LinkedTableAssigned READ FLinkedTableMasterSource != NIL
    PROPERTY LinkedTableMasterSource READ FLinkedTableMasterSource WRITE SetLinkedTableMasterSource
@@ -460,9 +460,9 @@ METHOD PROCEDURE SetOnDataChange( onDataChangeBlock ) CLASS TFieldTable
 /*
     SetValidValues
 */
-METHOD PROCEDURE SetValidValues( validValues, labelField ) CLASS TFieldTable
+METHOD PROCEDURE SetValidValues( validValues, ignoreUndetermined, labelField ) CLASS TFieldTable
 
-   ::Super:SetValidValues( validValues )
+   ::Super:SetValidValues( validValues, ignoreUndetermined )
    ::FValidValuesLabelField := labelField
 
    RETURN

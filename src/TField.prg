@@ -160,7 +160,7 @@ CLASS TField FROM OORDBBASE
    METHOD SetIndexExpression( indexExpression ) INLINE ::FIndexExpression := indexExpression
    METHOD SetKeyVal( keyVal, lSoftSeek )
    METHOD SetKeyValBlock( keyValBlock ) INLINE ::FOnSetKeyValBlock := keyValBlock
-   METHOD SetValidValues( validValues )
+   METHOD SetValidValues( validValues, ignoreUndetermined )
    METHOD Validate( showAlert ) INLINE ::ValidateResult( showAlert ) = NIL
    METHOD ValidateResult( showAlert, value )
    METHOD ValidateFieldInfo VIRTUAL
@@ -175,6 +175,7 @@ CLASS TField FROM OORDBBASE
    PROPERTY DisplayBlock READWRITE
    PROPERTY EmptyValue READ GetEmptyValue
    PROPERTY FieldArrayIndex READ FFieldArrayIndex
+   PROPERTY ignoreUndetermined
    PROPERTY KeyVal READ GetKeyVal WRITE SetKeyVal
    PROPERTY LinkedTable READ GetLinkedTable
    PROPERTY ReUseField READ FReUseField WRITE SetReUseField
@@ -337,7 +338,7 @@ METHOD FUNCTION CheckForValidValue( value, showAlert, errorStr ) CLASS TField
             ENDIF
         ELSE
             errorStr := ::FTable:ClassName + ": '" + ::Name + "' <value given not in 'ValidValues'> : '" + AsString( value ) + "'"
-            IF showAlert == .T.
+            IF showAlert == .T. .AND. !::FignoreUndetermined
                 SHOW WARN errorStr
             ENDIF
         ENDIF
@@ -1610,9 +1611,10 @@ METHOD PROCEDURE SetUsingField( usingField ) CLASS TField
 /*
     SetValidValues
 */
-METHOD PROCEDURE SetValidValues( validValues ) CLASS TField
+METHOD PROCEDURE SetValidValues( validValues, ignoreUndetermined ) CLASS TField
 
    ::FValidValues := validValues
+   ::FignoreUndetermined := ignoreUndetermined
 
    RETURN
 

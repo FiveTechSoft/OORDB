@@ -128,7 +128,7 @@
                         [ ON AFTER POST CHANGE <bOnAfterPostChange> ] ;
                         [ ON DATA CHANGE <bOnDataChange> ] ;
                         [ ON SETKEY <bOnSetKey> ] ;
-                        [ VALIDVALUES [<vvl: LABEL>] <validValues> ] ;
+                        [ VALIDVALUES [<vvl: LABEL>] <validValues> [<igUndet: IGNORE_UNDETERMINED>] ] ;
                         [ USING <usingField> ] ;
                         [ <ruf: REUSEFIELD> ] ;
                         [ ENABLED <enabled> ] ;
@@ -172,7 +172,7 @@
                             [ :OnAfterPostChange := <bOnAfterPostChange> ] ;;
                             [ :OnDataChange := <bOnDataChange> ] ;;
                             [ :SetKeyValBlock( <bOnSetKey> ) ] ;;
-                            [ :SetValidValues( <validValues>, <.vvl.> ) ] ;;
+                            [ :SetValidValues( <validValues>, <.igUndet.>, <.vvl.> ) ] ;;
                             [ :UsingField := <usingField> ] ;;
                             [ :Enabled := <enabled> ] ;;
                             [ :Editable := <editable> ] ;;
