@@ -2,6 +2,10 @@
  * $Id: ChangeLog 155 2013-06-06 03:29:32Z tfonrouge $
  */
 
+Mon Jun  2 21:03:55 UTC 2014 Teo Fonrouge (tfonrouge@gmail.com)
+  M src/TRecordList.prg
+    % added Size msg
+
 Thu May 22 22:03:51 UTC 2014 Teo Fonrouge (tfonrouge@gmail.com)
   M include/oordb.ch
   M src/TField.prg

@@ -16,6 +16,8 @@ PUBLIC:
 
     METHOD Op_Index( index ) OPERATOR "[]"
 
+    METHOD Size INLINE Len( ::FList )
+
     PROPERTY List
     PROPERTY Table
 
