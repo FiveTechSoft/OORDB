@@ -20,6 +20,8 @@ CLASS TFieldHash FROM TField
     DATA FType INIT "Hash"
     DATA FtypeNameList INIT hb_hSetCaseMatch( {"es"=>"Hash"} )
 
+    METHOD GetEmptyValue BLOCK {|| {=>} }
+
     METHOD TranslateToFieldValue( value )
     METHOD TranslateToValue( value )
 

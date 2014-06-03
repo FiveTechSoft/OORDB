@@ -20,6 +20,8 @@ CLASS TFieldArray FROM TField
     DATA FType INIT "Array"
     DATA FtypeNameList INIT hb_hSetCaseMatch( {"es"=>"Array"} )
 
+    METHOD GetEmptyValue BLOCK {|| {} }
+
     METHOD TranslateToFieldValue( value )
     METHOD TranslateToValue( value )
 

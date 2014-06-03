@@ -2,6 +2,11 @@
  * $Id: ChangeLog 155 2013-06-06 03:29:32Z tfonrouge $
  */
 
+Tue Jun  3 15:36:18 UTC 2014 Teo Fonrouge (tfonrouge@gmail.com)
+  M src/TFieldArray.prg
+  M src/TFieldHash.prg
+    ! empty values
+
 Mon Jun  2 21:03:55 UTC 2014 Teo Fonrouge (tfonrouge@gmail.com)
   M src/TRecordList.prg
     % added Size msg
