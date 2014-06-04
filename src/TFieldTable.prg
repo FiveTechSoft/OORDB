@@ -407,6 +407,7 @@ METHOD FUNCTION GetValidValues() CLASS TFieldTable
     IndexExpression
 */
 METHOD FUNCTION IndexExpression( fieldName ) CLASS TFieldTable
+   LOCAL itm
 
    IF ::FIndexExpression != NIL
       RETURN ::FIndexExpression
@@ -422,6 +423,13 @@ METHOD FUNCTION IndexExpression( fieldName ) CLASS TFieldTable
       ELSE
          fieldName := ::FUsingField:FieldExpression
       ENDIF
+   ENDIF
+
+   IF fieldName = NIL .AND. ::FFieldMethodType = "A"
+      fieldName := {}
+      FOR EACH itm IN ::FFieldArrayIndex
+         AAdd( fieldName, ::FTable:FieldList[ itm ]:IndexExpression )
+      NEXT
    ENDIF
 
    RETURN ::BaseKeyField:IndexExpression( fieldName )

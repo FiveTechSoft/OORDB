@@ -2,6 +2,13 @@
  * $Id: ChangeLog 155 2013-06-06 03:29:32Z tfonrouge $
  */
 
+Wed Jun  4 20:19:42 UTC 2014 Teo Fonrouge (tfonrouge@gmail.com)
+  M src/TFieldString.prg
+    % IndexExpression accepts fieldName as a array holding a list of field expression names
+
+  M src/TFieldTable.prg
+    ! send the CURRENT list of field expression names to the basekfield index expression constructor
+
 Tue Jun  3 15:36:18 UTC 2014 Teo Fonrouge (tfonrouge@gmail.com)
   M src/TFieldArray.prg
   M src/TFieldHash.prg

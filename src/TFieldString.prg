@@ -83,6 +83,7 @@ METHOD FUNCTION IndexExpression( fieldName, isMasterFieldComponent ) CLASS TFiel
    LOCAL exp
    LOCAL i
    LOCAL keyFlags
+   LOCAL itmName
 
    IF ::FIndexExpression != NIL
       RETURN ::FIndexExpression
@@ -95,7 +96,12 @@ METHOD FUNCTION IndexExpression( fieldName, isMasterFieldComponent ) CLASS TFiel
    IF ::FFieldMethodType = "A"
       exp := ""
       FOR EACH i IN ::FFieldArrayIndex
-         exp += iif( Len( exp ) = 0, "", "+" ) + ::FTable:FieldList[ i ]:IndexExpression( NIL, isMasterFieldComponent == .T. .OR. ( ::IsKeyIndex .AND. !::KeyIndex:CaseSensitive ) )
+         IF ValType( fieldName ) = "A" .AND. i:__enumIndex <= Len( fieldName )
+            itmName := fieldName[ i:__enumIndex ]
+         ELSE
+            itmName := NIL
+         ENDIF
+         exp += iif( Len( exp ) = 0, "", "+" ) + ::FTable:FieldList[ i ]:IndexExpression( itmName, isMasterFieldComponent == .T. .OR. ( ::IsKeyIndex .AND. !::KeyIndex:CaseSensitive ) )
       NEXT
    ELSE
       IF isMasterFieldComponent == .T. .OR. ::IsMasterFieldComponent .OR. ( ::IsKeyIndex .AND. ::KeyIndex:CaseSensitive )
