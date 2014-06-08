@@ -2,6 +2,10 @@
  * $Id: ChangeLog 155 2013-06-06 03:29:32Z tfonrouge $
  */
 
+Sun Jun  8 22:45:08 UTC 2014 Teo Fonrouge (tfonrouge@gmail.com)
+  M src/Dba.prg
+    * added field type "@" to RecClear()
+
 Wed Jun  4 20:19:42 UTC 2014 Teo Fonrouge (tfonrouge@gmail.com)
   M src/TFieldString.prg
     % IndexExpression accepts fieldName as a array holding a list of field expression names

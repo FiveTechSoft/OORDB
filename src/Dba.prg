@@ -84,7 +84,7 @@ FUNCTION RecCLEAR()
          FieldPut( i, "" )
       CASE a[ i, 2 ] $ "NBI"
          FieldPut( i, 0 )
-      CASE a[ i, 2 ] == "D"
+      CASE a[ i, 2 ] $ "D@"
          FieldPut( i, CToD( "" ) )
       CASE a[ i, 2 ] == "L"
          FieldPut( i, .F. )
