@@ -13,7 +13,6 @@ CLASS TDisplayFieldList
 
    PUBLIC:
 
-   DATA __FLastLabel
    DATA __FObj
    DATA __FSyncFromAlias
 

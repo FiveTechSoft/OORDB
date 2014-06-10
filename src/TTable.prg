@@ -2232,7 +2232,6 @@ METHOD FUNCTION GetDisplayFieldBlock( index, asDisplay ) CLASS TTable
    IF ! field:IsDerivedFrom( "TFieldTable" )
       RETURN ;
          {| o, ...|
-      LOCAL odf
       LOCAL AField
       LOCAL result
 
@@ -2241,13 +2240,6 @@ METHOD FUNCTION GetDisplayFieldBlock( index, asDisplay ) CLASS TTable
       IF o:__FSyncFromAlias
          o:__FObj:SyncRecNo( .T. )
       ENDIF
-
-      odf := o
-
-      WHILE odf:__FObj:LinkedObjField != NIL
-         odf := odf:__FObj:LinkedObjField:Table:GetDisplayFieldList()
-         odf:__FLastLabel := AField:Label
-      ENDDO
 
       IF o:__FObj:Eof()
          RETURN AField:EmptyValue

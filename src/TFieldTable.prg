@@ -145,6 +145,12 @@ METHOD PROCEDURE BuildLinkedTable() CLASS TFieldTable
          * Attach the current DataObj to the one in table to sync when table changes
          * MasterFieldComponents are ignored, a child cannot change his parent :)
          */
+      /* 
+        TODO: Remove !::IsMasterFieldComponent
+        TODO: Add Warn/Err when trying to set value to a master field component ( SetAsVariant ? )
+        TODO: Revise REUSEFIELD clause
+      */
+      
       IF !::IsMasterFieldComponent .AND. ::FLinkedTable:LinkedObjField == NIL
             /*
              * LinkedObjField is linked to the FIRST TFieldTable were it is referenced

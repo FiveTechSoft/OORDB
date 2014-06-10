@@ -2,6 +2,18 @@
  * $Id: ChangeLog 155 2013-06-06 03:29:32Z tfonrouge $
  */
 
+Tue Jun 10 00:30:25 UTC 2014 Teo Fonrouge (tfonrouge@gmail.com)
+  M src/TDisplayFieldList.prg
+    - remove unused DATA __FLastLabel
+
+  M src/TFieldTable.prg
+    ; TODO: Remove !::IsMasterFieldComponent
+    ; TODO: Add Warn/Err when trying to set value to a master field component ( SetAsVariant ? )
+    ; TODO: Revise REUSEFIELD clause
+
+  M src/TTable.prg
+    % optimized by removing unused data
+
 Sun Jun  8 22:45:08 UTC 2014 Teo Fonrouge (tfonrouge@gmail.com)
   M src/Dba.prg
     * added field type "@" to RecClear()
