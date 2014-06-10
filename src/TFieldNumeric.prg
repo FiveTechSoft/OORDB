@@ -95,9 +95,15 @@ METHOD FUNCTION IndexExpression( fieldName ) CLASS TFieldNumeric
     SetAsVariant
 */
 METHOD PROCEDURE SetAsVariant( variant ) CLASS TFieldNumeric
+   LOCAL itm
 
    SWITCH ValType( variant )
    CASE 'C'
+      FOR EACH itm IN ",'"
+         IF itm $ variant
+            variant := StrTran( variant, itm, "" )
+         ENDIF
+      NEXT
       ::Super:SetAsVariant( Val( variant ) )
       EXIT
    CASE 'N'
