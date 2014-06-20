@@ -228,6 +228,7 @@
 
 #xtranslate END FIELDS [CLASS] ;
                         => ;
+                        ::__DefineFields_Exit() ;;
                         RETURN
 
 #xtranslate BEGIN PRIMARY INDEX CLASS <className> ;

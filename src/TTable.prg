@@ -225,6 +225,7 @@ CLASS TTable FROM OORDBBASE
    METHOD _( syncFromAlias ) INLINE ::GetDisplayFieldList( syncFromAlias )
 
    METHOD __DefineFields() VIRTUAL         // DEFINE FIELDS
+   METHOD __DefineFields_Exit() VIRTUAL         // DEFINE FIELDS
    METHOD __DefinePrimaryIndex() VIRTUAL   // DEFINE PRIMARY INDEX
    METHOD __DefineSecondaryIndexes() VIRTUAL        // DEFINE SECONDARY INDEX
 
