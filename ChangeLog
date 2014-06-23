@@ -2,6 +2,10 @@
  * $Id: ChangeLog 155 2013-06-06 03:29:32Z tfonrouge $
  */
 
+Mon Jun 23 02:47:46 UTC 2014 Teo Fonrouge (tfonrouge@gmail.com)
+  M TODO
+    * updated
+
 Fri Jun 20 15:11:59 UTC 2014 Teo Fonrouge (tfonrouge@gmail.com)
   M include/oordb.ch
   M src/TTable.prg

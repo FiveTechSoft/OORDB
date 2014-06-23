@@ -1,4 +1,11 @@
+ ! TField : Send 'value' parameter to ON VALUE clause, and disable setting ::buffer ( to allow use field:Value )
+   and leave it in the form ON VALIDATE {|Self,value| check( value ) }
+   current behavior is incorrect because field:Value is not yet phisically assigned to the table
+   alse the field:Change value is not correctly setted yet because it occurs later on field:WriteToTable
+
  ! TField : don't use NEWVALUE as DEFAULTVALUE
+
  % TIndex : Create procedure to update custom indexes defined on descedant classes even when fields involved
    are updated on base classes (a external index table to read on DEFINE INDEX ? )
+
  ! Check for duplicated index name (tag name and class name)
