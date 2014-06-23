@@ -55,13 +55,9 @@ CLASS TIndex FROM OORDBBASE
 
    PROTECTED:
 
-   DATA FBof INIT .T.
    DATA FCustomIndexExpression
-   DATA FEof INIT .T.
-   DATA FFound INIT .F.
    DATA FIndexType
    DATA FKeyFlags
-   DATA FRecNo
    DATA FResetToMasterSourceFields INIT .T.
    DATA FTableBaseClass
    METHOD CustomKeyExpValue()
@@ -112,25 +108,21 @@ CLASS TIndex FROM OORDBBASE
    METHOD SetDbFilter( filter ) INLINE ::FDbFilter := filter
    METHOD SetKeyVal( keyVal, lSoftSeek )
 
-   PROPERTY Bof READ FBof
+   PROPERTY Bof READ FTable:Bof
    PROPERTY DbFilter READ FDbFilter WRITE SetDbFilter
-   PROPERTY Eof READ FEof
-   PROPERTY Found READ FFound
+   PROPERTY Eof READ FTable:Eof
+   PROPERTY Found READ FTable:Found
    PROPERTY IdxAlias READ GetIdxAlias WRITE SetIdxAlias
    PROPERTY IndexType READ FIndexType
    PROPERTY KeyFlags READ FKeyFlags
    PROPERTY KeyVal READ GetKeyVal WRITE SetKeyVal
-   PROPERTY RecNo READ FRecNo
+   PROPERTY RecNo READ FTable:RecNo
    PROPERTY Scope READ GetScope WRITE SetScope
    PROPERTY ScopeBottom READ GetScopeBottom WRITE SetScopeBottom
    PROPERTY ScopeTop READ GetScopeTop WRITE SetScopeTop
 
    METHOD SEEK( keyValue, lSoftSeek ) INLINE ::__Seek( 0, keyValue, lSoftSeek )
    METHOD SeekLast( keyValue, lSoftSeek ) INLINE ::__Seek( 1, keyValue, lSoftSeek )
-   METHOD SetBof( bof ) INLINE ::FBof := bof
-   METHOD SetEof( eof ) INLINE ::FEof := eof
-   METHOD SetFound( found ) INLINE ::FFound := found
-   METHOD SetRecNo( recNo ) INLINE ::FRecNo := recNo
    PUBLISHED:
    PROPERTY AutoIncrement READ GetAutoIncrement
    PROPERTY AutoIncrementKeyField INDEX 1 READ GetField WRITE SetField
@@ -218,7 +210,7 @@ METHOD FUNCTION __Seek( direction, keyValue, lSoftSeek ) CLASS TIndex
 
    ::GetCurrentRecord()
 
-   RETURN ::FFound
+   RETURN ::Found
 
 /*
     AddIndex
@@ -348,7 +340,7 @@ METHOD FUNCTION DbGoBottomTop( n ) CLASS TIndex
       ::DbFilterPush()
       ::GetCurrentRecord()
       ::DbFilterPull()
-      IF ::FEof() .OR. ( !::FTable:FilterEval( Self ) .AND. !::FTable:SkipFilter( n, Self ) )
+      IF ::Eof() .OR. ( !::FTable:FilterEval( Self ) .AND. !::FTable:SkipFilter( n, Self ) )
          ::FTable:dbGoto( 0 )
          RETURN .F.
       ENDIF

@@ -2,6 +2,14 @@
  * $Id: ChangeLog 155 2013-06-06 03:29:32Z tfonrouge $
  */
 
+Mon Jun 23 21:55:09 UTC 2014 Teo Fonrouge (tfonrouge@gmail.com)
+  M src/TField.prg
+    % sending parameter value as referenced (@) to allow change it inside ON BEFORE CHANGE / ON VALIDATE clauses
+
+  M src/TIndex.prg
+  M src/TTable.prg
+    % values of Bof(), Eof(), RecNo() and Found() from Table
+
 Mon Jun 23 02:47:46 UTC 2014 Teo Fonrouge (tfonrouge@gmail.com)
   M TODO
     * updated

@@ -2138,10 +2138,6 @@ METHOD FUNCTION GetCurrentRecord( idxAlias ) CLASS TTable
    ::FRecNo := ::Alias:RecNo
 
    IF ::GetIndex() != NIL
-      ::GetIndex():SetEof( ::FEof )
-      ::GetIndex():SetBof( ::FBof )
-      ::GetIndex():SetFound( ::FFound )
-      ::GetIndex():SetRecNo( ::FRecNo )
       IF hb_HHasKey( ::ExternalIndexList, ::GetIndex():ObjectH )
          index := ::GetIndex() ; ::SetIndex( NIL )
          ::GetCurrentRecord( idxAlias )

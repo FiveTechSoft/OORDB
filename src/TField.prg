@@ -1262,7 +1262,7 @@ METHOD PROCEDURE SetData( value, initialize ) CLASS TField
 
    IF ::OnBeforeChange != NIL
       BEGIN SEQUENCE WITH ::FTable:ErrorBlock
-         result := ::OnBeforeChange:Eval( ::FTable, value )
+         result := ::OnBeforeChange:Eval( ::FTable, @value )
       RECOVER
          SHOW WARN ::FTable:ClassName + ": '" + ::Name + "' <Error at 'OnBeforeChange'>"
          result := .F.
@@ -1275,7 +1275,7 @@ METHOD PROCEDURE SetData( value, initialize ) CLASS TField
          ::FEvtOnBeforeChange := __objHasMsgAssigned( ::FTable, "OnBeforeChange_Field_" + ::Name )
       ENDIF
 
-      IF ::FEvtOnBeforeChange .AND. !initialize == .T. .AND. !__objSendMsg( ::FTable, "OnBeforeChange_Field_" + ::Name, Self, value )
+      IF ::FEvtOnBeforeChange .AND. !initialize == .T. .AND. !__objSendMsg( ::FTable, "OnBeforeChange_Field_" + ::Name, Self, @value )
          RETURN
       ENDIF
    ENDIF
