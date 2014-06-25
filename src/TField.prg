@@ -119,7 +119,7 @@ CLASS TField FROM OORDBBASE
    METHOD SetReUseField( reUseField ) INLINE ::FReUseField := reUseField
    METHOD TranslateToFieldValue( value ) INLINE value
    METHOD TranslateToValue( value ) INLINE value
-   METHOD WriteToTable( value, oldBuffer )
+   METHOD WriteToTable( value, initialize )
 
    PUBLIC:
 
@@ -162,7 +162,25 @@ CLASS TField FROM OORDBBASE
    METHOD SetKeyValBlock( keyValBlock ) INLINE ::FOnSetKeyValBlock := keyValBlock
    METHOD SetValidValues( validValues, ignoreUndetermined )
    METHOD Validate( showAlert ) INLINE ::ValidateResult( showAlert ) = NIL
-   METHOD ValidateResult( showAlert, value )
+   METHOD ValidateResult( showAlert, value ) BLOCK ;
+      {|Self,showAlert,value|
+         LOCAL result
+
+         IF value = NIL
+            value := ::GetAsVariant()
+         ENDIF
+
+         result := ::ValidateResult_TableLogic( showAlert, value )
+
+         IF Empty( result )
+            result := ::ValidateResult_OnValidate( showAlert, value )
+         ENDIF
+
+         RETURN result
+      }
+
+   METHOD ValidateResult_TableLogic( showAlert, value )
+   METHOD ValidateResult_OnValidate( showAlert, value )
    METHOD ValidateFieldInfo VIRTUAL
 
    PROPERTY AsDisplay READ GetAsDisplay
@@ -306,9 +324,9 @@ METHOD FUNCTION CheckForValidValue( value, showAlert, errorStr ) CLASS TField
 
     IF ::FValidValues != NIL
 
-        validValues := ::GetValidValues()
-
         BEGIN SEQUENCE WITH ::FTable:ErrorBlock
+
+            validValues := ::GetValidValues()
 
             SWITCH ValType( validValues )
             CASE 'A'
@@ -1016,10 +1034,16 @@ METHOD FUNCTION Reset() CLASS TField
     RevertValue
 */
 METHOD PROCEDURE RevertValue() CLASS TField
+    LOCAL undoValue
 
-   ::WriteToTable( ::GetUndoValue() )
+    undoValue := ::GetUndoValue()
 
-   RETURN
+    IF undoValue != NIL
+        ::WriteToTable( undoValue )
+        ::FChanged := .F.
+    ENDIF
+
+RETURN
 
 /*
     SetAsVariant
@@ -1154,13 +1178,11 @@ METHOD PROCEDURE SetCloneData( cloneData ) CLASS TField
     SetData
 */
 METHOD PROCEDURE SetData( value, initialize ) CLASS TField
-
    LOCAL i
    LOCAL nTries
    LOCAL errObj
-   LOCAL buffer
    LOCAL result
-   LOCAL INDEX
+   LOCAL index
 
    IF ::FUsingField != NIL
       ::FUsingField:SetData( value )
@@ -1250,90 +1272,77 @@ METHOD PROCEDURE SetData( value, initialize ) CLASS TField
       RETURN
    ENDIF
 
-   /* Check if field is a masterkey in child tables */
-    /* TODO: Check childs for KeyField
-    IF ::FTable:PrimaryIndex != NIL .AND. ::FTable:PrimaryIndex:UniqueKeyField == Self .AND. ::FWrittenValue != NIL
-        IF !Empty( ::FTable:Childs() )
-            SHOW WARN "Can't modify key <'"+::Name+"'> with " + AsString( Value ) + ";Has dependant child tables."
+    IF ! initialize == .T.
+
+        IF ::OnBeforeChange != NIL
+            BEGIN SEQUENCE WITH ::FTable:ErrorBlock
+                result := ::OnBeforeChange:Eval( ::FTable, @value )
+            RECOVER
+                SHOW WARN ::FTable:ClassName + ": '" + ::Name + "' <Error at 'OnBeforeChange'>"
+                result := .F.
+            END SEQUENCE
+            IF !result
+                RETURN
+            ENDIF
+        ELSE
+            IF ::FEvtOnBeforeChange = NIL
+                ::FEvtOnBeforeChange := __objHasMsgAssigned( ::FTable, "OnBeforeChange_Field_" + ::Name )
+            ENDIF
+            IF ::FEvtOnBeforeChange .AND. !__objSendMsg( ::FTable, "OnBeforeChange_Field_" + ::Name, Self, @value )
+                RETURN
+            ENDIF
+        ENDIF
+
+        IF !Empty( ::ValidateResult_TableLogic( .T., value ) )
             RETURN
         ENDIF
+
     ENDIF
-    */
 
-   IF ::OnBeforeChange != NIL
-      BEGIN SEQUENCE WITH ::FTable:ErrorBlock
-         result := ::OnBeforeChange:Eval( ::FTable, @value )
-      RECOVER
-         SHOW WARN ::FTable:ClassName + ": '" + ::Name + "' <Error at 'OnBeforeChange'>"
-         result := .F.
-      END SEQUENCE
-      IF !result
-         RETURN
-      ENDIF
-   ELSE
-      IF ::FEvtOnBeforeChange = NIL
-         ::FEvtOnBeforeChange := __objHasMsgAssigned( ::FTable, "OnBeforeChange_Field_" + ::Name )
-      ENDIF
-
-      IF ::FEvtOnBeforeChange .AND. !initialize == .T. .AND. !__objSendMsg( ::FTable, "OnBeforeChange_Field_" + ::Name, Self, @value )
-         RETURN
-      ENDIF
-   ENDIF
-
-   buffer := ::GetBuffer()
-
-   ::SetBuffer( value )
-
-   /* Validate before the physical writting */
-   IF !initialize == .T. .AND. !Empty( ::ValidateResult( .T., value ) )
-      ::SetBuffer( buffer )  // revert the change
-      RETURN
-   ENDIF
-
-   BEGIN SEQUENCE WITH ::FTable:ErrorBlock
+    BEGIN SEQUENCE WITH ::FTable:ErrorBlock
 
         /*
          * Check for a key violation
          */
-      FOR EACH INDEX IN ::FUniqueKeyIndexList
-         IF ::IsPrimaryKeyField .AND. index:ExistKey( ::GetKeyVal( NIL, index:KeyFlags ), ::FTable:RecNo )
-            RAISE TFIELD ::Name ERROR "Key violation."
-         ENDIF
-      NEXT
+        FOR EACH index IN ::FUniqueKeyIndexList
+            IF ::IsPrimaryKeyField .AND. index:ExistKey( ::GetKeyVal( value, index:KeyFlags ), ::FTable:RecNo )
+                RAISE TFIELD ::Name ERROR "Key violation."
+            ENDIF
+        NEXT
 
-      IF initialize == .T.
-         ::WriteToTable( value )
-      ELSE
-         ::WriteToTable( value, buffer )
-      ENDIF
+        ::WriteToTable( value, initialize )
 
-      IF ::FTable:LinkedObjField != NIL  .AND. ::FTable:BaseKeyField == Self
+        IF ! initialize == .T. .AND. !Empty( result := ::ValidateResult_OnValidate( .F. ) )
 
-         ::FTable:LinkedObjField:SetAsVariant( ::GetAsVariant() )
+            ::RevertValue()
 
-      ENDIF
+            SHOW WARN result
 
-      /* sync with re-used field in db */
-      IF ::FReUseFieldIndex != NIL
-         ::FTable:FieldList[ ::FReUseFieldIndex ]:GetData()
-      ENDIF
+        ELSE
+            IF ::FTable:LinkedObjField != NIL  .AND. ::FTable:BaseKeyField == Self
 
-      IF !initialize == .T. .AND. ::OnAfterChange != NIL
-         ::OnAfterChange:Eval( ::FTable, buffer )
-      ENDIF
+                ::FTable:LinkedObjField:SetAsVariant( ::GetAsVariant() )
 
-   RECOVER USING errObj
+            ENDIF
 
-      SHOW ERROR errObj
+            /* sync with re-used field in db */
+            IF ::FReUseFieldIndex != NIL
+                ::FTable:FieldList[ ::FReUseFieldIndex ]:GetData()
+            ENDIF
 
-   END SEQUENCE
+            IF !initialize == .T. .AND. ::OnAfterChange != NIL
+                ::OnAfterChange:Eval( ::FTable )
+            ENDIF
+        ENDIF
 
-//   /* masterkey field's aren't changed here */
-//   IF !::AutoIncrement .AND. ::IsMasterFieldComponent
-//      ::Reset()  /* retrieve the masterfield value */
-//   ENDIF
 
-   RETURN
+    RECOVER USING errObj
+
+        SHOW ERROR errObj
+
+    END SEQUENCE
+
+RETURN
 
 /*
     SetDbStruct
@@ -1631,100 +1640,109 @@ METHOD Type( locale ) CLASS TField
 RETURN type
 
 /*
-    ValidateResult
+    ValidateResult_TableLogic
 */
-METHOD FUNCTION ValidateResult( showAlert, value ) CLASS TField
+METHOD FUNCTION ValidateResult_TableLogic( showAlert, value ) CLASS TField
+    LOCAL result
+    LOCAL index
+    LOCAL indexWarnMsg
 
-   LOCAL result := NIL
-   LOCAL l
-   LOCAL INDEX
-   LOCAL indexWarnMsg
+    IF value = NIL
+        value := ::GetAsVariant()
+    ENDIF
 
-   IF ::Enabled
-
-      IF PCount() < 2
-         value := ::GetAsVariant()
-      ENDIF
-
-      IF ::FRequired .AND. Empty( value )
-         result := ::FTable:ClassName + ": '" + ::Name + "' <empty field required value>"
-         IF showAlert == .T.
+    IF ::FRequired .AND. Empty( value )
+        result := ::FTable:ClassName + ": '" + ::Name + "' <empty field required value>"
+        IF showAlert == .T.
             SHOW WARN result
-         ENDIF
-         RETURN result
-      ENDIF
+        ENDIF
+        RETURN result
+    ENDIF
 
-      IF ::Unique
-         IF Empty( value ) .AND. !::AcceptEmptyUnique
+    IF ::Unique
+        IF Empty( value ) .AND. !::AcceptEmptyUnique
             result := ::FTable:ClassName + ": '" + ::Name + "' <empty UNIQUE INDEX key value>"
             IF showAlert == .T.
-               SHOW WARN result
+                SHOW WARN result
             ENDIF
             RETURN result
-         ENDIF
-         FOR EACH INDEX IN ::FUniqueKeyIndexList
+        ENDIF
+        FOR EACH index IN ::FUniqueKeyIndexList
             indexWarnMsg := index:WarnMsg
             IF !Empty( value ) .AND. index:ExistKey( ::GetKeyVal( value, index:KeyFlags ), ::FTable:RecNo )
-               result := ::FTable:ClassName + ": " + iif( !Empty( indexWarnMsg ), indexWarnMsg, "'" + ::Name + "' <key value already exists> '" + AsString( value ) + "'" )
-               IF showAlert == .T.
-                  SHOW WARN result
-               ENDIF
-               RETURN result
+                result := ::FTable:ClassName + ": " + iif( !Empty( indexWarnMsg ), indexWarnMsg, "'" + ::Name + "' <key value already exists> '" + AsString( value ) + "'" )
+                IF showAlert == .T.
+                    SHOW WARN result
+                ENDIF
+                RETURN result
             ENDIF
-         NEXT
-      ENDIF
+        NEXT
+    ENDIF
 
-      l := ::CheckForValidValue( value, showAlert, @result )
+RETURN result
 
-      IF ! l == .T.
-         RETURN result
-      ENDIF
+/*
+    ValidateResult_OnValidate
+*/
+METHOD FUNCTION ValidateResult_OnValidate( showAlert, value ) CLASS TField
+    LOCAL result
+    LOCAL l
 
-      IF ::OnValidate != NIL
-         BEGIN SEQUENCE WITH ::FTable:ErrorBlock
+    IF value = NIL
+        value := ::GetAsVariant()
+    ENDIF
+
+    l := ::CheckForValidValue( value, showAlert, @result )
+
+    IF ! l == .T.
+        RETURN result
+    ENDIF
+
+    IF ::OnValidate != NIL
+        BEGIN SEQUENCE WITH ::FTable:ErrorBlock
             l := ::OnValidate:Eval( ::FTable )
-         RECOVER
+        RECOVER
             l := NIL
-         END SEQUENCE
-         IF l = NIL
+        END SEQUENCE
+        IF l = NIL
             result := ::FTable:ClassName + ": '" + ::Name + "' <Error at 'OnValidate'> "
             IF showAlert == .T.
-               SHOW WARN result
+                SHOW WARN result
             ENDIF
-         ELSEIF !l
+        ELSEIF !l
             result := ::FTable:ClassName + ": '" + ::Name + E"' OnValidate:\n<" + iif( ::OnValidateWarn = NIL, "Value Not Valid", ::OnValidateWarn ) + "> "
             IF showAlert == .T.
-               SHOW WARN result
+            SHOW WARN result
             ENDIF
-         ENDIF
-      ENDIF
+        ENDIF
+    ENDIF
 
-   ENDIF
-
-   RETURN result
+RETURN result
 
 /*
     WriteToTable
 */
-METHOD PROCEDURE WriteToTable( value, oldBuffer ) CLASS TField
+METHOD PROCEDURE WriteToTable( value, initialize ) CLASS TField
+    LOCAL oldBuffer
 
-   /* The physical write to the field */
-   ::FTable:Alias:Eval( ::FFieldWriteBlock, ::TranslateToFieldValue( value ) )
+    oldBuffer := ::GetBuffer()
 
-   ::FWrittenValue := ::GetBuffer()
+    ::SetBuffer( value )
 
-   /* fill undolist */
-   IF ::FTable:UndoList != NIL .AND. !hb_HHasKey( ::FTable:UndoList, ::FName ) .AND. PCount() > 1
-#ifdef __DEBUG
-      IF HB_ISHASH( ::ValidValues ) .AND. !hb_HHasKey( ::ValidValues, oldBuffer )
-         ::TRHOW_SOME_ERROR()
-      ENDIF
-#endif
-      ::FTable:UndoList[ ::FName ] := oldBuffer
-      ::FChanged := ! value == oldBuffer
-   ENDIF
+    /* The physical write to the field */
+    ::FTable:Alias:Eval( ::FFieldWriteBlock, ::TranslateToFieldValue( value ) )
 
-   RETURN
+    ::FWrittenValue := ::GetBuffer()
+
+    /* fill undolist */
+    IF ! initialize == .T.
+        IF ::FTable:UndoList != NIL .AND. !hb_HHasKey( ::FTable:UndoList, ::FName )
+            ::FTable:UndoList[ ::FName ] := oldBuffer
+            ::FChanged := ! value == oldBuffer
+        ENDIF
+    ENDIF
+
+RETURN
 
 /*
     ENDCLASS TField

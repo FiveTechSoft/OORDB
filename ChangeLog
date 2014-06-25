@@ -2,6 +2,17 @@
  * $Id: ChangeLog 155 2013-06-06 03:29:32Z tfonrouge $
  */
 
+Wed Jun 25 04:15:42 UTC 2014 Teo Fonrouge (tfonrouge@gmail.com)
+  M TODO
+    - removed TODO, ON VALIDATE executes right after phisical write of field value
+
+  M src/TField.prg
+    % RevertValue() : checks for a valid value, set changed value to .F.
+    % moved validation command ON VALIDATE , right after the phisical write of field value
+
+  M src/TTable.prg
+    ! return value for Table:Validate()
+
 Mon Jun 23 21:55:09 UTC 2014 Teo Fonrouge (tfonrouge@gmail.com)
   M src/TField.prg
     % sending parameter value as referenced (@) to allow change it inside ON BEFORE CHANGE / ON VALIDATE clauses
