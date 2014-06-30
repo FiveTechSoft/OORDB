@@ -2,6 +2,10 @@
  * $Id: ChangeLog 155 2013-06-06 03:29:32Z tfonrouge $
  */
 
+Mon Jun 30 04:34:07 UTC 2014 Teo Fonrouge (tfonrouge@gmail.com)
+  M src/TTable.prg
+    * renamed ppty 'editStatePrevious' to 'previousEditState'
+
 Wed Jun 25 04:15:42 UTC 2014 Teo Fonrouge (tfonrouge@gmail.com)
   M TODO
     - removed TODO, ON VALIDATE executes right after phisical write of field value
