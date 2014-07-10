@@ -37,8 +37,7 @@ METHOD FUNCTION TranslateToFieldValue( value ) CLASS TFieldArray
     CASE "A"
         EXIT
     CASE "C"
-        value := ::TranslateToFieldValue( HB_DeSerialize( value ) )
-        EXIT
+        RETURN ::TranslateToFieldValue( HB_DeSerialize( value ) )
     OTHERWISE
         value := {}
     ENDSWITCH

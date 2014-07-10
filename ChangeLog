@@ -2,6 +2,14 @@
  * $Id: ChangeLog 155 2013-06-06 03:29:32Z tfonrouge $
  */
 
+Thu Jul 10 02:37:22 UTC 2014 Teo Fonrouge (tfonrouge@gmail.com)
+  M src/TField.prg
+    ! convert buffer to Value
+
+  M src/TFieldArray.prg
+  M src/TFieldHash.prg
+    ! just serialize once
+
 Thu Jul 10 01:52:08 UTC 2014 Teo Fonrouge (tfonrouge@gmail.com)
   M src/TField.prg
     * FBuffer holds table field value

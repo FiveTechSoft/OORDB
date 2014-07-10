@@ -513,7 +513,7 @@ METHOD FUNCTION GetAsVariant( ... ) CLASS TField
          NEXT
          EXIT
       CASE "C"
-         result := ::GetBuffer()
+         result := ::TranslateToValue( ::GetBuffer() )
          EXIT
       OTHERWISE
          THROW ERROR OODB_ERR__FIELD_METHOD_TYPE_NOT_SUPPORTED ARGS ::FFieldMethodType
