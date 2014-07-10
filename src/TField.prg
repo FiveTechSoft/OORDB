@@ -944,7 +944,7 @@ METHOD FUNCTION Reset() CLASS TField
 
             IF result
 
-               value := AField:GetBuffer()
+               value := ::TranslateToFieldValue( AField:GetBuffer() )
                     /*
                      * if there is a DefaultValue this is ignored (may be a warning is needed)
                      */
@@ -1102,7 +1102,7 @@ METHOD FUNCTION SetAsVariant( value ) CLASS TField
       CASE "C"
 
          /* Check if we are really changing values here */
-         IF !::GetBuffer() == value
+         IF !::GetBuffer() == ::TranslateToFieldValue( value )
             ::SetData( value )
          ENDIF
 
@@ -1129,9 +1129,7 @@ METHOD FUNCTION SetBuffer( value ) CLASS TField
     LOCAL result
     LOCAL itm
 
-    value := ::TranslateToValue( value )
-
-    result := ::CheckForValidValue( value, .T. ) == .T.
+    result := ::CheckForValidValue( ::TranslateToValue( value ), .T. ) == .T.
 
     IF result
 
@@ -1155,7 +1153,7 @@ METHOD FUNCTION SetBuffer( value ) CLASS TField
             ENDIF
         ENDIF
 
-        ::FBuffer := value
+        ::FBuffer := ::TranslateToFieldValue( value )
 
     ENDIF
 
@@ -1257,7 +1255,7 @@ METHOD PROCEDURE SetData( value, initialize ) CLASS TField
    ELSE
 
       IF value == NIL
-         value := ::GetBuffer()
+         value := ::TranslateToValue( ::GetBuffer() )
       ENDIF
 
    ENDIF
@@ -1726,11 +1724,13 @@ METHOD PROCEDURE WriteToTable( value, initialize ) CLASS TField
     LOCAL oldBuffer
 
     oldBuffer := ::GetBuffer()
+    
+    value := ::TranslateToFieldValue( value )
 
     ::SetBuffer( value )
 
     /* The physical write to the field */
-    ::FTable:Alias:Eval( ::FFieldWriteBlock, ::TranslateToFieldValue( value ) )
+    ::FTable:Alias:Eval( ::FFieldWriteBlock, value )
 
     ::FWrittenValue := ::GetBuffer()
 

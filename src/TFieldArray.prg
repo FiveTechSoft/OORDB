@@ -33,9 +33,15 @@ ENDCLASS
     TranslateToFieldValue
 */
 METHOD FUNCTION TranslateToFieldValue( value ) CLASS TFieldArray
-    IF ValType( value ) != "A"
+    SWITCH ValType( value )
+    CASE "A"
+        EXIT
+    CASE "C"
+        value := ::TranslateToFieldValue( HB_DeSerialize( value ) )
+        EXIT
+    OTHERWISE
         value := {}
-    ENDIF
+    ENDSWITCH
 RETURN HB_Serialize( value )
 
 /*

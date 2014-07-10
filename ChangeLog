@@ -2,6 +2,15 @@
  * $Id: ChangeLog 155 2013-06-06 03:29:32Z tfonrouge $
  */
 
+Thu Jul 10 01:52:08 UTC 2014 Teo Fonrouge (tfonrouge@gmail.com)
+  M src/TField.prg
+    * FBuffer holds table field value
+
+  M src/TFieldArray.prg
+  M src/TFieldHash.prg
+  M src/TFieldTime.prg
+    ! TranslateToFieldValue() accepts value in the field value form
+
 Mon Jun 30 04:34:07 UTC 2014 Teo Fonrouge (tfonrouge@gmail.com)
   M src/TTable.prg
     * renamed ppty 'editStatePrevious' to 'previousEditState'

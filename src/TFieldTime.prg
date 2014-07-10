@@ -145,7 +145,13 @@ RETURN
     TranslateToFieldValue
 */
 METHOD FUNCTION TranslateToFieldValue( value ) CLASS TFieldTime
-   RETURN value:AsSeconds
+    SWITCH ValType( value )
+    CASE "N"
+        RETURN Int( value )
+    CASE "O"
+        RETURN value:AsSeconds
+    ENDSWITCH
+RETURN 0
 
 /*
     TranslateToValue
