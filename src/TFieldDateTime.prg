@@ -24,13 +24,13 @@ CLASS TFieldDateTime FROM TField
    DATA FType INIT "DateTime"
    DATA FtypeNameList INIT hb_hSetCaseMatch( {"es"=>"Fecha Hora"} )
    DATA FValType INIT "C"
-   METHOD GetAsDate() INLINE hb_TToD( ::Value )
-   METHOD GetAsTime()
+   METHOD GetAsDatePart() INLINE hb_TToD( ::Value )
+   METHOD GetAsTimePart()
    METHOD GetEmptyValue BLOCK {|| hb_CToT( "" ) }
    METHOD GetFormatDate INLINE iif( ::FFormatDate = NIL, ::ClsFmtDate, ::FFormatDate )
    METHOD GetFormatTime INLINE iif( ::FFormatTime = NIL, ::ClsFmtTime, ::FFormatTime )
-   METHOD SetAsDate( date ) INLINE ::Value := hb_DToT( date, ::GetAsTime )
-   METHOD SetAsTime( cTime )
+   METHOD SetAsDatePart( date ) INLINE ::Value := hb_DToT( date, ::GetAsTimePart )
+   METHOD SetAsTimePart( cTimePart )
    METHOD SetFormatDate( formatDate ) INLINE ::FFormatDate := formatDate
    METHOD SetFormatTime( formatTime ) INLINE ::FFormatTime := formatTime
    PUBLIC:
@@ -46,8 +46,8 @@ CLASS TFieldDateTime FROM TField
    METHOD IndexExpression( fieldName )
    METHOD SetAsVariant( variant )
 
-   PROPERTY AsDate READ GetAsDate WRITE SetAsDate
-   PROPERTY AsTime READ GetAsTime WRITE SetAsTime
+   PROPERTY AsDatePart READ GetAsDatePart WRITE SetAsDatePart
+   PROPERTY AsTimePart READ GetAsTimePart WRITE SetAsTimePart
    PROPERTY FormatDate READ GetFormatDate WRITE SetFormatDate
    PROPERTY FormatTime READ GetFormatTime WRITE SetFormatTime
 
@@ -96,9 +96,9 @@ METHOD FUNCTION GetAsString( value ) CLASS TFieldDateTime
    RETURN hb_TToC( value, ::FormatDate, ::FormatTime )
 
 /*
-    GetAsTime
+    GetAsTimePart
 */
-METHOD GetAsTime() CLASS TFieldDateTime
+METHOD GetAsTimePart() CLASS TFieldDateTime
 
    LOCAL cTime := "00:00:00"
    LOCAL time
@@ -144,11 +144,11 @@ METHOD FUNCTION IndexExpression( fieldName ) CLASS TFieldDateTime
    RETURN "HB_TToS(" + fieldName + ")"
 
 /*
-    SetAsTime
+    SetAsTimePart
 */
-METHOD PROCEDURE SetAsTime( cTime ) CLASS TFieldDateTime
+METHOD PROCEDURE SetAsTimePart( cTimePart ) CLASS TFieldDateTime
 
-   ::SetAsVariant( hb_DToT( ::Value, cTime ) )
+   ::SetAsVariant( hb_DToT( ::Value, cTimePart ) )
 
    RETURN
 
@@ -171,7 +171,7 @@ METHOD PROCEDURE SetAsVariant( variant ) CLASS TFieldDateTime
       ::Super:SetAsVariant( variant )
       EXIT
    CASE 'D'
-      ::Super:SetAsVariant( hb_DToT( variant, ::GetAsTime() ) )
+      ::Super:SetAsVariant( hb_DToT( variant, ::GetAsTimePart() ) )
       EXIT
    CASE 'N'
       ::Super:SetAsVariant( hb_NToT( variant ) )

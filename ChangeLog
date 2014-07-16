@@ -2,6 +2,11 @@
  * $Id: ChangeLog 155 2013-06-06 03:29:32Z tfonrouge $
  */
 
+Wed Jul 16 19:55:34 UTC 2014  ()
+  M src/TFieldDateTime.prg
+    * renamed ppty 'AsDate' to 'AsDatePart'
+    * renamed ppty 'AsTime' to 'AsTimePart'
+
 Wed Jul 16 02:06:51 UTC 2014  ()
   M src/TTable.prg
     % allow to change linkedObjField if table cursor is changed (dsEdit, dsInsert)
