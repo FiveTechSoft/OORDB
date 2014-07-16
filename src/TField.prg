@@ -1545,6 +1545,7 @@ METHOD FUNCTION SetKeyVal( keyVal, lSoftSeek ) CLASS TField
             ENDIF
          ELSE
             ::FTable:dbGoto( 0 )
+            ::OnSetKeyVal( .F., keyVal )
          ENDIF
 
          IF ::FTable:LinkedObjField != NIL .AND. (::FTable:LinkedObjField:Calculated .OR. ::FTable:LinkedObjField:Table:State > dsBrowse .OR. ::FTable:LinkedObjField:Table:autoEdit)

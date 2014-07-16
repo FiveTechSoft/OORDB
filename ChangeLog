@@ -2,6 +2,16 @@
  * $Id: ChangeLog 155 2013-06-06 03:29:32Z tfonrouge $
  */
 
+Wed Jul 16 21:06:46 UTC 2014  ()
+  M src/TField.prg
+    * also call OnSetKeyVal() on empty key field (allows to change a invalid value to a default one)
+
+  M src/TFieldDateTime.prg
+    * AsTimePart ppty returns a TTime object
+
+  M src/TTime.prg
+    * minor code cleanup
+
 Wed Jul 16 19:55:34 UTC 2014  ()
   M src/TFieldDateTime.prg
     * renamed ppty 'AsDate' to 'AsDatePart'

@@ -38,7 +38,7 @@ CLASS TTime
    PROPERTY Hours READ FHours
    PROPERTY Minutes READ FMinutes
    PROPERTY Seconds READ FSeconds
-   PROPERTY FORMAT READ FFormat WRITE SetFormat
+   PROPERTY Format READ FFormat WRITE SetFormat
 
    METHOD Op_Add( timeToAdd )      OPERATOR "+"
    METHOD Op_Div( timeToDiv )      OPERATOR "/"

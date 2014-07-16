@@ -10,10 +10,8 @@
 */
 CLASS TFieldDateTime FROM TField
 
-   PRIVATE:
+PROTECTED:
 
-   PROTECTED:
-   DATA FSize INIT 23
    DATA FDBS_LEN INIT 8
    DATA FDBS_DEC INIT 0
    DATA FDBS_TYPE INIT "@"
@@ -21,6 +19,8 @@ CLASS TFieldDateTime FROM TField
    DATA FDefaultValue INIT {|| hb_DateTime() }
    DATA FFormatDate
    DATA FFormatTime
+   DATA FSize INIT 23
+   DATA FTime
    DATA FType INIT "DateTime"
    DATA FtypeNameList INIT hb_hSetCaseMatch( {"es"=>"Fecha Hora"} )
    DATA FValType INIT "C"
@@ -29,11 +29,15 @@ CLASS TFieldDateTime FROM TField
    METHOD GetEmptyValue BLOCK {|| hb_CToT( "" ) }
    METHOD GetFormatDate INLINE iif( ::FFormatDate = NIL, ::ClsFmtDate, ::FFormatDate )
    METHOD GetFormatTime INLINE iif( ::FFormatTime = NIL, ::ClsFmtTime, ::FFormatTime )
+   METHOD GetTime INLINE iif( ::FTime = NIL, ::FTime := TTime():New(), ::FTime )
    METHOD SetAsDatePart( date ) INLINE ::Value := hb_DToT( date, ::GetAsTimePart )
    METHOD SetAsTimePart( cTimePart )
    METHOD SetFormatDate( formatDate ) INLINE ::FFormatDate := formatDate
    METHOD SetFormatTime( formatTime ) INLINE ::FFormatTime := formatTime
-   PUBLIC:
+
+   PROPERTY Time READ GetTime
+
+PUBLIC:
 
    CLASSDATA ClsFmtDate INIT "YYYY-MM-DD"
    CLASSDATA ClsFmtTime INIT "HH:MM"
@@ -50,8 +54,6 @@ CLASS TFieldDateTime FROM TField
    PROPERTY AsTimePart READ GetAsTimePart WRITE SetAsTimePart
    PROPERTY FormatDate READ GetFormatDate WRITE SetFormatDate
    PROPERTY FormatTime READ GetFormatTime WRITE SetFormatTime
-
-   PUBLISHED:
 
 ENDCLASS
 
@@ -109,7 +111,10 @@ METHOD GetAsTimePart() CLASS TFieldDateTime
       HB_TToD( time, @cTime, ::FormatTime )
    ENDIF
 
-   RETURN cTime
+   ::Time:Format := ::FormatTime
+   ::Time:AsString := cTime
+
+   RETURN ::Time
 
 /*
     GetKeyVal
@@ -146,11 +151,14 @@ METHOD FUNCTION IndexExpression( fieldName ) CLASS TFieldDateTime
 /*
     SetAsTimePart
 */
-METHOD PROCEDURE SetAsTimePart( cTimePart ) CLASS TFieldDateTime
+METHOD FUNCTION SetAsTimePart( cTimePart ) CLASS TFieldDateTime
 
-   ::SetAsVariant( hb_DToT( ::Value, cTimePart ) )
+   ::Time:Format := ::FormatTime
+   ::Time:AsString := cTimePart
 
-   RETURN
+   ::SetAsVariant( hb_DToT( ::Value, ::Time:AsSeconds ) )
+
+   RETURN ::Time
 
 /*
     SetAsVariant
