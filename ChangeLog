@@ -2,6 +2,10 @@
  * $Id: ChangeLog 155 2013-06-06 03:29:32Z tfonrouge $
  */
 
+Wed Jul 16 21:40:45 UTC 2014  ()
+  M src/TField.prg
+    % allows to have a OnSetKeyVal_BaseKeyField() on each table
+
 Wed Jul 16 21:06:46 UTC 2014  ()
   M src/TField.prg
     * also call OnSetKeyVal() on empty key field (allows to change a invalid value to a default one)

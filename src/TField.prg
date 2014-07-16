@@ -896,7 +896,9 @@ METHOD FUNCTION IsTableField() CLASS TField
 */
 METHOD PROCEDURE OnSetKeyVal( lSeek, keyVal ) CLASS TField
 
-    IF __objHasMsgAssigned( ::FTable, "OnSetKeyVal_Field" )
+    IF ::FTable:BaseKeyField == Self .AND. __objHasMsgAssigned( ::FTable, "OnSetKeyVal_BaseKeyField" )
+        __objSendMsg( ::FTable, "OnSetKeyVal_BaseKeyField", lSeek, keyVal )
+    ELSEIF __objHasMsgAssigned( ::FTable, "OnSetKeyVal_Field" )
         __objSendMsg( ::FTable, "OnSetKeyVal_Field", Self, lSeek, keyVal )
     ELSEIF __objHasMsgAssigned( ::FTable, "OnSetKeyVal_Field_" + ::Name )
         __objSendMsg( ::FTable, "OnSetKeyVal_Field_" + ::Name, lSeek, keyVal )
