@@ -2190,6 +2190,9 @@ METHOD FUNCTION GetCurrentRecord( idxAlias ) CLASS TTable
    ENDIF
 
    IF ::allowOnDataChange
+      IF ::LinkedObjField != NIL .AND. ::LinkedObjField:Table:State > dsBrowse
+         ::LinkedObjField:BaseKeyField:SetKeyVal( ::FBaseKeyField:KeyVal() )
+      ENDIF
       ::OnDataChange()
    ENDIF
 

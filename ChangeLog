@@ -2,6 +2,10 @@
  * $Id: ChangeLog 155 2013-06-06 03:29:32Z tfonrouge $
  */
 
+Wed Jul 16 02:06:51 UTC 2014  ()
+  M src/TTable.prg
+    % allow to change linkedObjField if table cursor is changed (dsEdit, dsInsert)
+
 Thu Jul 10 02:37:22 UTC 2014 Teo Fonrouge (tfonrouge@gmail.com)
   M src/TField.prg
     ! convert buffer to Value
