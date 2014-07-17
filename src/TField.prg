@@ -72,6 +72,7 @@ CLASS TField FROM OORDBBASE
    DATA FIndexExpression
    DATA FIndexKeyList  INIT {}
    DATA FLabel
+   DATA FLastUniqueFieldList
    DATA FModStamp INIT .F.       // Field is automatically mantained (dbf layer)
    DATA FName INIT ""
    DATA FNewValue
@@ -115,6 +116,7 @@ CLASS TField FROM OORDBBASE
    METHOD SetEditable( editable ) INLINE ::FEditable := editable
    METHOD SetEnabled( enabled )
    METHOD SetLabel( label ) INLINE ::FLabel := label
+   METHOD SetLastUniqueFieldList( fld ) INLINE AAdd( iif( ::FLastUniqueFieldList = NIL, ::FLastUniqueFieldList := {}, ::FLastUniqueFieldList ), fld )
    METHOD SetRequired( Required ) INLINE ::FRequired := Required
    METHOD SetReUseField( reUseField ) INLINE ::FReUseField := reUseField
    METHOD TranslateToFieldValue( value ) INLINE value
@@ -134,6 +136,7 @@ CLASS TField FROM OORDBBASE
    METHOD AddFieldMessage()
    METHOD AddKeyIndex( index )
    METHOD CheckEditable( flag )
+   METHOD CheckForKeyViolation( value )
    METHOD CLEAR()
    METHOD DefaultValuePull()
    METHOD DefaultValuePush( newDefaultValue )
@@ -195,6 +198,7 @@ CLASS TField FROM OORDBBASE
    PROPERTY FieldArrayIndex READ FFieldArrayIndex
    PROPERTY ignoreUndetermined
    PROPERTY KeyVal READ GetKeyVal WRITE SetKeyVal
+   PROPERTY LastUniqueFieldList READ FLastUniqueFieldList WRITE SetLastUniqueFieldList
    PROPERTY LinkedTable READ GetLinkedTable
    PROPERTY ReUseField READ FReUseField WRITE SetReUseField
    PROPERTY ReUseFieldIndex READ FReUseFieldIndex
@@ -314,6 +318,35 @@ METHOD FUNCTION CheckEditable( flag ) CLASS TField
    ::FCheckEditable := flag
 
    RETURN oldFlag
+
+/*
+    CheckForKeyViolation
+*/
+METHOD PROCEDURE CheckForKeyViolation( value ) CLASS TField
+    LOCAL index
+    LOCAL itm
+    LOCAL oldBuffer
+
+    FOR EACH index IN ::FUniqueKeyIndexList
+        IF ::IsPrimaryKeyField .AND. index:ExistKey( ::GetKeyVal( value, index:KeyFlags ), ::FTable:RecNo )
+            RAISE TFIELD ::Name ERROR "Primary Key violation."
+        ENDIF
+    NEXT
+
+    IF ::FLastUniqueFieldList != NIL
+        FOR EACH itm IN ::FLastUniqueFieldList
+            IF value != NIL
+                oldBuffer := ::GetBuffer()
+                ::SetBuffer( value )
+            ENDIF
+            ::FTable:FieldList[ itm ]:CheckForKeyViolation( )
+            IF oldBuffer != NIL
+                ::SetBuffer( oldBuffer )
+            ENDIF
+        NEXT
+    ENDIF
+
+RETURN
 
 /*
     CheckForValidValue
@@ -1182,7 +1215,6 @@ METHOD PROCEDURE SetData( value, initialize ) CLASS TField
    LOCAL nTries
    LOCAL errObj
    LOCAL result
-   LOCAL index
 
    IF ::FUsingField != NIL
       ::FUsingField:SetData( value )
@@ -1304,11 +1336,7 @@ METHOD PROCEDURE SetData( value, initialize ) CLASS TField
         /*
          * Check for a key violation
          */
-        FOR EACH index IN ::FUniqueKeyIndexList
-            IF ::IsPrimaryKeyField .AND. index:ExistKey( ::GetKeyVal( value, index:KeyFlags ), ::FTable:RecNo )
-                RAISE TFIELD ::Name ERROR "Key violation."
-            ENDIF
-        NEXT
+        ::CheckForKeyViolation( value )
 
         ::WriteToTable( value, initialize )
 
@@ -1679,6 +1707,15 @@ METHOD FUNCTION ValidateResult_TableLogic( showAlert, value ) CLASS TField
             ENDIF
         NEXT
     ENDIF
+
+    /*
+     * Check for a key violation
+     */
+    FOR EACH index IN ::FUniqueKeyIndexList
+        IF ::IsPrimaryKeyField .AND. index:ExistKey( ::GetKeyVal( value, index:KeyFlags ), ::FTable:RecNo )
+            RAISE TFIELD ::Name ERROR "Key violation."
+        ENDIF
+    NEXT
 
 RETURN result
 

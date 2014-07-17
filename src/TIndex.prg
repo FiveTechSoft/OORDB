@@ -741,6 +741,10 @@ METHOD PROCEDURE SetField( nIndex, XField ) CLASS TIndex
       ::FAutoIncrementKeyField := AField
    CASE 2  /* UniqueKeyField */
       AAdd( AField:UniqueKeyIndexList, Self )
+      IF AField:FieldMethodType = 'A'
+         AField:Table:FieldByName( AField:Name, @fld )
+         AField:Table:FieldList[ AField:FieldArrayIndex[ Len( AField:FieldArrayIndex ) ] ]:LastUniqueFieldList := fld
+      ENDIF
       ::FUniqueKeyField := AField
    CASE 3  /* KeyField */
       IF AField:IsDerivedFrom( "TFieldString" ) .AND. Len( AField ) = 0

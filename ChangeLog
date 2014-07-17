@@ -2,6 +2,11 @@
  * $Id: ChangeLog 155 2013-06-06 03:29:32Z tfonrouge $
  */
 
+Thu Jul 17 05:43:32 UTC 2014  ()
+  M src/TField.prg
+  M src/TIndex.prg
+    % allows to keep list of complex fields (array list) that are primary key
+
 Wed Jul 16 21:40:45 UTC 2014  ()
   M src/TField.prg
     % allows to have a OnSetKeyVal_BaseKeyField() on each table
