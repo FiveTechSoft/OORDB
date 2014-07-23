@@ -1536,6 +1536,8 @@ METHOD FUNCTION DELETE( lDeleteChilds ) CLASS TTable
    LOCAL aChilds
    LOCAL child
    LOCAL lDel
+   LOCAL allowOnDataChange
+   LOCAL result := .F.
 
    IF AScan( { dsBrowse, dsEdit, dsInsert }, ::State ) = 0
       ::Error_Table_Not_In_Browse_or_Insert_State()
@@ -1545,6 +1547,9 @@ METHOD FUNCTION DELETE( lDeleteChilds ) CLASS TTable
    IF ::State = dsBrowse .AND. !::RecLock()
       RETURN .F.
    ENDIF
+
+   allowOnDataChange := ::allowOnDataChange
+   ::allowOnDataChange := .F.
 
    IF ::OnBeforeDelete()
 
@@ -1561,11 +1566,13 @@ METHOD FUNCTION DELETE( lDeleteChilds ) CLASS TTable
          IF !lDel .AND. !lDeleteChilds == .T.
             SHOW WARN "Error_Table_Has_Childs"
             ::RecUnLock()
+            ::allowOnDataChange := allowOnDataChange
             RETURN .F.
          ENDIF
          IF !::DeleteChilds()
             SHOW WARN "Error_Deleting_Childs"
             ::RecUnLock()
+            ::allowOnDataChange := allowOnDataChange
             RETURN .F.
          ENDIF
       ENDIF
@@ -1578,21 +1585,20 @@ METHOD FUNCTION DELETE( lDeleteChilds ) CLASS TTable
          ::Alias:dbDelete()
       ENDIF
 
-      ::RecUnLock()
-
-      ::GetCurrentRecord()
-
-      ::OnAfterDelete()
-
-   ELSE
-
-      ::RecUnLock()
-
-      RETURN .F.
+      result := .T.
 
    ENDIF
 
-   RETURN .T.
+   ::RecUnLock()
+
+   ::allowOnDataChange := allowOnDataChange
+
+   IF result
+      ::GetCurrentRecord()
+      ::OnAfterDelete()
+   ENDIF
+
+   RETURN result
 
 /*
     DeleteChilds
@@ -2797,6 +2803,10 @@ METHOD FUNCTION OnActiveSetKeyVal( value ) CLASS TTable
     OnDataChange
 */
 METHOD PROCEDURE OnDataChange() CLASS TTable
+
+   IF ::LinkedObjField != NIL
+      ::LinkedObjField:SetMasterKeyVal( NIL )
+   ENDIF
 
    IF ::OnDataChangeBlock != NIL
       ::OnDataChangeBlock:Eval( iif( ::OnDataChangeBlock_Param = NIL, Self, ::OnDataChangeBlock_Param ) )

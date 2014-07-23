@@ -26,7 +26,6 @@ CLASS TFieldTable FROM TField
    DATA FcalculatingLinkedTable INIT .F.
    DATA FClassInit
    DATA FFieldType INIT ftTable
-   DATA FMasterKeyVal
    DATA FonDataChangeBlock
    DATA FonDataObj
    DATA FType INIT "TableField"
@@ -53,10 +52,12 @@ CLASS TFieldTable FROM TField
    METHOD GetAsVariant( ... )
    METHOD IndexExpression( fieldName )
    METHOD SetClassInit( clsInit ) INLINE ::FClassInit := clsInit
+   METHOD SetMasterKeyVal( value ) INLINE ::FMasterKeyVal := value
    METHOD SetValidValues( validValues, ignoreUndetermined, labelField )
    PROPERTY LinkedTable READ GetLinkedTable
    PROPERTY LinkedTableAssigned READ FLinkedTableMasterSource != NIL
    PROPERTY LinkedTableMasterSource READ FLinkedTableMasterSource WRITE SetLinkedTableMasterSource
+   PROPERTY MasterKeyVal
    PROPERTY ObjClass READ FObjClass WRITE SetObjClass
    PROPERTY OnDataChange READ GetOnDataChange WRITE SetOnDataChange
    PROPERTY Size READ BaseKeyField():Size

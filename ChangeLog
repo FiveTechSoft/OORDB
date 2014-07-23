@@ -2,6 +2,13 @@
  * $Id: ChangeLog 155 2013-06-06 03:29:32Z tfonrouge $
  */
 
+Wed Jul 23 19:19:34 UTC 2014 Teo Fonrouge (tfonrouge@gmail.com)
+  M src/TFieldTable.prg
+    % allows to reset the FMasterKeyVal value (to allow a refresh when adding records to a previous empty table)
+  M src/TTable.prg
+    * Delete() : allow call OnDataChange() only if success
+    * OnDataChange() : clears on the LinkedObjField (if any) the MasterKeyVal ppty
+
 Thu Jul 17 05:43:32 UTC 2014  ()
   M src/TField.prg
   M src/TIndex.prg
