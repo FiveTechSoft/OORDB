@@ -2804,10 +2804,6 @@ METHOD FUNCTION OnActiveSetKeyVal( value ) CLASS TTable
 */
 METHOD PROCEDURE OnDataChange() CLASS TTable
 
-   IF ::LinkedObjField != NIL
-      ::LinkedObjField:SetMasterKeyVal( NIL )
-   ENDIF
-
    IF ::OnDataChangeBlock != NIL
       ::OnDataChangeBlock:Eval( iif( ::OnDataChangeBlock_Param = NIL, Self, ::OnDataChangeBlock_Param ) )
    ENDIF

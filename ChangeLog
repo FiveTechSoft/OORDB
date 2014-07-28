@@ -2,6 +2,11 @@
  * $Id: ChangeLog 155 2013-06-06 03:29:32Z tfonrouge $
  */
 
+Mon Jul 28 19:24:58 UTC 2014 Teo Fonrouge (tfonrouge@gmail.com)
+  M src/TFieldTable.prg
+  M src/TTable.prg
+    ! reverted reset of TFieldTable:MasterKey when GetCurrentRecord() returns false
+
 Wed Jul 23 19:19:34 UTC 2014 Teo Fonrouge (tfonrouge@gmail.com)
   M src/TFieldTable.prg
     % allows to reset the FMasterKeyVal value (to allow a refresh when adding records to a previous empty table)

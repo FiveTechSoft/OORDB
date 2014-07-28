@@ -52,7 +52,6 @@ CLASS TFieldTable FROM TField
    METHOD GetAsVariant( ... )
    METHOD IndexExpression( fieldName )
    METHOD SetClassInit( clsInit ) INLINE ::FClassInit := clsInit
-   METHOD SetMasterKeyVal( value ) INLINE ::FMasterKeyVal := value
    METHOD SetValidValues( validValues, ignoreUndetermined, labelField )
    PROPERTY LinkedTable READ GetLinkedTable
    PROPERTY LinkedTableAssigned READ FLinkedTableMasterSource != NIL
