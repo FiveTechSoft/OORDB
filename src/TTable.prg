@@ -250,6 +250,7 @@ CLASS TTable FROM OORDBBASE
    METHOD Destroy()
    METHOD dbEval( bBlock, bForCondition, bWhileCondition, index, scope )
    METHOD DbGoBottom INLINE ::DbGoBottomTop( -1 )
+   METHOD DbGoInsideScope() INLINE iif( ! ::InsideScope(), ::DbGoTop(), .T. )
    METHOD dbGoto( RecNo )
    METHOD DbGoTop INLINE ::DbGoBottomTop( 1 )
    METHOD dbSkip( numRecs )

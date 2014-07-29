@@ -2,6 +2,10 @@
  * $Id: ChangeLog 155 2013-06-06 03:29:32Z tfonrouge $
  */
 
+Tue Jul 29 18:40:21 UTC 2014 Teo Fonrouge (tfonrouge@gmail.com)
+  M src/TTable.prg
+    + method : DbGoInsideScope() :  iif( ! ::InsideScope(), ::DbGoTop(), .T. )
+
 Mon Jul 28 19:24:58 UTC 2014 Teo Fonrouge (tfonrouge@gmail.com)
   M src/TFieldTable.prg
   M src/TTable.prg
