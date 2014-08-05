@@ -89,6 +89,7 @@ CLASS TField FROM OORDBBASE
    DATA FValType INIT "U"
    DATA FWrittenValue
 
+   METHOD CheckForLinkedObjFieldSetAsVariant( value )
    METHOD CheckForValidValue( value, showAlert, errorStr )
    METHOD GetAsExpression INLINE hb_StrToExp( ::GetAsString )
    METHOD GetCloneData( cloneData )
@@ -346,6 +347,15 @@ METHOD PROCEDURE CheckForKeyViolation( value ) CLASS TField
         NEXT
     ENDIF
 
+RETURN
+
+/*
+    CheckForLinkedObjFieldSetAsVariant
+*/
+METHOD PROCEDURE CheckForLinkedObjFieldSetAsVariant( value ) CLASS TField
+    IF ::FTable:LinkedObjField != NIL .AND. (::FTable:LinkedObjField:Calculated .OR. ::FTable:LinkedObjField:Table:State > dsBrowse .OR. ::FTable:LinkedObjField:Table:autoEdit)
+        ::FTable:LinkedObjField:SetAsVariant( value )
+    ENDIF
 RETURN
 
 /*
@@ -1347,9 +1357,9 @@ METHOD PROCEDURE SetData( value, initialize ) CLASS TField
             SHOW WARN result
 
         ELSE
-            IF ::FTable:LinkedObjField != NIL  .AND. ::FTable:BaseKeyField == Self
+            IF ::FTable:BaseKeyField == Self
 
-                ::FTable:LinkedObjField:SetAsVariant( ::GetAsVariant() )
+                ::CheckForLinkedObjFieldSetAsVariant( ::GetAsVariant() )
 
             ENDIF
 
@@ -1578,11 +1588,7 @@ METHOD FUNCTION SetKeyVal( keyVal, lSoftSeek ) CLASS TField
             ::OnSetKeyVal( .F., keyVal )
          ENDIF
 
-         IF ::FTable:LinkedObjField != NIL .AND. (::FTable:LinkedObjField:Calculated .OR. ::FTable:LinkedObjField:Table:State > dsBrowse .OR. ::FTable:LinkedObjField:Table:autoEdit)
-
-            ::FTable:LinkedObjField:SetAsVariant( ::FTable:BaseKeyField:GetAsVariant() )
-
-         ENDIF
+         ::CheckForLinkedObjFieldSetAsVariant( ::FTable:BaseKeyField:GetAsVariant() )
 
       ELSE
 
