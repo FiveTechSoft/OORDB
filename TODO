@@ -1,3 +1,5 @@
+ ! Calculated Field's must obey validation clauses ( ON VALIDATE, ON BEFORE CHANGE )
+
  ! TField : don't use NEWVALUE as DEFAULTVALUE
 
  % TIndex : Create procedure to update custom indexes defined on descedant classes even when fields involved

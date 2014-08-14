@@ -2,6 +2,10 @@
  * $Id: ChangeLog 155 2013-06-06 03:29:32Z tfonrouge $
  */
 
+Thu Aug 14 19:27:01 UTC 2014 Teo Fonrouge (tfonrouge@gmail.com)
+  M TODO
+    * todo
+
 Tue Aug  5 15:30:50 UTC 2014 Teo Fonrouge (tfonrouge@gmail.com)
   M src/TField.prg
     + method CheckForLinkedObjFieldSetAsVariant() to centralize when SetAsVariant() is required
