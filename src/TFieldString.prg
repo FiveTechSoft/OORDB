@@ -10,12 +10,12 @@
 */
 CLASS TFieldString FROM TField
 
-   PRIVATE:
+PROTECTED:
 
-   PROTECTED:
    DATA FDBS_LEN INIT 0
    DATA FDBS_DEC INIT 0
    DATA FDBS_TYPE INIT "C"
+   DATA FFieldType INIT ftString
    DATA FSize
    DATA FType INIT "String"
    DATA FtypeNameList INIT hb_hSetCaseMatch( {"es"=>"Texto"} )
@@ -28,7 +28,9 @@ CLASS TFieldString FROM TField
    METHOD SetDBS_LEN( dbs_Len )
    METHOD SetDefaultValue( DefaultValue )
    METHOD SetSize( size )
-   PUBLIC:
+
+PUBLIC:
+
    METHOD GetAsString()
    METHOD IndexExpression( fieldName, isMasterFieldComponent )
    PROPERTY AsNumeric READ GetAsNumeric WRITE SetAsNumeric

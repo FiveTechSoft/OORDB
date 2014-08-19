@@ -24,12 +24,13 @@
 #define dssPosting  2
 
 #define ftBase      0
-#define ftTable     1
-#define ftMemo      2
-#define ftTime      3
-#define ftAutoInc   4
-#define ftArray     5
-#define ftHash      6
+#define ftString    1
+#define ftTable     2
+#define ftMemo      3
+#define ftTime      4
+#define ftAutoInc   5
+#define ftArray     6
+#define ftHash      7
 
 
 /* Events for TTable */

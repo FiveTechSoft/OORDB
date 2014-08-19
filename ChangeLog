@@ -2,6 +2,14 @@
  * $Id: ChangeLog 155 2013-06-06 03:29:32Z tfonrouge $
  */
 
+Tue Aug 19 21:55:36 UTC 2014 Teo Fonrouge (tfonrouge@gmail.com)
+  M include/oordb.ch
+  M src/TFieldString.prg
+    * add field type ftString
+
+  M src/TField.prg
+    ! on compund fields (array of fields) uses the KeyVal value
+
 Thu Aug 14 19:27:01 UTC 2014 Teo Fonrouge (tfonrouge@gmail.com)
   M TODO
     * todo

@@ -512,58 +512,61 @@ METHOD FUNCTION GetAsDisplay( ... ) CLASS TField
     GetAsVariant
 */
 METHOD FUNCTION GetAsVariant( ... ) CLASS TField
+    LOCAL AField
+    LOCAL i
+    LOCAL result
+    LOCAL value
 
-   LOCAL AField
-   LOCAL i
-   LOCAL result
-   LOCAL value
+    IF ::FTable:isMetaTable
+        ::FTable:isMetaTable := .F.
+    ENDIF
 
-   IF ::FTable:isMetaTable
-      ::FTable:isMetaTable := .F.
-   ENDIF
+    ::FcalcResult := NIL
 
-   ::FcalcResult := NIL
+    IF ::FUsingField != NIL
+        RETURN ::FUsingField:GetAsVariant( ... )
+    ENDIF
 
-   IF ::FUsingField != NIL
-      RETURN ::FUsingField:GetAsVariant( ... )
-   ENDIF
+    // ::SyncToContainerField()
 
-   // ::SyncToContainerField()
-
-   IF ::FFieldMethodType = "B" .OR. ::FCalculated
-      IF ::FTable:Alias != NIL
-         result := ::FTable:Alias:Eval( ::FieldReadBlock, ::FTable, ... )
-         IF HB_ISOBJECT( result ) .AND. result:IsDerivedFrom( "TField" )
-            ::FcalcResult := result
-            result := result:Value
-         ENDIF
-      ENDIF
-   ELSE
-      SWITCH ::FFieldMethodType
-      CASE "A"
+    IF ::FFieldMethodType = "B" .OR. ::FCalculated
+        IF ::FTable:Alias != NIL
+            result := ::FTable:Alias:Eval( ::FieldReadBlock, ::FTable, ... )
+            IF HB_ISOBJECT( result ) .AND. result:IsDerivedFrom( "TField" )
+                ::FcalcResult := result
+                result := result:Value
+            ENDIF
+        ENDIF
+    ELSE
+        SWITCH ::FFieldMethodType
+        CASE "A"
             /*
              * This will ONLY work when all the items are of TFieldString type
              */
-         result := ""
-         FOR EACH i IN ::FFieldArrayIndex
-            AField := ::FTable:FieldList[ i ]
-            value := AField:GetAsVariant()
-            IF !HB_ISSTRING( value )
-               result += AField:AsString
-            ELSE
-               result += value
-            ENDIF
-         NEXT
-         EXIT
-      CASE "C"
-         result := ::TranslateToValue( ::GetBuffer() )
-         EXIT
-      OTHERWISE
-         THROW ERROR OODB_ERR__FIELD_METHOD_TYPE_NOT_SUPPORTED ARGS ::FFieldMethodType
-      ENDSWITCH
-   ENDIF
+            result := ""
+            FOR EACH i IN ::FFieldArrayIndex
+                AField := ::FTable:FieldList[ i ]
+                IF ::FFieldType = ftString
+                    result += AField:KeyVal
+                ELSE
+                    value := AField:GetAsVariant()
+                    IF !HB_ISSTRING( value )
+                       result += AField:AsString
+                    ELSE
+                       result += value
+                    ENDIF
+                ENDIF
+            NEXT
+            EXIT
+        CASE "C"
+            result := ::TranslateToValue( ::GetBuffer() )
+            EXIT
+        OTHERWISE
+            THROW ERROR OODB_ERR__FIELD_METHOD_TYPE_NOT_SUPPORTED ARGS ::FFieldMethodType
+        ENDSWITCH
+    ENDIF
 
-   RETURN result
+RETURN result
 
 /*
     GetAutoIncrementValue
