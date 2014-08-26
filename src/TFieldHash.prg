@@ -26,6 +26,8 @@ CLASS TFieldHash FROM TField
     METHOD TranslateToValue( value )
 
     PUBLIC:
+    
+    PROPERTY KeySize INIT 0
 
 ENDCLASS
 

@@ -846,53 +846,50 @@ METHOD FUNCTION GetKeyIndex() CLASS TField
 */
 METHOD FUNCTION GetKeyVal( keyVal, keyFlags ) CLASS TField
 
-   LOCAL AField
-   LOCAL i, start, size, value
+    LOCAL AField
+    LOCAL i, start, value
 
-   IF ::FFieldMethodType = "A"
-      IF keyVal = NIL
-         keyVal := ""
-         FOR EACH i IN ::FFieldArrayIndex
-            keyVal += ::FTable:FieldList[ i ]:GetKeyVal( NIL, keyFlags )
-         NEXT
-      ELSE
-         keyVal := PadR( keyVal, Min( Len( keyVal ), ::Size ) )
-         start := 1
-         FOR EACH i IN ::FFieldArrayIndex
-            AField := ::FTable:FieldList[ i ]
-            size := AField:Size
-            value := SubStr( keyVal, start, size )
-            value := AField:GetKeyVal( value, keyFlags )
-            keyVal := Stuff( keyVal, start, size, value )
-            start += Len( value )
-         NEXT
-      ENDIF
-   ELSE
-      IF keyVal = NIL
-         keyVal := ::GetAsVariant()
-      ENDIF
-      IF HB_ISCHAR( keyVal )
-         IF keyFlags != NIL .AND. hb_HHasKey( keyFlags, ::Name )
-            SWITCH keyFlags[ ::Name ]
-            CASE "U"
-               keyVal := Upper( keyVal )
-               EXIT
-            ENDSWITCH
-         ELSEIF ::IsKeyIndex
-            IF !::KeyIndex:CaseSensitive
-               keyVal := Upper( keyVal )
+    IF ::FFieldMethodType = "A"
+        IF keyVal = NIL
+            keyVal := ""
+            FOR EACH i IN ::FFieldArrayIndex
+                keyVal += ::FTable:FieldList[ i ]:GetKeyVal( NIL, keyFlags )
+            NEXT
+        ELSE
+            value := ""
+            start := 1
+            FOR EACH i IN ::FFieldArrayIndex
+                AField := ::FTable:FieldList[ i ]
+                value += AField:GetKeyVal( SubStr( keyVal, start, AField:KeySize ), keyFlags )
+                start += AField:KeySize
+            NEXT
+        ENDIF
+    ELSE
+        IF keyVal = NIL
+            keyVal := ::GetAsVariant()
+        ENDIF
+        IF HB_ISCHAR( keyVal )
+            IF keyFlags != NIL .AND. hb_HHasKey( keyFlags, ::Name )
+                SWITCH keyFlags[ ::Name ]
+                CASE "U"
+                    keyVal := Upper( keyVal )
+                    EXIT
+                ENDSWITCH
+            ELSEIF ::IsKeyIndex
+                IF !::KeyIndex:CaseSensitive
+                    keyVal := Upper( keyVal )
+                ENDIF
+                IF ::KeyIndex:RightJustified
+                    keyVal := PadL( RTrim( keyVal ), ::DBS_LEN )
+                ENDIF
             ENDIF
-            IF ::KeyIndex:RightJustified
-               keyVal := PadL( RTrim( keyVal ), ::DBS_LEN )
+            IF Len( keyVal ) < ::DBS_LEN
+                keyVal := PadR( keyVal, ::DBS_LEN )
             ENDIF
-         ENDIF
-         IF Len( keyVal ) < ::DBS_LEN
-            keyVal := PadR( keyVal, ::DBS_LEN )
-         ENDIF
-      ENDIF
-   ENDIF
+        ENDIF
+    ENDIF
 
-   RETURN keyVal
+RETURN keyVal
 
 /*
     GetUndoValue

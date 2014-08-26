@@ -31,6 +31,8 @@ CLASS TFieldLogical FROM TField
 
    PUBLISHED:
 
+   PROPERTY KeySize INIT 1
+
 ENDCLASS
 
 /*

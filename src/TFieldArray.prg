@@ -27,6 +27,8 @@ CLASS TFieldArray FROM TField
 
     PUBLIC:
 
+    PROPERTY KeySize INIT 0
+
 ENDCLASS
 
 /*

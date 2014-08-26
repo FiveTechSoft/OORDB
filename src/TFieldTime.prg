@@ -41,6 +41,7 @@ CLASS TFieldTime FROM TField
    PROPERTY AsMinutes INDEX 2 READ GetAs
    PROPERTY AsSeconds INDEX 3 READ GetAs
    PROPERTY Hours READ Time:Hours
+   PROPERTY KeySize INIT 8
    PROPERTY Minutes READ Time:Minutes
    PROPERTY Seconds READ Time:Seconds
    PROPERTY TimeFormat READ Time:FORMAT WRITE Time:SetFormat

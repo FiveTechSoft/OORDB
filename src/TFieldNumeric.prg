@@ -33,6 +33,8 @@ CLASS TFieldNumeric FROM TField
 
    PUBLISHED:
 
+   PROPERTY KeySize INIT 15
+
 ENDCLASS
 
 /*

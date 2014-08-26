@@ -33,8 +33,9 @@ PUBLIC:
 
    METHOD GetAsString()
    METHOD IndexExpression( fieldName, isMasterFieldComponent )
+
    PROPERTY AsNumeric READ GetAsNumeric WRITE SetAsNumeric
-   PUBLISHED:
+   PROPERTY KeySize READ Size
    PROPERTY Size READ GetSize WRITE SetSize
 
 ENDCLASS

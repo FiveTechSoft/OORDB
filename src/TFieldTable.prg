@@ -53,6 +53,7 @@ CLASS TFieldTable FROM TField
    METHOD IndexExpression( fieldName )
    METHOD SetClassInit( clsInit ) INLINE ::FClassInit := clsInit
    METHOD SetValidValues( validValues, ignoreUndetermined, labelField )
+   PROPERTY KeySize READ BaseKeyField():KeySize
    PROPERTY LinkedTable READ GetLinkedTable
    PROPERTY LinkedTableAssigned READ FLinkedTableMasterSource != NIL
    PROPERTY LinkedTableMasterSource READ FLinkedTableMasterSource WRITE SetLinkedTableMasterSource

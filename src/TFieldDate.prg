@@ -32,6 +32,8 @@ CLASS TFieldDate FROM TField
 
    PUBLISHED:
 
+   PROPERTY KeySize INIT 8
+
 ENDCLASS
 
 /*

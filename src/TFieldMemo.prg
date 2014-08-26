@@ -10,18 +10,19 @@
 */
 CLASS TFieldMemo FROM TFieldString
 
-   PRIVATE:
+PROTECTED:
 
-   PROTECTED:
-   DATA FDBS_LEN INIT 4
-   DATA FDBS_DEC INIT 0
-   DATA FDBS_TYPE INIT "M"
-   DATA FFieldType INIT ftMemo
-   DATA FSize INIT 0
-   DATA FType INIT "Memo"
-   DATA FtypeNameList INIT hb_hSetCaseMatch( {"es"=>"Memo"} )
-   PUBLIC:
-   PUBLISHED:
+    DATA FDBS_LEN INIT 4
+    DATA FDBS_DEC INIT 0
+    DATA FDBS_TYPE INIT "M"
+    DATA FFieldType INIT ftMemo
+    DATA FSize INIT 0
+    DATA FType INIT "Memo"
+    DATA FtypeNameList INIT hb_hSetCaseMatch( {"es"=>"Memo"} )
+
+PUBLIC:
+
+    PROPERTY KeySize READ Size
 
 ENDCLASS
 

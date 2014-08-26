@@ -30,6 +30,8 @@ CLASS TFieldInteger FROM TFieldNumeric
 
    PUBLISHED:
 
+   PROPERTY KeySize INIT 8
+
 ENDCLASS
 
 /*

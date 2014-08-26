@@ -55,6 +55,8 @@ PUBLIC:
    PROPERTY FormatDate READ GetFormatDate WRITE SetFormatDate
    PROPERTY FormatTime READ GetFormatTime WRITE SetFormatTime
 
+   PROPERTY KeySize INIT 23
+
 ENDCLASS
 
 /*
