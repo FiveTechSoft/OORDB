@@ -2,6 +2,13 @@
  * $Id: ChangeLog 155 2013-06-06 03:29:32Z tfonrouge $
  */
 
+Thu Aug 28 19:00:37 UTC 2014 Teo Fonrouge (tfonrouge@gmail.com)
+  M src/TAlias.prg
+    * uses table:TableFileName_Path instead of table:DataBase:Directory
+
+  M src/TTable.prg
+    + method : TableFileName_Path : allows to override in subclases, default: DataBase:Directory
+
 Tue Aug 26 18:20:00 UTC 2014 Teo Fonrouge (tfonrouge@gmail.com)
   M src/TField.prg
     ! GetKey calculation on field of integer fields

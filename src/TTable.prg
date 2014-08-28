@@ -307,6 +307,7 @@ CLASS TTable FROM OORDBBASE
    METHOD StatePush()
    METHOD SyncFromMasterSourceFields()
    METHOD SyncRecNo( fromAlias )
+   METHOD TableFileName_Path() INLINE ::DataBase:Directory
    METHOD TableClass INLINE ::ClassName + "@" + ::TableFileName
 
    METHOD Validate( showAlert )
