@@ -2,6 +2,11 @@
  * $Id: ChangeLog 155 2013-06-06 03:29:32Z tfonrouge $
  */
 
+Sun Aug 31 21:46:43 UTC 2014 Teo Fonrouge (tfonrouge@gmail.com)
+  M src/TFieldInteger.prg
+  M src/TFieldNumeric.prg
+    % + method NormalizeValue() to normalize numeric value on a string
+
 Thu Aug 28 19:00:37 UTC 2014 Teo Fonrouge (tfonrouge@gmail.com)
   M src/TAlias.prg
     * uses table:TableFileName_Path instead of table:DataBase:Directory

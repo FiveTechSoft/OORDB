@@ -10,8 +10,6 @@
 */
 CLASS TFieldNumeric FROM TField
 
-   PRIVATE:
-
    PROTECTED:
    DATA FDBS_LEN INIT 15   // 000000000000.00
    DATA FDBS_DEC INIT 2
@@ -27,6 +25,7 @@ CLASS TFieldNumeric FROM TField
    METHOD GetAsString( value )
    METHOD GetKeyVal( keyVal )
    METHOD IndexExpression( fieldName )
+   METHOD NormalizeValue( cValue )
    METHOD SetAsVariant( variant )
 
    PROPERTY AsNumeric READ GetAsVariant WRITE SetAsVariant
@@ -94,18 +93,25 @@ METHOD FUNCTION IndexExpression( fieldName ) CLASS TFieldNumeric
    RETURN "StrZero(" + fieldName + "," +  HB_NToS( ::FDBS_LEN ) + "," + HB_NToS( ::FDBS_DEC ) + ")"
 
 /*
+    NormalizeValue
+*/
+METHOD PROCEDURE NormalizeValue( cValue ) CLASS TFieldNumeric
+    LOCAL itm
+    FOR EACH itm IN ",'"
+        IF itm $ cValue
+            cValue := StrTran( cValue, itm, "" )
+        ENDIF
+    NEXT
+RETURN
+
+/*
     SetAsVariant
 */
 METHOD PROCEDURE SetAsVariant( variant ) CLASS TFieldNumeric
-   LOCAL itm
 
    SWITCH ValType( variant )
    CASE 'C'
-      FOR EACH itm IN ",'"
-         IF itm $ variant
-            variant := StrTran( variant, itm, "" )
-         ENDIF
-      NEXT
+      ::NormalizeValue( @variant )
       ::Super:SetAsVariant( Val( variant ) )
       EXIT
    CASE 'N'

@@ -73,6 +73,7 @@ METHOD PROCEDURE SetAsVariant( variant ) CLASS TFieldInteger
 
    SWITCH ValType( variant )
    CASE 'C'
+      ::NormalizeValue( @variant )
       ::Super:SetAsVariant( Int( Val( variant ) ) )
       EXIT
    CASE 'N'
