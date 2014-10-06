@@ -2,6 +2,10 @@
  * $Id: ChangeLog 155 2013-06-06 03:29:32Z tfonrouge $
  */
 
+Mon Oct  6 21:32:45 UTC 2014 Teo Fonrouge (tfonrouge@gmail.com)
+  M src/common.prg
+    ! Fixed AsString for TTime objs
+
 Sun Aug 31 21:46:43 UTC 2014 Teo Fonrouge (tfonrouge@gmail.com)
   M src/TFieldInteger.prg
   M src/TFieldNumeric.prg

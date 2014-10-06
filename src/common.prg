@@ -94,13 +94,16 @@ FUNCTION AsString( xVal )
    CASE 'N'
       RETURN LTrim( Str( xVal ) )
    CASE 'O'
-      result := xVal:ClassName
       BEGIN SEQUENCE WITH {| oErr| Break( oErr ) }
-         IF xVal:IsDerivedFrom( "TTime'" )
+         IF xVal:IsDerivedFrom( "TTime" )
             result := xVal:AsString
+         ELSE
+            result := "<Object>: " + xVal:ClassName
          ENDIF
+      RECOVER
+         result := "<Object Not Valid>"
       END SEQUENCE
-      RETURN "<Object>: " + result
+      RETURN result
    CASE 'A'
       RETURN "<Array>: " + LTrim( Str( Len( xVal ) ) )
    END
