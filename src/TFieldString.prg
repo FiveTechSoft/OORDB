@@ -32,7 +32,7 @@ PROTECTED:
 PUBLIC:
 
    METHOD GetAsString()
-   METHOD IndexExpression( fieldName, isMasterFieldComponent )
+   METHOD IndexExpression( fieldName, isMasterFieldComponent, keyFlags )
 
    PROPERTY AsNumeric READ GetAsNumeric WRITE SetAsNumeric
    PROPERTY KeySize READ Size
@@ -81,11 +81,10 @@ METHOD FUNCTION GetSize() CLASS TFieldString
 /*
     IndexExpression
 */
-METHOD FUNCTION IndexExpression( fieldName, isMasterFieldComponent ) CLASS TFieldString
+METHOD FUNCTION IndexExpression( fieldName, isMasterFieldComponent, keyFlags ) CLASS TFieldString
 
    LOCAL exp
    LOCAL i
-   LOCAL keyFlags
    LOCAL itmName
 
    IF ::FIndexExpression != NIL
@@ -104,12 +103,14 @@ METHOD FUNCTION IndexExpression( fieldName, isMasterFieldComponent ) CLASS TFiel
          ELSE
             itmName := NIL
          ENDIF
-         exp += iif( Len( exp ) = 0, "", "+" ) + ::FTable:FieldList[ i ]:IndexExpression( itmName, isMasterFieldComponent == .T. .OR. ( ::IsKeyIndex .AND. !::KeyIndex:CaseSensitive ) )
+         exp += iif( Len( exp ) = 0, "", "+" ) + ::FTable:FieldList[ i ]:IndexExpression( itmName, isMasterFieldComponent == .T. .OR. ( ::IsKeyIndex .AND. !::KeyIndex:CaseSensitive ), keyFlags )
       NEXT
    ELSE
       IF isMasterFieldComponent == .T. .OR. ::IsMasterFieldComponent .OR. ( ::IsKeyIndex .AND. ::KeyIndex:CaseSensitive )
-         IF ::KeyIndex != NIL
-            keyFlags := ::KeyIndex:KeyFlags
+         IF keyFlags != NIL .OR. ::KeyIndex != NIL
+            IF keyFlags = NIL
+               keyFlags := ::KeyIndex:KeyFlags
+            ENDIF
             IF keyFlags != NIL .AND. hb_HHasKey( keyFlags, ::Name )
                SWITCH keyFlags[ ::Name ]
                CASE "U"

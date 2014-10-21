@@ -2,6 +2,11 @@
  * $Id: ChangeLog 155 2013-06-06 03:29:32Z tfonrouge $
  */
 
+Tue Oct 21 02:41:37 UTC 2014 Teo Fonrouge (tfonrouge@gmail.com)
+  M src/TFieldString.prg
+  M src/TIndex.prg
+    ! fixed using keyFlags on masterKey index expression
+
 Mon Oct  6 21:32:45 UTC 2014 Teo Fonrouge (tfonrouge@gmail.com)
   M src/common.prg
     ! Fixed AsString for TTime objs

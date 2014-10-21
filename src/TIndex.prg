@@ -592,7 +592,7 @@ METHOD FUNCTION KeyExpression() CLASS TIndex
 METHOD FUNCTION MasterKeyExpression() CLASS TIndex
 
    IF ::FMasterKeyField != NIL
-      RETURN ::FMasterKeyField:IndexExpression( NIL, .T. )
+      RETURN ::FMasterKeyField:IndexExpression( NIL, .T., ::KeyFlags )
    ENDIF
 
    RETURN ""
