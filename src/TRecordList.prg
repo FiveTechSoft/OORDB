@@ -6,6 +6,8 @@
 
 CLASS TRecordList FROM OORDBBASE
 PROTECTED:
+    DATA FList
+    METHOD GetList INLINE ::FList[ ::Findex ]
 PUBLIC:
 
     CONSTRUCTOR New( table )
@@ -16,10 +18,14 @@ PUBLIC:
 
     METHOD Op_Index( index ) OPERATOR "[]"
 
-    METHOD Size INLINE Len( ::FList )
+    METHOD Size INLINE Len( ::FList[ ::Findex ] )
 
-    PROPERTY List
+    PROPERTY index
+    PROPERTY List READ GetList
     PROPERTY Table
+
+    METHOD ListPull()
+    METHOD ListPush()
 
 ENDCLASS
 
@@ -28,7 +34,8 @@ ENDCLASS
 */
 METHOD New( table ) CLASS TRecordList
     ::FTable := table
-    ::FList := {}
+    ::Findex := 1
+    ::FList := { { } }
 RETURN Self
 
 /*
@@ -53,7 +60,7 @@ METHOD FUNCTION Add( itmParam ) CLASS TRecordList
     ENDIF
 
     IF itm != NIL
-        AAdd( ::FList, itm )
+        AAdd( ::FList[ ::Findex ], itm )
     ELSE
         ::ERROR_ADDING_VALUE()
     ENDIF
@@ -64,15 +71,30 @@ RETURN Self
     Clear
 */
 METHOD PROCEDURE Clear() CLASS TRecordList
-    ASize( ::FList, 0 )
+    ASize( ::FList[ ::Findex ], 0 )
+RETURN
+
+/*
+    ListPull
+*/
+METHOD PROCEDURE ListPull() CLASS TRecordList
+    ::Findex--
+RETURN
+
+/*
+    ListPush
+*/
+METHOD PROCEDURE ListPush() CLASS TRecordList
+    ::Findex++
+    AAdd( ::FList, {} )
 RETURN
 
 /*
     Op_Index
 */
 METHOD FUNCTION Op_Index( index ) CLASS TRecordList
-    IF index >= 1 .AND. index <= Len( ::FList )
-        ::FTable:BaseKeyIndex:Seek( ::FList[ index ] )
+    IF index >= 1 .AND. index <= Len( ::FList[ ::Findex ] )
+        ::FTable:BaseKeyIndex:Seek( ::FList[ ::Findex, index ] )
     ELSE
         ::FTable:DbGoTo( 0 )
     ENDIF

@@ -2,6 +2,10 @@
  * $Id: ChangeLog 155 2013-06-06 03:29:32Z tfonrouge $
  */
 
+Thu Nov 13 00:55:38 UTC 2014 Teo Fonrouge (tfonrouge@gmail.com)
+  M src/TRecordList.prg
+    % current list can be saved pushed in a stack via ListPush()/ListPull()
+
 Tue Oct 21 02:41:37 UTC 2014 Teo Fonrouge (tfonrouge@gmail.com)
   M src/TFieldString.prg
   M src/TIndex.prg
