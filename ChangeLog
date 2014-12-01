@@ -2,6 +2,10 @@
  * $Id: ChangeLog 155 2013-06-06 03:29:32Z tfonrouge $
  */
 
+Mon Dec  1 18:32:22 UTC 2014 Teo Fonrouge (tfonrouge@gmail.com)
+  M src/TAlias.prg
+    % alias thread support
+
 Thu Nov 13 00:55:38 UTC 2014 Teo Fonrouge (tfonrouge@gmail.com)
   M src/TRecordList.prg
     % current list can be saved pushed in a stack via ListPush()/ListPull()

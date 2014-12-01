@@ -9,6 +9,8 @@
 #include "oordb.ch"
 #include "xerror.ch"
 
+THREAD STATIC __S_FInstances
+
 CLASS TAlias FROM OORDBBASE
 
    PRIVATE:
@@ -20,7 +22,13 @@ CLASS TAlias FROM OORDBBASE
    METHOD GetRecNo INLINE ::SyncFromRecNo(), ::FRecNo
    METHOD SetRecNo( RecNo ) INLINE ::dbGoto( RecNo )
    PROTECTED:
-   CLASSDATA FInstances INIT hb_HSetCaseMatch( { => }, .F. )
+    METHOD FInstances BLOCK ;
+        {||
+            IF __S_FInstances = NIL
+                __S_FInstances := hb_HSetCaseMatch( { => }, .F. )
+            ENDIF
+            RETURN __S_FInstances
+        }
    DATA FstackLock INIT {}
    METHOD GetAliasName() INLINE ::FInstances[ ::FTableName, "aliasName" ]
    METHOD SetWorkArea( workArea )
