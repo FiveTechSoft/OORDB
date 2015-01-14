@@ -292,6 +292,7 @@ CLASS TTable FROM OORDBBASE
    METHOD Reset() // Set Field Record to their default values, Sync MasterKeyVal Value
    METHOD SEEK( Value, AIndex, SoftSeek ) INLINE ::__Seek( 0, Value, AIndex, SoftSeek )
    METHOD SeekLast( Value, AIndex, SoftSeek ) INLINE ::__Seek( 1, Value, AIndex, SoftSeek )
+   METHOD Serialize()
    METHOD SetAsString( Value ) INLINE ::GetKeyField():AsString := Value
    METHOD SetBaseKeyIndex( baseKeyIndex )
    METHOD SetDbFilter( filter ) INLINE ::FDbFilter := filter
@@ -3126,6 +3127,21 @@ METHOD PROCEDURE Reset() CLASS TTable
    ::FUnderReset := .F.
 
    RETURN
+   
+/*
+    Serialize
+*/
+METHOD FUNCTION Serialize() CLASS TTable
+    LOCAL fld
+    LOCAL h := {=>}
+    
+    FOR EACH fld IN ::FFieldList
+        IF !fld:Calculated .AND. fld:FieldMethodType = "C"
+            h[ fld:Name ] := fld:Value
+        ENDIF
+    NEXT
+
+RETURN HB_Serialize( h )
 
 /*
     SetBaseKeyIndex

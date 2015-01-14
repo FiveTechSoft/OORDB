@@ -2,6 +2,11 @@
  * $Id: ChangeLog 155 2013-06-06 03:29:32Z tfonrouge $
  */
 
+Wed Jan 14 02:24:01 UTC 2015 Teo Fonrouge (tfonrouge@gmail.com)
+  M src/TTable.prg
+    + method
+      + Serialize() : serialize (via hb_serialize) the table fields
+
 Mon Dec  1 18:32:22 UTC 2014 Teo Fonrouge (tfonrouge@gmail.com)
   M src/TAlias.prg
     % alias thread support
