@@ -2,6 +2,10 @@
  * $Id: ChangeLog 155 2013-06-06 03:29:32Z tfonrouge $
  */
 
+Sat Feb  7 03:26:28 UTC 2015 Teo Fonrouge (tfonrouge@gmail.com)
+  M src/TFieldTime.prg
+    % detach TTime object
+
 Wed Jan 14 02:24:01 UTC 2015 Teo Fonrouge (tfonrouge@gmail.com)
   M src/TTable.prg
     + method
