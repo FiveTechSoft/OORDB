@@ -3629,7 +3629,7 @@ METHOD FUNCTION Validate( showAlert ) CLASS TTable
    LOCAL AField
 
    FOR EACH AField IN ::FFieldList
-      IF AField:Enabled .AND. AField:Validate( showAlert )
+      IF AField:Enabled .AND. ! AField:Validate( showAlert )
          RETURN .F.
       ENDIF
    NEXT
