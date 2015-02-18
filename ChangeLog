@@ -2,6 +2,10 @@
  * $Id: ChangeLog 155 2013-06-06 03:29:32Z tfonrouge $
  */
 
+Wed Feb 18 20:40:18 UTC 2015 Teo Fonrouge (tfonrouge@gmail.com)
+  M src/TField.prg
+    ! initialize keyFlags
+
 Sun Feb  8 04:48:13 UTC 2015 Teo Fonrouge (tfonrouge@gmail.com)
   M src/TTable.prg
     ! very stupid bug

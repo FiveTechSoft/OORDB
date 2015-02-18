@@ -849,6 +849,10 @@ METHOD FUNCTION GetKeyVal( keyVal, keyFlags ) CLASS TField
     LOCAL AField
     LOCAL i, start, value
 
+    IF keyFlags = NIL .AND. ::IsKeyIndex
+        keyFlags := ::KeyIndex:KeyFlags
+    ENDIF
+
     IF ::FFieldMethodType = "A"
         IF keyVal = NIL
             keyVal := ""
