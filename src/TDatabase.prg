@@ -42,7 +42,6 @@ CLASS TDataBase FROM OORDBBASE
 
    PROPERTY Name            READ GetName WRITE SetName
    PROPERTY NetIO           WRITE SetNetIO INIT .F.
-   PROPERTY RddDriver       INIT "DBFCDX"
    PROPERTY TableAutoCreate INIT OORDB_DEFAULT_TABLEAUTOCREATE
    PROPERTY ChildParentList INIT hb_HSetCaseMatch( { => }, .F. )
    PROPERTY Directory       WRITE SetDirectory INIT ""
