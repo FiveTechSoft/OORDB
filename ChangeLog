@@ -2,6 +2,11 @@
  * $Id: ChangeLog 155 2013-06-06 03:29:32Z tfonrouge $
  */
 
+Fri Mar 13 01:28:22 UTC 2015 Teo Fonrouge (tfonrouge@gmail.com)
+  M src/TRecordList.prg
+    % accept no parameter on ::Add()
+    * return NIL if index record is out of range in current list
+
 Fri Feb 20 14:56:13 UTC 2015 Teo Fonrouge (tfonrouge@gmail.com)
   M src/TDatabase.prg
     - removed unused data member

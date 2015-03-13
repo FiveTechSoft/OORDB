@@ -47,17 +47,24 @@ METHOD FUNCTION Add( itmParam ) CLASS TRecordList
 
     vt := ValType( itmParam )
 
-    IF vt = "O"
+    SWITCH vt
+    CASE "O"
         IF itmParam:IsDerivedFrom( ::FTable:BaseKeyIndex:TableBaseClass )
             itm := itmParam:Value
         ELSEIF itmParam:IsDerivedFrom( "TFieldTable" ) .AND. itmParam:LinkedTable:IsDerivedFrom( ::FTable:BaseKeyIndex:TableBaseClass )
             itm := itmParam:DataObj:Value
         ENDIF
-    ELSE
+        EXIT
+    CASE "U"
+        IF !::FTable:Eof()
+            itm := ::FTable:BaseKeyField:Value
+        ENDIF
+        EXIT
+    OTHERWISE
         IF vt == ValType( ::FTable:BaseKeyField:Value )
             itm := itmParam
         ENDIF
-    ENDIF
+    ENDSWITCH
 
     IF itm != NIL
         AAdd( ::FList[ ::Findex ], itm )
@@ -97,5 +104,6 @@ METHOD FUNCTION Op_Index( index ) CLASS TRecordList
         ::FTable:BaseKeyIndex:Seek( ::FList[ ::Findex, index ] )
     ELSE
         ::FTable:DbGoTo( 0 )
+        RETURN NIL
     ENDIF
 RETURN ::FTable
