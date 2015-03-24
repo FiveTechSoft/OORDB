@@ -2201,7 +2201,7 @@ METHOD FUNCTION GetCurrentRecord( idxAlias ) CLASS TTable
          ::FEof := .T.
          ::FBof := .T.
          ::FFound := .F.
-         ::Clear()
+         ::Reset()
       ENDIF
 
    ELSE

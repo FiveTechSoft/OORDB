@@ -2,6 +2,10 @@
  * $Id: ChangeLog 155 2013-06-06 03:29:32Z tfonrouge $
  */
 
+Tue Mar 24 19:22:19 UTC 2015 Teo Fonrouge (tfonrouge@gmail.com)
+  M src/TTable.prg
+    ! reverted, need to check example reported by client
+
 Tue Mar 24 00:58:29 UTC 2015 Teo Fonrouge (tfonrouge@gmail.com)
   M src/TField.prg
     * CheckForValidValue() doesn't check if Table is at Eof
