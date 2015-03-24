@@ -2,6 +2,15 @@
  * $Id: ChangeLog 155 2013-06-06 03:29:32Z tfonrouge $
  */
 
+Tue Mar 24 00:58:29 UTC 2015 Teo Fonrouge (tfonrouge@gmail.com)
+  M src/TField.prg
+    * CheckForValidValue() doesn't check if Table is at Eof
+    * SetKeyVal() forces keyIndex:Seek if Table is at Eof
+
+  M src/TTable.prg
+    + Clear() : set all fields to empty values
+    * use Clear() instead of Reset() when table is set at Eof
+
 Fri Mar 13 01:28:22 UTC 2015 Teo Fonrouge (tfonrouge@gmail.com)
   M src/TRecordList.prg
     % accept no parameter on ::Add()

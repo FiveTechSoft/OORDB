@@ -365,46 +365,50 @@ METHOD FUNCTION CheckForValidValue( value, showAlert, errorStr ) CLASS TField
     LOCAL result := .T.
     LOCAL validValues
 
-    IF ::FValidValues != NIL
+    IF ! ::FTable:Eof()
 
-        BEGIN SEQUENCE WITH ::FTable:ErrorBlock
+        IF ::FValidValues != NIL
 
-            validValues := ::GetValidValues()
+            BEGIN SEQUENCE WITH ::FTable:ErrorBlock
 
-            SWITCH ValType( validValues )
-            CASE 'A'
-                result := AScan( validValues, {| e| e == value } ) > 0
-                EXIT
-            CASE 'H'
-                result := AScan( hb_HKeys( validValues ), {| e| e == value } ) > 0
-                EXIT
-            OTHERWISE
+                validValues := ::GetValidValues()
+
+                SWITCH ValType( validValues )
+                CASE 'A'
+                    result := AScan( validValues, {| e| e == value } ) > 0
+                    EXIT
+                CASE 'H'
+                    result := AScan( hb_HKeys( validValues ), {| e| e == value } ) > 0
+                    EXIT
+                OTHERWISE
+                    result := NIL
+                ENDSWITCH
+
+            RECOVER
+
                 result := NIL
-            ENDSWITCH
 
-        RECOVER
+            END SEQUENCE
 
-            result := NIL
-
-        END SEQUENCE
-
-    ENDIF
-
-    IF ! result == .T.
-
-        IF result = NIL
-            errorStr := ::FTable:ClassName + ": '" + ::Name + "' <Illegal data in 'ValidValues'> "
-            IF showAlert == .T.
-                SHOW WARN errorStr
-            ENDIF
-        ELSE
-            errorStr := ::FTable:ClassName + ": '" + ::Name + "' <value given not in 'ValidValues'> : '" + AsString( value ) + "'"
-            IF showAlert == .T. .AND. !::FignoreUndetermined
-                SHOW WARN errorStr
-            ENDIF
         ENDIF
 
-   ENDIF
+        IF ! result == .T.
+
+            IF result = NIL
+                errorStr := ::FTable:ClassName + ": '" + ::Name + "' <Illegal data in 'ValidValues'> "
+                IF showAlert == .T.
+                    SHOW WARN errorStr
+                ENDIF
+            ELSE
+                errorStr := ::FTable:ClassName + ": '" + ::Name + "' <value given not in 'ValidValues'> : '" + AsString( value ) + "'"
+                IF showAlert == .T. .AND. !::FignoreUndetermined
+                    SHOW WARN errorStr
+                ENDIF
+            ENDIF
+
+        ENDIF
+
+    ENDIF
 
 RETURN result
 
@@ -1584,7 +1588,7 @@ METHOD FUNCTION SetKeyVal( keyVal, lSoftSeek ) CLASS TField
 
          IF !Empty( keyVal )
             keyVal := ::GetKeyVal( keyVal, ::KeyIndex:KeyFlags )
-            IF !::KeyIndex:KeyVal == keyVal
+            IF ::FTable:Eof() .OR. ! ::KeyIndex:KeyVal == keyVal
                ::OnSetKeyVal( ::KeyIndex:Seek( keyVal, lSoftSeek ), keyVal )
             ENDIF
          ELSE

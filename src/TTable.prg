@@ -170,6 +170,7 @@ CLASS TTable FROM OORDBBASE
    METHOD __CheckIndexes()
    METHOD AddRec()
    METHOD CheckDbStruct()
+   METHOD Clear()
    METHOD CreateTableInstance()
    METHOD DefineFieldsFromDb()
    METHOD FillFieldList()
@@ -654,12 +655,8 @@ METHOD FUNCTION AddRec() CLASS TTable
    ::FpreviousEditState := dsInsert
    ::FSubState := dssAdding
 
-   // ::Reset() // Reset record data to default values
-   FOR EACH AField IN ::FFieldList
-      IF !AField:Calculated .AND. AField:FieldMethodType = "C"
-         AField:Clear()
-      ENDIF
-   NEXT
+   // Clear fields to empty values
+   ::Clear()
 
     /*
      * Write the MasterKeyField
@@ -1019,6 +1016,20 @@ METHOD FUNCTION ChildSource( tableName, destroyChild ) CLASS TTable
    END SEQUENCE
 
    RETURN childDb
+
+/*
+    Clear
+*/
+METHOD PROCEDURE Clear() CLASS TTable
+    LOCAL AFIELD
+
+    FOR EACH AField IN ::FFieldList
+        IF !AField:Calculated .AND. AField:FieldMethodType = "C"
+            AField:Clear()
+        ENDIF
+    NEXT
+
+RETURN
 
 /*
     CopyRecord
@@ -2190,7 +2201,7 @@ METHOD FUNCTION GetCurrentRecord( idxAlias ) CLASS TTable
          ::FEof := .T.
          ::FBof := .T.
          ::FFound := .F.
-         ::Reset()
+         ::Clear()
       ENDIF
 
    ELSE
