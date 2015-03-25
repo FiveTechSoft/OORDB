@@ -2,6 +2,10 @@
  * $Id: ChangeLog 155 2013-06-06 03:29:32Z tfonrouge $
  */
 
+Wed Mar 25 02:58:26 UTC 2015 Teo Fonrouge (tfonrouge@gmail.com)
+  M src/TField.prg
+    ! reverted
+
 Tue Mar 24 20:15:03 UTC 2015 Teo Fonrouge (tfonrouge@gmail.com)
   M ChangeLog
     * updated description

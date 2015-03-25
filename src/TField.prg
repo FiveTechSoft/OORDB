@@ -1588,7 +1588,7 @@ METHOD FUNCTION SetKeyVal( keyVal, lSoftSeek ) CLASS TField
 
          IF !Empty( keyVal )
             keyVal := ::GetKeyVal( keyVal, ::KeyIndex:KeyFlags )
-            IF ::FTable:Eof() .OR. ! ::KeyIndex:KeyVal == keyVal
+            IF !::KeyIndex:KeyVal == keyVal
                ::OnSetKeyVal( ::KeyIndex:Seek( keyVal, lSoftSeek ), keyVal )
             ENDIF
          ELSE
