@@ -2,6 +2,14 @@
  * $Id: ChangeLog 155 2013-06-06 03:29:32Z tfonrouge $
  */
 
+Wed Mar 25 17:55:47 UTC 2015 Teo Fonrouge (tfonrouge@gmail.com)
+  M src/TField.prg
+    * method CheckForLinkedObjFieldSetAsVariant() made public
+    * checking for Eof in SetKeyVal()
+
+  M src/TTable.prg
+    ! use CheckForLinkedObjFieldSetAsVariant() in GetCurrentRecord()
+
 Wed Mar 25 02:58:26 UTC 2015 Teo Fonrouge (tfonrouge@gmail.com)
   M src/TField.prg
     ! reverted

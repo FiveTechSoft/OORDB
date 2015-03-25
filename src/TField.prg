@@ -89,7 +89,6 @@ CLASS TField FROM OORDBBASE
    DATA FValType INIT "U"
    DATA FWrittenValue
 
-   METHOD CheckForLinkedObjFieldSetAsVariant( value )
    METHOD CheckForValidValue( value, showAlert, errorStr )
    METHOD GetAsExpression INLINE hb_StrToExp( ::GetAsString )
    METHOD GetCloneData( cloneData )
@@ -138,6 +137,7 @@ CLASS TField FROM OORDBBASE
    METHOD AddKeyIndex( index )
    METHOD CheckEditable( flag )
    METHOD CheckForKeyViolation( value )
+   METHOD CheckForLinkedObjFieldSetAsVariant( value )
    METHOD CLEAR()
    METHOD DefaultValuePull()
    METHOD DefaultValuePush( newDefaultValue )
@@ -1588,7 +1588,7 @@ METHOD FUNCTION SetKeyVal( keyVal, lSoftSeek ) CLASS TField
 
          IF !Empty( keyVal )
             keyVal := ::GetKeyVal( keyVal, ::KeyIndex:KeyFlags )
-            IF !::KeyIndex:KeyVal == keyVal
+            IF ::FTable:Eof() .OR. ! ::KeyIndex:KeyVal == keyVal
                ::OnSetKeyVal( ::KeyIndex:Seek( keyVal, lSoftSeek ), keyVal )
             ENDIF
          ELSE
