@@ -43,6 +43,7 @@ PUBLIC:
    CLASSDATA ClsFmtTime INIT "HH:MM"
 
    METHOD DiffSeconds( dateTimePrev )
+   METHOD DiffTime( dateTimePrev, formatTime )
    METHOD GetAsDisplay INLINE ::GetAsString
    METHOD GetAsDisplayEmptyValue INLINE ::GetAsString( ::GetEmptyValue )
    METHOD GetAsString( value )
@@ -65,7 +66,6 @@ ENDCLASS
 METHOD FUNCTION DiffSeconds( dateTimePrev ) CLASS TFieldDateTime
 
    LOCAL t1, t2
-   LOCAL t
 
    IF dateTimePrev = NIL
       dateTimePrev := hb_DateTime()
@@ -83,7 +83,21 @@ METHOD FUNCTION DiffSeconds( dateTimePrev ) CLASS TFieldDateTime
       t1 := dateTimePrev
    ENDIF
 
-   RETURN ( hb_TToD( hb_NToT( t1 - t2 ), @t ) - CToD( "" ) ) * 86400 + t
+   RETURN ( t1 - t2 ) * 86400
+
+/*
+    DiffTime
+*/
+METHOD FUNCTION DiffTime( dateTimePrev, formatTime ) CLASS TFieldDateTime
+    LOCAL t := TTime():New()
+
+    IF formatTime != NIL
+        t:Format := formatTime
+    ENDIF
+
+    t:SetAsSeconds( ::DiffSeconds( dateTimePrev ) )
+
+RETURN t
 
 /*
     GetAsString

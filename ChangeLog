@@ -2,6 +2,11 @@
  * $Id: ChangeLog 155 2013-06-06 03:29:32Z tfonrouge $
  */
 
+Sat Mar 28 02:11:57 UTC 2015 Teo Fonrouge (tfonrouge@gmail.com)
+  M src/TFieldDateTime.prg
+    % simplified DiffSeconds
+    + DiffTime() -> TTime
+
 Wed Mar 25 17:55:47 UTC 2015 Teo Fonrouge (tfonrouge@gmail.com)
   M src/TField.prg
     * method CheckForLinkedObjFieldSetAsVariant() made public
