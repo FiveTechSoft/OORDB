@@ -872,13 +872,16 @@ METHOD FUNCTION CheckDbStruct() CLASS TTable
             ELSEIF AField:FieldType = ftTable .AND. aDb[ n, 2 ] = "+"
                sResult += "Wrong type ('" + aDb[ n, 2 ] + "') on TFieldTable '" + AField:DBS_NAME + "', must be '" + dbsType + E"'\n"
                aDb[ n, 2 ] := dbsType
-            ELSEIF !aDb[ n, 2 ] == dbsType .AND. !( aDb[ n, 2 ] $ "+I" .AND. dbsType $ "+I" )
+            ELSEIF !aDb[ n, 2 ] == dbsType .AND. !( aDb[ n, 2 ] $ "+I" .AND. dbsType $ "I" )
                sResult += "Wrong type ('" + aDb[ n, 2 ] + "') on field '" + AField:DBS_NAME + "', must be '" + dbsType + E"'\n"
                aDb[ n, 2 ] := dbsType
                aDb[ n, 3 ] := dbsLen
                aDb[ n, 4 ] := dbsDec
             ELSEIF aDb[ n, 2 ] = "C" .AND. aDb[ n, 3 ] < dbsSize
                sResult += "Wrong len value (" + NTrim( aDb[ n, 3 ] ) + ") on 'C' field '" + AField:DBS_NAME + E"', must be " + NTrim( dbsLen ) + E"\n"
+               aDb[ n, 3 ] := dbsLen
+            ELSEIF aDb[ n, 2 ] $ "+I" .AND. ! aDb[ n, 3 ] = dbsLen
+               sResult += "Wrong len value (" + NTrim( aDb[ n, 3 ] ) + ") on '" + aDb[ n, 2 ] + "' field '" + AField:DBS_NAME + E"', must be " + NTrim( dbsLen ) + E"\n"
                aDb[ n, 3 ] := dbsLen
             ELSEIF aDb[ n, 2 ] = "N" .AND. ( !aDb[ n, 3 ] == dbsLen .OR. !aDb[ n, 4 ] == dbsDec )
                sResult += "Wrong len/dec values (" + NTrim( aDb[ n, 3 ] ) + "," + NTrim( aDb[ n, 4 ] ) + ") on 'N' field '" + AField:DBS_NAME + E"', must be " + NTrim( dbsLen ) + "," + NTrim( dbsDec ) + E"\n"

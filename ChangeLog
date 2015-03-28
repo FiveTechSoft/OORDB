@@ -2,6 +2,11 @@
  * $Id: ChangeLog 155 2013-06-06 03:29:32Z tfonrouge $
  */
 
+Sat Mar 28 23:20:18 UTC 2015 Teo Fonrouge (tfonrouge@gmail.com)
+  M src/TTable.prg
+    * allow to convert field types from 'I' to '+'
+    * check Len on types 'I', '+'
+
 Sat Mar 28 02:11:57 UTC 2015 Teo Fonrouge (tfonrouge@gmail.com)
   M src/TFieldDateTime.prg
     % simplified DiffSeconds
