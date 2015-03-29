@@ -151,6 +151,7 @@ METHOD FUNCTION GetAsString( format ) CLASS TTime
     LOCAL tkSep
     LOCAL itm
     LOCAL len
+    LOCAL asSecs := ::GetAsSeconds()
 
     IF Empty( format )
         format := ::FFormat
@@ -165,28 +166,28 @@ METHOD FUNCTION GetAsString( format ) CLASS TTime
         len := Max( 2, Len( itm ) )
         SWITCH Left( itm, 1 )
         CASE "H"
-            IF ::FHours < 0
+            IF asSecs < 0
                 s := Replicate( "*", len )
             ELSE
                 s := StrZero( ::FHours, len )
             ENDIF
             EXIT
         CASE "M"
-            IF ::FMinutes < 0
+            IF asSecs < 0
                 s := Replicate( "*", len )
             ELSE
                 s := StrZero( ::FMinutes, len )
             ENDIF
             EXIT
         CASE "S"
-            IF ::FSeconds < 0
+            IF asSecs < 0
                 s := Replicate( "*", len )
             ELSE
                 s := StrZero( Int( ::FSeconds ), len )
             ENDIF
             EXIT
         CASE "N"
-            IF ::FDecimals < 0
+            IF asSecs < 0
                 s := Replicate( "*", len )
             ELSE
                 s := SubStr( Trans( ::FDecimals, "." + Replicate( "9", len ) ), 2 )
