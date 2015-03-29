@@ -9,6 +9,7 @@ CLASS TTime
 
    PROTECTED:
    DATA FDays INIT 0
+   DATA FDecimals INIT 0.0
    DATA FHours INIT 0
    DATA FMinutes INIT 0
    DATA FSeconds INIT 0
@@ -35,6 +36,7 @@ CLASS TTime
    PROPERTY AsSeconds READ GetAsSeconds WRITE SetAsSeconds
    PROPERTY AsString READ GetAsString( ... ) WRITE SetAsString
    PROPERTY Days READ FDays
+   PROPERTY Decimals READ FDecimals
    PROPERTY Hours READ FHours
    PROPERTY Minutes READ FMinutes
    PROPERTY Seconds READ FSeconds
@@ -138,45 +140,68 @@ METHOD FUNCTION GetAsMinutes CLASS TTime
    RETURN ( ::FHours * 60 ) + ::FMinutes + ( ::FSeconds / 60 )
 
 METHOD FUNCTION GetAsSeconds CLASS TTime
-   RETURN ( ::FHours * 60 * 60 ) + ( ::FMinutes * 60 ) + ::FSeconds
+   RETURN ( ::FHours * 3600 ) + ( ::FMinutes * 60 ) + ::FSeconds
 
 METHOD FUNCTION GetAsString( format ) CLASS TTime
+    LOCAL asString := ""
+    LOCAL numToken
+    LOCAL i
+    LOCAL s
+    LOCAL tk
+    LOCAL tkSep
+    LOCAL itm
+    LOCAL len
 
-   LOCAL asString := ""
-   LOCAL numToken
-   LOCAL i
-   LOCAL s
-   LOCAL tk
-   LOCAL itm
+    IF Empty( format )
+        format := ::FFormat
+    ENDIF
 
-   IF Empty( format )
-      format := ::FFormat
-   ENDIF
+    numToken := NumToken( format, ":." )
 
-   numToken := NumToken( format, ":" )
+    FOR i := 1 TO numToken
+        tk := Token( format, ":.", i )
+        tkSep := ":"
+        itm := Upper( tk )
+        len := Max( 2, Len( itm ) )
+        SWITCH Left( itm, 1 )
+        CASE "H"
+            IF ::FHours < 0
+                s := Replicate( "*", len )
+            ELSE
+                s := StrZero( ::FHours, len )
+            ENDIF
+            EXIT
+        CASE "M"
+            IF ::FMinutes < 0
+                s := Replicate( "*", len )
+            ELSE
+                s := StrZero( ::FMinutes, len )
+            ENDIF
+            EXIT
+        CASE "S"
+            IF ::FSeconds < 0
+                s := Replicate( "*", len )
+            ELSE
+                s := StrZero( Int( ::FSeconds ), len )
+            ENDIF
+            EXIT
+        CASE "N"
+            IF ::FDecimals < 0
+                s := Replicate( "*", len )
+            ELSE
+                s := SubStr( Trans( ::FDecimals, "." + Replicate( "9", len ) ), 2 )
+            ENDIF
+            tkSep := "."
+            EXIT
+        OTHERWISE
+            s := NIL
+        ENDSWITCH
+        IF s != NIL
+            asString += iif( i = 1, "", tkSep ) + s
+        ENDIF
+    NEXT
 
-   FOR i := 1 TO numToken
-      tk := Token( format, ":", i )
-      itm := Upper( tk )
-      SWITCH Left( itm, 1 )
-      CASE "H"
-         s := LTrim( Str( ::FHours, 0 ) )
-         EXIT
-      CASE "M"
-         s := LTrim( Str( ::FMinutes, 0 ) )
-         EXIT
-      CASE "S"
-         s := LTrim( Str( ::FSeconds, 0 ) )
-         EXIT
-      ENDSWITCH
-      s := PadL( s, Max( 2, Len( itm ) ), "0" )
-      asString += s
-      IF i < numToken
-         asString += ":"
-      ENDIF
-   NEXT
-
-   RETURN asString
+    RETURN asString
 
 /*
     Op_Add : ~ Format after "99:59:59" will return wrong string
@@ -232,27 +257,32 @@ METHOD Op_Mult( timeToMult ) CLASS TTime
 
 METHOD PROCEDURE SetAsDays( days ) CLASS TTime
 
-   ::SetAsMinutes( ( days / 24 ) * 60 )
+   ::SetAsSeconds( days * 86400 )
 
    RETURN
 
 METHOD PROCEDURE SetAsHours( hours ) CLASS TTime
 
-   ::SetAsMinutes( hours * 60 )
+   ::SetAsSeconds( hours * 3600 )
 
    RETURN
 
 METHOD PROCEDURE SetAsMinutes( minutes ) CLASS TTime
 
-   ::FHours := Int( minutes / 60 )
-   ::FMinutes := Int( minutes % 60 )
-   ::FSeconds := Int( ( minutes - Int( minutes ) ) * 60 )
+    ::SetAsSeconds( minutes * 60 )
 
    RETURN
 
 METHOD PROCEDURE SetAsSeconds( seconds ) CLASS TTime
 
-   ::SetAsMinutes( seconds / 60 )
+    ::FHours := Int( seconds / 3600 )
+    ::FMinutes := Int( ( seconds % 3600 ) / 60 )
+    ::FSeconds := seconds % 60
+    IF seconds < 0
+        ::FDecimals := - ( seconds - Int( seconds ) )
+    ELSE
+        ::FDecimals := seconds - Int( seconds )
+    ENDIF
 
    RETURN
 
@@ -264,24 +294,26 @@ METHOD PROCEDURE SetAsString( time ) CLASS TTime
    LOCAL h, m, s
    LOCAL changed
    LOCAL fail
-   LOCAL bh, bm, bs
+   LOCAL bh, bm, bs, bd
 
    IF !Empty( time )
-      numToken := NumToken( time, ":" )
-      IF numToken > 0 // = NumToken( ::FFormat, ":" )
+      numToken := NumToken( time, ":." )
+      IF numToken > 0
          bh := ::FHours
          bm := ::FMinutes
          bs := ::FSeconds
+         bd := ::FDecimals
          ::FHours := 0
          ::FMinutes := 0
          ::FSeconds := 0
+         ::FDecimals := 0.0
          changed := .F.
          fail := .F.
          FOR i := 1 TO numToken
-            tk := Token( ::FFormat, ":", i )
+            tk := Token( ::FFormat, ":.", i )
             SWITCH Upper( Left( tk, 1 ) )
             CASE "H"
-               h := Val( Token( time, ":", i ) )
+               h := Val( Token( time, ":.", i ) )
                IF h >= 0 .AND. h < 24
                   ::FHours := h
                   changed := .T.
@@ -290,7 +322,7 @@ METHOD PROCEDURE SetAsString( time ) CLASS TTime
                ENDIF
                EXIT
             CASE "M"
-               m := Val( Token( time, ":", i ) )
+               m := Val( Token( time, ":.", i ) )
                IF m >= 0 .AND. m < 60
                   ::FMinutes := m
                   changed := .T.
@@ -299,9 +331,18 @@ METHOD PROCEDURE SetAsString( time ) CLASS TTime
                ENDIF
                EXIT
             CASE "S"
-               s := Val( Token( time, ":", i ) )
+               s := Val( Token( time, ":.", i ) )
                IF s >= 0 .AND. s < 60
                   ::FSeconds := s
+                  changed := .T.
+               ELSE
+                  fail := .T.
+               ENDIF
+               EXIT
+            CASE "N"
+               s := Val( "0." + Token( time, ":.", i ) )
+               IF s != ::FDecimals
+                  ::FDecimals := s
                   changed := .T.
                ELSE
                   fail := .T.
@@ -313,6 +354,7 @@ METHOD PROCEDURE SetAsString( time ) CLASS TTime
             ::FHours := bh
             ::FMinutes := bm
             ::FSeconds := bs
+            ::FDecimals := bd
          ENDIF
       ENDIF
    ENDIF

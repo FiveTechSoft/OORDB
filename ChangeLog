@@ -2,6 +2,11 @@
  * $Id: ChangeLog 155 2013-06-06 03:29:32Z tfonrouge $
  */
 
+Sun Mar 29 21:10:00 UTC 2015 Teo Fonrouge (tfonrouge@gmail.com)
+  M src/TTime.prg
+    % added "D" to time mask -> secs/n:
+      ; time:AsSeconds := Seconds()
+
 Sat Mar 28 23:20:18 UTC 2015 Teo Fonrouge (tfonrouge@gmail.com)
   M src/TTable.prg
     * allow to convert field types from 'I' to '+'
