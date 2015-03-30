@@ -176,7 +176,12 @@ RETURN
 METHOD FUNCTION TranslateToFieldValue( value ) CLASS TFieldTime
     SWITCH ValType( value )
     CASE "N"
-        RETURN Int( value )
+        SWITCH ::FDBS_TYPE
+        CASE "I"
+            RETURN Int( value )
+        CASE "B"
+            RETURN value
+        ENDSWITCH
     CASE "O"
         RETURN value:AsSeconds
     ENDSWITCH

@@ -2,6 +2,10 @@
  * $Id: ChangeLog 155 2013-06-06 03:29:32Z tfonrouge $
  */
 
+Mon Mar 30 07:52:21 UTC 2015 Teo Fonrouge (tfonrouge@gmail.com)
+  M src/TFieldTime.prg
+    ! Int() to 'I' field type
+
 Mon Mar 30 07:12:58 UTC 2015 Teo Fonrouge (tfonrouge@gmail.com)
   M include/oordb.ch
     + new field type:
