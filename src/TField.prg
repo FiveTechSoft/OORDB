@@ -111,6 +111,7 @@ CLASS TField FROM OORDBBASE
    METHOD SetBuffer( value )
    METHOD SetDBS_DEC( dec ) INLINE ::FDBS_DEC := dec
    METHOD SetDBS_LEN( dbs_Len ) INLINE ::FDBS_LEN := dbs_Len
+   METHOD SetDBS_TYPE( dbs_Type ) INLINE ::FDBS_TYPE := dbs_Type
    METHOD SetCloneData( cloneData )
    METHOD SetDefaultNewValue( index, value )
    METHOD SetEditable( editable ) INLINE ::FEditable := editable
@@ -237,7 +238,7 @@ CLASS TField FROM OORDBBASE
    PROPERTY DBS_DEC READ FDBS_DEC WRITE SetDBS_DEC
    PROPERTY DBS_LEN READ GetDBS_LEN WRITE SetDBS_LEN
    PROPERTY DBS_NAME READ FDBS_NAME
-   PROPERTY DBS_TYPE READ GetDBS_TYPE
+   PROPERTY DBS_TYPE READ GetDBS_TYPE WRITE SetDBS_TYPE
    PROPERTY DefaultValue INDEX 1 READ GetDefaultNewValue WRITE SetDefaultNewValue
    PROPERTY Description READ FDescription WRITE SetDescription
    PROPERTY Editable READ GetEditable WRITE SetEditable

@@ -2,6 +2,18 @@
  * $Id: ChangeLog 155 2013-06-06 03:29:32Z tfonrouge $
  */
 
+Mon Mar 30 07:12:58 UTC 2015 Teo Fonrouge (tfonrouge@gmail.com)
+  M include/oordb.ch
+    + new field type:
+      + HTIME : time using a float field
+    + clause FTYPE to set DBS_TYPE
+
+  M src/TField.prg
+    * write method to property DBS_TYPE
+
+  M src/TFieldTime.prg
+    % index expression per field DBS_TYPE
+
 Sun Mar 29 23:03:53 UTC 2015 Teo Fonrouge (tfonrouge@gmail.com)
   M src/TTime.prg
     ! show invalid string on negative seconds

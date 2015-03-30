@@ -79,6 +79,11 @@
                         ADD [<clauses0>] _TIME FIELD <xFieldMethod> [<clauses1>] FORMAT <timeFormat> [<clauses2>]
 #xtranslate TField_Time => TFieldTime
 
+/* HTIME fields (float type based time) */
+#xtranslate ADD [<clauses0,...>] HTIME FIELD <xFieldMethod> [<clauses1,...>] ;
+                        => ;
+                        ADD [<clauses0>] TIME FIELD <xFieldMethod> FTYPE "B" LEN 8 DEC 2 [<clauses1>]
+
 /* To REQUIRE SIZE in TFieldString */
 #xtranslate ADD [<clauses0,...>] STRING FIELD <xFieldMethod> [<clauses1,...>] SIZE <nsize> [<clauses2,...>] ;
                         => ;
@@ -110,6 +115,7 @@
                         [ DESCRIPTION <cDesc> ] ;
                         [ SIZE <nSize> ] ;
                         [ FORMAT <timeFormat> ] ;
+                        [ FTYPE <fType> ] ;
                         [ LEN <nLen> ] ;
                         [ DEC <nDec> ] ;
                         [ PICTURE <pict> ] ;
@@ -155,6 +161,7 @@
                             [ :Required := <.rq.> ] ;;
                             [ :Group := <cGroup> ] ;;
                             [ :Description := <cDesc> ] ;;
+                            [ :DBS_TYPE := <fType> ] ;;
                             [ :DBS_LEN := <nLen> ] ;;
                             [ :DBS_DEC := <nDec> ] ;;
                             [ :Picture := <pict> ] ;;

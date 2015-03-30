@@ -16,7 +16,6 @@ PROTECTED:
     DATA FDBS_DEC INIT 0
     DATA FDBS_TYPE INIT "I"
     DATA FFieldType INIT ftTime
-    DATA FSize INIT 4
     DATA FTimeFormat    INIT "HH:MM:SS"
     DATA FType INIT "Time"
     DATA FtypeNameList INIT hb_hSetCaseMatch( {"es"=>"Tiempo"} )
@@ -132,14 +131,20 @@ RETURN n
 */
 METHOD FUNCTION IndexExpression( fieldName ) CLASS TFieldTime
 
-   IF ::FIndexExpression != NIL
-      RETURN ::FIndexExpression
-   ENDIF
-   IF fieldName = NIL
-      fieldName := ::FFieldExpression
-   ENDIF
+    IF ::FIndexExpression != NIL
+        RETURN ::FIndexExpression
+    ENDIF
+    IF fieldName = NIL
+        fieldName := ::FFieldExpression
+    ENDIF
 
-   RETURN "HB_NumToHex(" + fieldName + ",8)"
+    IF ::FDBS_TYPE = "B"
+        RETURN "StrZero(" + fieldName + "," +  HB_NToS( ::FDBS_LEN ) + "," + HB_NToS( ::FDBS_DEC ) + ")"
+    ENDIF
+
+RETURN "HB_NumToHex(" + fieldName + ",8)"
+
+
 
 /*
     SetAsVariant
