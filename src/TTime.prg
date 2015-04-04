@@ -152,6 +152,9 @@ METHOD FUNCTION GetAsString( format ) CLASS TTime
     LOCAL itm
     LOCAL len
     LOCAL asSecs := ::GetAsSeconds()
+    LOCAL newSeconds
+    LOCAL FHours, FMinutes, FSeconds, FDecimals
+    LOCAL maskLen := 0
 
     IF Empty( format )
         format := ::FFormat
@@ -163,7 +166,7 @@ METHOD FUNCTION GetAsString( format ) CLASS TTime
         tk := Token( format, ":.", i )
         tkSep := ":"
         itm := Upper( tk )
-        len := Max( 2, Len( itm ) )
+        len := Len( itm )
         SWITCH Left( itm, 1 )
         CASE "H"
             IF asSecs < 0
@@ -187,11 +190,13 @@ METHOD FUNCTION GetAsString( format ) CLASS TTime
             ENDIF
             EXIT
         CASE "N"
+            maskLen := len
             IF asSecs < 0
                 s := Replicate( "*", len )
             ELSE
                 IF ( s := SubStr( Trans( ::FDecimals, "." + Replicate( "9", len ) ), 2 ) ) = "*"
-                    s := Replicate( "9", len )
+                    newSeconds := Round( asSecs, maskLen )
+                    EXIT
                 ENDIF
             ENDIF
             tkSep := "."
@@ -203,6 +208,19 @@ METHOD FUNCTION GetAsString( format ) CLASS TTime
             asString += iif( i = 1, "", tkSep ) + s
         ENDIF
     NEXT
+
+    IF newSeconds != NIL .OR. maskLen = 0 .AND. ::FDecimals > 0 .AND. Int( asSecs ) != Int( newSeconds := Round( asSecs, maskLen ) )
+        FHours := ::FHours
+        FMinutes := ::FMinutes
+        FSeconds := ::FSeconds
+        FDecimals := ::FDecimals
+        ::SetAsSeconds( newSeconds )
+        asString := ::GetAsString()
+        ::FHours := FHours
+        ::FMinutes := FMinutes
+        ::FSeconds := FSeconds
+        ::FDecimals := FDecimals
+    ENDIF
 
     RETURN asString
 
@@ -336,7 +354,7 @@ METHOD PROCEDURE SetAsString( time ) CLASS TTime
             CASE "S"
                s := Val( Token( time, ":.", i ) )
                IF s >= 0 .AND. s < 60
-                  ::FSeconds := s
+                  ::FSeconds += s
                   changed := .T.
                ELSE
                   fail := .T.
@@ -345,6 +363,7 @@ METHOD PROCEDURE SetAsString( time ) CLASS TTime
             CASE "N"
                s := Val( "0." + Token( time, ":.", i ) )
                IF s != ::FDecimals
+                  ::FSeconds += s
                   ::FDecimals := s
                   changed := .T.
                ELSE

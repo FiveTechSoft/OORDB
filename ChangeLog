@@ -2,6 +2,11 @@
  * $Id: ChangeLog 155 2013-06-06 03:29:32Z tfonrouge $
  */
 
+Sat Apr  4 18:38:40 UTC 2015 Teo Fonrouge (tfonrouge@gmail.com)
+  M src/TTime.prg
+    % improved rounding on format time
+    ! SetAsString with decimals
+
 Sat Apr  4 03:32:56 UTC 2015 Teo Fonrouge (tfonrouge@gmail.com)
   M src/TTime.prg
     ! fixed overrun when rounding decimals gives an integer ( 0.997, ".99" ), just trimming result to "9"
