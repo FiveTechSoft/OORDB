@@ -190,7 +190,9 @@ METHOD FUNCTION GetAsString( format ) CLASS TTime
             IF asSecs < 0
                 s := Replicate( "*", len )
             ELSE
-                s := SubStr( Trans( ::FDecimals, "." + Replicate( "9", len ) ), 2 )
+                IF ( s := SubStr( Trans( ::FDecimals, "." + Replicate( "9", len ) ), 2 ) ) = "*"
+                    s := Replicate( "9", len )
+                ENDIF
             ENDIF
             tkSep := "."
             EXIT
