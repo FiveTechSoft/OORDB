@@ -734,6 +734,7 @@ METHOD FUNCTION BuildFieldBlockFromFieldExpression( fieldExp, returnMode, field,
    LOCAL table
    LOCAL fldName
    LOCAL block
+   LOCAL lAsDisplay
 
    fieldExp := AllTrim( fieldExp )
 
@@ -743,7 +744,12 @@ METHOD FUNCTION BuildFieldBlockFromFieldExpression( fieldExp, returnMode, field,
 
    FOR i := 1 TO nTokens
       fldName := Token( fieldExp, ":", i )
-      field := table:FieldByName( fldName, @index )
+      IF ( field := table:FieldByName( fldName, @index ) ) = NIL .AND. i = nTokens .AND. Upper( Right( fldName, 10 ) ) == "_ASDISPLAY"
+         field := table:FieldByName( Left( fldName, Len( fldName ) - 10 ), @index )
+         lAsDisplay := field != NIL
+      ELSE
+         lAsDisplay := .F.
+      ENDIF
       IF field != NIL
          IF i = 1
             s := "::FieldList[" + NTrim( index ) + "]"
@@ -763,10 +769,14 @@ METHOD FUNCTION BuildFieldBlockFromFieldExpression( fieldExp, returnMode, field,
    NEXT
 
    BEGIN SEQUENCE WITH {| oErr| Break( oErr ) }
-      IF Empty( returnMode ) // returns the TField object
-         block := &( "{|Self|" + s + "}" )
+      IF lAsDisplay
+         block := &( "{|Self|" + s + ":AsDisplay}" )
       ELSE
-         block := &( "{|Self|" + s + ":" + returnMode + "}" )
+         IF Empty( returnMode ) // returns the TField object
+            block := &( "{|Self|" + s + "}" )
+         ELSE
+            block := &( "{|Self|" + s + ":" + returnMode + "}" )
+         ENDIF
       ENDIF
    RECOVER
       block := NIL

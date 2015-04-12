@@ -2,6 +2,10 @@
  * $Id: ChangeLog 155 2013-06-06 03:29:32Z tfonrouge $
  */
 
+Sun Apr 12 21:41:42 UTC 2015 Teo Fonrouge (tfonrouge@gmail.com)
+  M src/TTable.prg
+    % Detect field expressions which contains '_AsDisplay'
+
 Sat Apr  4 18:38:40 UTC 2015 Teo Fonrouge (tfonrouge@gmail.com)
   M src/TTime.prg
     % improved rounding on format time
