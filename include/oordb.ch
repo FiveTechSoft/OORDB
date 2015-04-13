@@ -31,6 +31,7 @@
 #define ftAutoInc   5
 #define ftArray     6
 #define ftHash      7
+#define ftRowVer    8
 
 
 /* Events for TTable */
@@ -102,7 +103,7 @@
                         ADD [<clauses0>] _TABLE FIELD <xFieldMethod> [<clauses1>] CLASS <objClass> [<clauses2>]
 #xtranslate TField_Table => TFieldTable
 
-#xtranslate ADD [<calc: CALCULATED>] <type: _STRING, MEMO, _NUMERIC, FLOAT, INTEGER, AUTOINC, LOGICAL, _TIME, DATE, DATETIME, MODTIME, _TABLE, VARIANT, ARRAY, HASH> FIELD [<xFieldMethod>] ;
+#xtranslate ADD [<calc: CALCULATED>] <type: _STRING, MEMO, _NUMERIC, FLOAT, INTEGER, AUTOINC, ROWVER, LOGICAL, _TIME, DATE, DATETIME, MODTIME, _TABLE, VARIANT, ARRAY, HASH> FIELD [<xFieldMethod>] ;
                         [ NAME <cName> ] ;
                         [ LABEL <label> ] ;
                         [ <ro: READONLY> ] ;
