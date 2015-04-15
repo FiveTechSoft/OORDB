@@ -2,6 +2,10 @@
  * $Id: ChangeLog 155 2013-06-06 03:29:32Z tfonrouge $
  */
 
+Wed Apr 15 16:09:57 UTC 2015 Teo Fonrouge (tfonrouge@gmail.com)
+  M src/TFieldTable.prg
+    ! fixed changing LinkedObjField
+
 Mon Apr 13 23:23:34 UTC 2015 Teo Fonrouge (tfonrouge@gmail.com)
   M include/oordb.ch
   A src/TFieldRowVer.prg

@@ -222,7 +222,11 @@ METHOD FUNCTION DataObj CLASS TFieldTable
                   IF linkedTable:InsideScope()
                      // linkedTable:GetCurrentRecord()
                   ELSE
+                     /* to don't attempt to write into a LinkedObjField */
+                     linkedObjField := linkedTable:LinkedObjField
+                     linkedTable:LinkedObjField := NIL
                      linkedTable:dbGoTop()
+                     linkedTable:LinkedObjField := linkedObjField
                   ENDIF
                   ::FMasterKeyVal := linkedTable:MasterSource:BaseKeyField:KeyVal
                ENDIF
