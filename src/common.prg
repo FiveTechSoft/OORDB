@@ -4,6 +4,8 @@
 
 STATIC BaseArray := "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ"
 
+THREAD STATIC __S_UI_ALERT_DELAY
+
 /*
     __ClsInstName
 */
@@ -357,6 +359,16 @@ FUNCTION N2Base( nVal, nBase, l, cFill )
 
    RETURN iif( Len( sBase ) > l, Replicate( "*", l ), PadL( sBase, l, cFill ) )
 
+
+FUNCTION SET_UI_ALERT_DELAY( delay )
+    LOCAL ret := __S_UI_ALERT_DELAY
+
+    IF PCount() > 0
+        __S_UI_ALERT_DELAY := delay
+    ENDIF
+
+RETURN ret
+
 /*
     SToJ
 */
@@ -496,7 +508,7 @@ FUNCTION ui_ShowError( errObj )
    LOCAL result
 
    IF .T. // Empty(__DynSN2Sym("wxhShowError"))
-      result := Alert( errObj:Description )
+      result := hb_Alert( errObj:Description, NIL, NIL, SET_UI_ALERT_DELAY() )
    ELSE
       result := __dynsN2Sym( "wxhShowError" ):Exec( NIL,, errObj )
    ENDIF
@@ -506,14 +518,16 @@ FUNCTION ui_ShowError( errObj )
 /*
     ui_Alert
 */
-FUNCTION ui_Alert( msgWarn )
+FUNCTION ui_Alert( ... )
 
    LOCAL result
+   LOCAL a
 
    IF .T. // Empty(__DynSN2Sym("wxhAlert"))
-      result := Alert( msgWarn )
+      a := ASize( hb_aParams(), 3 )
+      result := hb_Alert( a[ 1 ], a[ 2 ], a[ 3 ], SET_UI_ALERT_DELAY() )
    ELSE
-      result := __dynsN2Sym( "wxhAlert" ):Exec( msgWarn )
+      result := __dynsN2Sym( "wxhAlert" ):Exec( ... )
    ENDIF
 
    RETURN result
@@ -526,7 +540,7 @@ FUNCTION ui_AlertYesNo( msgWarn )
    LOCAL result
 
    IF .T. // Empty(__DynSN2Sym("wxhAlertYesNo"))
-      result := Alert( msgWarn, { "Yes", "No" } )
+      result := hb_Alert( msgWarn, { "Yes", "No" }, NIL, SET_UI_ALERT_DELAY() )
    ELSE
       result := __dynsN2Sym( "wxhAlertYesNo" ):Exec( msgWarn )
    ENDIF

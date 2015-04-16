@@ -2,6 +2,11 @@
  * $Id: ChangeLog 155 2013-06-06 03:29:32Z tfonrouge $
  */
 
+Thu Apr 16 21:33:23 UTC 2015 Teo Fonrouge (tfonrouge@gmail.com)
+  M src/common.prg
+    + SET_UI_ALERT_DELAY( nDelay | NIL )
+    * using hb_Alert to use delay
+
 Wed Apr 15 16:09:57 UTC 2015 Teo Fonrouge (tfonrouge@gmail.com)
   M src/TFieldTable.prg
     ! fixed changing LinkedObjField
