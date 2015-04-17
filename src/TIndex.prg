@@ -23,6 +23,7 @@ CLASS TIndex FROM OORDBBASE
    DATA FDbFilter
    DATA FDbFilterStack INIT {}
    DATA FForKey
+   DATA FForKeyBlock
    DATA FKeyField
    DATA FName
    DATA FMasterKeyField
@@ -46,7 +47,16 @@ CLASS TIndex FROM OORDBBASE
    METHOD SetCustom( Custom )
    METHOD SetDescend( Descend ) INLINE ::FDescend := Descend
    METHOD SetField( nIndex, XField )
-   METHOD SetForKey( ForKey ) INLINE ::FForKey := ForKey
+   METHOD SetForKey( ForKey ) BLOCK ;
+        {|Self,ForKey|
+            IF Empty( ForKey )
+                ::FForKeyBlock := NIL
+            ELSE
+                ::FForKeyBlock := &("{||" + ForKey + "}")
+            ENDIF
+            ::FForKey := ForKey
+            RETURN ForKey
+        }
    METHOD SetIdxAlias( alias )
    METHOD SetRightJustified( rightJust ) INLINE ::FRightJustified := rightJust
    METHOD SetScope( value )
@@ -285,7 +295,9 @@ METHOD PROCEDURE CustomKeyUpdate CLASS TIndex
 
    IF ::FCustom
       WHILE ::FTable:Alias:ordKeyDel( ::FTagName ) ; ENDDO
-      ::FTable:Alias:ordKeyAdd( ::FTagName, , ::CustomKeyExpValue() )
+      IF Empty( ::FForKeyBlock ) .OR. ::FTable:Alias:Eval( ::FForKeyBlock )
+         ::FTable:Alias:ordKeyAdd( ::FTagName, , ::CustomKeyExpValue() )
+      ENDIF
    ENDIF
 
    RETURN

@@ -2,6 +2,10 @@
  * $Id: ChangeLog 155 2013-06-06 03:29:32Z tfonrouge $
  */
 
+Fri Apr 17 03:30:56 UTC 2015 Teo Fonrouge (tfonrouge@gmail.com)
+  M src/TIndex.prg
+    % evaluate FOR condition on custom indexes
+
 Thu Apr 16 21:33:23 UTC 2015 Teo Fonrouge (tfonrouge@gmail.com)
   M src/common.prg
     + SET_UI_ALERT_DELAY( nDelay | NIL )
