@@ -359,13 +359,3 @@
         NIL, ;
         <.temporary.> ) ;;
     OrdCreate( [<bagName>], <ordName>, <expKey>, <expKey>, <.unique.> )
-
-/*
-    NTrim
-*/
-#ifndef NTrim
-#define NTrim( n ) ;
-                LTrim( Str( n ) )
-#endif
-
-#endif
