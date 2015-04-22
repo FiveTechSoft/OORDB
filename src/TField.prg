@@ -101,7 +101,6 @@ CLASS TField FROM OORDBBASE
    METHOD GetEmptyValue BLOCK {|| NIL }
    METHOD GetFieldArray()
    METHOD GetFieldReadBlock()
-   METHOD GetIsKeyIndex INLINE ::KeyIndex != NIL
    METHOD GetKeyIndex()
    METHOD GetLabel INLINE iif( ::FLabel == NIL, ::FName, ::FLabel )
    METHOD GetLinkedTable() INLINE NIL
@@ -206,7 +205,7 @@ CLASS TField FROM OORDBBASE
    PROPERTY LinkedTable READ GetLinkedTable
    PROPERTY ReUseField READ FReUseField WRITE SetReUseField
    PROPERTY ReUseFieldIndex READ FReUseFieldIndex
-   PROPERTY IsKeyIndex READ GetIsKeyIndex
+   PROPERTY IsKeyIndex READ KeyIndex != NIL
    PROPERTY IsMasterFieldComponent READ FIsMasterFieldComponent WRITE SetIsMasterFieldComponent
    PROPERTY IsPrimaryKeyField READ GetIsPrimaryKeyField
    PROPERTY RawDefaultValue READ FDefaultValue
@@ -1109,78 +1108,83 @@ RETURN
     SetAsVariant
 */
 METHOD FUNCTION SetAsVariant( value ) CLASS TField
+    LOCAL oldState
 
-   LOCAL oldState
+    IF ::FTable:isMetaTable
+        ::FTable:isMetaTable := .F.
+    ENDIF
 
-   IF ::FTable:isMetaTable
-      ::FTable:isMetaTable := .F.
-   ENDIF
+    IF ::IsReadOnly .OR. ::FTable:State = dsInactive .OR. !::Enabled
+        RETURN value
+    ENDIF
 
-   IF ::IsReadOnly .OR. ::FTable:State = dsInactive .OR. !::Enabled
-      RETURN value
-   ENDIF
+    IF ::FOnSetValue == NIL
+        ::FOnSetValue := __objHasMsg( ::FTable, "OnSetValue_Field_" + ::FName )
+    ENDIF
 
-   IF ::FOnSetValue == NIL
-      ::FOnSetValue := __objHasMsg( ::FTable, "OnSetValue_Field_" + ::FName )
-   ENDIF
+    IF ::FOnSetValue
+        __objSendMsg( ::FTable, "OnSetValue_Field_" + ::Name, @value )
+    ENDIF
 
-   IF ::FOnSetValue
-      __objSendMsg( ::FTable, "OnSetValue_Field_" + ::Name, @value )
-   ENDIF
+    IF ::FCalculated
+        IF ::FFieldWriteBlock != NIL
+            IF ::FOnEvalFieldWriteBlock = NIL
+                ::FOnEvalFieldWriteBlock := .T.
+                ::FTable:Alias:Eval( ::FFieldWriteBlock, ::FTable, value )
+                ::FOnEvalFieldWriteBlock := NIL
+            ENDIF
+        ELSE
+            IF ::KeyIndex != NIL
+                ::SetKeyVal( value )
+            ENDIF
+        ENDIF
+    ELSE
+        IF ( ::FTable:LinkedObjField = NIL .OR. ::FTable:LinkedObjField:Table:State = dsBrowse ) .AND. ::FTable:State = dsBrowse .AND. ::FTable:autoEdit
+            oldState := ::FTable:State
+            ::FTable:Edit()
+        ENDIF
 
-   IF ::FCalculated
-      IF ::FFieldWriteBlock != NIL .AND. ::FOnEvalFieldWriteBlock = NIL
-         ::FOnEvalFieldWriteBlock := .T.
-         ::FTable:Alias:Eval( ::FFieldWriteBlock, ::FTable, value )
-         ::FOnEvalFieldWriteBlock := NIL
-      ENDIF
-      RETURN value
-   ENDIF
+        SWITCH ::FTable:State
+        CASE dsBrowse
 
-   IF ( ::FTable:LinkedObjField = NIL .OR. ::FTable:LinkedObjField:Table:State = dsBrowse ) .AND. ::FTable:State = dsBrowse .AND. ::FTable:autoEdit
-      oldState := ::FTable:State
-      ::FTable:Edit()
-   ENDIF
+            ::SetKeyVal( value )
 
-   SWITCH ::FTable:State
-   CASE dsBrowse
+            EXIT
 
-      ::SetKeyVal( value )
+        CASE dsEdit
+        CASE dsInsert
 
-      EXIT
+            SWITCH ::FFieldMethodType
+            CASE "A"
 
-   CASE dsEdit
-   CASE dsInsert
+                RAISE TFIELD ::Name ERROR "Trying to assign a value to a compound TField."
 
-      SWITCH ::FFieldMethodType
-      CASE "A"
+                EXIT
 
-         RAISE TFIELD ::Name ERROR "Trying to assign a value to a compound TField."
+            CASE "C"
 
-         EXIT
+                /* Check if we are really changing values here */
+                IF !::GetBuffer() == ::TranslateToFieldValue( value )
+                    ::SetData( value )
+                ENDIF
 
-      CASE "C"
+            ENDSWITCH
 
-         /* Check if we are really changing values here */
-         IF !::GetBuffer() == ::TranslateToFieldValue( value )
-            ::SetData( value )
-         ENDIF
+            EXIT
 
-      ENDSWITCH
+        OTHERWISE
 
-      EXIT
+            RAISE TFIELD ::Name ERROR "Table not in Edit or Insert or Reading mode"
 
-   OTHERWISE
+        ENDSWITCH
 
-      RAISE TFIELD ::Name ERROR "Table not in Edit or Insert or Reading mode"
+        IF oldState != NIL
+            ::FTable:Post()
+        ENDIF
 
-   ENDSWITCH
+    ENDIF
 
-   IF oldState != NIL
-      ::FTable:Post()
-   ENDIF
-
-   RETURN value
+RETURN value
 
 /*
     SetBuffer
