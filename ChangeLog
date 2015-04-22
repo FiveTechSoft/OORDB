@@ -2,6 +2,13 @@
  * $Id: ChangeLog 155 2013-06-06 03:29:32Z tfonrouge $
  */
 
+Wed Apr 22 02:18:05 UTC 2015 Teo Fonrouge (tfonrouge@gmail.com)
+  M include/oordb.ch
+    + clause USE INDEX <indexName> : to link a index to the field
+
+  M src/TField.prg
+    + data FuseIndexName to override index attached to field    
+
 Fri Apr 17 03:30:56 UTC 2015 Teo Fonrouge (tfonrouge@gmail.com)
   M src/TIndex.prg
     % evaluate FOR condition on custom indexes

@@ -84,6 +84,7 @@ CLASS TField FROM OORDBBASE
    DATA FTableBaseClass
    DATA FType INIT "TField"
    DATA FtypeNameList
+   DATA FuseIndexName
    DATA FUsingField      // Field used on Calculated Field
    DATA FValidValues
    DATA FValType INIT "U"
@@ -165,6 +166,7 @@ CLASS TField FROM OORDBBASE
    METHOD SetIndexExpression( indexExpression ) INLINE ::FIndexExpression := indexExpression
    METHOD SetKeyVal( keyVal, lSoftSeek )
    METHOD SetKeyValBlock( keyValBlock ) INLINE ::FOnSetKeyValBlock := keyValBlock
+   METHOD SetUseIndexName( useIndexName )
    METHOD SetValidValues( validValues, ignoreUndetermined )
    METHOD Validate( showAlert ) INLINE ::ValidateResult( showAlert ) = NIL
    METHOD ValidateResult( showAlert, value ) BLOCK ;
@@ -836,15 +838,19 @@ METHOD FUNCTION GetFieldReadBlock() CLASS TField
 */
 METHOD FUNCTION GetKeyIndex() CLASS TField
 
-    IF ::FPrimaryKeyIndex != NIL
-        RETURN ::FPrimaryKeyIndex
+    IF ::FuseIndexName = NIL
+        IF ::FPrimaryKeyIndex != NIL
+            RETURN ::FPrimaryKeyIndex
+        ENDIF
+        IF Len( ::FIndexKeyList ) > 0
+            RETURN ::FIndexKeyList[ 1 ]
+        ENDIF
+    ELSE
+        RETURN ::FTable:IndexByName( ::FuseIndexName )
     ENDIF
 
-   IF Len( ::FIndexKeyList ) > 0
-      RETURN ::FIndexKeyList[ 1 ]
-   ENDIF
 
-   RETURN NIL
+RETURN NIL
 
 /*
     GetKeyVal
@@ -1577,39 +1583,39 @@ METHOD PROCEDURE SetIsMasterFieldComponent( IsMasterFieldComponent ) CLASS TFiel
 */
 METHOD FUNCTION SetKeyVal( keyVal, lSoftSeek ) CLASS TField
 
-   IF !::FTable:OnActiveSetKeyVal()
+    IF !::FTable:OnActiveSetKeyVal()
 
-      ::FTable:OnActiveSetKeyVal( .T. )
+        ::FTable:OnActiveSetKeyVal( .T. )
 
-      IF ::IsKeyIndex
+        IF ::IsKeyIndex
 
-         IF ::OnSearch != NIL
-            ::OnSearch:Eval( Self )
-         ENDIF
-
-         IF !Empty( keyVal )
-            keyVal := ::GetKeyVal( keyVal, ::KeyIndex:KeyFlags )
-            IF ::FTable:Eof() .OR. ! ::KeyIndex:KeyVal == keyVal
-               ::OnSetKeyVal( ::KeyIndex:Seek( keyVal, lSoftSeek ), keyVal )
+            IF ::OnSearch != NIL
+                ::OnSearch:Eval( Self )
             ENDIF
-         ELSE
-            ::FTable:dbGoto( 0 )
-            ::OnSetKeyVal( .F., keyVal )
-         ENDIF
 
-         ::CheckForLinkedObjFieldSetAsVariant( ::FTable:BaseKeyField:GetAsVariant() )
+            IF !Empty( keyVal )
+                keyVal := ::GetKeyVal( keyVal, ::KeyIndex:KeyFlags )
+                IF ::FTable:Eof() .OR. ! ::KeyIndex:KeyVal == keyVal
+                    ::OnSetKeyVal( ::KeyIndex:Seek( keyVal, lSoftSeek ), keyVal )
+                ENDIF
+            ELSE
+                ::FTable:dbGoto( 0 )
+                ::OnSetKeyVal( .F., keyVal )
+            ENDIF
 
-      ELSE
+            ::CheckForLinkedObjFieldSetAsVariant( ::FTable:BaseKeyField:GetAsVariant() )
 
-         SHOW WARN "Field '" + ::Name + "' has no Index in the '" + ::FTable:ClassName() + "' Table..."
+        ELSE
 
-      ENDIF
+            SHOW WARN "Field '" + ::Name + "' has no Index in the '" + ::FTable:ClassName() + "' Table..."
 
-      ::FTable:OnActiveSetKeyVal( .F. )
+        ENDIF
 
-   ENDIF
+        ::FTable:OnActiveSetKeyVal( .F. )
 
-   RETURN !::FTable:Eof
+    ENDIF
+
+RETURN !::FTable:Eof
 
 /*
     SetName
@@ -1647,6 +1653,13 @@ METHOD PROCEDURE SetPrimaryKeyComponent( PrimaryKeyComponent ) CLASS TField
    ENDSWITCH
 
    RETURN
+
+/*
+    SetUseIndexName
+*/
+METHOD PROCEDURE SetUseIndexName( useIndexName ) CLASS TField
+    ::FuseIndexName := useIndexName
+RETURN
 
 /*
     SetUsingField
