@@ -2,6 +2,11 @@
  * $Id: ChangeLog 155 2013-06-06 03:29:32Z tfonrouge $
  */
 
+Fri Apr 24 19:36:04 UTC 2015 Teo Fonrouge (tfonrouge@gmail.com)
+  M src/TTable.prg
+    * using IsTableField()
+    * clearing to empty values fields at start
+
 Wed Apr 22 03:47:11 UTC 2015 Teo Fonrouge (tfonrouge@gmail.com)
   M src/TField.prg
     * on Calculated Fields, if there defined a FieldWriteBlock, then it is evaluated even if the

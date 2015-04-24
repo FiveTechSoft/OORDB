@@ -1037,7 +1037,7 @@ METHOD PROCEDURE Clear() CLASS TTable
     LOCAL AFIELD
 
     FOR EACH AField IN ::FFieldList
-        IF !AField:Calculated .AND. AField:FieldMethodType = "C"
+        IF !AField:IsTableField
             AField:Clear()
         ENDIF
     NEXT
@@ -1257,6 +1257,7 @@ METHOD PROCEDURE CreateTableInstance() CLASS TTable
          IF n > 0
             itm:SetDbStruct( ::DbStruct[ n ] )
          ENDIF
+         itm:Clear()
       ENDIF
    NEXT
 
