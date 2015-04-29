@@ -1037,7 +1037,7 @@ METHOD PROCEDURE Clear() CLASS TTable
     LOCAL AFIELD
 
     FOR EACH AField IN ::FFieldList
-        IF !AField:IsTableField
+        IF AField:IsTableField
             AField:Clear()
         ENDIF
     NEXT

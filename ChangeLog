@@ -2,6 +2,10 @@
  * $Id: ChangeLog 155 2013-06-06 03:29:32Z tfonrouge $
  */
 
+Wed Apr 29 20:42:15 UTC 2015 Teo Fonrouge (tfonrouge@gmail.com)
+  M src/TTable.prg
+    ! stoopid typo
+
 Fri Apr 24 19:36:04 UTC 2015 Teo Fonrouge (tfonrouge@gmail.com)
   M src/TTable.prg
     * using IsTableField()
