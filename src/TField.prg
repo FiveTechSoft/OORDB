@@ -1358,6 +1358,10 @@ METHOD PROCEDURE SetData( value, initialize ) CLASS TField
             RETURN
         ENDIF
 
+        IF ! ::FTable:onBeforeChange_Field( Self, @value )
+            RETURN
+        ENDIF
+
     ENDIF
 
     BEGIN SEQUENCE WITH ::FTable:ErrorBlock

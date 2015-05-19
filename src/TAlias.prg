@@ -121,11 +121,6 @@ METHOD New( table, aliasName ) CLASS TAlias
 
       tableName := table:TableFileName
 
-      /* Check if this is a remote request */
-      IF table:RDOClient != NIL
-         RETURN table:Alias
-      ENDIF
-
       IF Empty( tableName )
          RAISE ERROR "TAlias: Empty Table Name..."
       ENDIF

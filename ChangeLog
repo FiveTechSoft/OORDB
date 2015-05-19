@@ -2,6 +2,18 @@
  * $Id: ChangeLog 155 2013-06-06 03:29:32Z tfonrouge $
  */
 
+Tue May 19 18:10:14 UTC 2015 Teo Fonrouge (tfonrouge@gmail.com)
+  M src/TAlias.prg
+    * removed unused code
+
+  M src/TField.prg
+    % call table method on change field
+
+  M src/TTable.prg
+    * code cleanup
+    + onBeforeChange_Field() default .t.
+    * getInstance() initializes list
+
 Wed Apr 29 20:42:15 UTC 2015 Teo Fonrouge (tfonrouge@gmail.com)
   M src/TTable.prg
     ! stoopid typo

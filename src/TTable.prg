@@ -100,9 +100,6 @@ CLASS TTable FROM OORDBBASE
    DATA FMasterSourceType  INIT rxMasterSourceTypeNone
    DATA FPort
 
-   /* TODO: Check if we can re-use a client socket */
-   DATA FRDOClient
-
    DATA FRecNoBeforeInsert
 
    DATA FReadOnly              INIT .F.
@@ -118,7 +115,7 @@ CLASS TTable FROM OORDBBASE
    METHOD GetDbStruct
    METHOD GetFieldTypes
    METHOD GetIndexName() INLINE iif( ::GetIndex() = NIL, "", ::GetIndex():Name )
-   METHOD GetInstance
+   METHOD getInstance
    METHOD GetKeyExpression()
    METHOD GetKeyField()
    METHOD GetKeyString INLINE iif( ::GetKeyField == NIL, "", ::GetKeyField:AsString )
@@ -324,6 +321,7 @@ CLASS TTable FROM OORDBBASE
    METHOD OnAfterOpen() VIRTUAL
    METHOD OnAfterPost() VIRTUAL
    METHOD OnBeforeCancel() INLINE .T.
+   METHOD onBeforeChange_Field() INLINE .T.
    METHOD OnBeforeDelete() INLINE .T.
    METHOD OnBeforeEdit() INLINE .T.
    METHOD OnBeforeInsert() INLINE .T.
@@ -354,7 +352,7 @@ CLASS TTable FROM OORDBBASE
    PROPERTY FieldTypes READ GetFieldTypes
    PROPERTY Id READ GetId WRITE SetId
    PROPERTY Initialized READ FInitialized
-   PROPERTY Instance READ GetInstance
+   PROPERTY instance READ getInstance
    PROPERTY Instances READ FInstances
    PROPERTY isMetaTable READ FisMetaTable WRITE SetisMetaTable
    PROPERTY IsTempTable READ FIsTempTable
@@ -367,7 +365,6 @@ CLASS TTable FROM OORDBBASE
    PROPERTY MasterKeyVal READ GetMasterKeyVal
    PROPERTY previousEditState
    PROPERTY PrimaryIndexList READ FPrimaryIndexList
-   PROPERTY RDOClient READ FRDOClient
    PROPERTY RecCount READ GetAlias:RecCount()
    PROPERTY RecNo READ GetRecNo WRITE DbGoTo
    PROPERTY RecordList READ GetRecordList
@@ -402,37 +399,11 @@ ENDCLASS
 */
 METHOD New( masterSource, tableName ) CLASS TTable
 
-   LOCAL rdoClient
-   LOCAL Result, itm
    LOCAL ms
 
    ::FInitialized := .T.
 
    ::Process_TableName( tableName )
-
-   IF ::FRDOClient != NIL
-
-      rdoClient := ::FRDOClient
-
-      Result := ::SendToServer( masterSource, ::TableFileName )
-
-      ? "Result from Server:"
-      ? "ClassName:", Result:ClassName, ":", Result
-      ? "Alias", Result:Alias:Name
-
-      FOR EACH itm IN Result
-         Self[ itm:__enumIndex() ] := itm
-      NEXT
-
-      ::FRDOClient := rdoClient
-
-      IF !hb_HHasKey( ::FInstances, ::TableFileName )
-         ::FInstances[ ::TableFileName ] := ::GetInstance()
-      ENDIF
-
-      RETURN Self
-
-   ENDIF
 
    IF ::DataBase == NIL
       ::DataBase := ::InitDataBase()
@@ -2363,7 +2334,7 @@ METHOD FUNCTION GetDisplayFieldList( syncFromAlias ) CLASS TTable
 
       ENDIF
 
-      ::FDisplayFieldList := ::FInstances[ ::TableClass, "DisplayFieldListClass" ]:Instance()
+      ::FDisplayFieldList := ::FInstances[ ::TableClass, "DisplayFieldListClass" ]:instance()
       ::FDisplayFieldList:__FObj := Self
       ::FDisplayFieldList:__FSyncFromAlias := .F.
 
@@ -2466,22 +2437,20 @@ METHOD FUNCTION GetIndex() CLASS TTable
    RETURN ::FIndex
 
 /*
-    GetInstance
+    getInstance
 */
-METHOD FUNCTION GetInstance CLASS TTable
+METHOD FUNCTION getInstance CLASS TTable
+    LOCAL nPos
 
-   // LOCAL instance
+    nPos := hb_hPos( ::FInstances, ::TableClass )
 
-   // IF ::FRDOClient != NIL //.AND. !HB_HHasKey( ::FInstances, ::TableClass )
-   // instance := ::SendToServer()
-   // RETURN instance
-   // ENDIF
+    IF nPos = 0
 
-   IF hb_HHasKey( ::FInstances, ::TableClass )
-      RETURN ::FInstances[ ::TableClass ]
-   ENDIF
+        RETURN ( ::FInstances[ ::TableClass ] := hb_HSetCaseMatch( { "Initializing" => .T. }, .F. ) )
 
-   RETURN NIL
+    ENDIF
+
+RETURN hb_hValueAt( ::FInstances, nPos )
 
 /*
     GetKeyExpression
@@ -2726,35 +2695,32 @@ STATIC FUNCTION F_IndexByName( Self, indexName, curClass )
     InitTable
 */
 METHOD PROCEDURE InitTable() CLASS TTable
+    LOCAL instance
 
-   IF !hb_HHasKey( ::FInstances, ::TableClass )
-
-      ::FInstances[ ::TableClass ] := hb_HSetCaseMatch( { "Initializing" => .T. }, .F. )
-
-   ENDIF
+    instance := ::getInstance()
 
     /*!
     * Make sure that database is open here
     */
-   IF ::FAlias == NIL
-      ::FAlias := TAlias():New( Self )
-   ENDIF
+    IF ::FAlias == NIL
+        ::FAlias := TAlias():New( Self )
+    ENDIF
 
-   IF ::FInstances[ ::TableClass, "Initializing" ]
+    IF instance[ "Initializing" ]
 
-      ::OnClassInitializing()
+        ::OnClassInitializing()
 
-      ::FInstances[ ::TableClass, "ChildReferenceList" ] := {}
+        instance[ "ChildReferenceList" ] := {}
 
-      ::DefineRelations()
+        ::DefineRelations()
 
-      ::FInstances[ ::TableClass, "DisplayFieldListClass" ] := NIL
+        instance[ "DisplayFieldListClass" ] := NIL
 
-      ::FInstances[ ::TableClass, "Initializing" ] := .F.
+        instance[ "Initializing" ] := .F.
 
-   ENDIF
+    ENDIF
 
-   RETURN
+RETURN
 
 /*
     Insert
@@ -3008,38 +2974,13 @@ METHOD FUNCTION Post() CLASS TTable
 */
 METHOD PROCEDURE Process_TableName( tableName ) CLASS TTable
 
-   LOCAL s, sHostPort
-
    IF tableName == NIL
       tableName := ::TableFileName
    ELSE
       ::FTableFileName := tableName
    ENDIF
 
-    /*
-        Process tableName to check if we need a RDOClient to an RDOServer
-    */
-   IF Upper( tableName ) = "RDO://"
-
-      s := hb_tokenGet( ::TableFileName, 2, "://" )
-      sHostPort := hb_tokenGet( s, 1, "/" )
-      ::FTableFileName := SubStr( s, At( "/", s ) + 1 )
-
-      ::FAddress := hb_tokenGet( sHostPort, 1, ":" )
-      ::FPort := hb_tokenGet( sHostPort, 2, ":" )
-
-        /*
-            Checks if RDO Client is required
-        */
-      // ::FRDOClient := TRDOClient():New( ::FAddress, ::FPort )
-      IF !::FRDOClient:Connect()
-         ::Error_ConnectToServer_Failed()
-         RETURN
-      ENDIF
-
-   ENDIF
-
-   RETURN
+RETURN
 
 /*
     RawGet4Seek
