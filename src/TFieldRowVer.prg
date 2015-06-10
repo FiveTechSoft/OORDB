@@ -14,9 +14,9 @@ CLASS TFieldRowVer FROM TFieldInteger
 
    PROTECTED:
    DATA FDBS_TYPE INIT "^"
+   DATA FFieldType INIT ftRowVer
    DATA FType INIT "RowVer"
    DATA FtypeNameList INIT hb_hSetCaseMatch( {"es"=>"RowVer"} )
-   DATA FFieldType INIT ftRowVer
    PUBLIC:
    PUBLISHED:
 

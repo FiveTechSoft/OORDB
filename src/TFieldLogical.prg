@@ -16,6 +16,7 @@ CLASS TFieldLogical FROM TField
    DATA FDBS_LEN INIT 1
    DATA FDBS_DEC INIT 0
    DATA FDBS_TYPE INIT "L"
+   DATA FFieldType INIT ftLogical
    DATA FSize INIT 1
    DATA FType INIT "Logical"
    DATA FtypeNameList INIT hb_hSetCaseMatch( {"es"=>"Logico"} )

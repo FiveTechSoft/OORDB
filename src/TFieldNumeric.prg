@@ -14,6 +14,7 @@ CLASS TFieldNumeric FROM TField
    DATA FDBS_LEN INIT 15   // 000000000000.00
    DATA FDBS_DEC INIT 2
    DATA FDBS_TYPE INIT "N"
+   DATA FFieldType INIT ftNumeric
    DATA FSize
    DATA FType INIT "Numeric"
    DATA FtypeNameList INIT hb_hSetCaseMatch( {"es"=>"Numero"} )

@@ -2,6 +2,20 @@
  * $Id: ChangeLog 155 2013-06-06 03:29:32Z tfonrouge $
  */
 
+Wed Jun 10 00:52:19 UTC 2015 Teo Fonrouge (tfonrouge@gmail.com)
+  M include/oordb.ch
+  M src/TFieldAutoInc.prg
+  M src/TFieldDate.prg
+  M src/TFieldDateTime.prg
+  M src/TFieldFloat.prg
+  M src/TFieldInteger.prg
+  M src/TFieldLogical.prg
+  M src/TFieldModTime.prg
+  M src/TFieldNumeric.prg
+  M src/TFieldRowVer.prg
+  M src/TFieldVariant.prg
+    * added fieldType to all field classes
+
 Tue May 19 18:10:14 UTC 2015 Teo Fonrouge (tfonrouge@gmail.com)
   M src/TAlias.prg
     * removed unused code

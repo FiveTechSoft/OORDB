@@ -16,6 +16,7 @@ CLASS TFieldInteger FROM TFieldNumeric
    DATA FDBS_LEN INIT 4
    DATA FDBS_DEC INIT 0
    DATA FDBS_TYPE INIT "I"
+   DATA FFieldType INIT ftInteger
    DATA FSize INIT 4
    DATA FType INIT "Integer"
    DATA FtypeNameList INIT hb_hSetCaseMatch( {"es"=>"Numero Entero"} )
