@@ -12,8 +12,3 @@ libs=hbct hbtip oordb
 {allgcc}cpp=yes
 
 {win}libs=rpcrt4
-
-{darwin}prgflags="-DHB_OS_MAC"
-{unix}prgflags="-DHB_OS_UNIX"
-{linux}prgflags="-DHB_OS_LINUX"
-{win}prgflags="-DHB_OS_WINDOWS -DHB_OS_WIN_32"
