@@ -2,6 +2,10 @@
  * $Id: ChangeLog 155 2013-06-06 03:29:32Z tfonrouge $
  */
 
+Wed Jul  8 22:34:29 UTC 2015 Teo Fonrouge (tfonrouge@gmail.com)
+  M src/TTable.prg
+    * on statePush() save & clean LinkedObjField ppty, to avoid changes in linked table (if any)
+
 Thu Jul  2 01:22:16 UTC 2015  ()
   M oordb.hbc
     * remove unneeded defines

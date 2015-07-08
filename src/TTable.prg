@@ -3457,6 +3457,7 @@ METHOD PROCEDURE StatePull() CLASS TTable
    NEXT
 
    ::FUndoList := ::tableState[ ::tableStateLen ][ "UndoList" ]
+   ::LinkedObjField := ::tableState[ ::tableStateLen ][ "LinkedObjField" ]
 
    --::tableStateLen
 
@@ -3496,6 +3497,10 @@ METHOD PROCEDURE StatePush() CLASS TTable
    ::tableState[ ::tableStateLen ][ "IndexName" ]        := ::IndexName
    ::tableState[ ::tableStateLen ][ "DetailSourceList" ] := hDSL
    ::tableState[ ::tableStateLen ][ "UndoList" ]         := ::FUndoList
+
+   /* unlinks possible linked field to avoid possible changes in linked table */
+   ::tableState[ ::tableStateLen ][ "LinkedObjField" ]   := ::LinkedObjField
+   ::LinkedObjField := nil
 
    FOR EACH tbl IN ::DetailSourceList
       hDSL[ tbl:ObjectH ] := NIL
