@@ -2,6 +2,10 @@
  * $Id: ChangeLog 155 2013-06-06 03:29:32Z tfonrouge $
  */
 
+Wed Jul 22 18:55:25 UTC 2015 Teo Fonrouge (tfonrouge@gmail.com)
+  M src/common.prg
+    ! asString() convert 'T' time
+
 Wed Jul  8 22:34:29 UTC 2015 Teo Fonrouge (tfonrouge@gmail.com)
   M src/TTable.prg
     * on statePush() save & clean LinkedObjField ppty, to avoid changes in linked table (if any)

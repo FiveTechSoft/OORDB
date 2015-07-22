@@ -108,7 +108,9 @@ FUNCTION AsString( xVal )
       RETURN result
    CASE 'A'
       RETURN "<Array>: " + LTrim( Str( Len( xVal ) ) )
-   END
+   CASE 'T'
+      RETURN hb_tToC( xVal )
+   ENDSWITCH
 
    RETURN ""
 
