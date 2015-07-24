@@ -2,6 +2,11 @@
  * $Id: ChangeLog 155 2013-06-06 03:29:32Z tfonrouge $
  */
 
+Fri Jul 24 00:09:14 UTC 2015 Teo Fonrouge (tfonrouge@gmail.com)
+  M src/TFieldDate.prg
+  M src/TFieldDateTime.prg
+    * removed wrong default values (default/new)
+
 Wed Jul 22 18:55:25 UTC 2015 Teo Fonrouge (tfonrouge@gmail.com)
   M src/common.prg
     ! asString() convert 'T' time

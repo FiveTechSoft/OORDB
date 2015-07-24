@@ -17,8 +17,6 @@ CLASS TFieldDate FROM TField
    DATA FDBS_DEC INIT 0
    DATA FDBS_TYPE INIT "D"
    DATA FFieldType INIT ftDate
-   DATA FNewValue INIT {|| CToD( "" ) }
-   DATA FDefaultValue INIT {|| Date() }
    DATA FSize INIT 8     // Size on index is 8 = len of DToS()
    DATA FType INIT "Date"
    DATA FtypeNameList INIT hb_hSetCaseMatch( {"es"=>"Fecha"} )

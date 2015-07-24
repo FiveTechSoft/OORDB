@@ -15,11 +15,9 @@ PROTECTED:
    DATA FDBS_LEN INIT 8
    DATA FDBS_DEC INIT 0
    DATA FDBS_TYPE INIT "@"
-   DATA FDefaultValue INIT {|| hb_DateTime() }
    DATA FFieldType INIT ftDateTime
    DATA FFormatDate
    DATA FFormatTime
-   DATA FNewValue INIT {|| hb_CToT( "" ) }
    DATA FSize INIT 23
    DATA FTime
    DATA FType INIT "DateTime"
