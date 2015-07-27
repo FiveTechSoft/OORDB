@@ -2,6 +2,14 @@
  * $Id: ChangeLog 155 2013-06-06 03:29:32Z tfonrouge $
  */
 
+Mon Jul 27 23:42:08 UTC 2015 Teo Fonrouge (tfonrouge@gmail.com)
+  M src/TField.prg
+    * revertValue() uses setData() instead of writeToTable() to allow processing of ON [BEFORE|AFTER] CHANGE
+      events
+
+  M src/TFieldTable.prg
+    * allow to describe a field of the same type of the table class
+
 Fri Jul 24 00:09:14 UTC 2015 Teo Fonrouge (tfonrouge@gmail.com)
   M src/TFieldDate.prg
   M src/TFieldDateTime.prg

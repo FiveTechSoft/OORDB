@@ -118,7 +118,7 @@ METHOD PROCEDURE BuildLinkedTable() CLASS TFieldTable
          ::FLinkedTable := __ClsInstFromName( ::FObjClass )
 
          IF ::FLinkedTable:IsDerivedFrom( ::FTable:ClassName() )
-            RAISE TFIELD ::Name ERROR "Denied: To create TFieldTable's linked table derived from the same field's table class."
+//            RAISE TFIELD ::Name ERROR "Denied: To create TFieldTable's linked table derived from the same field's table class."
          ENDIF
 
          IF !::FLinkedTable:IsDerivedFrom( "TTable" )

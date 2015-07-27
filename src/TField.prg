@@ -1098,7 +1098,9 @@ METHOD PROCEDURE RevertValue() CLASS TField
     undoValue := ::GetUndoValue()
 
     IF undoValue != NIL
-        ::WriteToTable( undoValue )
+//        ::WriteToTable( undoValue )
+        /* to allow process ON [BEFORE|AFTER] CHANGE events */
+        ::SetData( undoValue )
         ::FChanged := .F.
     ENDIF
 
