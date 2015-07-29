@@ -2,6 +2,13 @@
  * $Id: ChangeLog 155 2013-06-06 03:29:32Z tfonrouge $
  */
 
+Wed Jul 29 20:02:19 UTC 2015 Teo Fonrouge (tfonrouge@gmail.com)
+  M include/xerror.ch
+  M src/TField.prg
+  M src/TTable.prg
+  M src/oordbbase.prg
+    % improved warning messages
+
 Mon Jul 27 23:42:08 UTC 2015 Teo Fonrouge (tfonrouge@gmail.com)
   M src/TField.prg
     * revertValue() uses setData() instead of writeToTable() to allow processing of ON [BEFORE|AFTER] CHANGE

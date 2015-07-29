@@ -601,7 +601,7 @@ METHOD FUNCTION AddRec() CLASS TTable
    LOCAL itm
 
    IF ::FReadOnly
-      SHOW WARN "Table '" + ::ClassName() + "' is marked as READONLY..."
+      SHOW WARN "Table is marked as READONLY..."
       RETURN .F.
    ENDIF
 
@@ -1185,7 +1185,7 @@ METHOD FUNCTION CreateTable( fullFileName ) CLASS TTable
    NEXT
 
    IF Empty( aDbs )
-      SHOW WARN "CreateTable: Cannot create table class '" + ::ClassName + "' with empty data..."
+      SHOW WARN "createTable(): Cannot create table class with empty data..."
       RETURN .F.
    ENDIF
 
@@ -3015,7 +3015,7 @@ METHOD FUNCTION RecLock() CLASS TTable
    ENDIF
 
    IF ::FReadOnly
-      SHOW WARN "Table '" + ::ClassName() + "' is marked as READONLY..."
+      SHOW WARN "Table is marked as READONLY..."
       RETURN .F.
    ENDIF
 
@@ -3457,6 +3457,7 @@ METHOD PROCEDURE StatePull() CLASS TTable
    NEXT
 
    ::FUndoList := ::tableState[ ::tableStateLen ][ "UndoList" ]
+   ::FOnActiveSetKeyVal := ::tableState[ ::tableStateLen ][ "OnActiveSetKeyVal" ]
    ::LinkedObjField := ::tableState[ ::tableStateLen ][ "LinkedObjField" ]
 
    --::tableStateLen
@@ -3487,16 +3488,17 @@ METHOD PROCEDURE StatePush() CLASS TTable
       AAdd( aCloneData, fld:CloneData )
    NEXT
 
-   ::tableState[ ::tableStateLen ][ "CloneData" ]        := aCloneData
-   ::tableState[ ::tableStateLen ][ "RecNo" ]            := ::FRecNo
-   ::tableState[ ::tableStateLen ][ "Bof" ]              := ::FBof
-   ::tableState[ ::tableStateLen ][ "Eof" ]              := ::FEof
-   ::tableState[ ::tableStateLen ][ "Found" ]            := ::FFound
-   ::tableState[ ::tableStateLen ][ "State" ]            := ::FState
+   ::tableState[ ::tableStateLen ][ "CloneData" ]           := aCloneData
+   ::tableState[ ::tableStateLen ][ "RecNo" ]               := ::FRecNo
+   ::tableState[ ::tableStateLen ][ "Bof" ]                 := ::FBof
+   ::tableState[ ::tableStateLen ][ "Eof" ]                 := ::FEof
+   ::tableState[ ::tableStateLen ][ "Found" ]               := ::FFound
+   ::tableState[ ::tableStateLen ][ "State" ]               := ::FState
    ::tableState[ ::tableStateLen ][ "previousEditState" ]   := ::FpreviousEditState
-   ::tableState[ ::tableStateLen ][ "IndexName" ]        := ::IndexName
-   ::tableState[ ::tableStateLen ][ "DetailSourceList" ] := hDSL
-   ::tableState[ ::tableStateLen ][ "UndoList" ]         := ::FUndoList
+   ::tableState[ ::tableStateLen ][ "IndexName" ]           := ::IndexName
+   ::tableState[ ::tableStateLen ][ "DetailSourceList" ]    := hDSL
+   ::tableState[ ::tableStateLen ][ "UndoList" ]            := ::FUndoList
+   ::tableState[ ::tableStateLen ][ "OnActiveSetKeyVal" ]   := ::FOnActiveSetKeyVal
 
    /* unlinks possible linked field to avoid possible changes in linked table */
    ::tableState[ ::tableStateLen ][ "LinkedObjField" ]   := ::LinkedObjField
@@ -3510,6 +3512,7 @@ METHOD PROCEDURE StatePush() CLASS TTable
    ::FState := dsBrowse
    ::FpreviousEditState := NIL
    ::FUndoList := NIL
+   ::FOnActiveSetKeyVal := .F.
 
    ::Alias:Push()
 

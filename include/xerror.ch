@@ -28,7 +28,7 @@
                                 )
 
 #xcommand SHOW ERROR <errObj> => ui_ShowError( <errObj> )
-#xcommand SHOW WARN <msgWarn> => ui_Alert( <msgWarn> )
+#xcommand SHOW WARN <msgWarn> => ui_Alert( ::__warnDescriptor() + ";"  + <msgWarn> )
 
 /* TField errors */
 //#define OODB_ERR__FIELD_METHOD_TYPE_NOT_SUPPORTED       1000

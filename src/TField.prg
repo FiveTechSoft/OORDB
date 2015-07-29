@@ -1331,7 +1331,7 @@ METHOD PROCEDURE SetData( value, initialize ) CLASS TField
    ENDIF
 
    IF ::FCheckEditable .AND. !::Editable()
-      SHOW WARN ::FTable:ClassName + ": '" + ::Name + "' <field is not editable>"
+      SHOW WARN "<field is not editable>"
       RETURN
    ENDIF
 
@@ -1341,7 +1341,7 @@ METHOD PROCEDURE SetData( value, initialize ) CLASS TField
             BEGIN SEQUENCE WITH ::FTable:ErrorBlock
                 result := ::OnBeforeChange:Eval( ::FTable, @value )
             RECOVER
-                SHOW WARN ::FTable:ClassName + ": '" + ::Name + "' <Error at 'OnBeforeChange'>"
+                SHOW WARN "<Error at 'OnBeforeChange()'>"
                 result := .F.
             END SEQUENCE
             IF !result
@@ -1593,7 +1593,11 @@ METHOD PROCEDURE SetIsMasterFieldComponent( IsMasterFieldComponent ) CLASS TFiel
 */
 METHOD FUNCTION SetKeyVal( keyVal, lSoftSeek ) CLASS TField
 
-    IF !::FTable:OnActiveSetKeyVal()
+    IF ::FTable:OnActiveSetKeyVal()
+
+        SHOW WARN e"Ignoring setKeyVal() call with \"" + keyVal + e"\""
+
+    ELSE
 
         ::FTable:OnActiveSetKeyVal( .T. )
 
