@@ -490,9 +490,9 @@ METHOD FUNCTION GetAsDisplay( ... ) CLASS TField
    LOCAL validValues
    LOCAL value
 
-   IF ::FDisplayBlock = NIL
+   value := ::GetAsVariant( ... )
 
-      value := ::GetAsVariant( ... )
+   IF ::FDisplayBlock = NIL
 
       IF ::FcalcResult = NIL
          validValues := ::GetValidValues()
@@ -512,7 +512,7 @@ METHOD FUNCTION GetAsDisplay( ... ) CLASS TField
 
    ENDIF
 
-   RETURN ::FDisplayBlock:Eval( ::FTable )
+   RETURN ::FDisplayBlock:Eval( ::FTable, value )
 
 /*
     GetAsVariant
