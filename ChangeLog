@@ -2,6 +2,14 @@
  * $Id: ChangeLog 155 2013-06-06 03:29:32Z tfonrouge $
  */
 
+Thu Jul 30 15:40:32 UTC 2015 Teo Fonrouge (tfonrouge@gmail.com)
+  M include/oordb.ch
+    * renamed clause 'USE INDEX' to 'DEFAULTINDEX'
+    * renamed member from '*useIndexName' to '*defaultIndexName'
+
+  M src/TField.prg
+    ! define of defaultIndexName (first index associated to field by default)
+
 Thu Jul 30 08:47:45 UTC 2015 Teo Fonrouge (tfonrouge@gmail.com)
   M src/TField.prg
     % pass value as 2nd parameter on getAsDisplay block

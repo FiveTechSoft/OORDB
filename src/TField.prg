@@ -56,6 +56,7 @@ CLASS TField FROM OORDBBASE
    DATA FCalculated INIT .F.
    DATA FChanged INIT .F.
    DATA FCheckEditable INIT .F.  // intended to be used by TUI/GUI
+   DATA FdefaultIndexName
    DATA FDefaultValue
    DATA FDBS_DEC INIT 0
    DATA FDBS_LEN
@@ -84,7 +85,6 @@ CLASS TField FROM OORDBBASE
    DATA FTableBaseClass
    DATA FType INIT "TField"
    DATA FtypeNameList
-   DATA FuseIndexName
    DATA FUsingField      // Field used on Calculated Field
    DATA FValidValues
    DATA FValType INIT "U"
@@ -159,13 +159,13 @@ CLASS TField FROM OORDBBASE
    METHOD SetAsVariant( value )
    METHOD SetData( value, initialize )
    METHOD SetDbStruct( aStruct )
+   METHOD SetDefaultIndexName( defaultIndexName )
    METHOD SetFieldMethod( FieldMethod, calculated )
    METHOD SetFieldReadBlock( readBlock ) INLINE ::FFieldReadBlock := readBlock
    METHOD SetFieldWriteBlock( writeBlock )
    METHOD SetIndexExpression( indexExpression ) INLINE ::FIndexExpression := indexExpression
    METHOD SetKeyVal( keyVal, lSoftSeek )
    METHOD SetKeyValBlock( keyValBlock ) INLINE ::FOnSetKeyValBlock := keyValBlock
-   METHOD SetUseIndexName( useIndexName )
    METHOD SetValidValues( validValues, ignoreUndetermined )
    METHOD Validate( showAlert ) INLINE ::ValidateResult( showAlert ) = NIL
    METHOD ValidateResult( showAlert, value ) BLOCK ;
@@ -259,7 +259,6 @@ CLASS TField FROM OORDBBASE
    PROPERTY Name READ FName WRITE SetName
    PROPERTY NewValue INDEX 2 READ GetDefaultNewValue WRITE SetDefaultNewValue
    PROPERTY PrimaryKeyComponent READ FPrimaryKeyComponent WRITE SetPrimaryKeyComponent
-   PROPERTY PrimaryKeyIndex
    PROPERTY Published READ FPublished WRITE SetPublished
    PROPERTY READONLY READ GetReadOnly WRITE SetReadOnly
    PROPERTY Required READ FRequired WRITE SetRequired
@@ -299,12 +298,11 @@ METHOD PROCEDURE AddFieldMessage() CLASS TField
 */
 METHOD PROCEDURE AddKeyIndex( index ) CLASS TField
 
-    IF index:IsPrimaryIndex
-        ::FPrimaryKeyIndex := index
-    ENDIF
-
    IF AScan( ::FIndexKeyList, {| e| e == index } ) = 0
       hb_AIns( ::FIndexKeyList, 1, index, .T. )
+      IF ::FdefaultIndexName = nil
+        ::FdefaultIndexName := index:name
+      ENDIF
    ELSE
       ::ERROR_ATTEMPT_TO_REASIGN_INDEX_TO_FIELD()
    ENDIF
@@ -837,15 +835,12 @@ METHOD FUNCTION GetFieldReadBlock() CLASS TField
 */
 METHOD FUNCTION GetKeyIndex() CLASS TField
 
-    IF ::FuseIndexName = NIL
-        IF ::FPrimaryKeyIndex != NIL
-            RETURN ::FPrimaryKeyIndex
-        ENDIF
+    IF ::FdefaultIndexName = NIL
         IF Len( ::FIndexKeyList ) > 0
             RETURN ::FIndexKeyList[ 1 ]
         ENDIF
     ELSE
-        RETURN ::FTable:IndexByName( ::FuseIndexName )
+        RETURN ::FTable:IndexByName( ::FdefaultIndexName )
     ENDIF
 
 
@@ -1423,6 +1418,13 @@ METHOD PROCEDURE SetDbStruct( aStruct ) CLASS TField
    RETURN
 
 /*
+    SetDefaultIndexName
+*/
+METHOD PROCEDURE SetDefaultIndexName( defaultIndexName ) CLASS TField
+    ::FdefaultIndexName := defaultIndexName
+RETURN
+
+/*
     SetDefaultNewValue
 */
 METHOD PROCEDURE SetDefaultNewValue( index, value ) CLASS TField
@@ -1667,13 +1669,6 @@ METHOD PROCEDURE SetPrimaryKeyComponent( PrimaryKeyComponent ) CLASS TField
    ENDSWITCH
 
    RETURN
-
-/*
-    SetUseIndexName
-*/
-METHOD PROCEDURE SetUseIndexName( useIndexName ) CLASS TField
-    ::FuseIndexName := useIndexName
-RETURN
 
 /*
     SetUsingField

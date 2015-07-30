@@ -151,7 +151,7 @@
                         [ ENABLED <enabled> ] ;
                         [ EDITABLE <editable> ] ;
                         [ INDEXEXPRESSION <indexExp> ] ;
-                        [ USE INDEX <useIndexName> ] ;
+                        [ DEFAULTINDEX <defaultIndexName> ] ;
                         [ DISPLAY <dispBlock> ] ;
                         [ <aeu: ACCEPT_EMPTY_UNIQUE> ] ;
                      => ;
@@ -196,7 +196,7 @@
                             [ :Enabled := <enabled> ] ;;
                             [ :Editable := <editable> ] ;;
                             [ :SetIndexExpression( <indexExp> ) ] ;;
-                            [ :SetUseIndexName( <useIndexName> ) ] ;;
+                            [ :SetDefaultIndexName( <defaultIndexName> ) ] ;;
                             [ :DisplayBlock := <dispBlock> ] ;;
                             [ :acceptEmptyUnique := <.aeu.> ] ;;
                             :AddFieldMessage() ;;
