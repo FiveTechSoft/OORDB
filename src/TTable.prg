@@ -2110,7 +2110,7 @@ METHOD FUNCTION GetBof() CLASS TTable
 */
 METHOD FUNCTION GetCurrentRecord( idxAlias ) CLASS TTable
 
-   LOCAL AField
+   LOCAL field
    LOCAL Result
    LOCAL INDEX
    LOCAL READ
@@ -2158,18 +2158,18 @@ METHOD FUNCTION GetCurrentRecord( idxAlias ) CLASS TTable
 
          IF !read == .T.
 
-            FOR EACH AField IN ::FFieldList
+            FOR EACH field IN ::FFieldList
 
-               IF AField:Enabled
-                  IF AField:FieldMethodType = "C" .AND. !AField:Calculated // .AND. !AField:IsMasterFieldComponent
-                     IF !AField:GetData() .AND. AField:IsMasterFieldComponent
+               IF field:Enabled
+                  IF field:FieldMethodType = "C" .AND. !field:Calculated // .AND. !field:IsMasterFieldComponent
+                     IF !field:GetData() .AND. field:IsMasterFieldComponent
                         Result := .F.
                         EXIT
                     ENDIF
                   ENDIF
 
-                  IF AField:FieldType = ftTable .AND. AField:Calculated .AND. AField:LinkedTableAssigned
-                     table := AField:LinkedTable
+                  IF field:FieldType = ftTable .AND. field:Calculated .AND. field:LinkedTableAssigned
+                     table := field:LinkedTable
                      IF table:LinkedObjField != NIL .AND. table:LinkedObjField:Calculated .AND. !table:MasterSource == Self .AND. table:MasterSource == table:LinkedObjField:Table:KeyField:LinkedTable
                         table:LinkedObjField:Table:KeyField:DataObj()
                      ENDIF
@@ -3083,9 +3083,7 @@ METHOD PROCEDURE Reset() CLASS TTable
    FOR EACH AField IN ::FFieldList
 
       IF !AField:Calculated .AND. AField:FieldMethodType = "C" .AND. AField:Enabled
-         IF AField:RawDefaultValue != NIL .OR. AField:RawNewValue != NIL .OR. !AField:IsMasterFieldComponent
-            AField:Reset()
-         ENDIF
+         AField:Reset()
       ENDIF
 
    NEXT

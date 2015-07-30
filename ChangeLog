@@ -2,6 +2,14 @@
  * $Id: ChangeLog 155 2013-06-06 03:29:32Z tfonrouge $
  */
 
+Thu Jul 30 02:38:50 UTC 2015 Teo Fonrouge (tfonrouge@gmail.com)
+  M src/TFieldTable.prg
+    * code cleanup
+
+  M src/TTable.prg
+    * minor code cleanup
+    * removed condition to call reset()
+
 Wed Jul 29 20:02:19 UTC 2015 Teo Fonrouge (tfonrouge@gmail.com)
   M include/xerror.ch
   M src/TField.prg

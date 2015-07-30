@@ -10,28 +10,23 @@
 */
 CLASS TFieldTable FROM TField
 
-   PRIVATE:
-
-   DATA FObjClass
-   DATA FLinkedTable          /* holds the Table object */
-   DATA FLinkedTableMasterSource
-   METHOD BuildLinkedTable()
-   METHOD SetLinkedTableMasterSource( linkedTable )
-   METHOD SetObjClass( objClass ) INLINE ::FObjClass := objClass
-
-   PROTECTED:
+PROTECTED:
 
    DATA buildingLinkedTable
    DATA FCalcMethod
    DATA FcalculatingLinkedTable INIT .F.
    DATA FClassInit
    DATA FFieldType INIT ftTable
+   DATA FlinkedTable          /* holds the Table object */
+   DATA FlinkedTableMasterSource
+   DATA FObjClass
    DATA FonDataChangeBlock
    DATA FonDataObj
    DATA FType INIT "TableField"
    DATA FtypeNameList INIT hb_hSetCaseMatch( {"es"=>"Documento"} )
    DATA FValidValuesLabelField
    DATA FValType INIT "O"
+   METHOD BuildLinkedTable()
    METHOD GetDBS_LEN INLINE ::BaseKeyField():DBS_LEN
    METHOD GetDBS_TYPE INLINE iif( ::BaseKeyField():DBS_TYPE = "+", "I", ::BaseKeyField():DBS_TYPE )
    METHOD GetLabel()
@@ -40,9 +35,11 @@ CLASS TFieldTable FROM TField
    METHOD GetFieldReadBlock()
    METHOD GetOnDataChange()
    METHOD GetValidValues()
+   METHOD SetLinkedTableMasterSource( linkedTable )
+   METHOD SetObjClass( objClass ) INLINE ::FObjClass := objClass
    METHOD SetOnDataChange( onDataChangeBlock )
 
-   PUBLIC:
+PUBLIC:
 
    METHOD BaseKeyField() // Returns the non-TFieldTable associated to this obj
    METHOD DataObj
@@ -50,13 +47,14 @@ CLASS TFieldTable FROM TField
    METHOD GetKeyVal( keyVal )
    METHOD GetAsString()       // INLINE ::LinkedTable:KeyField:AsString()
    METHOD GetAsVariant( ... )
+   METHOD hasLinkedTable() INLINE ::FlinkedTable != nil
    METHOD IndexExpression( fieldName )
    METHOD SetClassInit( clsInit ) INLINE ::FClassInit := clsInit
    METHOD SetValidValues( validValues, ignoreUndetermined, labelField )
    PROPERTY KeySize READ BaseKeyField():KeySize
    PROPERTY LinkedTable READ GetLinkedTable
-   PROPERTY LinkedTableAssigned READ FLinkedTableMasterSource != NIL
-   PROPERTY LinkedTableMasterSource READ FLinkedTableMasterSource WRITE SetLinkedTableMasterSource
+   PROPERTY LinkedTableAssigned READ FlinkedTableMasterSource != NIL
+   PROPERTY LinkedTableMasterSource READ FlinkedTableMasterSource WRITE SetLinkedTableMasterSource
    PROPERTY MasterKeyVal
    PROPERTY ObjClass READ FObjClass WRITE SetObjClass
    PROPERTY OnDataChange READ GetOnDataChange WRITE SetOnDataChange
@@ -72,8 +70,8 @@ METHOD FUNCTION BaseKeyField() CLASS TFieldTable
 
    LOCAL baseKeyField
 
-   IF ::FLinkedTable != NIL .OR. !Empty( ::GetLinkedTable() )
-      baseKeyField := ::FLinkedTable:BaseKeyField
+   IF ::FlinkedTable != NIL .OR. !Empty( ::GetLinkedTable() )
+      baseKeyField := ::FlinkedTable:BaseKeyField
       IF baseKeyField = NIL
          ::No_BaseKeyField_Defined()
       ENDIF
@@ -91,7 +89,7 @@ METHOD PROCEDURE BuildLinkedTable() CLASS TFieldTable
    LOCAL fld
    LOCAL classInit
 
-   IF ::FLinkedTable = NIL .AND. ::buildingLinkedTable = NIL
+   IF ::FlinkedTable = NIL .AND. ::buildingLinkedTable = NIL
 
       ::buildingLinkedTable := .T.
 
@@ -103,42 +101,42 @@ METHOD PROCEDURE BuildLinkedTable() CLASS TFieldTable
          * Solve using the default ObjClass
          */
       IF ::FTable:MasterSource != NIL .AND. ::FTable:MasterSource:IsDerivedFrom( ::FObjClass ) .AND. ::IsMasterFieldComponent
-         ::FLinkedTable := ::FTable:MasterSource
+         ::FlinkedTable := ::FTable:MasterSource
       ELSE
-         IF ::FLinkedTableMasterSource != NIL
-            IF ValType( ::FLinkedTableMasterSource ) = "B"
-                masterSource := ::FLinkedTableMasterSource:Eval( ::FTable )
+         IF ::FlinkedTableMasterSource != NIL
+            IF ValType( ::FlinkedTableMasterSource ) = "B"
+                masterSource := ::FlinkedTableMasterSource:Eval( ::FTable )
             ELSE
-                masterSource := ::FLinkedTableMasterSource
+                masterSource := ::FlinkedTableMasterSource
             ENDIF
          ELSEIF ::FTable:IsDerivedFrom( ::Table:GetMasterSourceClassName() ) // ( ::FObjClass ) )
             masterSource := ::FTable
          ENDIF
 
-         ::FLinkedTable := __ClsInstFromName( ::FObjClass )
+         ::FlinkedTable := __ClsInstFromName( ::FObjClass )
 
-         IF ::FLinkedTable:IsDerivedFrom( ::FTable:ClassName() )
+         IF ::FlinkedTable:IsDerivedFrom( ::FTable:ClassName() )
 //            RAISE TFIELD ::Name ERROR "Denied: To create TFieldTable's linked table derived from the same field's table class."
          ENDIF
 
-         IF !::FLinkedTable:IsDerivedFrom( "TTable" )
+         IF !::FlinkedTable:IsDerivedFrom( "TTable" )
             RAISE TFIELD ::Name ERROR "Denied: To create TFieldTable's linked table NOT derived from a TTable class."
          ENDIF
 
          /* check if we still need a mastersource and it exists in TFieldTable's Table */
          IF Empty( masterSource )
-            className := ::FLinkedTable:GetMasterSourceClassName()
+            className := ::FlinkedTable:GetMasterSourceClassName()
             IF ::FTable:IsDerivedFrom( className )
                masterSource := ::FTable
             ELSEIF !Empty( className ) .AND. ! Empty( fld := ::FTable:FieldByObjClass( className, .T. ) )
                masterSource := fld
             ENDIF
          ENDIF
-         ::FLinkedTable:New( masterSource )
+         ::FlinkedTable:New( masterSource )
          classInit := ::FClassInit
       ENDIF
 
-      IF !HB_ISOBJECT( ::FLinkedTable ) .OR. ! ::FLinkedTable:IsDerivedFrom( "TTable" )
+      IF !HB_ISOBJECT( ::FlinkedTable ) .OR. ! ::FlinkedTable:IsDerivedFrom( "TTable" )
          RAISE TFIELD ::Name ERROR "Default value is not a TTable object."
       ENDIF
 
@@ -152,12 +150,12 @@ METHOD PROCEDURE BuildLinkedTable() CLASS TFieldTable
         TODO: Revise REUSEFIELD clause
       */
       
-      IF !::IsMasterFieldComponent .AND. ::FLinkedTable:LinkedObjField == NIL
+      IF !::IsMasterFieldComponent .AND. ::FlinkedTable:LinkedObjField == NIL
             /*
              * LinkedObjField is linked to the FIRST TFieldTable were it is referenced
              * this has to be the most top level MasterSource table
              */
-         ::FLinkedTable:LinkedObjField := Self
+         ::FlinkedTable:LinkedObjField := Self
       ELSE
             /*
              * We need to set this field as READONLY, because their LinkedTable
@@ -168,7 +166,7 @@ METHOD PROCEDURE BuildLinkedTable() CLASS TFieldTable
       ENDIF
 
       IF classInit != NIL
-         classInit:Eval( ::FLinkedTable )
+         classInit:Eval( ::FlinkedTable )
       ENDIF
 
       ::buildingLinkedTable := NIL
@@ -291,14 +289,14 @@ METHOD FUNCTION GetAsVariant( ... ) CLASS TFieldTable
 METHOD FUNCTION GetFieldReadBlock() CLASS TFieldTable
 
    IF ::FFieldReadBlock = NIL .AND. ::Super:GetFieldReadBlock() = NIL
-      IF ::FLinkedTable = NIL
+      IF ::FlinkedTable = NIL
          IF ::FcalculatingLinkedTable
             ::BuildLinkedTable() /* no result from calculating, so create table from ObjClass name */
          ELSE
             ::GetLinkedTable()
          ENDIF
       ENDIF
-      ::FFieldReadBlock := {|| ::FLinkedTable }
+      ::FFieldReadBlock := {|| ::FlinkedTable }
    ENDIF
 
    RETURN ::FFieldReadBlock
@@ -351,20 +349,20 @@ METHOD FUNCTION GetLinkedTable CLASS TFieldTable
          IF result != NIL
             IF HB_ISOBJECT( result )
                IF result:IsDerivedFrom( "TTable" )
-                  ::FLinkedTable := result
+                  ::FlinkedTable := result
                ELSEIF result:IsDerivedFrom( "TFieldTable" )
-                  ::FLinkedTable := result:DataObj()
+                  ::FlinkedTable := result:DataObj()
                ENDIF
             ELSE /* the basekey field value is returned for the calculated field */
-               IF ::FLinkedTable = NIL
+               IF ::FlinkedTable = NIL
                   ::BuildLinkedTable()
                ENDIF
-               ::FLinkedTable:BaseKeyField:Value := result
+               ::FlinkedTable:BaseKeyField:Value := result
             ENDIF
          ENDIF
 
-         IF !::IsMasterFieldComponent .AND. ::FLinkedTable != NIL .AND. ::FLinkedTable:LinkedObjField == NIL
-            ::FLinkedTable:LinkedObjField := Self
+         IF !::IsMasterFieldComponent .AND. ::FlinkedTable != NIL .AND. ::FlinkedTable:LinkedObjField == NIL
+            ::FlinkedTable:LinkedObjField := Self
          ENDIF
 
          ::FcalculatingLinkedTable := .F.
@@ -377,13 +375,13 @@ METHOD FUNCTION GetLinkedTable CLASS TFieldTable
 
    ELSE
 
-      IF ::FLinkedTable == NIL
+      IF ::FlinkedTable == NIL
          ::BuildLinkedTable()
       ENDIF
 
    ENDIF
 
-   RETURN ::FLinkedTable
+   RETURN ::FlinkedTable
 
 /*
     GetOnDataChange
@@ -463,7 +461,7 @@ METHOD PROCEDURE SetLinkedTableMasterSource( linkedTable ) CLASS TFieldTable
       RAISE ERROR "Invalid master source value..."
    ENDSWITCH
 
-   ::FLinkedTableMasterSource := linkedTable
+   ::FlinkedTableMasterSource := linkedTable
 
    RETURN
 
