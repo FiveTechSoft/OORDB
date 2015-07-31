@@ -9,12 +9,14 @@
 #include "oordb.ch"
 #include "xerror.ch"
 
+#include "dbinfo.ch"
+
 /*
     CLASS TIndex
 */
 CLASS TIndex FROM OORDBBASE
 
-   PRIVATE:
+PRIVATE:
 
    DATA FAutoIncrementKeyField
    DATA FCaseSensitive INIT .T.
@@ -63,17 +65,25 @@ CLASS TIndex FROM OORDBBASE
    METHOD SetScopeBottom( value )
    METHOD SetScopeTop( value )
 
-   PROTECTED:
+PROTECTED:
+
+   CLASSDATA indexCreationList INIT {}
 
    DATA FCustomIndexExpression
    DATA FIndexType
    DATA FKeyFlags
+
+   DATA Fopened INIT .F.
+
    DATA FResetToMasterSourceFields INIT .T.
    DATA FTableBaseClass
+
+   METHOD CreateIndex()
+   METHOD CreateTempIndex()
    METHOD CustomKeyExpValue()
    METHOD SetCustomIndexExpression( customIndexExpression )
 
-   PUBLIC:
+PUBLIC:
 
    DATA associatedTable
    DATA FIdxAlias INIT .F.
@@ -108,6 +118,8 @@ CLASS TIndex FROM OORDBBASE
    METHOD KeyExpression()
    METHOD MasterKeyExpression()
 
+   METHOD openIndex()
+
    METHOD ordCondSet( ... ) INLINE ::FTable:ordCondSet( ... )
    METHOD ordCreate( ... ) INLINE ::FTable:ordCreate( ... )
    METHOD ordKeyNo() INLINE ::GetAlias():ordKeyNo()
@@ -133,7 +145,9 @@ CLASS TIndex FROM OORDBBASE
 
    METHOD SEEK( keyValue, lSoftSeek ) INLINE ::__Seek( 0, keyValue, lSoftSeek )
    METHOD SeekLast( keyValue, lSoftSeek ) INLINE ::__Seek( 1, keyValue, lSoftSeek )
-   PUBLISHED:
+
+PUBLISHED:
+
    PROPERTY AutoIncrement READ GetAutoIncrement
    PROPERTY AutoIncrementKeyField INDEX 1 READ GetField WRITE SetField
    PROPERTY CaseSensitive READ FCaseSensitive WRITE SetCaseSensitive
@@ -276,6 +290,188 @@ METHOD FUNCTION COUNT( bForCondition, bWhileCondition ) CLASS TIndex
    ::FTable:dbEval( {|| ++nCount }, bForCondition, bWhileCondition, Self )
 
    RETURN nCount
+
+/*
+    CreateIndex
+*/
+METHOD FUNCTION CreateIndex() CLASS TIndex
+    LOCAL indexExp
+    LOCAL recNo
+    LOCAL forKeyBlock
+    LOCAL whileBlock := NIL
+    LOCAL evalBlock := NIL
+    LOCAL intervalVal := NIL
+    LOCAL additive := .T.
+    LOCAL useCurrent := .F.
+    LOCAL temporary := .F.
+    LOCAL bagName := NIL
+    LOCAL unique := .F.
+    LOCAL oErr
+
+    recNo := ::FTable:Alias:RecNo
+
+    IF ::Custom
+        indexExp := E"\042" + Replicate( "#", Len( ::MasterKeyVal ) + Len( ::KeyVal ) ) + E"\042"
+        dbSelectArea( ::FTable:Alias:Name )
+        ordCondSet( ,,,,,, RecNo(),,,,,,,, .T. )
+        ordCreate( , ::TagName, indexExp )
+        ::Fopened := .t.
+    ELSE
+
+        indexExp := ::IndexExpression()
+
+        IF indexExp != nil
+
+            IF !Empty( ::ForKey )
+                forKeyBlock := &( "{||" + ::ForKey + "}" )
+            ENDIF
+
+            dbSelectArea( ::FTable:Alias:Name )  // here because ::IndexExpression() may change active WA
+
+            ordCondSet( ;
+                ::ForKey, ;
+                forKeyBlock, ;
+                NIL, ;
+                whileBlock, ;
+                evalBlock, ;
+                intervalVal, ;
+                NIL, ;
+                NIL, ;
+                NIL, ;
+                NIL, ;
+                ::Descend, ;
+                NIL, ;
+                additive, ;
+                useCurrent, ;
+                ::Custom, ;
+                NIL, ;
+                NIL, ;
+                temporary )
+
+            BEGIN SEQUENCE WITH ::FTable:ErrorBlock
+
+                ordCreate( bagName, ::TagName, indexExp, indexExp, unique )
+
+                ::Fopened := .t.
+
+            RECOVER USING oErr
+
+                ui_Alert( ;
+                    "CreateIndex() Error in " + ::FTable:ClassName + ", Table: " + ::FTable:TableFileName + ";" + ;
+                    " Index Tag Name: " + ::TagName + ";" + ;
+                    "IndexExpression: " + indexExp + ";" + ;
+                    "  Index For Key: " + AsString( ::ForKey ) ;
+                    )
+
+                Break( oErr )
+
+            END SEQUENCE
+
+        ENDIF
+
+    ENDIF
+
+    ::FTable:Alias:RecNo := recNo
+
+RETURN .t.
+
+/*
+    CreateTempIndex
+*/
+METHOD FUNCTION CreateTempIndex() CLASS TIndex
+    LOCAL fileName
+    LOCAL pathName
+    LOCAL aliasName
+    LOCAL dbsIdx
+    LOCAL size
+    LOCAL fldName
+    LOCAL lNew := .F.
+    LOCAL index
+
+    fldName := ::Name
+
+    IF !::temporary
+
+        hb_FNameSplit( ::FTable:Alias:dbOrderInfo( DBOI_FULLPATH ), @pathName )
+
+        pathName += Lower( ::FTable:ClassName )
+
+        fileName := pathName + ".dbf"
+
+        aliasName := "IDX_" + ::FTable:ClassName()
+
+        IF File( fileName ) .AND. ::IdxAlias = NIL
+
+            ::IdxAlias := TAlias()
+            ::IdxAlias:lShared := .F.
+            ::IdxAlias:New( fileName, aliasName )
+
+        ENDIF
+
+    ENDIF
+
+    IF ::IdxAlias = NIL
+
+        IF ::temporary
+
+            FClose( hb_FTempCreateEx( @fileName, NIL, "t", ".dbf" ) )
+
+            aliasName := "TMP_" + ::FTable:ClassName()
+
+        ENDIF
+
+        size := 0
+
+        IF ::MasterKeyField != NIL
+            size += ::MasterKeyField:Size
+        ENDIF
+
+        IF ::KeyField != NIL
+            size += ::KeyField:Size
+        ENDIF
+
+        dbsIdx := ;
+            { ;
+            { "RECNO", "I", 4, 0 }, ;
+            { fldName, "C", size, 0 } ;
+            }
+
+        dbCreate( fileName, dbsIdx )
+
+        ::IdxAlias := TAlias()
+        ::IdxAlias:lShared := .F.
+        ::IdxAlias:New( fileName, aliasName )
+
+        CREATE INDEX ON "RecNo" TAG "IDX_RECNO" BAG pathName ADDITIVE
+
+        CREATE INDEX ON fldName TAG ::Name BAG pathName ADDITIVE
+
+        lNew := .T.
+
+    ENDIF
+
+    IF ::temporary
+
+        ::IdxAlias:__dbZap()
+
+    ENDIF
+
+    IF ::temporary .OR. lNew
+        index := self
+        ::FTable:dbEval( ;
+            {|self|
+                index:IdxAlias:AddRec()
+                index:IdxAlias:SetFieldValue( "RECNO", ::RecNo() )
+                index:IdxAlias:SetFieldValue( fldName, index:MasterKeyVal + index:KeyVal )
+                RETURN NIL
+            }, NIL, NIL, ::useIndex )
+    ENDIF
+
+    ::FIdxAlias := .T.
+
+    ::Fopened := .t.
+
+RETURN .T.
 
 /*
     CustomKeyExpValue
@@ -608,6 +804,45 @@ METHOD FUNCTION MasterKeyExpression() CLASS TIndex
    ENDIF
 
    RETURN ""
+
+/*
+    openIndex
+*/
+METHOD PROCEDURE openIndex() CLASS TIndex
+    LOCAL index
+    LOCAL processing
+
+    IF ! ::Fopened
+        IF ::FTable:Alias:ordNumber( ::TagName ) = 0
+            processing := .F.
+            FOR EACH index IN ::indexCreationList
+                processing := ::TableBaseClass == index:TableBaseClass .AND. ::tagName == index:tagName
+                IF processing
+                    ::Fopened := .T.
+                    EXIT
+                ENDIF
+            NEXT
+            IF ! processing
+                aAdd( ::indexCreationList, self )
+                IF ::temporary
+                   IF ! ::CreateTempIndex()
+                      RAISE ERROR "Failure to create temporal Index '" + ::Name + "'"
+                   ENDIF
+                ELSE
+                   IF ! ::CreateIndex()
+                      RAISE ERROR "Failure to create Index '" + ::Name + "'"
+                   ENDIF
+                   IF ::Fopened .AND. ::Custom
+                      ::FillCustomIndex()
+                   ENDIF
+                ENDIF
+                hb_aDel( ::indexCreationList, len( ::indexCreationList ), .T. )
+            ENDIF
+        ELSE
+            ::Fopened := .T.
+        ENDIF
+    ENDIF
+RETURN
 
 /*
     RawGet4Seek

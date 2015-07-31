@@ -239,8 +239,6 @@ CLASS TTable FROM OORDBBASE
    METHOD ChildSource( tableName, destroyChild )
    METHOD CopyRecord( origin )
    METHOD COUNT( bForCondition, bWhileCondition, index, scope )
-   METHOD CreateIndex( index )
-   METHOD CreateTempIndex( index )
    METHOD CreateTable( fullFileName )
    METHOD DbFilterPull()
    METHOD DbFilterPush( ignoreMasterKey )
@@ -476,20 +474,7 @@ METHOD PROCEDURE __CheckIndexes() CLASS TTable
 
    FOR EACH curClass IN ::FIndexList
       FOR EACH INDEX IN curClass
-         IF ::Alias:ordNumber( index:TagName ) = 0
-            IF index:temporary
-               IF ! ::CreateTempIndex( index )
-                  RAISE ERROR "Failure to create temporal Index '" + index:Name + "'"
-               ENDIF
-            ELSE
-               IF ! ::CreateIndex( index )
-                  RAISE ERROR "Failure to create Index '" + index:Name + "'"
-               ENDIF
-               IF index:Custom
-                  index:FillCustomIndex()
-               ENDIF
-            ENDIF
-         ENDIF
+         index:openIndex()
       NEXT
    NEXT
 
@@ -1070,84 +1055,6 @@ METHOD FUNCTION COUNT( bForCondition, bWhileCondition, index, scope ) CLASS TTab
    RETURN nCount
 
 /*
-    CreateIndex
-*/
-METHOD FUNCTION CreateIndex( index ) CLASS TTable
-
-   LOCAL indexExp
-   LOCAL recNo
-   LOCAL forKeyBlock
-   LOCAL whileBlock := NIL
-   LOCAL evalBlock := NIL
-   LOCAL intervalVal := NIL
-   LOCAL additive := .T.
-   LOCAL useCurrent := .F.
-   LOCAL temporary := .F.
-   LOCAL bagName := NIL
-   LOCAL unique := .F.
-   LOCAL oErr
-
-   recNo := ::Alias:RecNo
-
-   IF index:Custom
-      indexExp := E"\042" + Replicate( "#", Len( index:MasterKeyVal ) + Len( index:KeyVal ) ) + E"\042"
-      dbSelectArea( ::Alias:Name )
-      ordCondSet( ,,,,,, RecNo(),,,,,,,, .T. )
-      ordCreate( , index:TagName, indexExp )
-   ELSE
-
-      indexExp := index:IndexExpression()
-
-      IF !Empty( index:ForKey )
-         forKeyBlock := &( "{||" + index:ForKey + "}" )
-      ENDIF
-
-      dbSelectArea( ::Alias:Name )  // here because index:IndexExpression() may change active WA
-
-      ordCondSet( ;
-         index:ForKey, ;
-         forKeyBlock, ;
-         NIL, ;
-         whileBlock, ;
-         evalBlock, ;
-         intervalVal, ;
-         NIL, ;
-         NIL, ;
-         NIL, ;
-         NIL, ;
-         index:Descend, ;
-         NIL, ;
-         additive, ;
-         useCurrent, ;
-         index:Custom, ;
-         NIL, ;
-         NIL, ;
-         temporary )
-
-      BEGIN SEQUENCE WITH ::ErrorBlock
-
-         ordCreate( bagName, index:TagName, indexExp, indexExp, unique )
-
-      RECOVER USING oErr
-
-         ui_Alert( ;
-            "CreateIndex() Error in " + ::ClassName + ", Table: " + ::TableFileName + ";" + ;
-            " Index Tag Name: " + index:TagName + ";" + ;
-            "IndexExpression: " + indexExp + ";" + ;
-            "  Index For Key: " + AsString( index:ForKey ) ;
-             )
-
-         Break( oErr )
-
-      END SEQUENCE
-
-   ENDIF
-
-   ::Alias:RecNo := recNo
-
-   RETURN .T.
-
-/*
     CreateTable
 */
 METHOD FUNCTION CreateTable( fullFileName ) CLASS TTable
@@ -1257,101 +1164,6 @@ METHOD PROCEDURE CreateTableInstance() CLASS TTable
    ENDIF
 
    RETURN
-
-/*
-    CreateTempIndex
-*/
-METHOD FUNCTION CreateTempIndex( index ) CLASS TTable
-
-   LOCAL fileName
-   LOCAL pathName
-   LOCAL aliasName
-   LOCAL dbsIdx
-   LOCAL size
-   LOCAL fldName
-   LOCAL lNew := .F.
-
-   fldName := index:Name
-
-   IF !index:temporary
-
-      hb_FNameSplit( ::Alias:dbOrderInfo( DBOI_FULLPATH ), @pathName )
-
-      pathName += Lower( ::ClassName )
-
-      fileName := pathName + ".dbf"
-
-      aliasName := "IDX_" + ::ClassName()
-
-      IF File( fileName ) .AND. index:IdxAlias = NIL
-
-         index:IdxAlias := TAlias()
-         index:IdxAlias:lShared := .F.
-         index:IdxAlias:New( fileName, aliasName )
-
-      ENDIF
-
-   ENDIF
-
-   IF index:IdxAlias = NIL
-
-      IF index:temporary
-
-         FClose( hb_FTempCreateEx( @fileName, NIL, "t", ".dbf" ) )
-
-         aliasName := "TMP_" + ::ClassName()
-
-      ENDIF
-
-      size := 0
-
-      IF index:MasterKeyField != NIL
-         size += index:MasterKeyField:Size
-      ENDIF
-
-      IF index:KeyField != NIL
-         size += index:KeyField:Size
-      ENDIF
-
-      dbsIdx := ;
-         { ;
-         { "RECNO", "I", 4, 0 }, ;
-         { fldName, "C", size, 0 } ;
-         }
-
-      dbCreate( fileName, dbsIdx )
-
-      index:IdxAlias := TAlias()
-      index:IdxAlias:lShared := .F.
-      index:IdxAlias:New( fileName, aliasName )
-
-      CREATE INDEX ON "RecNo" TAG "IDX_RECNO" BAG pathName ADDITIVE
-
-      CREATE INDEX ON fldName TAG index:Name BAG pathName ADDITIVE
-
-      lNew := .T.
-
-   ENDIF
-
-   IF index:temporary
-
-      index:IdxAlias:__dbZap()
-
-   ENDIF
-
-   IF index:temporary .OR. lNew
-      ::dbEval( ;
-         {| Self|
-      index:IdxAlias:AddRec()
-      index:IdxAlias:SetFieldValue( "RECNO", ::RecNo() )
-      index:IdxAlias:SetFieldValue( fldName, index:MasterKeyVal + index:KeyVal )
-      RETURN NIL
-      }, NIL, NIL, index:useIndex )
-   ENDIF
-
-   index:FIdxAlias := .T.
-
-   RETURN .T.
 
 /*
     DbEval

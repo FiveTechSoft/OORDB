@@ -2,6 +2,12 @@
  * $Id: ChangeLog 155 2013-06-06 03:29:32Z tfonrouge $
  */
 
+Fri Jul 31 00:14:17 UTC 2015 Teo Fonrouge (tfonrouge@gmail.com)
+  M src/TIndex.prg
+  M src/TTable.prg
+    * moved create index methods to TIndex.prg
+    % allow creation of recursive index (Table with a fieldTable of the same class with index)
+
 Thu Jul 30 15:40:32 UTC 2015 Teo Fonrouge (tfonrouge@gmail.com)
   M include/oordb.ch
     * renamed clause 'USE INDEX' to 'DEFAULTINDEX'
