@@ -2,6 +2,16 @@
  * $Id: ChangeLog 155 2013-06-06 03:29:32Z tfonrouge $
  */
 
+Sun Aug  2 22:04:43 UTC 2015 Teo Fonrouge (tfonrouge@gmail.com)
+  M src/TFieldTable.prg
+    ! keep keyval of the relevant length, i.e. if a keyField is greater than his logical length
+
+  M src/TIndex.prg
+    % simplified
+
+  M src/TTable.prg
+    * minor cleanup
+
 Fri Jul 31 00:14:17 UTC 2015 Teo Fonrouge (tfonrouge@gmail.com)
   M src/TIndex.prg
   M src/TTable.prg

@@ -305,12 +305,26 @@ METHOD FUNCTION GetFieldReadBlock() CLASS TFieldTable
     GetKeyVal
 */
 METHOD FUNCTION GetKeyVal( keyVal ) CLASS TFieldTable
+   LOCAL baseKeyField
 
    IF keyVal = NIL
       keyVal := ::GetAsVariant()
    ENDIF
 
-   RETURN ::BaseKeyField:GetKeyVal( keyVal )
+   baseKeyField := ::baseKeyField
+
+   keyVal := baseKeyField:getKeyVal( keyVal )
+
+   IF ::FDBS_LEN != nil .AND. baseKeyField:DBS_TYPE = "C" .AND. len( keyVal ) > ::FDBS_LEN
+      /* 
+        len can be different because this field, in the linked table can be of diferent size (greater size)
+        i.e. 10 characteres in linked table vs 3 chars in this field, and 3 chars is the relevant size of the field
+        then if this field is used in a masterKey it will be of the greater size of the logical field length
+      */
+      keyVal := left( keyVal, ::FDBS_LEN )
+   ENDIF
+
+   RETURN keyVal
 
 /*
     GetLabel

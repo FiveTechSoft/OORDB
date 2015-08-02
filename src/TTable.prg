@@ -2879,6 +2879,7 @@ METHOD PROCEDURE Refresh CLASS TTable
    IF ::FRecNo = ::Alias:RecNo
       RETURN
    ENDIF
+
    ::GetCurrentRecord()
 
    RETURN
