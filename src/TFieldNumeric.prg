@@ -10,7 +10,8 @@
 */
 CLASS TFieldNumeric FROM TField
 
-   PROTECTED:
+PROTECTED:
+
    DATA FDBS_LEN INIT 15   // 000000000000.00
    DATA FDBS_DEC INIT 2
    DATA FDBS_TYPE INIT "N"
@@ -21,7 +22,8 @@ CLASS TFieldNumeric FROM TField
    DATA FValType INIT "N"
    METHOD GetEmptyValue BLOCK {|| 0 }
    METHOD StrFormat( value ) INLINE Str( value )
-   PUBLIC:
+
+PUBLIC:
 
    METHOD GetAsString( value )
    METHOD GetKeyVal( keyVal )
@@ -30,10 +32,8 @@ CLASS TFieldNumeric FROM TField
    METHOD SetAsVariant( variant )
 
    PROPERTY AsNumeric READ GetAsVariant WRITE SetAsVariant
-
-   PUBLISHED:
-
    PROPERTY KeySize INIT 15
+   PROPERTY superFieldType INIT ftNumeric
 
 ENDCLASS
 

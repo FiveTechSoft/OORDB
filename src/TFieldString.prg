@@ -37,6 +37,7 @@ PUBLIC:
    PROPERTY AsNumeric READ GetAsNumeric WRITE SetAsNumeric
    PROPERTY KeySize READ Size
    PROPERTY Size READ GetSize WRITE SetSize
+   PROPERTY superFieldType INIT ftString
 
 ENDCLASS
 

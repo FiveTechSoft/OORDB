@@ -262,6 +262,7 @@ CLASS TField FROM OORDBBASE
    PROPERTY Published READ FPublished WRITE SetPublished
    PROPERTY READONLY READ GetReadOnly WRITE SetReadOnly
    PROPERTY Required READ FRequired WRITE SetRequired
+   PROPERTY superFieldType READ fieldType
    PROPERTY Table READ FTable
    PROPERTY TableBaseClass READ FTableBaseClass
    METHOD Type( locale )

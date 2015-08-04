@@ -2,6 +2,21 @@
  * $Id: ChangeLog 155 2013-06-06 03:29:32Z tfonrouge $
  */
 
+Tue Aug  4 20:26:39 UTC 2015 Teo Fonrouge (tfonrouge@gmail.com)
+  M src/TField.prg
+    + property
+      + superFieldType
+
+  M src/TFieldNumeric.prg
+    * minor code cleanup
+    + property
+      + superFieldType init ftNumeric
+
+
+  M src/TFieldString.prg
+    + property
+      + superFieldType init ftString
+
 Sun Aug  2 22:04:43 UTC 2015 Teo Fonrouge (tfonrouge@gmail.com)
   M src/TFieldTable.prg
     ! keep keyval of the relevant length, i.e. if a keyField is greater than his logical length
