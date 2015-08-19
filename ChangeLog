@@ -2,6 +2,10 @@
  * $Id: ChangeLog 155 2013-06-06 03:29:32Z tfonrouge $
  */
 
+Wed Aug 19 15:46:35 UTC 2015 Teo Fonrouge (tfonrouge@gmail.com)
+  M src/TIndex.prg
+    * added protection against wrong keyFlags value
+
 Tue Aug  4 20:26:39 UTC 2015 Teo Fonrouge (tfonrouge@gmail.com)
   M src/TField.prg
     + property

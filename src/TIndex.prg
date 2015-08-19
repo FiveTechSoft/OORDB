@@ -241,7 +241,9 @@ METHOD FUNCTION __Seek( direction, keyValue, lSoftSeek ) CLASS TIndex
 */
 METHOD AddIndex( cMasterKeyField, ai, un, cKeyField, keyFlags, ForKey, cs, de, acceptEmptyUnique, useIndex, temporary, rightJust /*, cu*/ )
 
-   ::FKeyFlags := keyFlags
+   IF hb_isHash( keyFlags )
+      ::FKeyFlags := keyFlags
+   ENDIF
 
    ::MasterKeyField := cMasterKeyField
 
