@@ -2,6 +2,17 @@
  * $Id: ChangeLog 155 2013-06-06 03:29:32Z tfonrouge $
  */
 
+Thu Aug 20 00:55:40 UTC 2015 Teo Fonrouge (tfonrouge@gmail.com)
+  M src/TFieldDate.prg
+    % accept 'T' values (dateTime)
+
+  M src/TIndex.prg
+    * now master field on secondary indexes give the isMasterFieldComponent property to the index field
+
+  M src/TTable.prg
+    % FillPrimaryIndexes() now reset also the masterKeyField on SECONDARY indexes on addRec()
+    % don't reset twice the same field on addRec()
+
 Wed Aug 19 15:46:35 UTC 2015 Teo Fonrouge (tfonrouge@gmail.com)
   M src/TIndex.prg
     * added protection against wrong keyFlags value

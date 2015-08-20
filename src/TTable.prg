@@ -1623,55 +1623,74 @@ METHOD PROCEDURE FillFieldList() CLASS TTable
     FillPrimaryIndexes
 */
 METHOD PROCEDURE FillPrimaryIndexes( curClass ) CLASS TTable
+   LOCAL filledFieldList := {=>}
 
-   F_FillPrimaryIndexes( Self, curClass )
+   F_FillPrimaryIndexes( Self, curClass, filledFieldList )
 
    RETURN
 
 /*
     F_FillPrimaryIndexes
 */
-STATIC PROCEDURE F_FillPrimaryIndexes( Self, curClass )
+STATIC PROCEDURE F_FillPrimaryIndexes( Self, curClass, filledFieldList )
+    LOCAL className
+    LOCAL field
+    LOCAL iTypes := {"PRIMARY","SECONDARY"}
+    LOCAL iType
+    LOCAL index
+    LOCAL i
 
-   LOCAL className
-   LOCAL AIndex
-   LOCAL AField
+    className := curClass:ClassName()
 
-   className := curClass:ClassName()
+    IF !className == "TTABLE"
 
-   IF !className == "TTABLE"
+        F_FillPrimaryIndexes( Self, curClass:Super, filledFieldList )
 
-      F_FillPrimaryIndexes( Self, curClass:Super )
-
-      IF hb_HHasKey( ::PrimaryIndexList, className )
-         AIndex := ::IndexList[ className, ::PrimaryIndexList[ className ] ]
-      ELSE
-         AIndex := NIL
-      ENDIF
-
-      IF AIndex != NIL
-         AField := AIndex:MasterKeyField
-         IF AField != NIL
-            AField:Reset()
-            AField:SetData(, .T. )
-         ENDIF
-            /*!
-             * AutoIncrement fields always need to be written (to set a value)
-             */
-         AField := AIndex:UniqueKeyField
-         IF AField != NIL
-            IF AField:FieldType = ftAutoInc
-               AField:GetData()
-            ELSE
-                AField:Reset()
-                AField:SetData(, .T. )
+        FOR EACH iType IN iTypes
+            IF hb_HHasKey( ::indexList, className )
+                FOR EACH index IN ::indexList[ className ]
+                    IF index:indexType == iType
+                        field := index:MasterKeyField
+                        IF field != nil
+                            IF field:FieldMethodType = "A"
+                                FOR EACH i IN field:fieldArrayIndex
+                                    field := ::FieldList[ i ]
+                                    IF ! hb_HHasKey( filledFieldList, field:name )
+                                        field:reset()
+                                        field:setData( , .T. )
+                                        filledFieldList[ field:name ] := nil
+                                    ENDIF
+                                NEXT
+                            ELSE
+                                IF ! hb_HHasKey( filledFieldList, field:name )
+                                    field:reset()
+                                    field:setData( , .T. )
+                                    filledFieldList[ field:name ] := nil
+                                ENDIF
+                            ENDIF
+                        ENDIF
+                        /*!
+                         * AutoIncrement fields always need to be written (to set a value)
+                         */
+                        field := index:UniqueKeyField
+                        IF field != nil
+                            IF ! hb_HHasKey( filledFieldList, field:name )
+                                IF field:FieldType = ftAutoInc
+                                    field:GetData()
+                                ELSE
+                                    field:Reset()
+                                    field:SetData(, .T. )
+                                ENDIF
+                                filledFieldList[ field:name ] := nil
+                            ENDIF
+                        ENDIF
+                    ENDIF
+                NEXT
             ENDIF
-         ENDIF
-      ENDIF
+        NEXT
+    ENDIF
 
-   ENDIF
-
-   RETURN
+RETURN
 
 /*
     FilterEval

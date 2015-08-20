@@ -958,17 +958,16 @@ METHOD PROCEDURE SetField( nIndex, XField ) CLASS TIndex
    IF ::FTable:PrimaryIndex == Self /* check if index is the Primary index */
       IF !HB_ISNIL( AField )
          AField:PrimaryKeyComponent := .T.
-         /* Assign MasterField value to the TTable object field */
-         IF nIndex = 0
-            AField:IsMasterFieldComponent := .T.
-         ENDIF
       ENDIF
-   ELSE
-      // AField:SecondaryKeyComponent := .T.
    ENDIF
 
-   IF AField == NIL
+   IF hb_isNil( AField )
       RETURN
+   ENDIF
+
+   /* Assign MasterField value to the TTable object field */
+   IF nIndex = 0
+      AField:IsMasterFieldComponent := .T.
    ENDIF
 
    SWITCH nIndex

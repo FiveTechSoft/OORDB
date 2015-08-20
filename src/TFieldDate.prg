@@ -45,6 +45,8 @@ METHOD FUNCTION GetKeyVal( keyVal ) CLASS TFieldDate
       RETURN keyVal
    CASE 'D'
       RETURN DToS( keyVal )
+   CASE 'T'
+      RETURN dToS( hb_tToD( keyVal ) )
    CASE 'U'
       RETURN DToS( ::GetAsVariant() )
    ENDSWITCH
@@ -78,6 +80,9 @@ METHOD PROCEDURE SetAsVariant( variant ) CLASS TFieldDate
       EXIT
    CASE 'D'
       ::Super:SetAsVariant( variant )
+      EXIT
+   CASE 'T'
+      ::super:setAsVariant( hb_tToD( variant ) )
       EXIT
    ENDSWITCH
 
