@@ -2,6 +2,13 @@
  * $Id: ChangeLog 155 2013-06-06 03:29:32Z tfonrouge $
  */
 
+Mon Aug 24 19:14:44 UTC 2015 Teo Fonrouge (tfonrouge@gmail.com)
+  M src/TField.prg
+    * code cleanup
+
+  M src/TFieldTable.prg
+    ! ignore isMasterFieldComponent when assigning Self to linkedTable:linkedObjField
+
 Mon Aug 24 14:32:05 UTC 2015 Teo Fonrouge (tfonrouge@gmail.com)
   M src/Dba.prg
   M src/TTable.prg

@@ -1024,14 +1024,6 @@ METHOD FUNCTION Reset() CLASS TField
 
             ELSE
 
-               IF ::IsDerivedFrom( "TFieldTable" ) .AND. ::IsMasterFieldComponent
-                  IF ::FTable:MasterSource = NIL
-                     // RAISE ERROR "MasterField component '" + ::Table:ClassName + ":" + ::Name + "' needs a MasterSource Table."
-                  ELSE
-                     // RAISE ERROR "MasterField component '" + ::Table:ClassName + ":" + ::Name + "' cannot be resolved in MasterSource Table (" + ::FTable:MasterSource:ClassName() + ") ."
-                  ENDIF
-               ENDIF
-
                IF ::IsDerivedFrom( "TFieldTable" ) .AND. ::LinkedTable:KeyField != NIL
                   IF ::FTable:State = dsInsert
                      value := ::LinkedTable:BaseKeyField:NewValue
