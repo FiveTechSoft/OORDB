@@ -2,7 +2,7 @@
  *
  */
 
-STATIC BaseArray := "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ"
+THREAD STATIC BaseArray := "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ"
 
 THREAD STATIC __S_UI_ALERT_DELAY
 
@@ -120,8 +120,8 @@ FUNCTION AsString( xVal )
 */
 FUNCTION Base2N( sBase, nBase, l, cFill )
 
-   STATIC dec
-   STATIC i, c, n, s, lb
+   THREAD STATIC dec
+   THREAD STATIC i, c, n, s, lb
 
    dec := 0
    n := 1
@@ -340,8 +340,8 @@ FUNCTION MyErrorNew( SubSystem, Operation, Description, Args, ProcFile, ProcName
 */
 FUNCTION N2Base( nVal, nBase, l, cFill )
 
-   STATIC sBase
-   STATIC n
+   THREAD STATIC sBase
+   THREAD STATIC n
 
    sBase := ""
    n := 1

@@ -9,7 +9,7 @@
 #include "inkey.ch"
 #include "dbinfo.ch"
 
-STATIC aws := {}                  // stack de PushWS/PopWS
+THREAD STATIC aws := {}                  // stack de PushWS/PopWS
 
 /*
     AddRec
@@ -100,7 +100,7 @@ FUNCTION RecCLEAR()
 */
 FUNCTION DbSkipX( n, ord )
 
-   STATIC bord, orden, ret
+   THREAD STATIC bord, orden, ret
 
    ret := .T.
    bord := ordSetFocus()
@@ -431,8 +431,8 @@ FUNCTION RecUnLock( n )
 */
 FUNCTION SEEK( expr, ord, ss )
 
-   STATIC ret
-   STATIC bord
+   THREAD STATIC ret
+   THREAD STATIC bord
 
    IF ord == NIL
       RETURN dbSeek( expr, ss )
@@ -450,8 +450,8 @@ FUNCTION SEEK( expr, ord, ss )
 */
 FUNCTION SeekLast( expr, ord, ss )
 
-   STATIC ret
-   STATIC bord
+   THREAD STATIC ret
+   THREAD STATIC bord
 
    IF ord == NIL
       RETURN dbSeek( expr, ss, .T. )

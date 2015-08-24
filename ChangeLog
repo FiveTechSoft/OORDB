@@ -2,6 +2,12 @@
  * $Id: ChangeLog 155 2013-06-06 03:29:32Z tfonrouge $
  */
 
+Mon Aug 24 14:32:05 UTC 2015 Teo Fonrouge (tfonrouge@gmail.com)
+  M src/Dba.prg
+  M src/TTable.prg
+  M src/common.prg
+    * using THREAD STATIC
+
 Mon Aug 24 13:49:53 UTC 2015 Teo Fonrouge (tfonrouge@gmail.com)
   M include/property.ch
     ! THREAD STATIC

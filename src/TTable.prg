@@ -19,8 +19,8 @@
 
 #define OORDB_DEFAULT_AUTOCREATE    .T.
 
-STATIC FErrorBlock
-STATIC BaseKeyFieldList := {}
+THREAD STATIC FErrorBlock
+THREAD STATIC BaseKeyFieldList := {}
 
 REQUEST TField
 
