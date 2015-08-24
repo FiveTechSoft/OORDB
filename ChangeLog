@@ -2,6 +2,10 @@
  * $Id: ChangeLog 155 2013-06-06 03:29:32Z tfonrouge $
  */
 
+Mon Aug 24 13:49:53 UTC 2015 Teo Fonrouge (tfonrouge@gmail.com)
+  M include/property.ch
+    ! THREAD STATIC
+
 Thu Aug 20 00:55:40 UTC 2015 Teo Fonrouge (tfonrouge@gmail.com)
   M src/TFieldDate.prg
     % accept 'T' values (dateTime)

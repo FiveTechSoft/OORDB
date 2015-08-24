@@ -113,7 +113,7 @@
 
 #xcommand SINGLETON CLASS <!clsName!> [ FROM <!fromCls1!> [,<!fromClsN!>] ] => ;
 FUNCTION <clsName>() ;;
-STATIC obj, once ;;
+THREAD STATIC obj, once ;;
 IF obj == NIL ;;
    hb_threadOnce( @once, {|| obj := __S_<clsName>() } ) ;;
 END ;;
