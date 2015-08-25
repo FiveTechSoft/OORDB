@@ -28,7 +28,7 @@ METHOD FUNCTION __warnDescriptor() CLASS OORDBBASE
     ELSEIF ::isDerivedFrom( "TTable" )
 
         descriptor := ;
-            e"Table Name: \"" + ::table:className + e"\";" + ;
+            e"Table Name: \"" + ::className + e"\";" + ;
             e""
 
     ELSE
