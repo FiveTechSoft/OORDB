@@ -190,7 +190,6 @@ CLASS TTable FROM OORDBBASE
    METHOD SetErrorBlock( errorBlock ) INLINE FErrorBlock := errorBlock
    METHOD SetisMetaTable( isMetaTable )
    METHOD SetTableFileName( tableFileName ) INLINE ::FTableFileName := tableFileName
-   METHOD UpdateCustomIndexes()
 
    PUBLIC:
 
@@ -252,7 +251,7 @@ CLASS TTable FROM OORDBBASE
    METHOD dbSkip( numRecs )
    METHOD DELETE( lDeleteChilds )
    METHOD DeleteChilds()
-   METHOD Edit()
+   METHOD Edit( lNoRetry )
    METHOD FieldByName( name, index )
    METHOD FieldByObjClass( objClass, derived, index )
    METHOD FilterEval( index )
@@ -282,7 +281,7 @@ CLASS TTable FROM OORDBBASE
    METHOD ordKeyNo() INLINE ::GetIndex():ordKeyNo()
    METHOD Post()
    METHOD RawSeek( Value, index )
-   METHOD RecLock()
+   METHOD RecLock( lNoRetry )
    METHOD RecUnLock()
    METHOD Refresh
    METHOD Reset() // Set Field Record to their default values, Sync MasterKeyVal Value
@@ -306,6 +305,8 @@ CLASS TTable FROM OORDBBASE
    METHOD SyncRecNo( fromAlias )
    METHOD TableFileName_Path() INLINE ::DataBase:Directory
    METHOD TableClass INLINE ::ClassName + "@" + ::TableFileName
+
+   METHOD UpdateCustomIndexes()
 
    METHOD Validate( showAlert )
 
@@ -1536,14 +1537,14 @@ METHOD PROCEDURE Destroy() CLASS TTable
 /*
     Edit
 */
-METHOD FUNCTION Edit() CLASS TTable
+METHOD FUNCTION Edit( lNoRetry ) CLASS TTable
 
    IF !::State = dsBrowse
       ::Error_TableNotInBrowseState()
       RETURN .F.
    ENDIF
 
-   IF ::Eof() .OR. !::OnBeforeEdit() .OR. !::RecLock()
+   IF ::Eof() .OR. !::OnBeforeEdit() .OR. !::RecLock( lNoRetry )
       RETURN .F.
    ENDIF
 
@@ -2831,7 +2832,7 @@ METHOD FUNCTION RawSeek( Value, index ) CLASS TTable
 /*
     RecLock
 */
-METHOD FUNCTION RecLock() CLASS TTable
+METHOD FUNCTION RecLock( lNoRetry ) CLASS TTable
 
    LOCAL allowOnDataChange
    LOCAL result
@@ -2854,7 +2855,7 @@ METHOD FUNCTION RecLock() CLASS TTable
       RAISE ERROR "Attempt to lock record at EOF..."
    ENDIF
 
-   IF !::InsideScope() .OR. !::Alias:RecLock()
+   IF !::InsideScope() .OR. !::Alias:RecLock( nil, lNoRetry )
       RETURN .F.
    ENDIF
 

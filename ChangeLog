@@ -2,6 +2,12 @@
  * $Id: ChangeLog 155 2013-06-06 03:29:32Z tfonrouge $
  */
 
+Fri Aug 28 21:57:21 UTC 2015 Teo Fonrouge (tfonrouge@gmail.com)
+  M include/oordb.ch
+  M src/TAlias.prg
+  M src/TTable.prg
+    % paramater noRetry on reclock()
+
 Tue Aug 25 16:28:13 UTC 2015 Teo Fonrouge (tfonrouge@gmail.com)
   M src/oordbbase.prg
     ! stupid typo

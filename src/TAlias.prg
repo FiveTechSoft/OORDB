@@ -51,6 +51,7 @@ CLASS TAlias FROM OORDBBASE
    METHOD DbOpen( table, aliasName )
    METHOD dbOrderInfo( ... )
    METHOD dbRecall()
+   METHOD dbRLock( recNo ) INLINE ::recLock( recNo, noRetry )
    METHOD dbSkip( nRecords, indexName )
    METHOD dbStruct()
    METHOD dbUnlock() INLINE ::FstackLock := {}, ( ::workArea )->( dbUnlock() )
@@ -80,7 +81,7 @@ CLASS TAlias FROM OORDBBASE
    METHOD Push()
    METHOD RawGet4Seek( direction, xVal, keyVal, indexName, softSeek )
    METHOD RecCount INLINE ( ::workArea )->( RecCount() )
-   METHOD RecLock( RecNo )
+   METHOD RecLock( recNo, lNoRetry )
    METHOD RecUnLock( RecNo )
    METHOD Seek( cKey, indexName, softSeek )
    METHOD SeekLast( cKey, indexName, softSeek )
@@ -576,25 +577,29 @@ METHOD FUNCTION RawGet4Seek( direction, xVal, keyVal, indexName, softSeek ) CLAS
 /*
     RecLock
 */
-METHOD FUNCTION RecLock( RecNo ) CLASS TAlias
+METHOD FUNCTION RecLock( recNo, lNoRetry ) CLASS TAlias
 
    LOCAL n
 
    ::SyncFromRecNo()
-   IF RecNo = NIL
-      RecNo := ::FRecNo
+   IF recNo = NIL
+      recNo := ::FrecNo
    ENDIF
    IF ::IsLocked()
-      n := AScan( ::FstackLock, {| e| e[ 1 ] = RecNo } )
+      n := AScan( ::FstackLock, {| e| e[ 1 ] = recNo } )
       IF n > 0
          ::FstackLock[ n, 2 ]++
       ELSE
-         AAdd( ::FstackLock, { RecNo, 1 } )
+         AAdd( ::FstackLock, { recNo, 1 } )
       ENDIF
       RETURN .T.
    ENDIF
 
-   RETURN ( ::workArea )->( RecLock( RecNo ) )
+   IF lNoRetry = noRetry
+      RETURN ( ::workArea )->( dbRLock( recNo ) )
+   ENDIF
+
+   RETURN ( ::workArea )->( RecLock( recNo ) )
 
 /*
     RecUnLock

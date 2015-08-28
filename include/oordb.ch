@@ -42,6 +42,8 @@
 #define ftInteger   104
 #define ftModTime   105
 
+#define noRetry     .T.
+
 
 /* Events for TTable */
 #xtranslate EVENT ONAFTEROPEN => METHOD OnAfterOpen()
