@@ -334,7 +334,7 @@ PUBLIC:
    PROPERTY ALIAS READ GetAlias
    PROPERTY AsString READ GetAsString WRITE SetAsString
    PROPERTY AutoCreate READ GetAutoCreate
-   PROPERTY baseDocument
+   PROPERTY baseDocument INIT ""
    PROPERTY BaseKeyField READ FBaseKeyField
    PROPERTY BaseKeyIndex READ FBaseKeyIndex
    PROPERTY BaseKeyVal READ BaseKeyField:GetKeyVal WRITE BaseKeyField:SetKeyVal
