@@ -227,6 +227,11 @@
 #xtranslate DEFINE DATABASE WITH <methodDatabase> CLASS ;
     => ;
     METHOD InitDataBase INLINE <methodDatabase>():New()
+
+#xtranslate DEFINE BASEDOCUMENT ;
+    => ;
+    DATA FbaseDocument INIT oClass:cName
+
 #xtranslate DEFINE FIELDS ;
     => ;
     DATA curClassField HIDDEN ;;

@@ -85,7 +85,7 @@ FUNCTION ErrorBlockOORDB( oErr )
 */
 CLASS TTable FROM OORDBBASE
 
-   PRIVATE:
+PRIVATE:
 
    CLASSDATA FFieldTypes
    CLASSDATA FInstances INIT hb_HSetCaseMatch( { => }, .F. )
@@ -133,7 +133,7 @@ CLASS TTable FROM OORDBBASE
    METHOD Process_TableName( tableName )
    // METHOD SendToServer
 
-   PROTECTED:
+PROTECTED:
 
    CLASSDATA hDataBase INIT hb_HSetCaseMatch( { => }, .F. )
 
@@ -191,7 +191,7 @@ CLASS TTable FROM OORDBBASE
    METHOD SetisMetaTable( isMetaTable )
    METHOD SetTableFileName( tableFileName ) INLINE ::FTableFileName := tableFileName
 
-   PUBLIC:
+PUBLIC:
 
    DATA aliasIdx
    DATA aliasTmp
@@ -334,6 +334,7 @@ CLASS TTable FROM OORDBBASE
    PROPERTY ALIAS READ GetAlias
    PROPERTY AsString READ GetAsString WRITE SetAsString
    PROPERTY AutoCreate READ GetAutoCreate
+   PROPERTY baseDocument
    PROPERTY BaseKeyField READ FBaseKeyField
    PROPERTY BaseKeyIndex READ FBaseKeyIndex
    PROPERTY BaseKeyVal READ BaseKeyField:GetKeyVal WRITE BaseKeyField:SetKeyVal
@@ -374,7 +375,7 @@ CLASS TTable FROM OORDBBASE
    PROPERTY TableFileName READ GetTableFileName WRITE SetTableFileName
    PROPERTY UndoList READ FUndoList
 
-   PUBLISHED:
+PUBLISHED:
 
    DATA Cargo
 

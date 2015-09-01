@@ -2,6 +2,16 @@
  * $Id: ChangeLog 155 2013-06-06 03:29:32Z tfonrouge $
  */
 
+Tue Sep  1 16:40:26 UTC 2015 Teo Fonrouge (tfonrouge@gmail.com)
+  M include/oordb.ch
+    + clause
+      + DEFINE DOCUMENT : defines base of document in a class tree (without using primary index defined)
+
+  M src/TTable.prg
+    + property
+      + baseDocument : string with class name of base of document
+    * minor code cleanup    
+
 Fri Aug 28 21:57:21 UTC 2015 Teo Fonrouge (tfonrouge@gmail.com)
   M include/oordb.ch
   M src/TAlias.prg
