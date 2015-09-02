@@ -722,7 +722,8 @@ METHOD FUNCTION GetMasterKeyVal( keyField ) CLASS TIndex
          keyVal += ::GetMasterKeyVal( ::FTable:FieldList[ itm ] )
       NEXT
    ELSE
-      IF ::FTable:MasterSource != nil .AND. keyField:DefaultValue = NIL .AND. ( field := ::FTable:FindMasterSourceField( keyField ) ) != NIL
+      IF ::FTable:MasterSource != nil .AND. keyField:DefaultValue = NIL .AND. ( field := ::FTable:FindMasterSourceField( keyField ) ) != NIL .AND. ! field:Calculated
+         /* field has to be not calculated */
          keyVal := field:GetKeyVal( NIL, ::FKeyFlags )
       ELSE
          keyVal := keyField:GetKeyVal( keyField:DefaultValue, ::FKeyFlags )

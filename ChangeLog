@@ -2,6 +2,10 @@
  * $Id: ChangeLog 155 2013-06-06 03:29:32Z tfonrouge $
  */
 
+Wed Sep  2 22:59:46 UTC 2015 Teo Fonrouge (tfonrouge@gmail.com)
+  M src/TIndex.prg
+    * not use calculated masterSource fields when calculating a masterKey value
+
 Tue Sep  1 16:57:34 UTC 2015 Teo Fonrouge (tfonrouge@gmail.com)
   M src/TTable.prg
     * initialize baseDocument value to a empty string
