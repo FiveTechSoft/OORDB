@@ -312,6 +312,38 @@ METHOD FUNCTION CreateIndex() CLASS TIndex
 
     recNo := ::FTable:Alias:RecNo
 
+/*
+#command INDEX ON <key> [TAG <(tag)>] TO <(bag)> ;
+               [FOR <for>] [WHILE <while>] [NEXT <next>] ;
+               [RECORD <rec>] [<rest:REST>] [<all:ALL>] ;
+               [EVAL <eval>] [EVERY <every>] [<unique: UNIQUE>] ;
+               [<ascend: ASCENDING>] [<descend: DESCENDING>] ;
+               [<add: ADDITIVE>] [<cur: USECURRENT>] [<cust: CUSTOM>] ;
+               [<noopt: NOOPTIMIZE>] [<mem: MEMORY, TEMPORARY>] ;
+               [<filter: USEFILTER>] [<ex: EXCLUSIVE>] => ;
+         ordCondSet( <"for">, <{for}>, [<.all.>], <{while}>, ;
+                     <{eval}>, <every>, RecNo(), <next>, <rec>, ;
+                     [<.rest.>], [<.descend.>],, ;
+                     [<.add.>], [<.cur.>], [<.cust.>], [<.noopt.>], ;
+                     <"while">, [<.mem.>], [<.filter.>], [<.ex.>] ) ;;
+         ordCreate( <(bag)>, <(tag)>, <"key">, <{key}>, [<.unique.>] )
+
+#command INDEX ON <key> TAG <(tag)> [TO <(bag)>] ;
+               [FOR <for>] [WHILE <while>] [NEXT <next>] ;
+               [RECORD <rec>] [<rest:REST>] [<all:ALL>] ;
+               [EVAL <eval>] [EVERY <every>] [<unique: UNIQUE>] ;
+               [<ascend: ASCENDING>] [<descend: DESCENDING>] ;
+               [<add: ADDITIVE>] [<cur: USECURRENT>] [<cust: CUSTOM>] ;
+               [<noopt: NOOPTIMIZE>] [<mem: MEMORY, TEMPORARY>] ;
+               [<filter: USEFILTER>] [<ex: EXCLUSIVE>] => ;
+         ordCondSet( <"for">, <{for}>, [<.all.>], <{while}>, ;
+                     <{eval}>, <every>, RecNo(), <next>, <rec>, ;
+                     [<.rest.>], [<.descend.>],, ;
+                     [<.add.>], [<.cur.>], [<.cust.>], [<.noopt.>], ;
+                     <"while">, [<.mem.>], [<.filter.>], [<.ex.>] ) ;;
+         ordCreate( <(bag)>, <(tag)>, <"key">, <{key}>, [<.unique.>] )
+*/
+
     IF ::Custom
         indexExp := E"\042" + Replicate( "#", Len( ::MasterKeyVal ) + Len( ::KeyVal ) ) + E"\042"
         dbSelectArea( ::FTable:Alias:Name )
