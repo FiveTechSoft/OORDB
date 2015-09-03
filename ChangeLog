@@ -2,6 +2,10 @@
  * $Id: ChangeLog 155 2013-06-06 03:29:32Z tfonrouge $
  */
 
+Thu Sep  3 17:53:47 UTC 2015 Teo Fonrouge (tfonrouge@gmail.com)
+  M src/TIndex.prg
+    ! very stupid typo
+
 Thu Sep  3 17:04:33 UTC 2015 Teo Fonrouge (tfonrouge@gmail.com)
   M samples/get1/get1.prg
   M src/TField.prg
