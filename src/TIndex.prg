@@ -120,8 +120,6 @@ PUBLIC:
 
    METHOD openIndex()
 
-   METHOD ordCondSet( ... ) INLINE ::FTable:ordCondSet( ... )
-   METHOD ordCreate( ... ) INLINE ::FTable:ordCreate( ... )
    METHOD ordKeyNo() INLINE ::GetAlias():ordKeyNo()
 
    METHOD RawGet4Seek( direction, blk, keyVal, softSeek )

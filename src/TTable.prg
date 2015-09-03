@@ -275,8 +275,6 @@ PUBLIC:
    METHOD InsertRecord( origin )
    METHOD InsideScope( ignoreFilters )
    METHOD Open
-   METHOD ordCondSet( ... )
-   METHOD ordCreate( ... )
    METHOD ordKeyNo() INLINE ::GetIndex():ordKeyNo()
    METHOD Post()
    METHOD RawSeek( Value, index )
@@ -2669,62 +2667,6 @@ METHOD FUNCTION Open() CLASS TTable
    ::OnAfterOpen()
 
    RETURN .T.
-
-/*
-    OrdCondSet
-*/
-METHOD FUNCTION ordCondSet( ... ) CLASS TTable
-   RETURN ::Alias:ordCondSet( ... )
-
-/*
-    OrdCreate
-*/
-METHOD PROCEDURE ordCreate( ... ) CLASS TTable
-
-   LOCAL scopeTop, scopeBottom
-   LOCAL masterKeyVal
-   LOCAL syncFromAlias := ::DisplayFieldList:__FSyncFromAlias
-
-   // LOCAL oDlg
-
-   dbSelectArea( ::Alias:Name )
-
-   IF !Empty( ::IndexName )
-      masterKeyVal := ::GetIndex():MasterKeyVal
-      ordSetFocus( ::IndexName )
-      scopeTop := ordScope( 0, RTrim( masterKeyVal + ::GetIndex():ScopeTop() ) )
-      scopeBottom := ordScope( 1, masterKeyVal + ::GetIndex():ScopeBottom() )
-   ENDIF
-
-   // DbGoTop()
-
-   ::DisplayFieldList:__FSyncFromAlias := .T.
-
-/*
-    CREATE DIALOG oDlg ;
-        TITLE "Un momento..." ;
-        PARENT ::Frame
-
-    SHOW WINDOW oDlg CENTRE
-*/
-
-   ::Alias:ordCreate( ... )
-
-   IF !Empty( ::IndexName )
-      ordSetFocus( ::IndexName )
-      ordScope( 0, scopeTop )
-      ordScope( 1, scopeBottom )
-   ENDIF
-
-/*
-    DESTROY oDlg
-*/
-
-   ::DisplayFieldList:__FSyncFromAlias := syncFromAlias
-
-   ordCustom( NIL, NIL, .T. )
-
-   RETURN
 
 /*
     Post
