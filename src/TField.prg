@@ -354,7 +354,7 @@ RETURN
     CheckForLinkedObjFieldSetAsVariant
 */
 METHOD PROCEDURE CheckForLinkedObjFieldSetAsVariant( value ) CLASS TField
-    IF ::FTable:LinkedObjField != NIL .AND. (::FTable:LinkedObjField:Calculated .OR. ::FTable:LinkedObjField:Table:State > dsBrowse .OR. ::FTable:LinkedObjField:Table:autoEdit)
+    IF ::FTable:LinkedObjField != NIL .AND. (::FTable:LinkedObjField:Calculated .OR. ::FTable:LinkedObjField:Table:State > dsBrowse )
         ::FTable:LinkedObjField:SetAsVariant( value )
     ENDIF
 RETURN
@@ -1098,7 +1098,6 @@ RETURN
     SetAsVariant
 */
 METHOD FUNCTION SetAsVariant( value ) CLASS TField
-    LOCAL oldState
 
     IF ::FTable:isMetaTable
         ::FTable:isMetaTable := .F.
@@ -1129,10 +1128,6 @@ METHOD FUNCTION SetAsVariant( value ) CLASS TField
             ENDIF
         ENDIF
     ELSE
-        IF ( ::FTable:LinkedObjField = NIL .OR. ::FTable:LinkedObjField:Table:State = dsBrowse ) .AND. ::FTable:State = dsBrowse .AND. ::FTable:autoEdit
-            oldState := ::FTable:State
-            ::FTable:Edit()
-        ENDIF
 
         SWITCH ::FTable:State
         CASE dsBrowse
@@ -1167,10 +1162,6 @@ METHOD FUNCTION SetAsVariant( value ) CLASS TField
             RAISE TFIELD ::Name ERROR "Table not in Edit or Insert or Reading mode"
 
         ENDSWITCH
-
-        IF oldState != NIL
-            ::FTable:Post()
-        ENDIF
 
     ENDIF
 

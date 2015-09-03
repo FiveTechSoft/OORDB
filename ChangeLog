@@ -2,6 +2,13 @@
  * $Id: ChangeLog 155 2013-06-06 03:29:32Z tfonrouge $
  */
 
+Thu Sep  3 17:04:33 UTC 2015 Teo Fonrouge (tfonrouge@gmail.com)
+  M samples/get1/get1.prg
+  M src/TField.prg
+  M src/TTable.prg
+    ! removed autoEdit property (more trouble than benefit), it need to be implemented to TField level and
+      check that not collides with fields that have a keyIndex
+
 Thu Sep  3 13:01:53 UTC 2015 Teo Fonrouge (tfonrouge@gmail.com)
   M src/TFieldFloat.prg
     * float mask 9.2

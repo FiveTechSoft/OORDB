@@ -196,7 +196,6 @@ PUBLIC:
    DATA aliasIdx
    DATA aliasTmp
    DATA allowOnDataChange  INIT .F.
-   DATA autoEdit           INIT .F.
    DATA autoMasterSource   INIT .F.
    DATA autoOpen           INIT .T.
    DATA dataIsOEM          INIT .T.
