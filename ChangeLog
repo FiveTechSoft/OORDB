@@ -2,6 +2,13 @@
  * $Id: ChangeLog 155 2013-06-06 03:29:32Z tfonrouge $
  */
 
+Thu Sep  3 13:01:53 UTC 2015 Teo Fonrouge (tfonrouge@gmail.com)
+  M src/TFieldFloat.prg
+    * float mask 9.2
+
+  M src/TIndex.prg
+    * descend parameter to custom index
+
 Thu Sep  3 00:01:20 UTC 2015 Teo Fonrouge (tfonrouge@gmail.com)
   M src/TIndex.prg
     * not use nil as defaultValue, use instead emptyValue
