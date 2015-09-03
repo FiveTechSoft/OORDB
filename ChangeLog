@@ -2,6 +2,10 @@
  * $Id: ChangeLog 155 2013-06-06 03:29:32Z tfonrouge $
  */
 
+Thu Sep  3 18:10:22 UTC 2015 Teo Fonrouge (tfonrouge@gmail.com)
+  M src/TIndex.prg
+    ! another very stupid typo
+
 Thu Sep  3 17:56:48 UTC 2015 Teo Fonrouge (tfonrouge@gmail.com)
   M src/TIndex.prg
     * syntax: ordCondSet(), ordCreate()

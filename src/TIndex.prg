@@ -347,7 +347,7 @@ METHOD FUNCTION CreateIndex() CLASS TIndex
     IF ::Custom
         indexExp := E"\042" + Replicate( "#", Len( ::MasterKeyVal ) + Len( ::KeyVal ) ) + E"\042"
         dbSelectArea( ::FTable:Alias:Name )
-        ordCondSet( nil,nil,nil,nil,nil,nil,RecNo(),nil,nil,nil,nil,::Descend,nil,nil,.T. )
+        ordCondSet( nil,nil,nil,nil,nil,nil,RecNo(),nil,nil,nil,::Descend,nil,nil,nil,.T. )
         ordCreate( , ::TagName, indexExp )
         ::Fopened := .t.
     ELSE
