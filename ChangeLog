@@ -2,6 +2,10 @@
  * $Id: ChangeLog 155 2013-06-06 03:29:32Z tfonrouge $
  */
 
+Thu Sep  3 00:01:20 UTC 2015 Teo Fonrouge (tfonrouge@gmail.com)
+  M src/TIndex.prg
+    * not use nil as defaultValue, use instead emptyValue
+
 Wed Sep  2 22:59:46 UTC 2015 Teo Fonrouge (tfonrouge@gmail.com)
   M src/TIndex.prg
     * not use calculated masterSource fields when calculating a masterKey value
