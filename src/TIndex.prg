@@ -39,7 +39,6 @@ PRIVATE:
    METHOD GetArrayKeyFields INLINE ::KeyField:FieldMethod
    METHOD GetAutoIncrement INLINE ::FAutoIncrementKeyField != NIL
    METHOD GetField
-   METHOD GetIdxAlias()
    METHOD GetMasterKeyVal( keyField )
    METHOD GetScope INLINE iif( ::FScopeBottom == NIL .AND. ::FScopeTop == NIL, NIL, { ::FScopeTop, ::FScopeBottom } )
    METHOD GetScopeBottom INLINE iif( !Empty( ::FScopeBottom ), ::FScopeBottom, "" )
@@ -59,7 +58,6 @@ PRIVATE:
             ::FForKey := ForKey
             RETURN ForKey
         }
-   METHOD SetIdxAlias( alias )
    METHOD SetRightJustified( rightJust ) INLINE ::FRightJustified := rightJust
    METHOD SetScope( value )
    METHOD SetScopeBottom( value )
@@ -79,14 +77,14 @@ PROTECTED:
    DATA FTableBaseClass
 
    METHOD CreateIndex()
-   METHOD CreateTempIndex()
+
    METHOD CustomKeyExpValue()
+
    METHOD SetCustomIndexExpression( customIndexExpression )
 
 PUBLIC:
 
    DATA associatedTable
-   DATA FIdxAlias INIT .F.
    DATA getRecNoBlock
    DATA setRecNoBlock
    DATA temporary INIT .F.
@@ -95,6 +93,8 @@ PUBLIC:
    DATA WarnMsg
 
    METHOD New( Table, tagName, name, indexType, curClass, warnMsg ) CONSTRUCTOR
+
+   DESTRUCTOR onDestruct()
 
    METHOD __Seek( direction, keyValue, lSoftSeek )
    METHOD AddIndex
@@ -110,7 +110,7 @@ PUBLIC:
    METHOD FillCustomIndex()
    METHOD Get4Seek( blk, keyVal, softSeek )
    METHOD Get4SeekLast( blk, keyVal, softSeek )
-   METHOD GetAlias()
+   METHOD GetAlias() INLINE ::FTable:Alias
    METHOD GetCurrentRecord()
    METHOD HasFilter() INLINE ::FDbFilter != NIL
    METHOD IndexExpression()
@@ -132,7 +132,6 @@ PUBLIC:
    PROPERTY DbFilter READ FDbFilter WRITE SetDbFilter
    PROPERTY Eof READ FTable:Eof
    PROPERTY Found READ FTable:Found
-   PROPERTY IdxAlias READ GetIdxAlias WRITE SetIdxAlias
    PROPERTY IndexType READ FIndexType
    PROPERTY KeyFlags READ FKeyFlags
    PROPERTY KeyVal READ GetKeyVal WRITE SetKeyVal
@@ -208,6 +207,23 @@ METHOD New( Table, tagName, name, indexType, curClass, warnMsg ) CLASS TIndex
    ENDIF
 
    RETURN Self
+
+/*
+    onDestruct
+*/
+METHOD PROCEDURE onDestruct() CLASS TIndex
+    LOCAL fileName
+
+    IF ::temporary .AND. ::Fopened
+        IF hb_isObject( ::FTable )
+            fileName := ::FTable:alias:dbOrderInfo( DBOI_FULLPATH, nil, ::FTagName )
+            ::FTable:alias:ordDestroy( ::FTagName )
+            IF hb_fileExists( fileName )
+                fErase( fileName )
+            ENDIF
+        ENDIF
+    ENDIF
+RETURN
 
 /*
     __Seek
@@ -303,8 +319,7 @@ METHOD FUNCTION CreateIndex() CLASS TIndex
     LOCAL intervalVal := NIL
     LOCAL additive := .T.
     LOCAL useCurrent := .F.
-    LOCAL temporary := .F.
-    LOCAL bagName := NIL
+    LOCAL bagFileName
     LOCAL unique := .F.
     LOCAL oErr
 
@@ -342,168 +357,68 @@ METHOD FUNCTION CreateIndex() CLASS TIndex
          ordCreate( <(bag)>, <(tag)>, <"key">, <{key}>, [<.unique.>] )
 */
 
-    IF ::Custom
+    IF ::custom
         indexExp := E"\042" + Replicate( "#", Len( ::MasterKeyVal ) + Len( ::KeyVal ) ) + E"\042"
-        dbSelectArea( ::FTable:Alias:Name )
-        ordCondSet( nil,nil,nil,nil,nil,nil,RecNo(),nil,nil,nil,::Descend,nil,nil,nil,.T. )
-        ordCreate( , ::TagName, indexExp )
-        ::Fopened := .t.
     ELSE
-
         indexExp := ::IndexExpression()
+    ENDIF
 
-        IF indexExp != nil
+    IF indexExp != nil
 
-            IF !Empty( ::ForKey )
-                forKeyBlock := &( "{||" + ::ForKey + "}" )
+        IF !Empty( ::ForKey )
+            forKeyBlock := &( "{||" + ::ForKey + "}" )
+        ENDIF
+
+        dbSelectArea( ::FTable:Alias:Name )  // here because ::IndexExpression() may change active WA
+
+        ordCondSet( ;
+            ::ForKey, ;
+            forKeyBlock, ;
+            NIL, ;
+            whileBlock, ;
+            evalBlock, ;
+            intervalVal, ;
+            NIL, ;
+            NIL, ;
+            NIL, ;
+            NIL, ;
+            ::Descend, ;
+            NIL, ;
+            additive, ;
+            useCurrent, ;
+            ::Custom, ;
+            NIL, ;
+            NIL, ;
+            ::temporary )
+
+        BEGIN SEQUENCE WITH ::FTable:ErrorBlock
+
+            IF ::temporary
+                fClose( hb_fTempCreateEx( @bagFileName, nil, "tmp", ::FTable:alias:dbOrderInfo( DBOI_BAGEXT ) ) )
             ENDIF
 
-            dbSelectArea( ::FTable:Alias:Name )  // here because ::IndexExpression() may change active WA
+            ordCreate( bagFileName, ::TagName, indexExp, indexExp, unique )
 
-            ordCondSet( ;
-                ::ForKey, ;
-                forKeyBlock, ;
-                NIL, ;
-                whileBlock, ;
-                evalBlock, ;
-                intervalVal, ;
-                NIL, ;
-                NIL, ;
-                NIL, ;
-                NIL, ;
-                ::Descend, ;
-                NIL, ;
-                additive, ;
-                useCurrent, ;
-                ::Custom, ;
-                NIL, ;
-                NIL, ;
-                temporary )
+            ::Fopened := .t.
 
-            BEGIN SEQUENCE WITH ::FTable:ErrorBlock
+        RECOVER USING oErr
 
-                ordCreate( bagName, ::TagName, indexExp, indexExp, unique )
+            ui_Alert( ;
+                "CreateIndex() Error in " + ::FTable:ClassName + ", Table: " + ::FTable:TableFileName + ";" + ;
+                " Index Tag Name: " + ::TagName + ";" + ;
+                "IndexExpression: " + indexExp + ";" + ;
+                "  Index For Key: " + AsString( ::ForKey ) ;
+                )
 
-                ::Fopened := .t.
+            Break( oErr )
 
-            RECOVER USING oErr
-
-                ui_Alert( ;
-                    "CreateIndex() Error in " + ::FTable:ClassName + ", Table: " + ::FTable:TableFileName + ";" + ;
-                    " Index Tag Name: " + ::TagName + ";" + ;
-                    "IndexExpression: " + indexExp + ";" + ;
-                    "  Index For Key: " + AsString( ::ForKey ) ;
-                    )
-
-                Break( oErr )
-
-            END SEQUENCE
-
-        ENDIF
+        END SEQUENCE
 
     ENDIF
 
     ::FTable:Alias:RecNo := recNo
 
 RETURN .t.
-
-/*
-    CreateTempIndex
-*/
-METHOD FUNCTION CreateTempIndex() CLASS TIndex
-    LOCAL fileName
-    LOCAL pathName
-    LOCAL aliasName
-    LOCAL dbsIdx
-    LOCAL size
-    LOCAL fldName
-    LOCAL lNew := .F.
-    LOCAL index
-
-    fldName := ::Name
-
-    IF !::temporary
-
-        hb_FNameSplit( ::FTable:Alias:dbOrderInfo( DBOI_FULLPATH ), @pathName )
-
-        pathName += Lower( ::FTable:ClassName )
-
-        fileName := pathName + ".dbf"
-
-        aliasName := "IDX_" + ::FTable:ClassName()
-
-        IF File( fileName ) .AND. ::IdxAlias = NIL
-
-            ::IdxAlias := TAlias()
-            ::IdxAlias:lShared := .F.
-            ::IdxAlias:New( fileName, aliasName )
-
-        ENDIF
-
-    ENDIF
-
-    IF ::IdxAlias = NIL
-
-        IF ::temporary
-
-            FClose( hb_FTempCreateEx( @fileName, NIL, "t", ".dbf" ) )
-
-            aliasName := "TMP_" + ::FTable:ClassName()
-
-        ENDIF
-
-        size := 0
-
-        IF ::MasterKeyField != NIL
-            size += ::MasterKeyField:Size
-        ENDIF
-
-        IF ::KeyField != NIL
-            size += ::KeyField:Size
-        ENDIF
-
-        dbsIdx := ;
-            { ;
-            { "RECNO", "I", 4, 0 }, ;
-            { fldName, "C", size, 0 } ;
-            }
-
-        dbCreate( fileName, dbsIdx )
-
-        ::IdxAlias := TAlias()
-        ::IdxAlias:lShared := .F.
-        ::IdxAlias:New( fileName, aliasName )
-
-        CREATE INDEX ON "RecNo" TAG "IDX_RECNO" BAG pathName ADDITIVE
-
-        CREATE INDEX ON fldName TAG ::Name BAG pathName ADDITIVE
-
-        lNew := .T.
-
-    ENDIF
-
-    IF ::temporary
-
-        ::IdxAlias:__dbZap()
-
-    ENDIF
-
-    IF ::temporary .OR. lNew
-        index := self
-        ::FTable:dbEval( ;
-            {|self|
-                index:IdxAlias:AddRec()
-                index:IdxAlias:SetFieldValue( "RECNO", ::RecNo() )
-                index:IdxAlias:SetFieldValue( fldName, index:MasterKeyVal + index:KeyVal )
-                RETURN NIL
-            }, NIL, NIL, ::useIndex )
-    ENDIF
-
-    ::FIdxAlias := .T.
-
-    ::Fopened := .t.
-
-RETURN .T.
 
 /*
     CustomKeyExpValue
@@ -654,17 +569,6 @@ METHOD FUNCTION Get4SeekLast( blk, keyVal, softSeek ) CLASS TIndex
    RETURN ::RawGet4Seek( 0, blk, keyVal, softSeek )
 
 /*
-    GetAlias
-*/
-METHOD FUNCTION GetAlias() CLASS TIndex
-
-   IF ::IdxAlias = NIL
-      RETURN ::FTable:Alias
-   ENDIF
-
-   RETURN ::IdxAlias
-
-/*
     GetCurrentRecord
 */
 METHOD FUNCTION GetCurrentRecord() CLASS TIndex
@@ -673,7 +577,7 @@ METHOD FUNCTION GetCurrentRecord() CLASS TIndex
    LOCAL index := ::FTable:Index
 
    ::FTable:Index := Self
-   result := ::FTable:GetCurrentRecord( ::GetIdxAlias() )
+   result := ::FTable:GetCurrentRecord()
    ::FTable:Index := index
 
    IF ::associatedTable != NIL
@@ -707,17 +611,6 @@ METHOD FUNCTION GetField( nIndex ) CLASS TIndex
    ENDSWITCH
 
    RETURN AField
-
-/*
-    GetIdxAlias
-*/
-METHOD FUNCTION GetIdxAlias() CLASS TIndex
-
-   IF ::temporary
-      RETURN ::FTable:aliasTmp
-   ENDIF
-
-   RETURN ::FTable:aliasIdx
 
 /*
     GetKeyVal
@@ -857,17 +750,11 @@ METHOD PROCEDURE openIndex() CLASS TIndex
             NEXT
             IF ! processing
                 aAdd( ::indexCreationList, self )
-                IF ::temporary
-                   IF ! ::CreateTempIndex()
-                      RAISE ERROR "Failure to create temporal Index '" + ::Name + "'"
-                   ENDIF
-                ELSE
-                   IF ! ::CreateIndex()
-                      RAISE ERROR "Failure to create Index '" + ::Name + "'"
-                   ENDIF
-                   IF ::Fopened .AND. ::Custom
-                      ::FillCustomIndex()
-                   ENDIF
+                IF ! ::CreateIndex()
+                    RAISE ERROR "Failure to create Index '" + ::Name + "'"
+                ENDIF
+                IF ::Fopened .AND. ::Custom
+                    ::FillCustomIndex()
                 ENDIF
                 hb_aDel( ::indexCreationList, len( ::indexCreationList ), .T. )
             ENDIF
@@ -1036,19 +923,6 @@ METHOD PROCEDURE SetField( nIndex, XField ) CLASS TIndex
       ENDIF
       EXIT
    ENDSWITCH
-
-   RETURN
-
-/*
-    SetIdxAlias
-*/
-METHOD PROCEDURE SetIdxAlias( alias ) CLASS TIndex
-
-   IF ::temporary
-      ::FTable:aliasTmp := alias
-   ELSE
-      ::FTable:aliasIdx := alias
-   ENDIF
 
    RETURN
 

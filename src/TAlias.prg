@@ -71,6 +71,7 @@ CLASS TAlias FROM OORDBBASE
    METHOD ordCreate( ... )
    METHOD ordCustom( Name, cBag, KeyVal )
    METHOD ordDescend( Name, cBag, lDescend )
+   METHOD ordDestroy( tagName, bagName )
    METHOD ordKeyAdd( Name, cBag, KeyVal )
    METHOD ordKeyDel( Name, cBag, KeyVal )
    METHOD ordKeyNo( ... )
@@ -468,6 +469,15 @@ METHOD FUNCTION ordDescend( Name, cBag, lDescend ) CLASS TAlias
    ::SyncFromRecNo()
 
    RETURN ( ::workArea )->( ordDescend( Name, cBag, lDescend ) )
+
+/*
+    ordDestroy
+*/
+METHOD FUNCTION ordDestroy( tagName, bagName ) CLASS TAlias
+
+   ::SyncFromRecNo()
+
+   RETURN ( ::workArea )->( ordDestroy( tagName, bagName ) )
 
 /*
     OrdKeyAdd

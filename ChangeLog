@@ -2,6 +2,16 @@
  * $Id: ChangeLog 155 2013-06-06 03:29:32Z tfonrouge $
  */
 
+Fri Sep  4 08:12:09 UTC 2015 Teo Fonrouge (tfonrouge@gmail.com)
+  M src/TAlias.prg
+    + method: ordDestroy()
+
+  M src/TIndex.prg
+  M src/TTable.prg
+    - obsolete: idx process
+    % simplified: creation of indices
+    * temporary indexes are destroyed on index/table destructors
+
 Thu Sep  3 20:53:18 UTC 2015 Teo Fonrouge (tfonrouge@gmail.com)
   M src/TIndex.prg
   M src/TTable.prg

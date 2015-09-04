@@ -193,7 +193,6 @@ PROTECTED:
 
 PUBLIC:
 
-   DATA aliasIdx
    DATA aliasTmp
    DATA allowOnDataChange  INIT .F.
    DATA autoMasterSource   INIT .F.
@@ -259,7 +258,7 @@ PUBLIC:
    METHOD Get4Seek( xField, keyVal, index, softSeek ) INLINE ::RawGet4Seek( 1, xField, keyVal, index, softSeek )
    METHOD Get4SeekLast( xField, keyVal, index, softSeek ) INLINE ::RawGet4Seek( 0, xField, keyVal, index, softSeek )
    METHOD GetAsString
-   METHOD GetCurrentRecord( idxAlias )
+   METHOD GetCurrentRecord()
    METHOD GetDisplayFieldBlock( index, asDisplay )
    METHOD GetDisplayFieldList( syncFromAlias )
    METHOD GetField( fld )
@@ -448,8 +447,22 @@ METHOD New( masterSource, tableName ) CLASS TTable
     OnDestruct
 */
 METHOD PROCEDURE OnDestruct() CLASS TTable
-
    LOCAL dbfName, indexName
+   LOCAL curCLass
+   LOCAL index
+   LOCAL fileName
+
+    FOR EACH curClass IN ::FIndexList
+        FOR EACH INDEX IN curClass
+            IF index:temporary
+                fileName := ::alias:dbOrderInfo( DBOI_FULLPATH, nil, index:tagName )
+                ::alias:ordDestroy( index:tagName )
+                IF hb_fileExists( fileName )
+                    fErase( fileName )
+                ENDIF
+            ENDIF
+        NEXT
+    NEXT
 
    IF ::aliasTmp != NIL
       dbfName := ::aliasTmp:dbInfo( DBI_FULLPATH )
@@ -469,10 +482,10 @@ METHOD PROCEDURE OnDestruct() CLASS TTable
 METHOD PROCEDURE __CheckIndexes() CLASS TTable
 
    LOCAL curClass
-   LOCAL INDEX
+   LOCAL index
 
    FOR EACH curClass IN ::FIndexList
-      FOR EACH INDEX IN curClass
+      FOR EACH index IN curClass
          index:openIndex()
       NEXT
    NEXT
@@ -1938,100 +1951,76 @@ METHOD FUNCTION GetBof() CLASS TTable
 /*
     GetCurrentRecord
 */
-METHOD FUNCTION GetCurrentRecord( idxAlias ) CLASS TTable
+METHOD FUNCTION GetCurrentRecord() CLASS TTable
+    LOCAL field
+    LOCAL Result
+    LOCAL INDEX
+    LOCAL READ
+    LOCAL table
 
-   LOCAL field
-   LOCAL Result
-   LOCAL INDEX
-   LOCAL READ
-   LOCAL table
+    ::FBof   := ::Alias:Bof()
+    ::FEof   := ::Alias:Eof()
+    ::FFound := ::Alias:Found()
 
-   IF idxAlias = NIL
-      IF ::aliasIdx != NIL
-         ::aliasIdx:Seek( ::Alias:RecNo, "IDX_RECNO" )
-      ENDIF
-      IF ::aliasTmp != NIL
-         ::aliasTmp:Seek( ::Alias:RecNo, "IDX_RECNO" )
-      ENDIF
-      ::FBof   := ::Alias:Bof()
-      ::FEof   := ::Alias:Eof()
-      ::FFound := ::Alias:Found()
-   ELSE
-      ::Alias:dbGoto( ( idxAlias:workArea )->RecNo )
-      ::FBof   := idxAlias:Bof()
-      ::FEof   := idxAlias:Eof()
-      ::FFound := idxAlias:Found()
-      IF ::aliasIdx != NIL .AND. ::aliasTmp != NIL
-         IF idxAlias == ::aliasIdx
-            ::aliasTmp:Seek( ::Alias:RecNo, "IDX_RECNO" )
-         ELSE
-            ::aliasIdx:Seek( ::Alias:RecNo, "IDX_RECNO" )
-         ENDIF
-      ENDIF
-   ENDIF
+    ::FRecNo := ::Alias:RecNo
 
-   ::FRecNo := ::Alias:RecNo
+    IF ::GetIndex() != NIL
+        IF hb_HHasKey( ::ExternalIndexList, ::GetIndex():ObjectH )
+            index := ::GetIndex() ; ::SetIndex( NIL )
+            ::GetCurrentRecord()
+            index:setRecNoBlock:Eval( Self, index:Table )
+            ::SetIndex( index )
+            read := .T.
+        ENDIF
+    ENDIF
 
-   IF ::GetIndex() != NIL
-      IF hb_HHasKey( ::ExternalIndexList, ::GetIndex():ObjectH )
-         index := ::GetIndex() ; ::SetIndex( NIL )
-         ::GetCurrentRecord( idxAlias )
-         index:setRecNoBlock:Eval( Self, index:Table )
-         ::SetIndex( index )
-         read := .T.
-      ENDIF
-   ENDIF
+    IF ::FState = dsBrowse
 
-   IF ::FState = dsBrowse
+        IF ( Result := ::InsideScope( .T. ) )
 
-      IF ( Result := ::InsideScope( .T. ) )
+            IF !read == .T.
 
-         IF !read == .T.
-
-            FOR EACH field IN ::FFieldList
-
-               IF field:Enabled
-                  IF field:FieldMethodType = "C" .AND. !field:Calculated // .AND. !field:IsMasterFieldComponent
-                     IF !field:GetData() .AND. field:IsMasterFieldComponent
-                        Result := .F.
-                        EXIT
+                FOR EACH field IN ::FFieldList
+                    IF field:Enabled
+                        IF field:FieldMethodType = "C" .AND. !field:Calculated // .AND. !field:IsMasterFieldComponent
+                            IF !field:GetData() .AND. field:IsMasterFieldComponent
+                                Result := .F.
+                                EXIT
+                            ENDIF
+                        ENDIF
+                        IF field:FieldType = ftTable .AND. field:Calculated .AND. field:LinkedTableAssigned
+                            table := field:LinkedTable
+                            IF table:LinkedObjField != NIL .AND. table:LinkedObjField:Calculated .AND. !table:MasterSource == Self .AND. table:MasterSource == table:LinkedObjField:Table:KeyField:LinkedTable
+                                table:LinkedObjField:Table:KeyField:DataObj()
+                            ENDIF
+                        ENDIF
                     ENDIF
-                  ENDIF
+                NEXT
 
-                  IF field:FieldType = ftTable .AND. field:Calculated .AND. field:LinkedTableAssigned
-                     table := field:LinkedTable
-                     IF table:LinkedObjField != NIL .AND. table:LinkedObjField:Calculated .AND. !table:MasterSource == Self .AND. table:MasterSource == table:LinkedObjField:Table:KeyField:LinkedTable
-                        table:LinkedObjField:Table:KeyField:DataObj()
-                     ENDIF
-                  ENDIF
-               ENDIF
+            ENDIF
 
-            NEXT
+        ENDIF
 
-         ENDIF
-        
-      ENDIF
+        IF !Result .OR. !::FilterEval()
+            ::FEof := .T.
+            ::FBof := .T.
+            ::FFound := .F.
+            ::Reset()
+        ENDIF
 
-      IF !Result .OR. !::FilterEval()
-         ::FEof := .T.
-         ::FBof := .T.
-         ::FFound := .F.
-         ::Reset()
-      ENDIF
+    ELSE
+        // RAISE ERROR "Table not in dsBrowse mode..."
+        Result := .F.
+    ENDIF
 
-   ELSE
-      // RAISE ERROR "Table not in dsBrowse mode..."
-      Result := .F.
-   ENDIF
+    IF ::allowOnDataChange
+        IF ::LinkedObjField != NIL .AND. ::LinkedObjField:Table:State > dsBrowse
+            ::LinkedObjField:BaseKeyField:CheckForLinkedObjFieldSetAsVariant( ::BaseKeyField:GetAsVariant() )
+        ENDIF
+        ::OnDataChange()
+    ENDIF
 
-   IF ::allowOnDataChange
-      IF ::LinkedObjField != NIL .AND. ::LinkedObjField:Table:State > dsBrowse
-         ::LinkedObjField:BaseKeyField:CheckForLinkedObjFieldSetAsVariant( ::BaseKeyField:GetAsVariant() )
-      ENDIF
-      ::OnDataChange()
-   ENDIF
-
-   RETURN Result
+RETURN Result
 
 /*
     GetDataBase
