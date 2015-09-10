@@ -2,6 +2,10 @@
  * $Id: ChangeLog 155 2013-06-06 03:29:32Z tfonrouge $
  */
 
+Thu Sep 10 16:43:00 UTC 2015 Teo Fonrouge (tfonrouge@gmail.com)
+  M include/oordb.ch
+    * renamed clauses to more readability
+
 Fri Sep  4 08:12:09 UTC 2015 Teo Fonrouge (tfonrouge@gmail.com)
   M src/TAlias.prg
     + method: ordDestroy()
