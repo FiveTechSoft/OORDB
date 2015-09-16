@@ -156,6 +156,7 @@ CLASS TField FROM OORDBBASE
    METHOD IsTableField()
    METHOD Reset()
    METHOD RevertValue()
+   METHOD seek( ... ) INLINE ::keyIndex:seek( ... )
    METHOD SetAsVariant( value )
    METHOD SetData( value, initialize )
    METHOD SetDbStruct( aStruct )

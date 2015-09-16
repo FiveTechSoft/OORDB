@@ -2,6 +2,10 @@
  * $Id: ChangeLog 155 2013-06-06 03:29:32Z tfonrouge $
  */
 
+Wed Sep 16 23:20:48 UTC 2015 Teo Fonrouge (tfonrouge@gmail.com)
+  M src/TField.prg
+    + method seek() : shortcut of ::keyIndex:seek()
+
 Thu Sep 10 16:43:00 UTC 2015 Teo Fonrouge (tfonrouge@gmail.com)
   M include/oordb.ch
     * renamed clauses to more readability
