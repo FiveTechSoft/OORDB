@@ -2,6 +2,11 @@
  * $Id: ChangeLog 155 2013-06-06 03:29:32Z tfonrouge $
  */
 
+Fri Sep 18 16:24:37 UTC 2015 Teo Fonrouge (tfonrouge@gmail.com)
+  M src/TField.prg
+  M src/TFieldString.prg
+    * setBuffer() : added paramater lNoCheckValidValue when clearing field ::clear()
+
 Fri Sep 18 06:16:41 UTC 2015 Teo Fonrouge (tfonrouge@gmail.com)
   M samples/buildTable/buildTable.prg
   M samples/calcField1/calcField1.prg

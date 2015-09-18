@@ -108,7 +108,7 @@ CLASS TField FROM OORDBBASE
    METHOD GetValidValues()
    METHOD OnSetKeyVal( lSeek, keyVal )
    METHOD SetAsString( string ) INLINE ::SetAsVariant( string )
-   METHOD SetBuffer( value )
+   METHOD SetBuffer( value, lNoCheckValidValue )
    METHOD SetDBS_DEC( dec ) INLINE ::FDBS_DEC := dec
    METHOD SetDBS_LEN( dbs_Len ) INLINE ::FDBS_LEN := dbs_Len
    METHOD SetDBS_TYPE( dbs_Type ) INLINE ::FDBS_TYPE := dbs_Type
@@ -419,7 +419,7 @@ RETURN result
 */
 METHOD PROCEDURE CLEAR() CLASS TField
 
-   ::SetBuffer( ::EmptyValue )
+   ::SetBuffer( ::EmptyValue, .t. )
    ::FChanged := .F.
    ::FWrittenValue := NIL
 
@@ -1171,11 +1171,11 @@ RETURN value
 /*
     SetBuffer
 */
-METHOD FUNCTION SetBuffer( value ) CLASS TField
+METHOD FUNCTION SetBuffer( value, lNoCheckValidValue ) CLASS TField
     LOCAL result
     LOCAL itm
 
-    result := ::CheckForValidValue( ::TranslateToValue( value ), .T. ) == .T.
+    result := lNoCheckValidValue = .t. .OR. ::CheckForValidValue( ::TranslateToValue( value ), .T. ) == .T.
 
     IF result
 
@@ -1185,7 +1185,7 @@ METHOD FUNCTION SetBuffer( value ) CLASS TField
                 SWITCH ValType( value )
                 CASE 'A'
                     FOR EACH itm IN value
-                       IF !::FTable:FieldList[ ::FFieldArrayIndex[ itm:__enumIndex ] ]:SetBuffer( itm )
+                       IF !::FTable:FieldList[ ::FFieldArrayIndex[ itm:__enumIndex ] ]:SetBuffer( itm, lNoCheckValidValue )
                           result := .F.
                           EXIT
                        ENDIF

@@ -24,7 +24,7 @@ PROTECTED:
    METHOD GetAsNumeric INLINE Val( ::GetAsVariant() )
    METHOD GetSize()
    METHOD SetAsNumeric( n ) INLINE ::SetAsVariant( LTrim( Str( n ) ) )
-   METHOD SetBuffer( buffer )
+   METHOD SetBuffer( buffer, lNoCheckValidValue )
    METHOD SetDBS_LEN( dbs_Len )
    METHOD SetDefaultValue( DefaultValue )
    METHOD SetSize( size )
@@ -137,14 +137,14 @@ METHOD FUNCTION IndexExpression( fieldName, isMasterFieldComponent, keyFlags ) C
 /*
     SetBuffer
 */
-METHOD FUNCTION SetBuffer( buffer ) CLASS TFieldString
+METHOD FUNCTION SetBuffer( buffer, lNoCheckValidValue ) CLASS TFieldString
 
    LOCAL size := ::Size
 
    IF ::FFieldType = ftMemo .OR. Len( buffer ) = size
-      RETURN ::Super:SetBuffer( buffer )
+      RETURN ::Super:SetBuffer( buffer, lNoCheckValidValue )
    ELSE
-      RETURN ::Super:SetBuffer( PadR( buffer, size ) )
+      RETURN ::Super:SetBuffer( PadR( buffer, size ), lNoCheckValidValue )
    ENDIF
 
    RETURN .F.
