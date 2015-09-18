@@ -720,9 +720,9 @@ METHOD FUNCTION BuildFieldBlockFromFieldExpression( fieldExp, returnMode, field,
       ENDIF
       IF field != NIL
          IF i = 1
-            s := "::FieldList[" + NTrim( index ) + "]"
+            s := "::FieldList[" + hb_nToS( index ) + "]"
          ELSE
-            s += ":DataObj:FieldList[" + NTrim( index ) + "]"
+            s += ":DataObj:FieldList[" + hb_nToS( index ) + "]"
          ENDIF
          IF field:IsDerivedFrom( "TFieldTable" )
             IF field:LinkedTable:isMetaTable
@@ -856,13 +856,13 @@ METHOD FUNCTION CheckDbStruct() CLASS TTable
                aDb[ n, 3 ] := dbsLen
                aDb[ n, 4 ] := dbsDec
             ELSEIF aDb[ n, 2 ] = "C" .AND. aDb[ n, 3 ] < dbsSize
-               sResult += "Wrong len value (" + NTrim( aDb[ n, 3 ] ) + ") on 'C' field '" + AField:DBS_NAME + E"', must be " + NTrim( dbsLen ) + E"\n"
+               sResult += "Wrong len value (" + hb_nToS( aDb[ n, 3 ] ) + ") on 'C' field '" + AField:DBS_NAME + E"', must be " + hb_nToS( dbsLen ) + E"\n"
                aDb[ n, 3 ] := dbsLen
             ELSEIF aDb[ n, 2 ] $ "+I" .AND. ! aDb[ n, 3 ] = dbsLen
-               sResult += "Wrong len value (" + NTrim( aDb[ n, 3 ] ) + ") on '" + aDb[ n, 2 ] + "' field '" + AField:DBS_NAME + E"', must be " + NTrim( dbsLen ) + E"\n"
+               sResult += "Wrong len value (" + hb_nToS( aDb[ n, 3 ] ) + ") on '" + aDb[ n, 2 ] + "' field '" + AField:DBS_NAME + E"', must be " + hb_nToS( dbsLen ) + E"\n"
                aDb[ n, 3 ] := dbsLen
             ELSEIF aDb[ n, 2 ] = "N" .AND. ( !aDb[ n, 3 ] == dbsLen .OR. !aDb[ n, 4 ] == dbsDec )
-               sResult += "Wrong len/dec values (" + NTrim( aDb[ n, 3 ] ) + "," + NTrim( aDb[ n, 4 ] ) + ") on 'N' field '" + AField:DBS_NAME + E"', must be " + NTrim( dbsLen ) + "," + NTrim( dbsDec ) + E"\n"
+               sResult += "Wrong len/dec values (" + hb_nToS( aDb[ n, 3 ] ) + "," + hb_nToS( aDb[ n, 4 ] ) + ") on 'N' field '" + AField:DBS_NAME + E"', must be " + hb_nToS( dbsLen ) + "," + hb_nToS( dbsDec ) + E"\n"
                aDb[ n, 3 ] := dbsLen
                aDb[ n, 4 ] := dbsDec
             ENDIF

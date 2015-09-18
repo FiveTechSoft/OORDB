@@ -61,7 +61,7 @@ PROCEDURE Main()
 
   table:Edit()
 
-  @ 0, 0 SAY "Editing Record #" + NTrim( table:RecNo )
+  @ 0, 0 SAY "Editing Record #" + hb_nToS( table:RecNo )
 
   @ 2, 0 SAY "    Name:" GET table:Field_Name:Value
   @ 3, 0 SAY "LastName:" GET table:Field_LastName:Value
@@ -69,7 +69,7 @@ PROCEDURE Main()
 
   READ
 
-  ? "Table '" + table:ClassName + "' with " + NTrim( table:Count ) + " records."
+  ? "Table '" + table:ClassName + "' with " + hb_nToS( table:Count ) + " records."
   ?
 
   table:DbGoTop()

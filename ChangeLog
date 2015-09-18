@@ -2,6 +2,15 @@
  * $Id: ChangeLog 155 2013-06-06 03:29:32Z tfonrouge $
  */
 
+Fri Sep 18 06:16:41 UTC 2015 Teo Fonrouge (tfonrouge@gmail.com)
+  M samples/buildTable/buildTable.prg
+  M samples/calcField1/calcField1.prg
+  M samples/get1/get1.prg
+  M src/TField.prg
+  M src/TTable.prg
+  M src/common.prg
+    * using hb_nToS() instead of nTrim()
+
 Wed Sep 16 23:20:48 UTC 2015 Teo Fonrouge (tfonrouge@gmail.com)
   M src/TField.prg
     + method seek() : shortcut of ::keyIndex:seek()

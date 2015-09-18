@@ -252,7 +252,7 @@ FUNCTION FDate2F( d, p )
          // p:=stuff(p,attoken(p,,i),2,substr(str(year(d),4),3,2))
          p := SwapToken( p,, i, SubStr( Str( Year( d ), 4 ), 3, 2 ) )
       CASE s == "Y$" .OR. s == "YYYY"
-         // p:=stuff(p,attoken(p,,i),len(s),ntrim(year(d)))
+         // p:=stuff(p,attoken(p,,i),len(s),hb_nToS(year(d)))
          p := SwapToken( p,, i, LTrim( Str( Year( d ) ) ) )
       ENDCASE
    NEXT

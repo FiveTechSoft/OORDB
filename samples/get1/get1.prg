@@ -75,7 +75,7 @@ PROCEDURE Main()
 
   READ
 
-  ? "Table '" + table:ClassName + "' with " + NTrim( table:Count ) + " records."
+  ? "Table '" + table:ClassName + "' with " + hb_nToS( table:Count ) + " records."
   ?
 
   table:DbGoTop()

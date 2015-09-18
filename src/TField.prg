@@ -211,7 +211,7 @@ CLASS TField FROM OORDBBASE
    PROPERTY IsPrimaryKeyField READ GetIsPrimaryKeyField
    PROPERTY RawDefaultValue READ FDefaultValue
    PROPERTY RawNewValue READ FNewValue
-   PROPERTY Size READ FSize
+   PROPERTY Size
    PROPERTY UndoValue READ GetUndoValue
    PROPERTY ValidValues READ GetValidValues WRITE SetValidValues
    PROPERTY Value READ GetAsVariant( ... ) WRITE SetAsVariant
