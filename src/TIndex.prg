@@ -294,6 +294,8 @@ METHOD AddIndex( cMasterKeyField, ai, un, cKeyField, keyFlags, ForKey, cs, de, a
    ::temporary := temporary == .T.
    // ::Custom := iif( HB_ISNIL( cu ), .F. , cu )
 
+   ::FTable:addIndexMessage( ::name )
+
    RETURN Self
 
 /*

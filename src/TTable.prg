@@ -206,6 +206,7 @@ PUBLIC:
    DATA FieldNamePrefix INIT "Field_" // Table Field Name prefix
    DATA FUnderReset INIT .F.
    DATA fullFileName
+   DATA indexNamePrefix INIT "Index_"
    DATA LinkedObjField
 
    DATA OnDataChangeBlock
@@ -230,6 +231,7 @@ PUBLIC:
    METHOD AddCustomIndex( index )
    METHOD AddFieldAlias( nameAlias, fld, private )
    METHOD AddFieldMessage( messageName, AField, isAlias )
+   METHOD addIndexMessage( indexName )
    METHOD AssociateTableIndex( table, name, getRecNo, setRecNo )
    METHOD Cancel
    METHOD Childs( ignoreAutoDelete, block, curClass, childs )
@@ -269,7 +271,7 @@ PUBLIC:
    METHOD GetValue
    METHOD HasFilter() INLINE ::FDbFilter != NIL
    METHOD ImportField( fromField, fieldDbName, fieldName )
-   METHOD IndexByName( IndexName, curClass )
+   METHOD IndexByName( IndexName, aPos, curClass )
    METHOD Insert()
    METHOD InsertRecord( origin )
    METHOD InsideScope( ignoreFilters )
@@ -583,6 +585,24 @@ METHOD PROCEDURE AddFieldMessage( messageName, AField, isAlias ) CLASS TTable
    ENDIF
 
    RETURN
+
+/*
+    addIndexMessage
+*/
+METHOD PROCEDURE addIndexMessage( indexName ) CLASS TTable
+    LOCAL aPos
+    LOCAL x
+    LOCAL y
+
+    IF ::indexByName( indexName, @aPos ) != nil
+        IF !__objHasMsg( Self, ::indexNamePrefix + indexName )
+            x := aPos[ 1 ]
+            y := aPos[ 2 ]
+            EXTEND OBJECT Self WITH MESSAGE ::indexNamePrefix + indexName INLINE hb_hValueAt( hb_hValueAt( ::FIndexList, x ), y )
+        ENDIF
+    ENDIF
+
+RETURN
 
 /*
     AddRec
@@ -2481,31 +2501,33 @@ METHOD FUNCTION ImportField( fromField, fieldDbName, fieldName ) CLASS TTable
 /*
     IndexByName
 */
-METHOD FUNCTION IndexByName( indexName, curClass ) CLASS TTable
+METHOD FUNCTION IndexByName( indexName, aPos, curClass ) CLASS TTable
 
    IF ::FisMetaTable
       ::isMetaTable := .F.
    ENDIF
 
-   RETURN F_IndexByName( Self, indexName, curClass )
+   RETURN F_IndexByName( Self, indexName, @aPos, curClass )
 
 /*
     F_IndexByName
 */
-STATIC FUNCTION F_IndexByName( Self, indexName, curClass )
+STATIC FUNCTION F_IndexByName( Self, indexName, aPos, curClass )
 
    LOCAL className
+   LOCAL x,y
 
    curClass := iif( curClass = NIL, Self, curClass )
    className := curClass:ClassName()
 
    IF ! className == "TTABLE"
-      IF hb_HHasKey( ::IndexList, className )
-         IF hb_HHasKey( ::IndexList[ className ], indexName )
-            RETURN ::IndexList[ className, indexName ]
+      IF hb_HHasKey( ::IndexList, className, @x )
+         IF hb_HHasKey( hb_hValueAt( ::IndexList, x ), indexName, @y )
+            aPos := { x, y }
+            RETURN hb_hValueAt( hb_hValueAt( ::indexList , x ), y )
          ENDIF
       ENDIF
-      RETURN F_IndexByName( Self, indexName, curClass:Super )
+      RETURN F_IndexByName( Self, indexName, @aPos, curClass:Super )
    ENDIF
 
    RETURN NIL
