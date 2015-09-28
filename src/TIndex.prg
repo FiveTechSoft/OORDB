@@ -32,8 +32,6 @@ PRIVATE:
    DATA FRightJustified INIT .F.
    DATA FScopeBottom
    DATA FScopeTop
-   DATA FTable
-   DATA FTagName
    DATA FUniqueKeyField
    METHOD DbGoBottomTop( n )
    METHOD GetArrayKeyFields INLINE ::KeyField:FieldMethod
@@ -50,10 +48,14 @@ PRIVATE:
    METHOD SetField( nIndex, XField )
    METHOD SetForKey( ForKey ) BLOCK ;
         {|Self,ForKey|
-            IF Empty( ForKey )
-                ::FForKeyBlock := NIL
+            IF valType( ForKey ) = "B"
+                ::FForKeyBlock := ForKey
             ELSE
-                ::FForKeyBlock := &("{||" + ForKey + "}")
+                IF Empty( ForKey )
+                    ::FForKeyBlock := NIL
+                ELSE
+                    ::FForKeyBlock := &("{||" + ForKey + "}")
+                ENDIF
             ENDIF
             ::FForKey := ForKey
             RETURN ForKey
@@ -73,8 +75,9 @@ PROTECTED:
 
    DATA Fopened INIT .F.
 
-   DATA FResetToMasterSourceFields INIT .T.
-   DATA FTableBaseClass
+   METHOD getBagName INLINE ::FTable:alias:dbOrderInfo( DBOI_BAGNAME, ::FtagName )
+
+   METHOD closeTemporary()
 
    METHOD CreateIndex()
 
@@ -88,7 +91,6 @@ PUBLIC:
    DATA getRecNoBlock
    DATA setRecNoBlock
    DATA temporary INIT .F.
-   DATA useIndex
 
    DATA WarnMsg
 
@@ -143,10 +145,13 @@ PUBLIC:
    METHOD SEEK( keyValue, lSoftSeek ) INLINE ::__Seek( 0, keyValue, lSoftSeek )
    METHOD SeekLast( keyValue, lSoftSeek ) INLINE ::__Seek( 1, keyValue, lSoftSeek )
 
+   PROPERTY useIndex /* index to use when poblating a custom index */
+
 PUBLISHED:
 
    PROPERTY AutoIncrement READ GetAutoIncrement
    PROPERTY AutoIncrementKeyField INDEX 1 READ GetField WRITE SetField
+   PROPERTY bagName READ getBagName
    PROPERTY CaseSensitive READ FCaseSensitive WRITE SetCaseSensitive
    PROPERTY Custom READ FCustom
    PROPERTY CustomIndexExpression READ FCustomIndexExpression
@@ -159,9 +164,9 @@ PUBLISHED:
    PROPERTY MasterKeyField INDEX 0 READ GetField WRITE SetField
    PROPERTY MasterKeyVal READ GetMasterKeyVal
    PROPERTY RightJustified READ FRightJustified WRITE SetRightJustified
-   PROPERTY Table READ FTable
-   PROPERTY TableBaseClass READ FTableBaseClass
-   PROPERTY TagName READ FTagName
+   PROPERTY Table
+   PROPERTY TableBaseClass
+   PROPERTY TagName
    PROPERTY UNIQUE READ GetUnique
 
 ENDCLASS
@@ -212,17 +217,9 @@ METHOD New( Table, tagName, name, indexType, curClass, warnMsg ) CLASS TIndex
     onDestruct
 */
 METHOD PROCEDURE onDestruct() CLASS TIndex
-    LOCAL fileName
 
-    IF ::temporary .AND. ::Fopened
-        IF hb_isObject( ::FTable )
-            fileName := ::FTable:alias:dbOrderInfo( DBOI_FULLPATH, nil, ::FTagName )
-            ::FTable:alias:ordDestroy( ::FTagName )
-            IF hb_fileExists( fileName )
-                fErase( fileName )
-            ENDIF
-        ENDIF
-    ENDIF
+    ::closeTemporary()
+
 RETURN
 
 /*
@@ -290,13 +287,32 @@ METHOD AddIndex( cMasterKeyField, ai, un, cKeyField, keyFlags, ForKey, cs, de, a
    ::CaseSensitive := iif( HB_ISNIL( cs ), .F., cs )
    ::RightJustified := rightJust == .T.
    ::Descend := iif( HB_ISNIL( de ), .F., de )
-   ::useIndex := useIndex
+   ::FuseIndex := useIndex
    ::temporary := temporary == .T.
    // ::Custom := iif( HB_ISNIL( cu ), .F. , cu )
 
    ::FTable:addIndexMessage( ::name )
 
    RETURN Self
+
+/*
+    closeTemporary
+*/
+METHOD PROCEDURE closeTemporary() CLASS TIndex
+    LOCAL fileName
+
+    IF ::temporary .AND. ::Fopened
+        IF hb_isObject( ::FTable )
+            fileName := ::FTable:alias:dbOrderInfo( DBOI_FULLPATH, nil, ::FtagName )
+            ::FTable:alias:ordDestroy( ::FtagName )
+            IF hb_fileExists( fileName )
+                fErase( fileName )
+            ENDIF
+            ::Fopened := .f.
+        ENDIF
+    ENDIF
+
+RETURN
 
 /*
     Count
@@ -315,6 +331,7 @@ METHOD FUNCTION COUNT( bForCondition, bWhileCondition ) CLASS TIndex
 METHOD FUNCTION CreateIndex() CLASS TIndex
     LOCAL indexExp
     LOCAL recNo
+    LOCAL forKey
     LOCAL forKeyBlock
     LOCAL whileBlock := NIL
     LOCAL evalBlock := NIL
@@ -368,13 +385,16 @@ METHOD FUNCTION CreateIndex() CLASS TIndex
     IF indexExp != nil
 
         IF !Empty( ::ForKey )
-            forKeyBlock := &( "{||" + ::ForKey + "}" )
+            IF valType( ::ForKey ) != "B" /* on custom index, for key is a codeblock evaluated on FillCustomIndex  */
+                forKey := ::ForKey
+                forKeyBlock := &( "{||" + ::ForKey + "}" )
+            ENDIF
         ENDIF
 
         dbSelectArea( ::FTable:Alias:Name )  // here because ::IndexExpression() may change active WA
 
         ordCondSet( ;
-            ::ForKey, ;
+            forKey, ;
             forKeyBlock, ;
             NIL, ;
             whileBlock, ;
@@ -397,9 +417,14 @@ METHOD FUNCTION CreateIndex() CLASS TIndex
 
             IF ::temporary
                 fClose( hb_fTempCreateEx( @bagFileName, nil, "tmp", ::FTable:alias:dbOrderInfo( DBOI_BAGEXT ) ) )
+                hb_FNameSplit( bagFileName, nil, @::FtagName, nil, nil )
             ENDIF
 
-            ordCreate( bagFileName, ::TagName, indexExp, indexExp, unique )
+            ordCreate( bagFileName, ::tagName, indexExp, indexExp, unique )
+
+            IF ::Custom
+                ::FillCustomIndex()
+            ENDIF
 
             ::Fopened := .t.
 
@@ -409,7 +434,7 @@ METHOD FUNCTION CreateIndex() CLASS TIndex
                 "CreateIndex() Error in " + ::FTable:ClassName + ", Table: " + ::FTable:TableFileName + ";" + ;
                 " Index Tag Name: " + ::TagName + ";" + ;
                 "IndexExpression: " + indexExp + ";" + ;
-                "  Index For Key: " + AsString( ::ForKey ) ;
+                "  Index For Key: " + AsString( forKey ) ;
                 )
 
             Break( oErr )
@@ -437,15 +462,17 @@ METHOD FUNCTION CustomKeyExpValue() CLASS TIndex
     CustomKeyUpdate
 */
 METHOD PROCEDURE CustomKeyUpdate CLASS TIndex
+    LOCAL customKeyValue
 
-   IF ::FCustom
-      WHILE ::FTable:Alias:ordKeyDel( ::FTagName ) ; ENDDO
-      IF Empty( ::FForKeyBlock ) .OR. ::FTable:Alias:Eval( ::FForKeyBlock )
-         ::FTable:Alias:ordKeyAdd( ::FTagName, , ::CustomKeyExpValue() )
-      ENDIF
-   ENDIF
+    IF ::FCustom
+        WHILE ::FTable:Alias:ordKeyDel( ::FTagName ) ; ENDDO
+        customKeyValue := ::CustomKeyExpValue()
+        IF Empty( ::FForKeyBlock ) .OR. ::FTable:Alias:Eval( ::FForKeyBlock, customKeyValue )
+            ::FTable:Alias:ordKeyAdd( ::FTagName, , customKeyValue )
+        ENDIF
+    ENDIF
 
-   RETURN
+RETURN
 
 /*
     DbFilterPull
@@ -537,26 +564,46 @@ METHOD FUNCTION ExistKey( keyValue, recNo ) CLASS TIndex
     FillCustomIndex
 */
 METHOD PROCEDURE FillCustomIndex() CLASS TIndex
+    LOCAL index
 
-   LOCAL baseKeyIndex := ::FTable:BaseKeyIndex
-   LOCAL resetToMasterSourceFields
+    IF ::temporary
+        IF ::Fopened
+            ::closeTemporary()
+            ::openIndex()
+        ENDIF
+    ENDIF
 
-   IF baseKeyIndex != NIL
-      ::FTable:StatePush()
-      resetToMasterSourceFields := ::FResetToMasterSourceFields
-      ::FResetToMasterSourceFields := .F.
-      ::FTable:DbFilterPush( .T. )
-      baseKeyIndex:dbGoTop()
-      WHILE !baseKeyIndex:Eof()
-         ::CustomKeyUpdate()
-         baseKeyIndex:dbSkip()
-      ENDDO
-      ::FTable:DbFilterPull()
-      ::FResetToMasterSourceFields := resetToMasterSourceFields
-      ::FTable:StatePull()
-   ENDIF
+    ::FTable:StatePush()
 
-   RETURN
+    IF ::FuseIndex = nil
+        index := ::FTable:BaseKeyIndex
+        ::FTable:DbFilterPush( .T. )
+    ELSE
+        SWITCH valType( ::FuseIndex )
+        CASE 'C'
+            index := ::FTable:indexByName( ::FuseIndex )
+            EXIT
+        CASE 'O'
+            index := ::FuseIndex
+            EXIT
+        ENDSWITCH
+    ENDIF
+
+    IF index != NIL
+        index:dbGoTop()
+        WHILE !index:Eof()
+            ::CustomKeyUpdate()
+            index:dbSkip()
+        ENDDO
+    ENDIF
+
+    IF ::FuseIndex = nil
+        ::FTable:DbFilterPull()
+    ENDIF
+
+    ::FTable:StatePull()
+
+RETURN
 
 /*
     Get4Seek
@@ -754,9 +801,6 @@ METHOD PROCEDURE openIndex() CLASS TIndex
                 aAdd( ::indexCreationList, self )
                 IF ! ::CreateIndex()
                     RAISE ERROR "Failure to create Index '" + ::Name + "'"
-                ENDIF
-                IF ::Fopened .AND. ::Custom
-                    ::FillCustomIndex()
                 ENDIF
                 hb_aDel( ::indexCreationList, len( ::indexCreationList ), .T. )
             ENDIF
