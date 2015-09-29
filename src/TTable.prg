@@ -268,7 +268,7 @@ PUBLIC:
    METHOD GetMasterSourceClassName()
    METHOD GetPublishedFieldNameList( typeList )
    METHOD GetTableFileName()
-   METHOD GetValue
+   METHOD __GetValue
    METHOD HasFilter() INLINE ::FDbFilter != NIL
    METHOD ImportField( fromField, fieldDbName, fieldName )
    METHOD IndexByName( IndexName, aPos, curClass )
@@ -294,7 +294,7 @@ PUBLIC:
    METHOD SetPrimaryIndex( primaryIndex )
    METHOD SetPrimaryIndexList( clsName, name )
    METHOD SetId( id ) INLINE ::FBaseKeyField:SetKeyVal( id )
-   METHOD SetValue( value )
+   METHOD __SetValue( value )
    METHOD SkipBrowse( n )
    METHOD SkipFilter( n, index )
    METHOD StatePull()
@@ -388,7 +388,7 @@ PUBLISHED:
    PROPERTY PrimaryIndex READ FPrimaryIndex
    PROPERTY PublishedFieldNameList READ GetPublishedFieldNameList
    PROPERTY READONLY READ FReadOnly WRITE SetReadOnly
-   PROPERTY Value READ GetValue( ... ) WRITE SetValue
+   PROPERTY Value READ __GetValue( ... ) WRITE __SetValue
 
 ENDCLASS
 
@@ -2461,9 +2461,9 @@ METHOD FUNCTION GetTableFileName() CLASS TTable
    RETURN ::FTableFileName
 
 /*
-    GetValue
+    __GetValue
 */
-METHOD FUNCTION GetValue CLASS TTable
+METHOD FUNCTION __GetValue CLASS TTable
    RETURN ::FBaseKeyField:Value
 
 /*
@@ -3113,9 +3113,9 @@ METHOD FUNCTION SetState( state ) CLASS TTable
    RETURN state
 
 /*
-    SetValue
+    __SetValue
 */
-METHOD FUNCTION SetValue( value ) CLASS TTable
+METHOD FUNCTION __SetValue( value ) CLASS TTable
 
    ::FBaseKeyField:Value := value
 
