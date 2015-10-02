@@ -2743,7 +2743,7 @@ METHOD FUNCTION Post() CLASS TTable
             AField:OnAfterPostChange:Eval( Self )
          NEXT
       ENDIF
-      IF changed
+      IF ::FpreviousEditState = dsEdit .AND. changed
          IF __objHasMsgAssigned( Self, "OnAfterChange" )
             __objSendMsg( Self, "OnAfterChange" )
          ENDIF

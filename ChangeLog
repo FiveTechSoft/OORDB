@@ -2,6 +2,10 @@
  * $Id: ChangeLog 155 2013-06-06 03:29:32Z tfonrouge $
  */
 
+Fri Oct  2 22:15:37 UTC 2015 Teo Fonrouge (tfonrouge@gmail.com)
+  M src/TTable.prg
+    * onAfterChange only when editing
+
 Tue Sep 29 01:00:57 UTC 2015 Teo Fonrouge (tfonrouge@gmail.com)
   M src/TTable.prg
     * add "__" prefix to getValue/setValue methods (to avoid unwanted override)
