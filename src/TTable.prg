@@ -183,6 +183,7 @@ PROTECTED:
    METHOD GetIndex()
    METHOD GetRecNo()
    METHOD GetRecordList
+   METHOD getTableBaseClass INLINE iif( ::FbaseKeyIndex = nil, "", ::FbaseKeyIndex:TableBaseClass )
    METHOD InitDataBase INLINE TDataBase():New()
    METHOD InitTable()
    METHOD RawGet4Seek( direction, xField, keyVal, index, softSeek )
@@ -369,7 +370,7 @@ PUBLIC:
    PROPERTY State READ FState
    PROPERTY SubState READ FSubState
    PROPERTY SyncingToContainerField READ FSyncingToContainerField WRITE SetSyncingToContainerField
-   PROPERTY TableBaseClass READ BaseKeyIndex:TableBaseClass
+   PROPERTY TableBaseClass READ getTableBaseClass
    PROPERTY TableFileName READ GetTableFileName WRITE SetTableFileName
    PROPERTY UndoList READ FUndoList
 
