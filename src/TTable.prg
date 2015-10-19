@@ -2087,6 +2087,9 @@ METHOD FUNCTION GetDisplayFieldBlock( index, asDisplay ) CLASS TTable
       ENDIF
 
       IF o:__FObj:Eof()
+         IF asDisplay = .T.
+            RETURN ""
+         ENDIF
          RETURN AField:EmptyValue
       ENDIF
 
