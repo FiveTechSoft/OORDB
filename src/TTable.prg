@@ -203,7 +203,6 @@ PUBLIC:
         array of possible TFieldTable's that have this (SELF) object referenced
      */
    DATA DetailSourceList INIT { => }
-   DATA ExternalIndexList INIT { => }
    DATA FieldNamePrefix INIT "Field_" // Table Field Name prefix
    DATA FUnderReset INIT .F.
    DATA fullFileName
@@ -233,7 +232,6 @@ PUBLIC:
    METHOD AddFieldAlias( nameAlias, fld, private )
    METHOD AddFieldMessage( messageName, AField, isAlias )
    METHOD addIndexMessage( indexName )
-   METHOD AssociateTableIndex( table, name, getRecNo, setRecNo )
    METHOD Cancel
    METHOD Childs( ignoreAutoDelete, block, curClass, childs )
    METHOD ChildSource( tableName, destroyChild )
@@ -688,29 +686,6 @@ METHOD FUNCTION AddRec() CLASS TTable
    ::FSubState := dssNone
 
    RETURN Result
-
-/*
-    AssociateTableIndex
-*/
-METHOD PROCEDURE AssociateTableIndex( table, name, getRecNo, setRecNo ) CLASS TTable
-
-   LOCAL INDEX
-
-   IF !hb_HHasKey( ::IndexList, ::ClassName() )
-      ::IndexList[ ::ClassName() ] := hb_HSetOrder( hb_HSetCaseMatch( { => }, .F. ), .T. )
-   ENDIF
-
-   index := table:IndexByName( name )
-   index:associatedTable := Self
-
-   index:getRecNoBlock := getRecNo
-   index:setRecNoBlock := setRecNo
-
-   ::IndexList[ ::ClassName(), name ] := index
-
-   ::ExternalIndexList[ index:ObjectH ] := index
-
-   RETURN
 
 /*
     BuildFieldBlockFromFieldExpression
@@ -1736,11 +1711,7 @@ METHOD FUNCTION FilterEval( index ) CLASS TTable
       index := ::GetIndex()
    ENDIF
 
-   IF index != NIL .AND. index:associatedTable != NIL
-      table := index:associatedTable
-   ELSE
-      table := Self
-   ENDIF
+   table := Self
 
    IF index != NIL .AND. index:DbFilter != NIL .AND. !index:DbFilter:Eval( table )
       RETURN .F.
@@ -1975,8 +1946,6 @@ METHOD FUNCTION GetBof() CLASS TTable
 METHOD FUNCTION GetCurrentRecord() CLASS TTable
     LOCAL field
     LOCAL Result
-    LOCAL INDEX
-    LOCAL READ
     LOCAL table
 
     ::FBof   := ::Alias:Bof()
@@ -1985,40 +1954,26 @@ METHOD FUNCTION GetCurrentRecord() CLASS TTable
 
     ::FRecNo := ::Alias:RecNo
 
-    IF ::GetIndex() != NIL
-        IF hb_HHasKey( ::ExternalIndexList, ::GetIndex():ObjectH )
-            index := ::GetIndex() ; ::SetIndex( NIL )
-            ::GetCurrentRecord()
-            index:setRecNoBlock:Eval( Self, index:Table )
-            ::SetIndex( index )
-            read := .T.
-        ENDIF
-    ENDIF
-
     IF ::FState = dsBrowse
 
         IF ( Result := ::InsideScope( .T. ) )
 
-            IF !read == .T.
-
-                FOR EACH field IN ::FFieldList
-                    IF field:Enabled
-                        IF field:FieldMethodType = "C" .AND. !field:Calculated // .AND. !field:IsMasterFieldComponent
-                            IF !field:GetData() .AND. field:IsMasterFieldComponent
-                                Result := .F.
-                                EXIT
-                            ENDIF
-                        ENDIF
-                        IF field:FieldType = ftTable .AND. field:Calculated .AND. field:LinkedTableAssigned
-                            table := field:LinkedTable
-                            IF table:LinkedObjField != NIL .AND. table:LinkedObjField:Calculated .AND. !table:MasterSource == Self .AND. table:MasterSource == table:LinkedObjField:Table:KeyField:LinkedTable
-                                table:LinkedObjField:Table:KeyField:DataObj()
-                            ENDIF
+            FOR EACH field IN ::FFieldList
+                IF field:Enabled
+                    IF field:FieldMethodType = "C" .AND. !field:Calculated // .AND. !field:IsMasterFieldComponent
+                        IF !field:GetData() .AND. field:IsMasterFieldComponent
+                            Result := .F.
+                            EXIT
                         ENDIF
                     ENDIF
-                NEXT
-
-            ENDIF
+                    IF field:FieldType = ftTable .AND. field:Calculated .AND. field:LinkedTableAssigned
+                        table := field:LinkedTable
+                        IF table:LinkedObjField != NIL .AND. table:LinkedObjField:Calculated .AND. !table:MasterSource == Self .AND. table:MasterSource == table:LinkedObjField:Table:KeyField:LinkedTable
+                            table:LinkedObjField:Table:KeyField:DataObj()
+                        ENDIF
+                    ENDIF
+                ENDIF
+            NEXT
 
         ENDIF
 

@@ -2,6 +2,12 @@
  * $Id: ChangeLog 155 2013-06-06 03:29:32Z tfonrouge $
  */
 
+Thu Oct 29 21:34:19 UTC 2015 Teo Fonrouge (tfonrouge@gmail.com)
+  M include/oordb.ch
+  M src/TIndex.prg
+  M src/TTable.prg
+    % simplified removed associatedTable/externalIndex
+
 Thu Oct 29 20:50:17 UTC 2015 Teo Fonrouge (tfonrouge@gmail.com)
   M src/TDatabase.prg
   M src/TTable.prg

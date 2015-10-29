@@ -87,9 +87,6 @@ PROTECTED:
 
 PUBLIC:
 
-   DATA associatedTable
-   DATA getRecNoBlock
-   DATA setRecNoBlock
    DATA temporary INIT .F.
 
    DATA WarnMsg
@@ -537,16 +534,9 @@ METHOD FUNCTION DbGoBottomTop( n ) CLASS TIndex
 */
 METHOD FUNCTION dbSkip( numRecs ) CLASS TIndex
 
-   LOCAL table
    LOCAL result
 
-   IF ::associatedTable = NIL
-      table := ::FTable
-   ELSE
-      table := ::associatedTable
-   ENDIF
-
-   IF !::HasFilter() .AND. !table:HasFilter()
+   IF !::HasFilter() .AND. !::FTable:HasFilter()
       result := ::GetAlias():dbSkip( numRecs, ::FTagName ) /* because on Bof returns .F. */
       ::GetCurrentRecord()
       RETURN result .AND. ::InsideScope()
@@ -621,21 +611,16 @@ METHOD FUNCTION Get4SeekLast( blk, keyVal, softSeek ) CLASS TIndex
     GetCurrentRecord
 */
 METHOD FUNCTION GetCurrentRecord() CLASS TIndex
-
    LOCAL result
    LOCAL index := ::FTable:Index
 
    ::FTable:Index := Self
+
    result := ::FTable:GetCurrentRecord()
+
    ::FTable:Index := index
 
-   IF ::associatedTable != NIL
-      ::associatedTable:ExternalIndexList[ ::ObjectH ] := NIL
-      result := ::getRecNoBlock:Eval( ::associatedTable, ::FTable )
-      ::associatedTable:ExternalIndexList[ ::ObjectH ] := Self
-   ENDIF
-
-   RETURN result
+RETURN result
 
 /*
     GetField
