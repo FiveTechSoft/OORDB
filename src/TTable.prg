@@ -2374,24 +2374,11 @@ METHOD FUNCTION GetMasterSource() CLASS TTable
 */
 METHOD FUNCTION GetMasterSourceClassName() CLASS TTable
 
-   LOCAL Result := ""
-   LOCAL className := ::ClassName
-
    IF ::DataBase = NIL
       ::DataBase := ::InitDataBase()
    ENDIF
 
-   IF hb_HHasKey( ::DataBase:ChildParentList, className )
-      Result := ::DataBase:ChildParentList[ className ]
-      WHILE hb_HHasKey( ::DataBase:TableList, Result ) .AND. ::DataBase:TableList[ Result, "Virtual" ]
-         IF !hb_HHasKey ( ::DataBase:ChildParentList, Result )
-            EXIT
-         ENDIF
-         Result := ::DataBase:ChildParentList[ Result ]
-      ENDDO
-   ENDIF
-
-   RETURN Result
+RETURN ::DataBase:getMasterSourceClassName( ::className )
 
 /*
     GetPublishedFieldNameList

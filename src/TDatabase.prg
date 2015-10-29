@@ -15,17 +15,20 @@
 */
 CLASS TDataBase FROM OORDBBASE
 
-   PRIVATE:
+PRIVATE:
 
    DATA cmdLevel     INIT { NIL }
-   PROTECTED:
+
+PROTECTED:
+
    DATA FName
    METHOD DefineRelations VIRTUAL
    METHOD GetName() INLINE iif( Empty( ::FName ), ::ClassName, ::FName )
    METHOD SetDirectory( directory ) INLINE ::FDirectory := directory
    METHOD SetName( name ) INLINE ::FName := name
    METHOD SetNetIO( netIO ) INLINE ::FNetIO := netIO
-   PUBLIC:
+
+PUBLIC:
 
    DATA OpenBlock
 
@@ -37,6 +40,7 @@ CLASS TDataBase FROM OORDBBASE
    METHOD cmdDefineChild()
    METHOD cmdEndChild()
 
+   METHOD getMasterSourceClassName( className )
    METHOD GetParentChildList( tableName, Result )
    METHOD TableIsChildOf( table, fromTable )
 
@@ -47,7 +51,6 @@ CLASS TDataBase FROM OORDBBASE
    PROPERTY Directory       WRITE SetDirectory INIT ""
    PROPERTY ParentChildList INIT hb_HSetCaseMatch( { => }, .F. )
    PROPERTY TableList       INIT hb_HSetCaseMatch( { => }, .F. )
-   PUBLISHED:
 
 ENDCLASS
 
@@ -122,6 +125,27 @@ METHOD PROCEDURE cmdEndChild() CLASS TDataBase
    ASize( ::cmdLevel, Len( ::cmdLevel ) - 1 )
 
    RETURN
+
+/*
+    getMasterSourceClassName
+*/
+METHOD FUNCTION getMasterSourceClassName( className ) CLASS TDataBase
+
+   LOCAL Result := ""
+
+   className := rTrim( className )
+
+   IF hb_HHasKey( ::ChildParentList, className )
+      Result := ::ChildParentList[ className ]
+      WHILE hb_HHasKey( ::TableList, Result ) .AND. ::TableList[ Result, "Virtual" ]
+         IF !hb_HHasKey ( ::ChildParentList, Result )
+            EXIT
+         ENDIF
+         Result := ::ChildParentList[ Result ]
+      ENDDO
+   ENDIF
+
+RETURN Result
 
 /*
     GetParentChildList

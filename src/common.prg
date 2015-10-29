@@ -4,6 +4,8 @@
 
 THREAD STATIC BaseArray := "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ"
 
+THREAD STATIC base64Array := "0123456789<>ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz"
+
 THREAD STATIC __S_UI_ALERT_DELAY
 
 /*
@@ -136,6 +138,29 @@ FUNCTION Base2N( sBase, nBase, l, cFill )
    NEXT
 
    RETURN iif( l == NIL, dec, N2Base( dec, 10, l, cFill ) )
+
+/*
+    base64ToN() : Convierte string de base 64 a numero en base 10
+    Teo. México 2015
+*/
+FUNCTION base64ToN( sBase )
+
+   THREAD STATIC dec
+   THREAD STATIC i, c, n, lb
+
+   dec := 0
+   n := 1
+   lb := Len( sBase := AllTrim( sBase ) )
+
+   FOR i := lb TO 1 STEP -1
+      IF ( c := At( SubStr( sBase, i, 1 ), base64Array ) ) == 0
+         RETURN 0 /* character not valid */
+      ENDIF
+      dec += ( c - 1 ) * n
+      n *= 64
+   NEXT
+
+   RETURN dec
 
 /*
     Dec
@@ -333,6 +358,34 @@ FUNCTION MyErrorNew( SubSystem, Operation, Description, Args, ProcFile, ProcName
    oErr:Cargo := hb_HSetAutoAdd( { "ProcFile" => ProcFile, "ProcName" => ProcName, "ProcLine" => ProcLine }, .T. )
 
    RETURN oErr
+
+/*
+    nToBase64() : Convierte numero a string de base numerica 64
+    Teo. México 2015
+*/
+FUNCTION nToBase64( nVal, l, cFill )
+
+   THREAD STATIC sBase
+   THREAD STATIC n
+
+   sBase := ""
+   n := 1
+   iif( cFill == NIL, cFill := "0", NIL )
+   WHILE .T.
+      n *= 64
+      IF n > nVal
+         EXIT
+      ENDIF
+   ENDDO
+   WHILE n != 1
+      n /= 64
+      sBase += SubStr( base64Array, nVal / n + 1, 1 )
+      nVal %= n
+   ENDDO
+   iif( l == NIL, l := Len( sBase ), NIL )
+
+   RETURN iif( Len( sBase ) > l, Replicate( "*", l ), PadL( sBase, l, cFill ) )
+
 
 /*
     N2Base() : Convierte numero a string de base numerica 'n'

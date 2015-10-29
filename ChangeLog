@@ -2,6 +2,17 @@
  * $Id: ChangeLog 155 2013-06-06 03:29:32Z tfonrouge $
  */
 
+Thu Oct 29 20:50:17 UTC 2015 Teo Fonrouge (tfonrouge@gmail.com)
+  M src/TDatabase.prg
+  M src/TTable.prg
+    * minor code cleanup
+    + method getMasterSourceClassName() : ( moved to TDatabase.prg from TTable.prg )
+
+  M src/common.prg
+    + funcs:
+      + nToBase64( number ) -> encoded string base64 based
+      + base64ToN( encodedBase64String ) -> number
+
 Mon Oct 19 04:27:37 UTC 2015 Teo Fonrouge (tfonrouge@gmail.com)
   M src/TTable.prg
     ! fix as display using "" as field default on eof
