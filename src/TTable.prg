@@ -141,6 +141,7 @@ PROTECTED:
    DATA FBaseKeyField
    DATA FBaseKeyIndex
    DATA FDbFilterStack INIT {}
+   DATA FbaseDocument INIT ""
    DATA FBof    INIT .T.
    DATA FcanCreateInstance INIT .F.
    DATA FCustomIndexList   INIT {}
@@ -174,6 +175,13 @@ PROTECTED:
    METHOD FillPrimaryIndexes( curClass )
    METHOD FixDbStruct( aNewStruct, message )
    METHOD GetAutoCreate() INLINE iif( ::FAutoCreate = NIL, iif( ::DataBase = NIL, OORDB_DEFAULT_AUTOCREATE, ::DataBase:TableAutoCreate ), ::FAutoCreate )
+   METHOD getBaseDocument() BLOCK ;
+      {|self|
+         IF empty( ::FbaseDocument )
+            RETURN ::tableBaseClass
+         ENDIF
+         RETURN ::FbaseDocument
+      }
    METHOD GetBof()
    METHOD GetDataBase()
    METHOD GetEof()
@@ -331,7 +339,7 @@ PUBLIC:
    PROPERTY ALIAS READ GetAlias
    PROPERTY AsString READ GetAsString WRITE SetAsString
    PROPERTY AutoCreate READ GetAutoCreate
-   PROPERTY baseDocument INIT ""
+   PROPERTY baseDocument READ getBaseDocument
    PROPERTY BaseKeyField READ FBaseKeyField
    PROPERTY BaseKeyIndex READ FBaseKeyIndex
    PROPERTY BaseKeyVal READ BaseKeyField:GetKeyVal WRITE BaseKeyField:SetKeyVal
