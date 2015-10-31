@@ -356,6 +356,7 @@ PUBLIC:
    PROPERTY Found READ GetFound
    PROPERTY FieldTypes READ GetFieldTypes
    PROPERTY Id READ GetId WRITE SetId
+   PROPERTY indexFieldListByClass INIT hb_HSetCaseMatch( { => }, .F. )  /* list of field index number by table class name */
    PROPERTY Initialized READ FInitialized
    PROPERTY instance READ getInstance
    PROPERTY Instances READ FInstances
@@ -572,6 +573,10 @@ METHOD PROCEDURE AddFieldMessage( messageName, AField, isAlias ) CLASS TTable
       ELSE
          AAdd( ::FFieldList, AField )
          index := Len( ::FFieldList )
+         IF ! hb_hHasKey( ::FindexFieldListByClass, AField:tableBaseClass )
+            ::FindexFieldListByClass[ AField:tableBaseClass ] := {}
+         ENDIF
+         AAdd( ::FindexFieldListByClass[ AField:tableBaseClass ], index )
       ENDIF
    ELSE
       IF fld:IsKeyIndex
