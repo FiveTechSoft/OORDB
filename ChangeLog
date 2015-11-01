@@ -2,6 +2,10 @@
  * $Id: ChangeLog 155 2013-06-06 03:29:32Z tfonrouge $
  */
 
+Sun Nov  1 22:25:37 UTC 2015 Teo Fonrouge (tfonrouge@gmail.com)
+  M src/TIndex.prg
+    * using ::getMasterKeyVal() instead of ::MasterKeyVal
+
 Sun Nov  1 20:57:25 UTC 2015 Teo Fonrouge (tfonrouge@gmail.com)
   M src/TIndex.prg
   M src/TTable.prg

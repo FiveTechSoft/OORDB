@@ -234,9 +234,9 @@ METHOD FUNCTION __Seek( direction, keyValue, lSoftSeek ) CLASS TIndex
    keyValue := ::KeyField:GetKeyVal( keyValue )
 
    IF direction = 0
-      alias:Seek( ::MasterKeyVal + keyValue, ::FTagName, lSoftSeek )
+      alias:Seek( ::getMasterKeyVal + keyValue, ::FTagName, lSoftSeek )
    ELSE
-      alias:SeekLast( ::MasterKeyVal + keyValue, ::FTagName, lSoftSeek )
+      alias:SeekLast( ::getMasterKeyVal + keyValue, ::FTagName, lSoftSeek )
    ENDIF
 
    ::GetCurrentRecord()
@@ -373,7 +373,7 @@ METHOD FUNCTION CreateIndex() CLASS TIndex
 */
 
     IF ::custom
-        indexExp := E"\042" + Replicate( "#", Len( ::MasterKeyVal ) + Len( ::KeyVal ) ) + E"\042"
+        indexExp := E"\042" + Replicate( "#", Len( ::getMasterKeyVal ) + Len( ::KeyVal ) ) + E"\042"
     ELSE
         indexExp := ::IndexExpression()
     ENDIF
@@ -497,7 +497,7 @@ METHOD PROCEDURE DbFilterPush( ignoreMasterKey ) CLASS TIndex
 */
 METHOD FUNCTION DbGoBottomTop( n ) CLASS TIndex
 
-   LOCAL masterKeyVal := ::MasterKeyVal
+   LOCAL masterKeyVal := ::getMasterKeyVal
    LOCAL alias
 
    alias := ::FTable:alias
@@ -547,7 +547,7 @@ METHOD FUNCTION dbSkip( numRecs ) CLASS TIndex
     ExistKey
 */
 METHOD FUNCTION ExistKey( keyValue, recNo ) CLASS TIndex
-   RETURN ::FTable:alias:ExistKey( ::MasterKeyVal + keyValue, ::FTagName, recNo )
+   RETURN ::FTable:alias:ExistKey( ::getMasterKeyVal + keyValue, ::FTagName, recNo )
 
 /*
     FillCustomIndex
@@ -731,7 +731,7 @@ METHOD FUNCTION InsideScope( ignoreFilters ) CLASS TIndex
       RETURN .F.
    ENDIF
 
-   masterKeyVal := ::MasterKeyVal
+   masterKeyVal := ::getMasterKeyVal
 
    scopeVal := ::GetScope()
 
@@ -800,9 +800,9 @@ RETURN
 METHOD FUNCTION RawGet4Seek( direction, blk, keyVal, softSeek ) CLASS TIndex
 
    IF keyVal = NIL
-      keyVal := ::MasterKeyVal
+      keyVal := ::getMasterKeyVal
    ELSE
-      keyVal := ::MasterKeyVal + keyVal
+      keyVal := ::getMasterKeyVal + keyVal
    ENDIF
 
    RETURN ::FTable:alias:RawGet4Seek( direction, blk, keyVal, ::FTagName, softSeek )
