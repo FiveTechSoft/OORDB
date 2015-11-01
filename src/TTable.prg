@@ -3146,7 +3146,7 @@ METHOD FUNCTION SkipFilter( n, index ) CLASS TTable
    ELSE
       tagName := index:TagName
       o := index
-      alias := index:GetAlias()
+      alias := index:table:alias
    ENDIF
 
    WHILE .T.

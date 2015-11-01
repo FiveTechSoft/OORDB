@@ -2,6 +2,11 @@
  * $Id: ChangeLog 155 2013-06-06 03:29:32Z tfonrouge $
  */
 
+Sun Nov  1 20:57:25 UTC 2015 Teo Fonrouge (tfonrouge@gmail.com)
+  M src/TIndex.prg
+  M src/TTable.prg
+    * removed ::getAlias()
+
 Sat Oct 31 00:47:46 UTC 2015 Teo Fonrouge (tfonrouge@gmail.com)
   M src/TTable.prg
     + property : indexFieldListByClass : hash containing list of index number of fields per table class

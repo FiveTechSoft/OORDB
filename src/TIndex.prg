@@ -109,7 +109,6 @@ PUBLIC:
    METHOD FillCustomIndex()
    METHOD Get4Seek( blk, keyVal, softSeek )
    METHOD Get4SeekLast( blk, keyVal, softSeek )
-   METHOD GetAlias() INLINE ::FTable:Alias
    METHOD GetCurrentRecord()
    METHOD HasFilter() INLINE ::FDbFilter != NIL
    METHOD IndexExpression()
@@ -119,7 +118,7 @@ PUBLIC:
 
    METHOD openIndex()
 
-   METHOD ordKeyNo() INLINE ::GetAlias():ordKeyNo()
+   METHOD ordKeyNo() INLINE ::FTable:alias:ordKeyNo()
 
    METHOD RawGet4Seek( direction, blk, keyVal, softSeek )
    METHOD RawSeek( Value )
@@ -226,7 +225,7 @@ METHOD FUNCTION __Seek( direction, keyValue, lSoftSeek ) CLASS TIndex
 
    LOCAL ALIAS
 
-   alias := ::GetAlias()
+   alias := ::FTable:alias
 
    IF AScan( { dsEdit, dsInsert }, ::FTable:State ) > 0
       ::FTable:Post()
@@ -499,9 +498,9 @@ METHOD PROCEDURE DbFilterPush( ignoreMasterKey ) CLASS TIndex
 METHOD FUNCTION DbGoBottomTop( n ) CLASS TIndex
 
    LOCAL masterKeyVal := ::MasterKeyVal
-   LOCAL ALIAS
+   LOCAL alias
 
-   alias := ::GetAlias()
+   alias := ::FTable:alias
 
    IF n = 1
       IF ::GetScopeTop() == ::GetScopeBottom()
@@ -537,7 +536,7 @@ METHOD FUNCTION dbSkip( numRecs ) CLASS TIndex
    LOCAL result
 
    IF !::HasFilter() .AND. !::FTable:HasFilter()
-      result := ::GetAlias():dbSkip( numRecs, ::FTagName ) /* because on Bof returns .F. */
+      result := ::FTable:alias:dbSkip( numRecs, ::FTagName ) /* because on Bof returns .F. */
       ::GetCurrentRecord()
       RETURN result .AND. ::InsideScope()
    ENDIF
@@ -548,7 +547,7 @@ METHOD FUNCTION dbSkip( numRecs ) CLASS TIndex
     ExistKey
 */
 METHOD FUNCTION ExistKey( keyValue, recNo ) CLASS TIndex
-   RETURN ::GetAlias():ExistKey( ::MasterKeyVal + keyValue, ::FTagName, recNo )
+   RETURN ::FTable:alias:ExistKey( ::MasterKeyVal + keyValue, ::FTagName, recNo )
 
 /*
     FillCustomIndex
@@ -726,7 +725,7 @@ METHOD FUNCTION InsideScope( ignoreFilters ) CLASS TIndex
       RETURN .F.
    ENDIF
 
-   keyValue := ::GetAlias():KeyVal( ::FTagName )
+   keyValue := ::FTable:alias:KeyVal( ::FTagName )
 
    IF keyValue == NIL .OR. ( !ignoreFilters == .T. .AND. !::FTable:FilterEval( Self ) )
       RETURN .F.
@@ -740,7 +739,7 @@ METHOD FUNCTION InsideScope( ignoreFilters ) CLASS TIndex
       RETURN masterKeyVal == "" .OR. keyValue = masterKeyVal
    ENDIF
 
-   RETURN keyValue >= ( masterKeyVal + ::GetScopeTop() ) .AND. ;
+RETURN keyValue >= ( masterKeyVal + ::GetScopeTop() ) .AND. ;
       keyValue <= ( masterKeyVal + ::GetScopeBottom() )
 
 /*
@@ -806,7 +805,7 @@ METHOD FUNCTION RawGet4Seek( direction, blk, keyVal, softSeek ) CLASS TIndex
       keyVal := ::MasterKeyVal + keyVal
    ENDIF
 
-   RETURN ::GetAlias():RawGet4Seek( direction, blk, keyVal, ::FTagName, softSeek )
+   RETURN ::FTable:alias:RawGet4Seek( direction, blk, keyVal, ::FTagName, softSeek )
 
 /*
     RawSeek
@@ -817,7 +816,7 @@ METHOD FUNCTION RawSeek( Value ) CLASS TIndex
       ::FTable:Post()
    ENDIF
 
-   ::GetAlias():Seek( Value, ::FTagName )
+   ::FTable:alias:Seek( Value, ::FTagName )
 
    ::GetCurrentRecord()
 
