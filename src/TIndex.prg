@@ -73,8 +73,6 @@ PROTECTED:
    DATA FIndexType
    DATA FKeyFlags
 
-   DATA Fopened INIT .F.
-
    METHOD getBagName INLINE ::FTable:alias:dbOrderInfo( DBOI_BAGNAME, ::FtagName )
 
    METHOD closeTemporary()
@@ -97,6 +95,7 @@ PUBLIC:
 
    METHOD __Seek( direction, keyValue, lSoftSeek )
    METHOD AddIndex
+   METHOD closeIndex()
    METHOD COUNT( bForCondition, bWhileCondition )
    METHOD CustomKeyUpdate
    METHOD DbFilterPush( ignoreMasterKey )
@@ -133,6 +132,7 @@ PUBLIC:
    PROPERTY IndexType READ FIndexType
    PROPERTY KeyFlags READ FKeyFlags
    PROPERTY KeyVal READ GetKeyVal WRITE SetKeyVal
+   PROPERTY opened INIT .F.
    PROPERTY RecNo READ FTable:RecNo
    PROPERTY Scope READ GetScope WRITE SetScope
    PROPERTY ScopeBottom READ GetScopeBottom WRITE SetScopeBottom
@@ -246,7 +246,7 @@ METHOD FUNCTION __Seek( direction, keyValue, lSoftSeek ) CLASS TIndex
 /*
     AddIndex
 */
-METHOD AddIndex( cMasterKeyField, ai, un, cKeyField, keyFlags, ForKey, cs, de, acceptEmptyUnique, useIndex, temporary, rightJust /*, cu*/ )
+METHOD AddIndex( cMasterKeyField, ai, un, cKeyField, keyFlags, ForKey, cs, de, acceptEmptyUnique, useIndex, temporary, rightJust, cu )
 
    IF hb_isHash( keyFlags )
       ::FKeyFlags := keyFlags
@@ -285,11 +285,20 @@ METHOD AddIndex( cMasterKeyField, ai, un, cKeyField, keyFlags, ForKey, cs, de, a
    ::Descend := iif( HB_ISNIL( de ), .F., de )
    ::FuseIndex := useIndex
    ::temporary := temporary == .T.
-   // ::Custom := iif( HB_ISNIL( cu ), .F. , cu )
+   ::FCustom := iif( HB_ISNIL( cu ), .F. , cu )
 
    ::FTable:addIndexMessage( ::name )
 
    RETURN Self
+
+/*
+    closeIndex
+*/
+METHOD PROCEDURE closeIndex() CLASS TIndex
+    IF ::temporary
+        ::closeTemporary()
+    ENDIF
+RETURN
 
 /*
     closeTemporary
@@ -301,6 +310,7 @@ METHOD PROCEDURE closeTemporary() CLASS TIndex
         IF hb_isObject( ::FTable )
             fileName := ::FTable:alias:dbOrderInfo( DBOI_FULLPATH, nil, ::FtagName )
             ::FTable:alias:ordDestroy( ::FtagName )
+            ::FTagName := nil
             IF hb_fileExists( fileName )
                 fErase( fileName )
             ENDIF
@@ -418,11 +428,11 @@ METHOD FUNCTION CreateIndex() CLASS TIndex
 
             ordCreate( bagFileName, ::tagName, indexExp, indexExp, unique )
 
+            ::Fopened := .t.
+
             IF ::Custom
                 ::FillCustomIndex()
             ENDIF
-
-            ::Fopened := .t.
 
         RECOVER USING oErr
 
@@ -463,7 +473,7 @@ METHOD PROCEDURE CustomKeyUpdate CLASS TIndex
     IF ::FCustom
         WHILE ::FTable:Alias:ordKeyDel( ::FTagName ) ; ENDDO
         customKeyValue := ::CustomKeyExpValue()
-        IF Empty( ::FForKeyBlock ) .OR. ::FTable:Alias:Eval( ::FForKeyBlock, customKeyValue )
+        IF Empty( ::FForKeyBlock ) .OR. ::FTable:Alias:Eval( ::FForKeyBlock, ::FTable )
             ::FTable:Alias:ordKeyAdd( ::FTagName, , customKeyValue )
         ENDIF
     ENDIF
@@ -554,13 +564,6 @@ METHOD FUNCTION ExistKey( keyValue, recNo ) CLASS TIndex
 */
 METHOD PROCEDURE FillCustomIndex() CLASS TIndex
     LOCAL index
-
-    IF ::temporary
-        IF ::Fopened
-            ::closeTemporary()
-            ::openIndex()
-        ENDIF
-    ENDIF
 
     ::FTable:StatePush()
 
@@ -770,6 +773,10 @@ METHOD FUNCTION MasterKeyExpression() CLASS TIndex
 METHOD PROCEDURE openIndex() CLASS TIndex
     LOCAL index
     LOCAL processing
+
+    IF ::temporary .AND. ::Fopened
+        ::closeTemporary()
+    ENDIF
 
     IF ! ::Fopened
         IF ::FTable:Alias:ordNumber( ::TagName ) = 0

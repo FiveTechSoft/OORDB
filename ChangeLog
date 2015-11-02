@@ -2,6 +2,18 @@
  * $Id: ChangeLog 155 2013-06-06 03:29:32Z tfonrouge $
  */
 
+Mon Nov  2 22:03:34 UTC 2015 Teo Fonrouge (tfonrouge@gmail.com)
+  M src/TIndex.prg
+    + RO property : opened
+    + method : closeIndex() : calls closeTemporary() (if apply)
+    * enabled custom parameter on AddIndex()
+    ! nil to tagName on closeTemporary()
+    % send table parameter on for block on custom key add
+    * openIndex() if called and index is opened, then closes the index and reopen it
+
+  M src/TTable.prg
+    * don't open temporary index on __checkIndexes() : they must be explicitly open (openIndex())
+
 Sun Nov  1 22:25:37 UTC 2015 Teo Fonrouge (tfonrouge@gmail.com)
   M src/TIndex.prg
     * using ::getMasterKeyVal() instead of ::MasterKeyVal

@@ -496,7 +496,9 @@ METHOD PROCEDURE __CheckIndexes() CLASS TTable
 
    FOR EACH curClass IN ::FIndexList
       FOR EACH index IN curClass
-         index:openIndex()
+         IF ! index:temporary
+            index:openIndex()
+         ENDIF
       NEXT
    NEXT
 
