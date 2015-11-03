@@ -886,12 +886,6 @@ METHOD PROCEDURE SetField( nIndex, XField ) CLASS TIndex
          RAISE ERROR "Declared Index Field '" + XField + "' doesn't exist..."
          RETURN
       ENDIF
-      IF ! isCustomIndex
-         isCustomIndex := AField:Calculated .AND. AField:customIndexExpression = nil
-      ENDIF
-      IF isCustomIndex
-         ::SetCustomIndexExpression( XField )
-      ENDIF
       EXIT
    CASE 'O'
       IF !XField:IsDerivedFrom( "TField" )
@@ -929,6 +923,19 @@ METHOD PROCEDURE SetField( nIndex, XField ) CLASS TIndex
 
    IF hb_isNil( AField )
       RETURN
+   ENDIF
+
+   /* if not custom index ( by clause CUSTOM in index definition ) then checks if it must be custom */
+   IF ! ::FCustom
+      IF ! isCustomIndex
+         isCustomIndex := AField:Calculated .AND. AField:customIndexExpression = nil
+      ENDIF
+
+      IF isCustomIndex
+         ::SetCustomIndexExpression( XField )
+      ELSE
+         ::FCustom := .F.
+      ENDIF
    ENDIF
 
    /* Assign MasterField value to the TTable object field */

@@ -2,6 +2,10 @@
  * $Id: ChangeLog 155 2013-06-06 03:29:32Z tfonrouge $
  */
 
+Tue Nov  3 23:10:55 UTC 2015 Teo Fonrouge (tfonrouge@gmail.com)
+  M src/TIndex.prg
+    * if custom index defined by clause CUSTOM (Fcustom = .t.), leave that setting 
+
 Tue Nov  3 18:27:54 UTC 2015 Teo Fonrouge (tfonrouge@gmail.com)
   M src/TField.prg
     + property : customIndexExpression : -> FindexExpression ( user defined RDD expression for index )
