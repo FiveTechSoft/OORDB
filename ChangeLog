@@ -2,6 +2,14 @@
  * $Id: ChangeLog 155 2013-06-06 03:29:32Z tfonrouge $
  */
 
+Tue Nov  3 18:27:54 UTC 2015 Teo Fonrouge (tfonrouge@gmail.com)
+  M src/TField.prg
+    + property : customIndexExpression : -> FindexExpression ( user defined RDD expression for index )
+      : this NOT MAKE A INDEX A CUSTOM INDEX, just is the expression used by the RDD
+
+  M src/TIndex.prg
+    % improved way of detection of CUSTOM index
+
 Mon Nov  2 22:03:34 UTC 2015 Teo Fonrouge (tfonrouge@gmail.com)
   M src/TIndex.prg
     + RO property : opened

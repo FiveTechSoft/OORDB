@@ -262,6 +262,8 @@ METHOD AddIndex( cMasterKeyField, ai, un, cKeyField, keyFlags, ForKey, cs, de, a
          ::UniqueKeyField := cKeyField
       ENDIF
    ELSE
+      /* this may change in assigning ::keyField value bellow */
+      ::FCustom := iif( HB_ISNIL( cu ), .F. , cu )
       DO CASE
          /* Check if index key is AutoIncrement */
       CASE ai == .T.
@@ -285,7 +287,6 @@ METHOD AddIndex( cMasterKeyField, ai, un, cKeyField, keyFlags, ForKey, cs, de, a
    ::Descend := iif( HB_ISNIL( de ), .F., de )
    ::FuseIndex := useIndex
    ::temporary := temporary == .T.
-   ::FCustom := iif( HB_ISNIL( cu ), .F. , cu )
 
    ::FTable:addIndexMessage( ::name )
 
@@ -859,6 +860,7 @@ METHOD PROCEDURE SetField( nIndex, XField ) CLASS TIndex
    LOCAL AField
    LOCAL fld
    LOCAL fieldBlock
+   LOCAL isCustomIndex := .F.
 
    SWITCH ValType( XField )
    CASE 'C'
@@ -877,12 +879,17 @@ METHOD PROCEDURE SetField( nIndex, XField ) CLASS TIndex
          AField:FieldMethod := fieldBlock
          AField:Published := .F.
 
+         isCustomIndex := .T.
+
       ENDIF
       IF AField = NIL
          RAISE ERROR "Declared Index Field '" + XField + "' doesn't exist..."
          RETURN
       ENDIF
-      IF AField:Calculated
+      IF ! isCustomIndex
+         isCustomIndex := AField:Calculated .AND. AField:customIndexExpression = nil
+      ENDIF
+      IF isCustomIndex
          ::SetCustomIndexExpression( XField )
       ENDIF
       EXIT

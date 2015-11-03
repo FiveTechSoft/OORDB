@@ -197,6 +197,7 @@ CLASS TField FROM OORDBBASE
    PROPERTY AsVariant READ GetAsVariant WRITE SetAsVariant
    PROPERTY Calculated READ FCalculated
    PROPERTY CloneData READ GetCloneData WRITE SetCloneData
+   PROPERTY customIndexExpression READ FIndexExpression
    PROPERTY DisplayBlock READWRITE
    PROPERTY EmptyValue READ GetEmptyValue
    PROPERTY FieldArrayIndex READ FFieldArrayIndex
