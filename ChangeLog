@@ -2,6 +2,13 @@
  * $Id: ChangeLog 155 2013-06-06 03:29:32Z tfonrouge $
  */
 
+Wed Nov  4 19:18:33 UTC 2015 Teo Fonrouge (tfonrouge@gmail.com)
+  M src/TField.prg
+    + message : hasAsDisplay : true if field has a displayblock so displayfieldlist class las *_asDisplay message for it
+
+  M src/TTable.prg
+    * use hasAsDisplay message to add *_asDisplay message to displayFieldList object
+
 Wed Nov  4 18:58:34 UTC 2015 Teo Fonrouge (tfonrouge@gmail.com)
   M src/TIndex.prg
     ! check for empty tagName on index creation

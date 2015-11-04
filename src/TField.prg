@@ -151,6 +151,7 @@ CLASS TField FROM OORDBBASE
    METHOD GetBuffer()
    METHOD GetData()
    METHOD GetKeyVal( keyVal, keyFlags )
+   METHOD hasAsDisplay INLINE  valType( ::ValidValues ) = "H" .OR. ::DisplayBlock != NIL
    METHOD IndexExpression VIRTUAL
    METHOD IsReadOnly() INLINE ::FTable:READONLY .OR. ::FReadOnly .OR. ( ::FTable:State != dsBrowse .AND. ::AutoIncrement )
    METHOD IsTableField()

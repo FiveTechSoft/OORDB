@@ -2123,7 +2123,7 @@ METHOD FUNCTION GetDisplayFieldList( syncFromAlias ) CLASS TTable
                DisplayFieldListClass:AddInline( msgName, ::GetDisplayFieldBlock( index ) )
                fieldList[ msgName ] := index
 
-               IF field != NIL .AND. ( ValType( field:ValidValues ) = "H" .OR. field:DisplayBlock != NIL )
+               IF field != NIL .AND. field:hasAsDisplay
                   msgName += "_AsDisplay"
                   DisplayFieldListClass:AddInline( msgName, ::GetDisplayFieldBlock( index, .T. ) )
                   fieldList[ msgName ] := index
