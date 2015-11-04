@@ -780,7 +780,7 @@ METHOD PROCEDURE openIndex() CLASS TIndex
     ENDIF
 
     IF ! ::Fopened
-        IF ::FTable:Alias:ordNumber( ::TagName ) = 0
+        IF empty( ::tagName ) .OR. ::FTable:Alias:ordNumber( ::TagName ) = 0
             processing := .F.
             FOR EACH index IN ::indexCreationList
                 processing := ::TableBaseClass == index:TableBaseClass .AND. ::tagName == index:tagName

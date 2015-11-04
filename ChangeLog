@@ -2,6 +2,10 @@
  * $Id: ChangeLog 155 2013-06-06 03:29:32Z tfonrouge $
  */
 
+Wed Nov  4 18:58:34 UTC 2015 Teo Fonrouge (tfonrouge@gmail.com)
+  M src/TIndex.prg
+    ! check for empty tagName on index creation
+
 Tue Nov  3 23:10:55 UTC 2015 Teo Fonrouge (tfonrouge@gmail.com)
   M src/TIndex.prg
     * if custom index defined by clause CUSTOM (Fcustom = .t.), leave that setting 
