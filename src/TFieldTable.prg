@@ -211,13 +211,15 @@ METHOD FUNCTION DataObj CLASS TFieldTable
                ENDIF
                /* to be sure of mastersource synced with linkedTable */
                IF linkedTable:MasterSource != NIL .AND. !linkedTable:MasterSource:BaseKeyField:KeyVal == ::FMasterKeyVal
-                  IF linkedTable:InsideScope()
-                     // linkedTable:GetCurrentRecord()
-                  ELSE
+                  IF ! linkedTable:InsideScope()
                      /* to don't attempt to write into a LinkedObjField */
                      linkedObjField := linkedTable:LinkedObjField
                      linkedTable:LinkedObjField := NIL
-                     linkedTable:dbGoTop()
+                     IF ::FTable:eof() .OR. ! linkedTable:index:opened
+                        linkedTable:dbGoTo( 0 )
+                     ELSE
+                        linkedTable:dbGoTop()
+                     ENDIF
                      linkedTable:LinkedObjField := linkedObjField
                   ENDIF
                   ::FMasterKeyVal := linkedTable:MasterSource:BaseKeyField:KeyVal
