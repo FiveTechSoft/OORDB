@@ -2,6 +2,10 @@
  * $Id: ChangeLog 155 2013-06-06 03:29:32Z tfonrouge $
  */
 
+Fri Nov  6 19:24:11 UTC 2015 Teo Fonrouge (tfonrouge@gmail.com)
+  M src/TIndex.prg
+    * minor code cleanup
+
 Fri Nov  6 19:23:21 UTC 2015 Teo Fonrouge (tfonrouge@gmail.com)
   M src/Dba.prg
   M src/TAlias.prg
