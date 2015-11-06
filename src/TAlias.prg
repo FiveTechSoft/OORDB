@@ -57,7 +57,7 @@ CLASS TAlias FROM OORDBBASE
    METHOD dbUnlock() INLINE ::FstackLock := {}, ( ::workArea )->( dbUnlock() )
    METHOD Deleted()
    METHOD Eval( codeBlock, ... )
-   METHOD ExistKey( KeyValue, IndexName, RecNo )
+   METHOD existsKey( KeyValue, IndexName, RecNo )
    METHOD FCount INLINE ( ::workArea )->( FCount() )
    METHOD FieldPos( FieldName ) INLINE ( ::workArea )->( FieldPos( FieldName ) )
    METHOD FLock() INLINE ( ::workArea )->( FLock() )
@@ -393,10 +393,10 @@ METHOD FUNCTION Eval( codeBlock, ... ) CLASS TAlias
    RETURN ( ::workArea )->( codeBlock:Eval( ... ) )
 
 /*
-    ExistKey
+    existsKey
 */
-METHOD FUNCTION ExistKey( KeyValue, IndexName, RecNo ) CLASS TAlias
-   RETURN ( ::workArea )->( ExistKey( KeyValue, IndexName, RecNo ) )
+METHOD FUNCTION existsKey( KeyValue, IndexName, RecNo ) CLASS TAlias
+   RETURN ( ::workArea )->( existsKey( KeyValue, IndexName, RecNo ) )
 
 /*
     Get4Seek

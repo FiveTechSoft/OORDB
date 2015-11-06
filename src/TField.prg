@@ -333,7 +333,7 @@ METHOD PROCEDURE CheckForKeyViolation( value ) CLASS TField
     LOCAL oldBuffer
 
     FOR EACH index IN ::FUniqueKeyIndexList
-        IF ::IsPrimaryKeyField .AND. index:ExistKey( ::GetKeyVal( value, index:KeyFlags ), ::FTable:RecNo )
+        IF ::IsPrimaryKeyField .AND. index:existsKey( ::GetKeyVal( value, index:KeyFlags ), ::FTable:RecNo )
             RAISE TFIELD ::Name ERROR "Primary Key violation."
         ENDIF
     NEXT
@@ -1290,7 +1290,7 @@ METHOD PROCEDURE SetData( value, initialize ) CLASS TField
       nTries := 1000
       WHILE .T.
          value := ::GetAutoIncrementValue()
-         IF !::FAutoIncrementKeyIndex:ExistKey( ::GetKeyVal( value, ::FAutoIncrementKeyIndex:KeyFlags ) )
+         IF !::FAutoIncrementKeyIndex:existsKey( ::GetKeyVal( value, ::FAutoIncrementKeyIndex:KeyFlags ) )
             EXIT
          ENDIF
          IF ( --nTries = 0 )
@@ -1722,7 +1722,7 @@ METHOD FUNCTION ValidateResult_TableLogic( showAlert, value ) CLASS TField
         ENDIF
         FOR EACH index IN ::FUniqueKeyIndexList
             indexWarnMsg := index:WarnMsg
-            IF !Empty( value ) .AND. index:ExistKey( ::GetKeyVal( value, index:KeyFlags ), ::FTable:RecNo )
+            IF !Empty( value ) .AND. index:existsKey( ::GetKeyVal( value, index:KeyFlags ), ::FTable:RecNo )
                 result := ::FTable:ClassName + ": " + iif( !Empty( indexWarnMsg ), indexWarnMsg, "'" + ::Name + "' <key value already exists> '" + AsString( value ) + "'" )
                 IF showAlert == .T.
                     SHOW WARN result
@@ -1736,7 +1736,7 @@ METHOD FUNCTION ValidateResult_TableLogic( showAlert, value ) CLASS TField
      * Check for a key violation
      */
     FOR EACH index IN ::FUniqueKeyIndexList
-        IF ::IsPrimaryKeyField .AND. index:ExistKey( ::GetKeyVal( value, index:KeyFlags ), ::FTable:RecNo )
+        IF ::IsPrimaryKeyField .AND. index:existsKey( ::GetKeyVal( value, index:KeyFlags ), ::FTable:RecNo )
             RAISE TFIELD ::Name ERROR "Key violation."
         ENDIF
     NEXT

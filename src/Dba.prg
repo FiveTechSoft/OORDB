@@ -119,9 +119,9 @@ FUNCTION DbSkipX( n, ord )
    RETURN ret
 
 /*
-    ExistKey() : Checa si existe key en indice dado
+    existsKey() : Checa si existe key en indice dado
 */
-FUNCTION ExistKey( cKey, xOrder, nRec, bFor, bEval )
+FUNCTION existsKey( cKey, xOrder, nRec, bFor, bEval )
 
    LOCAL nr := RecNo()
    LOCAL recNo

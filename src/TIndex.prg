@@ -104,7 +104,7 @@ PUBLIC:
    METHOD DbGoTop INLINE ::DbGoBottomTop( 1 )
    METHOD dbSkip( numRecs )
    METHOD GetKeyVal( keyVal )
-   METHOD ExistKey( keyValue, recNo )
+   METHOD existsKey( keyValue, recNo )
    METHOD FillCustomIndex()
    METHOD Get4Seek( blk, keyVal, softSeek )
    METHOD Get4SeekLast( blk, keyVal, softSeek )
@@ -555,10 +555,10 @@ METHOD FUNCTION dbSkip( numRecs ) CLASS TIndex
    RETURN ::FTable:SkipFilter( numRecs, Self )
 
 /*
-    ExistKey
+    existsKey
 */
-METHOD FUNCTION ExistKey( keyValue, recNo ) CLASS TIndex
-   RETURN ::FTable:alias:ExistKey( ::getMasterKeyVal + keyValue, ::FTagName, recNo )
+METHOD FUNCTION existsKey( keyValue, recNo ) CLASS TIndex
+   RETURN ::FTable:alias:existsKey( ::getMasterKeyVal + keyValue, ::FTagName, recNo )
 
 /*
     FillCustomIndex
