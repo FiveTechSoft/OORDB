@@ -558,7 +558,7 @@ METHOD FUNCTION dbSkip( numRecs ) CLASS TIndex
     existsKey
 */
 METHOD FUNCTION existsKey( keyValue, recNo ) CLASS TIndex
-   RETURN ::FTable:alias:existsKey( ::getMasterKeyVal + keyValue, ::FTagName, recNo )
+   RETURN ::FTable:alias:existsKey( ::getMasterKeyVal + ::KeyField:GetKeyVal( keyValue ), ::FTagName, recNo )
 
 /*
     FillCustomIndex
