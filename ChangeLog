@@ -2,6 +2,10 @@
  * $Id: ChangeLog 155 2013-06-06 03:29:32Z tfonrouge $
  */
 
+Sun Nov  8 17:08:42 UTC 2015 Teo Fonrouge (tfonrouge@gmail.com)
+  M src/TFieldVariant.prg
+    * ftVariant is a memo field
+
 Fri Nov  6 20:42:25 UTC 2015 Teo Fonrouge (tfonrouge@gmail.com)
   M src/TIndex.prg
     % convert key on existKey()
