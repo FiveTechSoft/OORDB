@@ -471,7 +471,7 @@ METHOD FUNCTION CustomKeyExpValue() CLASS TIndex
 METHOD PROCEDURE CustomKeyUpdate CLASS TIndex
     LOCAL customKeyValue
 
-    IF ::FCustom
+    IF ::FCustom .AND. ::Fopened
         WHILE ::FTable:Alias:ordKeyDel( ::FTagName ) ; ENDDO
         customKeyValue := ::CustomKeyExpValue()
         IF Empty( ::FForKeyBlock ) .OR. ::FTable:Alias:Eval( ::FForKeyBlock, ::FTable )

@@ -12,19 +12,49 @@ CLASS TFieldVariant FROM TField
 
 PROTECTED:
 
-   DATA FDBS_LEN INIT 4
-   DATA FDBS_DEC INIT 0
-   DATA FDBS_TYPE INIT "M"
-   DATA FFieldType INIT ftVariant
-   DATA FSize INIT 0
-   DATA FType INIT "Variant"
-   DATA FtypeNameList INIT hb_hSetCaseMatch( {"es"=>"Variante"} )
+    DATA FDBS_LEN INIT 4
+    DATA FDBS_DEC INIT 0
+    DATA FDBS_TYPE INIT "M"
+    DATA FFieldType INIT ftVariant
+
+    DATA FgetKeyValCodeBlock
+    DATA FindexExpressionCodeBlock
+
+    DATA FSize INIT 0
+    DATA FType INIT "Variant"
+    DATA FtypeNameList INIT hb_hSetCaseMatch( {"es"=>"Variante"} )
+
+    METHOD indexExpression
+
+    METHOD setgetKeyValCodeBlock( getKeyValCodeBlock ) INLINE ::FgetKeyValCodeBlock := getKeyValCodeBlock
+    METHOD setindexExpressionCodeBlock( indexExpressionCodeBlock ) INLINE ::FindexExpressionCodeBlock := indexExpressionCodeBlock
 
 PUBLIC:
 
-    PROPERTY KeySize READ Size
+    METHOD getKeyVal( keyVal )
+
+    PROPERTY getKeyValCodeBlock READ FgetKeyValCodeBlock WRITE setgetKeyValCodeBlock
+    PROPERTY indexExpressionCodeBlock READ FindexExpressionCodeBlock WRITE setindexExpressionCodeBlock
 
 ENDCLASS
+
+/*
+    getKeyVal
+*/
+METHOD FUNCTION getKeyVal( keyVal ) CLASS TFieldVariant
+    IF __objHasMsgAssigned( ::FTable, "getKeyVal_Field_" + ::FName ) .AND. ::FgetKeyValCodeBlock = nil
+        ::FgetKeyValCodeBlock := &( "{|self,...|" + "::getKeyVal_Field_" + ::FName + "( ... ) }" )
+    ENDIF
+    IF ::FgetKeyValCodeBlock = nil
+        THROW ERROR getKeyVal_Message_OR_CodeBlock_NOT_DEFINED
+    ENDIF
+RETURN ::FgetKeyValCodeBlock:eval( ::FTable, keyVal )
+
+/*
+    indexExpression
+*/
+METHOD FUNCTION indexExpression CLASS TFieldVariant
+RETURN ::FindexExpressionCodeBlock:eval( ::FTable )
 
 /*
     ENDCLASS TFieldVariant

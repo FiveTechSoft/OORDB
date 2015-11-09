@@ -97,11 +97,15 @@ RETURN time
 */
 METHOD FUNCTION GetKeyVal( keyVal ) CLASS TFieldTime
 
-   IF keyVal = NIL
-      keyVal := ::GetAsVariant()
-   ENDIF
+    IF keyVal = NIL
+        keyVal := ::GetAsVariant()
+    ENDIF
 
-   RETURN hb_NumToHex( ::TranslateToFieldValue( keyVal ), 8 )
+    IF ::FDBS_TYPE = "B"
+        RETURN StrZero( ::TranslateToFieldValue( keyVal ), ::FDBS_LEN, ::FDBS_DEC )
+    ENDIF
+
+RETURN hb_NumToHex( ::TranslateToFieldValue( keyVal ), 8 )
 
 /*
     GetTPart

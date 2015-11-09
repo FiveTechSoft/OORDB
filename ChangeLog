@@ -2,6 +2,16 @@
  * $Id: ChangeLog 155 2013-06-06 03:29:32Z tfonrouge $
  */
 
+Mon Nov  9 17:27:35 UTC 2015 Teo Fonrouge (tfonrouge@gmail.com)
+  M src/TFieldTime.prg
+    * return keyVal value when field used is "B" (HTIME field)
+
+  M src/TFieldVariant.prg
+    % use Table:getKeyVal_Field_(fieldName) or index:getKeyValCodeBlock to calculate keyVal
+
+  M src/TIndex.prg
+    ! don't update custom key when index is closed
+
 Sun Nov  8 17:08:42 UTC 2015 Teo Fonrouge (tfonrouge@gmail.com)
   M src/TFieldVariant.prg
     * ftVariant is a memo field
