@@ -2,6 +2,12 @@
  * $Id: ChangeLog 155 2013-06-06 03:29:32Z tfonrouge $
  */
 
+Wed Nov 11 21:18:51 UTC 2015 Teo Fonrouge (tfonrouge@gmail.com)
+  M src/TTable.prg
+    * serialize() : gets data list from valueList()
+    + method : valueList : hash list of field -> values
+    + method : onAfterPostInsert : executes after successful post on a insert state
+
 Mon Nov  9 17:27:35 UTC 2015 Teo Fonrouge (tfonrouge@gmail.com)
   M src/TFieldTime.prg
     * return keyVal value when field used is "B" (HTIME field)

@@ -292,7 +292,7 @@ PUBLIC:
    METHOD Reset() // Set Field Record to their default values, Sync MasterKeyVal Value
    METHOD SEEK( Value, AIndex, SoftSeek ) INLINE ::__Seek( 0, Value, AIndex, SoftSeek )
    METHOD SeekLast( Value, AIndex, SoftSeek ) INLINE ::__Seek( 1, Value, AIndex, SoftSeek )
-   METHOD Serialize()
+   METHOD Serialize() INLINE hb_serialize( ::valueList() )
    METHOD SetAsString( Value ) INLINE ::GetKeyField():AsString := Value
    METHOD SetBaseKeyIndex( baseKeyIndex )
    METHOD SetDbFilter( filter ) INLINE ::FDbFilter := filter
@@ -315,6 +315,8 @@ PUBLIC:
 
    METHOD Validate( showAlert )
 
+   METHOD valueList()
+
    METHOD OnClassInitializing() VIRTUAL
    METHOD OnCreate() VIRTUAL
    METHOD OnActiveSetKeyVal( value )
@@ -324,6 +326,7 @@ PUBLIC:
    METHOD OnAfterInsert() VIRTUAL
    METHOD OnAfterOpen() VIRTUAL
    METHOD OnAfterPost() VIRTUAL
+   METHOD OnAfterPostInsert() VIRTUAL
    METHOD OnBeforeCancel() INLINE .T.
    METHOD onBeforeChange_Field() INLINE .T.
    METHOD OnBeforeDelete() INLINE .T.
@@ -2709,6 +2712,11 @@ METHOD FUNCTION Post() CLASS TTable
             __objSendMsg( Self, "OnAfterChange" )
          ENDIF
       ENDIF
+      IF ::FpreviousEditState = dsInsert
+         IF __objHasMsgAssigned( self, "OnAfterPostInsert" )
+            __objSendMsg( self, "OnAfterPostInsert" )
+         ENDIF
+      ENDIF
    ENDIF
 
    ::FpreviousEditState := NIL
@@ -2839,21 +2847,6 @@ METHOD PROCEDURE Reset() CLASS TTable
 
    RETURN
    
-/*
-    Serialize
-*/
-METHOD FUNCTION Serialize() CLASS TTable
-    LOCAL fld
-    LOCAL h := {=>}
-    
-    FOR EACH fld IN ::FFieldList
-        IF !fld:Calculated .AND. fld:FieldMethodType = "C"
-            h[ fld:Name ] := fld:Value
-        ENDIF
-    NEXT
-
-RETURN HB_Serialize( h )
-
 /*
     SetBaseKeyIndex
 */
@@ -3354,6 +3347,21 @@ METHOD FUNCTION Validate( showAlert ) CLASS TTable
    NEXT
 
    RETURN .T.
+
+/*
+    valueList
+*/
+METHOD FUNCTION valueList() CLASS TTable
+    LOCAL fld
+    LOCAL h := {=>}
+    
+    FOR EACH fld IN ::FFieldList
+        IF !fld:Calculated .AND. fld:FieldMethodType = "C"
+            h[ fld:Name ] := fld:Value
+        ENDIF
+    NEXT
+
+RETURN h
 
 /*
     End Class TTable
