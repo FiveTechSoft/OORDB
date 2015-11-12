@@ -139,6 +139,8 @@ METHOD FUNCTION GetKeyVal( keyVal ) CLASS TFieldDateTime
    SWITCH ValType( keyVal )
    CASE 'C'
       RETURN keyVal
+   CASE 'D'
+      RETURN dToS( keyVal )
    CASE 'T'
       RETURN hb_TToS( keyVal )
    CASE 'U'
