@@ -13,7 +13,7 @@ THREAD STATIC __S_FInstances
 
 CLASS TAlias FROM OORDBBASE
 
-   PRIVATE:
+PRIVATE:
 
    DATA FRecNo
    DATA FStack    INIT {}
@@ -21,18 +21,22 @@ CLASS TAlias FROM OORDBBASE
    DATA FTableName
    METHOD GetRecNo INLINE ::SyncFromRecNo(), ::FRecNo
    METHOD SetRecNo( RecNo ) INLINE ::dbGoto( RecNo )
-   PROTECTED:
-    METHOD FInstances BLOCK ;
+
+PROTECTED:
+
+   METHOD FInstances BLOCK ;
         {||
             IF __S_FInstances = NIL
                 __S_FInstances := hb_HSetCaseMatch( { => }, .F. )
             ENDIF
             RETURN __S_FInstances
         }
+
    DATA FstackLock INIT {}
    METHOD GetAliasName() INLINE ::FInstances[ ::FTableName, "aliasName" ]
    METHOD SetWorkArea( workArea )
-   PUBLIC:
+
+PUBLIC:
 
    DATA RddDriver
    DATA lReadOnly INIT .F.
@@ -99,7 +103,8 @@ CLASS TAlias FROM OORDBBASE
    PROPERTY Instances READ FInstances
    PROPERTY workArea READ FInstances[ ::FTableName, "workArea" ] WRITE SetWorkArea
 
-   PUBLISHED:
+PUBLISHED:
+
    PROPERTY Bof   INIT .T.
    PROPERTY Eof   INIT .T.
    PROPERTY Found INIT .F.
@@ -231,9 +236,7 @@ METHOD FUNCTION dbGoTop( indexName ) CLASS TAlias
 */
 METHOD FUNCTION dbInfo( ... ) CLASS TAlias
 
-   ::SyncFromRecNo()
-
-   RETURN ( ::workArea )->( dbInfo( ... ) )
+RETURN ( ::workArea )->( dbInfo( ... ) )
 
 /*
     DbOpen
@@ -271,11 +274,11 @@ METHOD DbOpen( table, aliasName ) CLASS TAlias
       IF table:DataBase:OpenBlock != NIL
          IF !table:DataBase:OpenBlock:Eval( table, aliasName )
             ::FTableName := ""
-            ::workArea := 0
+            ::workArea := ""
             RETURN .F.
          ENDIF
          ::FTableName := table:TableFileName
-         ::workArea := Select()
+         ::workArea := alias()
          IF !Empty( wa )
             dbSelectArea( wa )
          ENDIF
@@ -319,7 +322,7 @@ METHOD DbOpen( table, aliasName ) CLASS TAlias
    ENDIF
 
    ::FTableName := tableName
-   ::workArea := Select()
+   ::workArea := alias()
    ::FInstances[ tableName, "fullFileName" ] := tableFullFileName
 
    result := !NetErr()
@@ -335,9 +338,7 @@ METHOD DbOpen( table, aliasName ) CLASS TAlias
 */
 METHOD FUNCTION dbOrderInfo( ... ) CLASS TAlias
 
-   ::SyncFromRecNo()
-
-   RETURN ( ::workArea )->( dbOrderInfo( ... ) )
+RETURN ( ::workArea )->( dbOrderInfo( ... ) )
 
 /*
     DbRecall

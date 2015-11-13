@@ -463,15 +463,13 @@ METHOD PROCEDURE OnDestruct() CLASS TTable
    LOCAL dbfName, indexName
    LOCAL curCLass
    LOCAL index
-   LOCAL fileName
 
     FOR EACH curClass IN ::FIndexList
         FOR EACH INDEX IN curClass
-            IF index:temporary
-                fileName := ::alias:dbOrderInfo( DBOI_FULLPATH, nil, index:tagName )
+            IF index:temporary .AND. !empty( ::index:fileName )
                 ::alias:ordDestroy( index:tagName )
-                IF hb_fileExists( fileName )
-                    fErase( fileName )
+                IF hb_fileExists( ::index:fileName )
+                    fErase( ::index:fileName )
                 ENDIF
             ENDIF
         NEXT

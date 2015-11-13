@@ -2,6 +2,17 @@
  * $Id: ChangeLog 155 2013-06-06 03:29:32Z tfonrouge $
  */
 
+Fri Nov 13 08:23:04 UTC 2015 Teo Fonrouge (tfonrouge@gmail.com)
+  M src/TAlias.prg
+    * use workarea as string instead of number
+    * code cleanup
+
+  M src/TIndex.prg
+    + property : fileName : keeps name of index file on temporary
+
+  M src/TTable.prg
+    * use index:fileName instead of getting it from dbOrderInfo
+
 Thu Nov 12 23:20:35 UTC 2015 Teo Fonrouge (tfonrouge@gmail.com)
   M src/TFieldDateTime.prg
     ! convert keyVal type "D"

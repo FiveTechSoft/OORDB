@@ -152,6 +152,7 @@ PUBLISHED:
    PROPERTY Custom READ FCustom
    PROPERTY CustomIndexExpression READ FCustomIndexExpression
    PROPERTY Descend READ FDescend WRITE SetDescend
+   PROPERTY fileName
    PROPERTY ForKey READ FForKey WRITE SetForKey
    PROPERTY IsPrimaryIndex
    PROPERTY KeyField INDEX 3 READ GetField WRITE SetField
@@ -428,6 +429,8 @@ METHOD FUNCTION CreateIndex() CLASS TIndex
             ENDIF
 
             ordCreate( bagFileName, ::tagName, indexExp, indexExp, unique )
+
+            ::FfileName := ::FTable:alias:dbOrderInfo( DBOI_FULLPATH, nil, ::tagName )
 
             ::Fopened := .t.
 
