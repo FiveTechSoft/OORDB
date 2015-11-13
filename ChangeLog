@@ -2,6 +2,14 @@
  * $Id: ChangeLog 155 2013-06-06 03:29:32Z tfonrouge $
  */
 
+Fri Nov 13 22:28:04 UTC 2015 Teo Fonrouge (tfonrouge@gmail.com)
+  M src/TAlias.prg
+    % small optimization by removing message FInstances
+
+  M src/TTable.prg
+    * changed CLASSDATA Finstances to THREAD STATIC to create new instances on a new thread
+    * renamed var hDataBase to FdataBase
+
 Fri Nov 13 08:23:04 UTC 2015 Teo Fonrouge (tfonrouge@gmail.com)
   M src/TAlias.prg
     * use workarea as string instead of number

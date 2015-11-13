@@ -9,7 +9,7 @@
 #include "oordb.ch"
 #include "xerror.ch"
 
-THREAD STATIC __S_FInstances
+THREAD STATIC __S_Instances
 
 CLASS TAlias FROM OORDBBASE
 
@@ -24,16 +24,8 @@ PRIVATE:
 
 PROTECTED:
 
-   METHOD FInstances BLOCK ;
-        {||
-            IF __S_FInstances = NIL
-                __S_FInstances := hb_HSetCaseMatch( { => }, .F. )
-            ENDIF
-            RETURN __S_FInstances
-        }
-
    DATA FstackLock INIT {}
-   METHOD GetAliasName() INLINE ::FInstances[ ::FTableName, "aliasName" ]
+   METHOD GetAliasName() INLINE __S_Instances[ ::FTableName, "aliasName" ]
    METHOD SetWorkArea( workArea )
 
 PUBLIC:
@@ -100,8 +92,8 @@ PUBLIC:
      * needed for tdbrowse.prg (oDBE:Alias)
      */
    PROPERTY ALIAS READ GetAliasName
-   PROPERTY Instances READ FInstances
-   PROPERTY workArea READ FInstances[ ::FTableName, "workArea" ] WRITE SetWorkArea
+   METHOD Instances INLINE __S_Instances
+   PROPERTY workArea READ Instances[ ::FTableName, "workArea" ] WRITE SetWorkArea
 
 PUBLISHED:
 
@@ -117,8 +109,11 @@ ENDCLASS
     New
 */
 METHOD New( table, aliasName ) CLASS TAlias
-
    LOCAL tableName
+
+   IF __S_Instances = nil
+    __S_Instances := hb_HSetCaseMatch( { => }, .F. )
+   ENDIF
 
    IF Empty( table )
       RAISE ERROR "TAlias: Empty Table parameter."
@@ -170,9 +165,9 @@ METHOD FUNCTION AddRec( index ) CLASS TAlias
 */
 METHOD PROCEDURE dbCloseArea() CLASS TAlias
 
-   IF hb_HHasKey( ::FInstances, ::FTableName )
+   IF hb_HHasKey( __S_Instances, ::FTableName )
       ( ::workArea )->( dbCloseArea() )
-      hb_HDel( ::FInstances, ::FTableName )
+      hb_HDel( __S_Instances, ::FTableName )
    ENDIF
 
    RETURN
@@ -257,9 +252,9 @@ METHOD DbOpen( table, aliasName ) CLASS TAlias
    IF HB_ISOBJECT( table )
 
       /* Check for a previously open workarea */
-      IF hb_HHasKey( ::FInstances, table:TableFileName )
+      IF hb_HHasKey( __S_Instances, table:TableFileName )
          ::FTableName := table:TableFileName
-         table:fullFileName := ::FInstances[ table:TableFileName, "fullFileName" ]
+         table:fullFileName := __S_Instances[ table:TableFileName, "fullFileName" ]
          RETURN .T.
       ENDIF
 
@@ -323,7 +318,7 @@ METHOD DbOpen( table, aliasName ) CLASS TAlias
 
    ::FTableName := tableName
    ::workArea := alias()
-   ::FInstances[ tableName, "fullFileName" ] := tableFullFileName
+   __S_Instances[ tableName, "fullFileName" ] := tableFullFileName
 
    result := !NetErr()
 
@@ -670,9 +665,9 @@ METHOD FUNCTION SetFieldValue( fieldName, value ) CLASS TAlias
 */
 METHOD PROCEDURE SetWorkArea( workArea ) CLASS TAlias
 
-   ::FInstances[ ::FTableName ] := { => }
-   ::FInstances[ ::FTableName, "workArea" ] := workArea
-   ::FInstances[ ::FTableName, "aliasName" ] := Alias( workArea )
+   __S_Instances[ ::FTableName ] := { => }
+   __S_Instances[ ::FTableName, "workArea" ] := workArea
+   __S_Instances[ ::FTableName, "aliasName" ] := Alias( workArea )
 
    RETURN
 

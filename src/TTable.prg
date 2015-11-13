@@ -21,6 +21,7 @@
 
 THREAD STATIC FErrorBlock
 THREAD STATIC BaseKeyFieldList := {}
+THREAD STATIC __S_Instances
 
 REQUEST TField
 
@@ -88,7 +89,6 @@ CLASS TTable FROM OORDBBASE
 PRIVATE:
 
    CLASSDATA FFieldTypes
-   CLASSDATA FInstances INIT hb_HSetCaseMatch( { => }, .F. )
 
    DATA FActive    INIT .F.
    DATA FAddress
@@ -135,7 +135,7 @@ PRIVATE:
 
 PROTECTED:
 
-   CLASSDATA hDataBase INIT hb_HSetCaseMatch( { => }, .F. )
+   CLASSDATA FdataBase INIT hb_HSetCaseMatch( { => }, .F. )
 
    DATA FAutoCreate
    DATA FBaseKeyField
@@ -362,7 +362,7 @@ PUBLIC:
    PROPERTY indexFieldListByClass INIT hb_HSetCaseMatch( { => }, .F. )  /* list of field index number by table class name */
    PROPERTY Initialized READ FInitialized
    PROPERTY instance READ getInstance
-   PROPERTY Instances READ FInstances
+   METHOD   Instances INLINE __S_Instances
    PROPERTY isMetaTable READ FisMetaTable WRITE SetisMetaTable
    PROPERTY IsTempTable READ FIsTempTable
    PROPERTY KeyExpression READ GetKeyExpression
@@ -388,7 +388,7 @@ PUBLISHED:
 
    DATA Cargo
 
-   PROPERTY ChildReferenceList READ FInstances[ ::TableClass, "ChildReferenceList" ]
+   METHOD   ChildReferenceList INLINE __S_Instances[ ::TableClass, "ChildReferenceList" ]
    PROPERTY CustomIndexList READ FCustomIndexList
    PROPERTY INDEX READ GetIndex WRITE SetIndex
    PROPERTY IndexList READ FIndexList
@@ -409,6 +409,11 @@ ENDCLASS
 METHOD New( masterSource, tableName ) CLASS TTable
 
    LOCAL ms
+
+   IF __S_Instances = nil
+      __S_Instances := hb_HSetCaseMatch( { => }, .F. )
+      ::FdataBase := hb_HSetCaseMatch( { => }, .F. )
+   ENDIF
 
    ::FInitialized := .T.
 
@@ -467,7 +472,7 @@ METHOD PROCEDURE OnDestruct() CLASS TTable
     FOR EACH curClass IN ::FIndexList
         FOR EACH INDEX IN curClass
             IF index:temporary .AND. !empty( ::index:fileName )
-                ::alias:ordDestroy( index:tagName )
+//                ::alias:ordDestroy( index:tagName )
                 IF hb_fileExists( ::index:fileName )
                     fErase( ::index:fileName )
                 ENDIF
@@ -826,11 +831,11 @@ METHOD FUNCTION CheckDbStruct() CLASS TTable
    LOCAL dbsSize
    LOCAL sResult := ""
 
-   IF !hb_HHasKey( ::FInstances[ ::TableClass ], "DbStructValidating" )
+   IF !hb_HHasKey( __S_Instances[ ::TableClass ], "DbStructValidating" )
 
       aDb := AClone( ::dbStruct() )
 
-      ::FInstances[ ::TableClass, "DbStructValidating" ] := NIL
+      __S_Instances[ ::TableClass, "DbStructValidating" ] := NIL
 
       FOR EACH AField IN ::FieldList
          IF AField:FieldMethodType = "C" .AND. !AField:Calculated .AND. AField:UsingField = NIL
@@ -882,7 +887,7 @@ METHOD FUNCTION CheckDbStruct() CLASS TTable
          ENDIF
       NEXT
 
-      ::FInstances[ ::TableClass, "DbStructValidated" ] := .T.
+      __S_Instances[ ::TableClass, "DbStructValidated" ] := .T.
 
       IF ! Empty( sResult )
          sResult := "Error on Db structure." + ;
@@ -892,11 +897,11 @@ METHOD FUNCTION CheckDbStruct() CLASS TTable
             E"-----\n\n"
          ? sResult
 
-         ::FInstances[ ::TableClass, "DbStructValidated" ] := ::FixDbStruct( aDb, sResult )
+         __S_Instances[ ::TableClass, "DbStructValidated" ] := ::FixDbStruct( aDb, sResult )
 
       ENDIF
 
-      hb_HDel( ::FInstances[ ::TableClass ], "DbStructValidating" )
+      hb_HDel( __S_Instances[ ::TableClass ], "DbStructValidating" )
 
    ENDIF
 
@@ -1147,7 +1152,7 @@ METHOD PROCEDURE CreateTableInstance() CLASS TTable
    ::InitTable()
 
    /* Check for a valid db structure (based on definitions on DEFINE FIELDS) */
-   IF !Empty( ::TableFileName ) .AND. ::validateDbStruct .AND. !hb_HHasKey( ::FInstances[ ::TableClass ], "DbStructValidated" )
+   IF !Empty( ::TableFileName ) .AND. ::validateDbStruct .AND. !hb_HHasKey( __S_Instances[ ::TableClass ], "DbStructValidated" )
       ::CheckDbStruct()
    ENDIF
 
@@ -1904,7 +1909,7 @@ METHOD FUNCTION FixDbStruct( aNewStruct, message ) CLASS TTable
 
          ::Alias:RecNo := recNo
 
-         hb_HDel( ::FInstances[ ::TableClass ], "DbStruct" )
+         hb_HDel( __S_Instances[ ::TableClass ], "DbStruct" )
 
       RECOVER USING errObj
 
@@ -2023,18 +2028,18 @@ METHOD FUNCTION GetDataBase() CLASS TTable
       RETURN NIL
    ENDIF
 
-   RETURN ::hDataBase[ ::FDataBaseClass ]
+   RETURN ::FdataBase[ ::FDataBaseClass ]
 
 /*
     GetDbStruct
 */
 METHOD FUNCTION GetDbStruct CLASS TTable
 
-   IF ! hb_HHasKey( ::FInstances[ ::TableClass ], "DbStruct" )
-      ::FInstances[ ::TableClass, "DbStruct" ] := ::Alias:DbStruct
+   IF ! hb_HHasKey( __S_Instances[ ::TableClass ], "DbStruct" )
+      __S_Instances[ ::TableClass, "DbStruct" ] := ::Alias:DbStruct
    ENDIF
 
-   RETURN ::FInstances[ ::TableClass, "DbStruct" ]
+   RETURN __S_Instances[ ::TableClass, "DbStruct" ]
 
 /*
     GetDisplayFieldBlock
@@ -2105,7 +2110,7 @@ METHOD FUNCTION GetDisplayFieldList( syncFromAlias ) CLASS TTable
          ::isMetaTable := .F.
       ENDIF
 
-      IF ::FInstances[ ::TableClass, "DisplayFieldListClass" ] == NIL
+      IF __S_Instances[ ::TableClass, "DisplayFieldListClass" ] == NIL
 
          fieldList := {=>}
          hb_HKeepOrder( fieldList, .T. )
@@ -2144,11 +2149,11 @@ METHOD FUNCTION GetDisplayFieldList( syncFromAlias ) CLASS TTable
 
          DisplayFieldListClass:Create()
 
-         ::FInstances[ ::TableClass, "DisplayFieldListClass" ] := DisplayFieldListClass
+         __S_Instances[ ::TableClass, "DisplayFieldListClass" ] := DisplayFieldListClass
 
       ENDIF
 
-      ::FDisplayFieldList := ::FInstances[ ::TableClass, "DisplayFieldListClass" ]:instance()
+      ::FDisplayFieldList := __S_Instances[ ::TableClass, "DisplayFieldListClass" ]:instance()
       ::FDisplayFieldList:__FObj := Self
       ::FDisplayFieldList:__FSyncFromAlias := .F.
 
@@ -2256,15 +2261,15 @@ METHOD FUNCTION GetIndex() CLASS TTable
 METHOD FUNCTION getInstance CLASS TTable
     LOCAL nPos
 
-    nPos := hb_hPos( ::FInstances, ::TableClass )
+    nPos := hb_hPos( __S_Instances, ::TableClass )
 
     IF nPos = 0
 
-        RETURN ( ::FInstances[ ::TableClass ] := hb_HSetCaseMatch( { "Initializing" => .T. }, .F. ) )
+        RETURN ( __S_Instances[ ::TableClass ] := hb_HSetCaseMatch( { "Initializing" => .T. }, .F. ) )
 
     ENDIF
 
-RETURN hb_hValueAt( ::FInstances, nPos )
+RETURN hb_hValueAt( __S_Instances, nPos )
 
 /*
     GetKeyExpression
@@ -2881,8 +2886,8 @@ METHOD FUNCTION SetDataBase( dataBase ) CLASS TTable
       ::FDataBaseClass := NIL
    ELSE
       ::FDataBaseClass := dataBase:ClassName
-      IF !hb_HHasKey( ::hDataBase, ::FDataBaseClass )
-         ::hDataBase[ dataBase:ClassName ] := dataBase
+      IF !hb_HHasKey( ::FdataBase, ::FDataBaseClass )
+         ::FdataBase[ dataBase:ClassName ] := dataBase
       ENDIF
    ENDIF
 
