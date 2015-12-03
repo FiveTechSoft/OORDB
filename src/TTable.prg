@@ -795,7 +795,7 @@ METHOD PROCEDURE Cancel CLASS TTable
       CASE dsEdit
          FOR EACH AField IN ::FieldList
             IF !AField:Calculated .AND. AField:FieldMethodType = "C" .AND. AField:Changed
-               AField:RevertValue()
+               AField:revertValue()
             ENDIF
          NEXT
          EXIT

@@ -81,6 +81,7 @@ CLASS TField FROM OORDBBASE
    DATA FOnReset INIT .F.
    DATA FOnSetKeyValBlock
    DATA FOnSetValue
+   DATA FrevertingValue
    DATA FTable
    DATA FTableBaseClass
    DATA FType INIT "TField"
@@ -156,7 +157,7 @@ CLASS TField FROM OORDBBASE
    METHOD IsReadOnly() INLINE ::FTable:READONLY .OR. ::FReadOnly .OR. ( ::FTable:State != dsBrowse .AND. ::AutoIncrement )
    METHOD IsTableField()
    METHOD Reset()
-   METHOD RevertValue()
+   METHOD revertValue()
    METHOD seek( ... ) INLINE ::keyIndex:seek( ... )
    METHOD SetAsVariant( value )
    METHOD SetData( value, initialize )
@@ -1081,21 +1082,29 @@ METHOD FUNCTION Reset() CLASS TField
    RETURN result
 
 /*
-    RevertValue
+    revertValue
 */
-METHOD PROCEDURE RevertValue() CLASS TField
+METHOD FUNCTION revertValue() CLASS TField
     LOCAL undoValue
 
-    undoValue := ::GetUndoValue()
+    IF ::FrevertingValue = nil
 
-    IF undoValue != NIL
-//        ::WriteToTable( undoValue )
-        /* to allow process ON [BEFORE|AFTER] CHANGE events */
-        ::SetData( undoValue )
-        ::FChanged := .F.
+        ::FrevertingValue := .T.
+
+        undoValue := ::GetUndoValue()
+
+        IF undoValue != NIL
+            ::SetData( undoValue )
+            ::FChanged := .F.
+        ENDIF
+
+        ::FrevertingValue := nil
+
+        RETURN .T.
+
     ENDIF
 
-RETURN
+RETURN .F.
 
 /*
     SetAsVariant
@@ -1357,9 +1366,7 @@ METHOD PROCEDURE SetData( value, initialize ) CLASS TField
 
         ::WriteToTable( value, initialize )
 
-        IF ! initialize == .T. .AND. !Empty( result := ::ValidateResult_OnValidate( .F. ) )
-
-            ::RevertValue()
+        IF ! initialize == .T. .AND. !Empty( result := ::ValidateResult_OnValidate( .F. ) ) .AND. ::revertValue()
 
             SHOW WARN result
 
