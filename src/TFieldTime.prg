@@ -31,7 +31,7 @@ PUBLIC:
 
     METHOD GetAsDisplay() INLINE ::GetAsVariant():AsString
     METHOD GetAsDisplayEmptyValue INLINE ::GetEmptyValue:AsString
-    METHOD GetAsString INLINE ::GetAsVariant:AsString
+    METHOD GetAsString( ... ) INLINE ::GetAsVariant:AsString( ... )
     METHOD GetKeyVal( keyVal )
     METHOD GetTime INLINE TTime():New( "00:00:00", ::FTimeFormat )
     METHOD IndexExpression( fieldName )

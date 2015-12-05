@@ -2,6 +2,10 @@
  * $Id: ChangeLog 155 2013-06-06 03:29:32Z tfonrouge $
  */
 
+Sat Dec  5 00:13:27 UTC 2015 Teo Fonrouge (tfonrouge@gmail.com)
+  M src/TFieldTime.prg
+    % parameter getAsString
+
 Thu Dec  3 18:30:02 UTC 2015 Teo Fonrouge (tfonrouge@gmail.com)
   M src/TField.prg
     ! protection against recursive call to revertValue()
