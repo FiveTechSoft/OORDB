@@ -820,12 +820,8 @@ METHOD FUNCTION GetFieldReadBlock() CLASS TField
          IF __objHasMsgAssigned( ::FTable, "CalcField_" + ::FName )
             ::FFieldReadBlock := &( "{|o,...|" + "o:CalcField_" + ::FName + "( ... ) }" )
          ELSE
-            IF __objHasMsgAssigned( ::FTable:MasterSource, "CalcField_" + ::FName )
-               ::FFieldReadBlock := &( "{|o,...|" + "o:MasterSource:CalcField_" + ::FName + "( ... ) }" )
-            ELSE
-               IF !::IsDerivedFrom( "TFieldTable" )
-                  THROW ERROR OODB_ERR__CALCULATED_FIELD_CANNOT_BE_SOLVED
-               ENDIF
+            IF !::IsDerivedFrom( "TFieldTable" )
+               THROW ERROR OODB_ERR__CALCULATED_FIELD_CANNOT_BE_SOLVED
             ENDIF
          ENDIF
       ELSE
