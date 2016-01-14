@@ -156,6 +156,7 @@
                         [ DEFAULTINDEX <defaultIndexName> ] ;
                         [ DISPLAY <dispBlock> ] ;
                         [ <aeu: ACCEPT_EMPTY_UNIQUE> ] ;
+                        [ CARGO <cargoValue>  ] ;
                      => ;
                         WITH OBJECT TField<type>():New( Self, ::curClassField ) ;;
                             [ :Name := <cName> ] ;;
@@ -201,6 +202,7 @@
                             [ :SetDefaultIndexName( <defaultIndexName> ) ] ;;
                             [ :DisplayBlock := <dispBlock> ] ;;
                             [ :acceptEmptyUnique := <.aeu.> ] ;;
+                            [ :cargo := <cargoValue> ] ;;
                             :AddFieldMessage() ;;
                             :ValidateFieldInfo() ;;
                         ENDWITH

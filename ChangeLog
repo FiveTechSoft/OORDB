@@ -2,6 +2,11 @@
  * $Id: ChangeLog 155 2013-06-06 03:29:32Z tfonrouge $
  */
 
+Thu Jan 14 22:13:43 UTC 2016 Teo Fonrouge (tfonrouge@gmail.com)
+  M include/oordb.ch
+  M src/TField.prg
+    + CARGO command to assign values to cargo data on TField
+
 Tue Jan  5 05:33:10 UTC 2016 Teo Fonrouge (tfonrouge@gmail.com)
   M src/TField.prg
     ! don't search for a calculated field expression on the mastersource

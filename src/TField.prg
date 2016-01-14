@@ -128,6 +128,9 @@ CLASS TField FROM OORDBBASE
    PUBLIC:
 
    DATA AcceptEmptyUnique INIT .F.
+
+   DATA cargo
+
    DATA nameAlias
    DATA PICTURE
 
