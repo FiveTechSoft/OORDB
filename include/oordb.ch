@@ -319,9 +319,10 @@
                         [ USEINDEX <useIndex> ] ;
                         [ <acceptEmptyUnique: ACCEPT_EMPTY_UNIQUE> ] ;
                         [ ON KEYVIOLATION WARN <errorMsg> ] ;
+                        [ <def: DEFAULT > ] ;
                         => ;
                         WITH OBJECT TIndex():New( Self , <tagName>, [<name>], __typeIndex__, iif( __typeIndex__ == "PRIMARY", ::curClassPrimaryIndex, ::curClassIndex ), <errorMsg> ) ;;
-                            :AddIndex( [<cMasterKeyField>], [<.ai.>], [<.un.>], [<cKeyField>], [<keyFlags>], [<ForKey>], !<.ncs.>, [<.de.>], [<.acceptEmptyUnique.>], [<useIndex>], [<.tm.>], [<.rj.>], [<.cu.>] ) ;;
+                            :AddIndex( [<cMasterKeyField>], [<.ai.>], [<.un.>], [<cKeyField>], [<keyFlags>], [<ForKey>], !<.ncs.>, [<.de.>], [<.acceptEmptyUnique.>], [<useIndex>], [<.tm.>], [<.rj.>], [<.cu.>], [<.def.>] ) ;;
                         ENDWITH
                         
 #xtranslate CREATE <type: PRIMARY,SECONDARY> INDEX [TAG] <tagName> [NAME <name>] ;

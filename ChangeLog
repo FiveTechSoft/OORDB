@@ -2,6 +2,12 @@
  * $Id: ChangeLog 155 2013-06-06 03:29:32Z tfonrouge $
  */
 
+Tue Feb  2 18:57:26 UTC 2016 Teo Fonrouge (tfonrouge@gmail.com)
+  M include/oordb.ch
+  M src/TIndex.prg
+  M src/TTable.prg
+    % added clause DEFAULT to create index command
+
 Thu Jan 14 22:13:43 UTC 2016 Teo Fonrouge (tfonrouge@gmail.com)
   M include/oordb.ch
   M src/TField.prg

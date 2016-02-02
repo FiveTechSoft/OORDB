@@ -146,6 +146,7 @@ PROTECTED:
    DATA FcanCreateInstance INIT .F.
    DATA FCustomIndexList   INIT {}
    DATA FDataBaseClass
+   DATA FdefaultIndexName
    DATA FEof    INIT .T.
    DATA FFieldList         INIT {}
    DATA FFilledFieldList   INIT .F.
@@ -239,7 +240,7 @@ PUBLIC:
    METHOD AddCustomIndex( index )
    METHOD AddFieldAlias( nameAlias, fld, private )
    METHOD AddFieldMessage( messageName, AField, isAlias )
-   METHOD addIndexMessage( indexName )
+   METHOD addIndexMessage( indexName, default )
    METHOD Cancel
    METHOD Childs( ignoreAutoDelete, block, curClass, childs )
    METHOD ChildSource( tableName, destroyChild )
@@ -609,7 +610,7 @@ METHOD PROCEDURE AddFieldMessage( messageName, AField, isAlias ) CLASS TTable
 /*
     addIndexMessage
 */
-METHOD PROCEDURE addIndexMessage( indexName ) CLASS TTable
+METHOD PROCEDURE addIndexMessage( indexName, default ) CLASS TTable
     LOCAL aPos
     LOCAL x
     LOCAL y
@@ -619,6 +620,9 @@ METHOD PROCEDURE addIndexMessage( indexName ) CLASS TTable
             x := aPos[ 1 ]
             y := aPos[ 2 ]
             EXTEND OBJECT Self WITH MESSAGE ::indexNamePrefix + indexName INLINE hb_hValueAt( hb_hValueAt( ::FIndexList, x ), y )
+        ENDIF
+        IF default = .T.
+            ::FdefaultIndexName := indexName
         ENDIF
     ENDIF
 
@@ -2638,6 +2642,11 @@ METHOD FUNCTION Open() CLASS TTable
 
    IF ::Alias != NIL
       ::FHasDeletedOrder := ::Alias:ordNumber( "__AVAIL" ) > 0
+   ENDIF
+
+   /* set defaultIndex if any */
+   IF ::FdefaultIndexName != nil
+      ::indexName := ::FdefaultIndexName
    ENDIF
 
    ::OnDataChange()

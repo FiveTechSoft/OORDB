@@ -247,7 +247,7 @@ METHOD FUNCTION __Seek( direction, keyValue, lSoftSeek ) CLASS TIndex
 /*
     AddIndex
 */
-METHOD AddIndex( cMasterKeyField, ai, un, cKeyField, keyFlags, ForKey, cs, de, acceptEmptyUnique, useIndex, temporary, rightJust, cu )
+METHOD AddIndex( cMasterKeyField, ai, un, cKeyField, keyFlags, ForKey, cs, de, acceptEmptyUnique, useIndex, temporary, rightJust, cu, default )
 
    IF hb_isHash( keyFlags )
       ::FKeyFlags := keyFlags
@@ -289,7 +289,7 @@ METHOD AddIndex( cMasterKeyField, ai, un, cKeyField, keyFlags, ForKey, cs, de, a
    ::FuseIndex := useIndex
    ::temporary := temporary == .T.
 
-   ::FTable:addIndexMessage( ::name )
+   ::FTable:addIndexMessage( ::name, default )
 
    RETURN Self
 
