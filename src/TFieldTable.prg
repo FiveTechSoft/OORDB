@@ -44,7 +44,7 @@ PUBLIC:
    METHOD BaseKeyField() // Returns the non-TFieldTable associated to this obj
    METHOD DataObj( ... )
    METHOD GetAsDisplay() INLINE ::GetKeyVal()
-   METHOD GetKeyVal( keyVal )
+   METHOD GetKeyVal( keyVal, ... )
    METHOD GetAsString()       // INLINE ::LinkedTable:KeyField:AsString()
    METHOD GetAsVariant( ... )
    METHOD hasLinkedTable() INLINE ::FlinkedTable != nil
@@ -224,7 +224,7 @@ METHOD FUNCTION DataObj( ... ) CLASS TFieldTable
                   ENDIF
                   ::FMasterKeyVal := linkedTable:MasterSource:BaseKeyField:KeyVal
                ENDIF
-               keyVal := ::GetKeyVal()
+               keyVal := ::GetKeyVal( , ... )
                /* Syncs with the current value */
                IF !::FTable:MasterSource == linkedTable .AND. !linkedTable:BaseKeyField:KeyVal == keyVal
                   linkedObjField := linkedTable:LinkedObjField
@@ -300,11 +300,11 @@ METHOD FUNCTION GetFieldReadBlock() CLASS TFieldTable
 /*
     GetKeyVal
 */
-METHOD FUNCTION GetKeyVal( keyVal ) CLASS TFieldTable
+METHOD FUNCTION GetKeyVal( keyVal, ... ) CLASS TFieldTable
    LOCAL baseKeyField
 
    IF keyVal = NIL
-      keyVal := ::GetAsVariant()
+      keyVal := ::GetAsVariant( ... )
    ENDIF
 
    baseKeyField := ::baseKeyField
