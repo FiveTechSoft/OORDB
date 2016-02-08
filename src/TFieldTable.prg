@@ -30,7 +30,7 @@ PROTECTED:
    METHOD GetDBS_LEN INLINE ::BaseKeyField():DBS_LEN
    METHOD GetDBS_TYPE INLINE iif( ::BaseKeyField():DBS_TYPE = "+", "I", ::BaseKeyField():DBS_TYPE )
    METHOD GetLabel()
-   METHOD GetLinkedTable
+   METHOD GetLinkedTable( ... )
    METHOD GetEmptyValue() INLINE ::BaseKeyField():EmptyValue
    METHOD GetFieldReadBlock()
    METHOD GetOnDataChange()
@@ -42,7 +42,7 @@ PROTECTED:
 PUBLIC:
 
    METHOD BaseKeyField() // Returns the non-TFieldTable associated to this obj
-   METHOD DataObj
+   METHOD DataObj( ... )
    METHOD GetAsDisplay() INLINE ::GetKeyVal()
    METHOD GetKeyVal( keyVal )
    METHOD GetAsString()       // INLINE ::LinkedTable:KeyField:AsString()
@@ -173,13 +173,13 @@ METHOD PROCEDURE BuildLinkedTable() CLASS TFieldTable
     DataObj
     Syncs the Table with the key in buffer
 */
-METHOD FUNCTION DataObj CLASS TFieldTable
+METHOD FUNCTION DataObj( ... ) CLASS TFieldTable
 
    LOCAL linkedTable
    LOCAL linkedObjField
    LOCAL keyVal
 
-   linkedTable := ::GetLinkedTable()
+   linkedTable := ::GetLinkedTable( ... )
 
    IF ::FonDataObj = NIL
 
@@ -339,7 +339,7 @@ METHOD FUNCTION GetLabel() CLASS TFieldTable
 /*
     GetLinkedTable
 */
-METHOD FUNCTION GetLinkedTable CLASS TFieldTable
+METHOD FUNCTION GetLinkedTable( ... ) CLASS TFieldTable
 
    LOCAL result
 
@@ -351,9 +351,9 @@ METHOD FUNCTION GetLinkedTable CLASS TFieldTable
 
          /* Alias can be NIL if table cannot be instanced yet */
          IF ::FTable:Alias == NIL
-            result := ::FieldReadBlock:Eval( ::FTable )
+            result := ::FieldReadBlock:Eval( ::FTable, ... )
          ELSE
-            result := ::FTable:Alias:Eval( ::FieldReadBlock, ::FTable )
+            result := ::FTable:Alias:Eval( ::FieldReadBlock, ::FTable, ... )
          ENDIF
 
          IF result != NIL

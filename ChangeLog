@@ -2,6 +2,10 @@
  * $Id: ChangeLog 155 2013-06-06 03:29:32Z tfonrouge $
  */
 
+Mon Feb  8 17:12:50 UTC 2016 Teo Fonrouge (tfonrouge@gmail.com)
+  M src/TFieldTable.prg
+    % accept parameter on dataObj( ... ), can be used on calculated field's
+
 Tue Feb  2 18:57:26 UTC 2016 Teo Fonrouge (tfonrouge@gmail.com)
   M include/oordb.ch
   M src/TIndex.prg
