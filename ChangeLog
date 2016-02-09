@@ -2,6 +2,10 @@
  * $Id: ChangeLog 155 2013-06-06 03:29:32Z tfonrouge $
  */
 
+Tue Feb  9 04:41:54 UTC 2016 Teo Fonrouge (tfonrouge@gmail.com)
+  M src/TTable.prg
+    ! use default index only on defined class
+
 Mon Feb  8 17:27:23 UTC 2016 Teo Fonrouge (tfonrouge@gmail.com)
   M src/TFieldTable.prg
     * passed parameter given to dataObj( ... ) to getKeyVal( , ... )

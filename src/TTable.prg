@@ -1178,13 +1178,18 @@ METHOD PROCEDURE CreateTableInstance() CLASS TTable
 
    ::FState := dsInactive
 
-   IF hb_HHasKey( ::FIndexList, ::ClassName )
-      ::FMainIndex := HB_HValueAt( ::FIndexList[ ::ClassName ], 1 )
-   ELSE
-      IF ::PrimaryIndex != NIL
-         ::FMainIndex := ::PrimaryIndex
-      ENDIF
-   ENDIF
+    /* set defaultIndex if any */
+    IF ::FdefaultIndexName != nil .AND. hb_hHasKey( ::FIndexList, ::className ) .AND. hb_hHasKey( ::FIndexList[ ::className ], ::FdefaultIndexName )
+        ::FMainIndex := ::FIndexList[ ::className ][ ::FdefaultIndexName ]
+    ELSE
+        IF hb_HHasKey( ::FIndexList, ::ClassName )
+            ::FMainIndex := HB_HValueAt( ::FIndexList[ ::ClassName ], 1 )
+        ELSE
+            IF ::PrimaryIndex != NIL
+                ::FMainIndex := ::PrimaryIndex
+            ENDIF
+        ENDIF
+    ENDIF
 
    IF Empty( ::IndexName )
       ::SetIndex( ::FMainIndex )
@@ -2642,11 +2647,6 @@ METHOD FUNCTION Open() CLASS TTable
 
    IF ::Alias != NIL
       ::FHasDeletedOrder := ::Alias:ordNumber( "__AVAIL" ) > 0
-   ENDIF
-
-   /* set defaultIndex if any */
-   IF ::FdefaultIndexName != nil
-      ::indexName := ::FdefaultIndexName
    ENDIF
 
    ::OnDataChange()
