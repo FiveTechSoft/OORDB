@@ -78,7 +78,7 @@ STATIC PROCEDURE Poblate( table )
        }
 
   FOR EACH itm IN h
-    table:InsertRecord( itm )
+    table:insertFrom( itm )
   NEXT
 
 RETURN

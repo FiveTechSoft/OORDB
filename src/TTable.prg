@@ -281,7 +281,7 @@ PUBLIC:
    METHOD ImportField( fromField, fieldDbName, fieldName )
    METHOD IndexByName( IndexName, aPos, curClass )
    METHOD Insert()
-   METHOD InsertRecord( origin )
+   METHOD insertFrom( origin )
    METHOD InsideScope( ignoreFilters )
    METHOD Open
    METHOD ordKeyNo() INLINE ::GetIndex():ordKeyNo()
@@ -2567,9 +2567,9 @@ METHOD FUNCTION Insert() CLASS TTable
    RETURN .F.
 
 /*
-    InsertRecord
+    insertFrom
 */
-METHOD FUNCTION InsertRecord( origin ) CLASS TTable
+METHOD FUNCTION insertFrom( origin ) CLASS TTable
 
    IF !::Insert()
       RETURN .F.
