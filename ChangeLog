@@ -2,6 +2,10 @@
  * $Id: ChangeLog 155 2013-06-06 03:29:32Z tfonrouge $
  */
 
+Wed Feb 10 15:12:49 UTC 2016 Teo Fonrouge (tfonrouge@gmail.com)
+  M src/TField.prg
+    ! cleanup code
+
 Wed Feb 10 04:00:55 UTC 2016 Teo Fonrouge (tfonrouge@gmail.com)
   M samples/buildTable/buildTable.prg
   M samples/calcField1/calcField1.prg

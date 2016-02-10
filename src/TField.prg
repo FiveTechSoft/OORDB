@@ -1027,29 +1027,12 @@ METHOD FUNCTION Reset() CLASS TField
 
             ELSE
 
-               IF ::IsDerivedFrom( "TFieldTable" ) .AND. ::LinkedTable:KeyField != NIL
-                  IF ::FTable:State = dsInsert
-                     value := ::LinkedTable:BaseKeyField:NewValue
-                  ELSE
-                     value := ::LinkedTable:BaseKeyField:DefaultValue
-                  ENDIF
-                  IF value == NIL
-                     value := ::LinkedTable:BaseKeyField:GetEmptyValue()
-                  ENDIF
-               ELSE
-                  IF ::FTable:State = dsInsert
-                     value := ::NewValue
-                  ELSE
-                     value := ::DefaultValue
-                  ENDIF
-                  IF value = NIL
-                     value := ::GetEmptyValue()
-                  ENDIF
-               ENDIF
+               value := ::getEmptyValue()
 
                result := .T.
 
             ENDIF
+
          ENDIF
 
       ELSE
