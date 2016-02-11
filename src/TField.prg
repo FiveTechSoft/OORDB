@@ -55,7 +55,6 @@ CLASS TField FROM OORDBBASE
    DATA FcalcResult
    DATA FCalculated INIT .F.
    DATA FChanged INIT .F.
-   DATA FCheckEditable INIT .F.  // intended to be used by TUI/GUI
    DATA FdefaultIndexName
    DATA FDefaultValue
    DATA FDBS_DEC INIT 0
@@ -140,7 +139,6 @@ CLASS TField FROM OORDBBASE
 
    METHOD AddFieldMessage()
    METHOD AddKeyIndex( index )
-   METHOD CheckEditable( flag )
    METHOD CheckForKeyViolation( value )
    METHOD CheckForLinkedObjFieldSetAsVariant( value )
    METHOD CLEAR()
@@ -316,17 +314,6 @@ METHOD PROCEDURE AddKeyIndex( index ) CLASS TField
    ENDIF
 
    RETURN
-
-/*
-    CheckEditable
-*/
-METHOD FUNCTION CheckEditable( flag ) CLASS TField
-
-   LOCAL oldFlag := ::FCheckEditable
-
-   ::FCheckEditable := flag
-
-   RETURN oldFlag
 
 /*
     CheckForKeyViolation
@@ -1303,7 +1290,7 @@ METHOD PROCEDURE SetData( value, initialize ) CLASS TField
       RETURN
    ENDIF
 
-   IF ::FCheckEditable .AND. !::Editable()
+   IF !::Editable()
       SHOW WARN "<field is not editable>"
       RETURN
    ENDIF
