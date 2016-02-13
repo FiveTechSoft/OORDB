@@ -2,6 +2,13 @@
  * $Id: ChangeLog 155 2013-06-06 03:29:32Z tfonrouge $
  */
 
+Sat Feb 13 05:07:25 UTC 2016 Teo Fonrouge (tfonrouge@gmail.com)
+  M include/oordb.ch
+  M src/TField.prg
+  M src/TIndex.prg
+  M src/common.prg
+    % index command AUTOINCREMENT_BASE64
+
 Thu Feb 11 04:02:35 UTC 2016 Teo Fonrouge (tfonrouge@gmail.com)
   M src/TField.prg
     * removed unused

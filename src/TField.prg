@@ -588,7 +588,7 @@ METHOD FUNCTION GetAutoIncrementValue() CLASS TField
    ENDIF
 
    IF ::IncrementBlock = NIL
-      value := Inc( value )
+      value := AIndex:getAutoIncrementValue( value )
    ELSE
       value := ::IncrementBlock:Eval( value )
    ENDIF

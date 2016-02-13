@@ -314,7 +314,7 @@
                         [ <de: DESCENDING> ] ;
                         [ <cu: CUSTOM> ] ;
                         [ <un: UNIQUE> ] ;
-                        [ <ai: AUTOINCREMENT> ] ;
+                        [ <ai: AUTOINCREMENT,AUTOINCREMENT_BASE64> ] ;
                         [ <tm: TEMPORARY> ] ;
                         [ USEINDEX <useIndex> ] ;
                         [ <acceptEmptyUnique: ACCEPT_EMPTY_UNIQUE> ] ;
@@ -322,7 +322,7 @@
                         [ <def: DEFAULT > ] ;
                         => ;
                         WITH OBJECT TIndex():New( Self , <tagName>, [<name>], __typeIndex__, iif( __typeIndex__ == "PRIMARY", ::curClassPrimaryIndex, ::curClassIndex ), <errorMsg> ) ;;
-                            :AddIndex( [<cMasterKeyField>], [<.ai.>], [<.un.>], [<cKeyField>], [<keyFlags>], [<ForKey>], !<.ncs.>, [<.de.>], [<.acceptEmptyUnique.>], [<useIndex>], [<.tm.>], [<.rj.>], [<.cu.>], [<.def.>] ) ;;
+                            :AddIndex( [<cMasterKeyField>], [<"ai">], [<.un.>], [<cKeyField>], [<keyFlags>], [<ForKey>], !<.ncs.>, [<.de.>], [<.acceptEmptyUnique.>], [<useIndex>], [<.tm.>], [<.rj.>], [<.cu.>], [<.def.>] ) ;;
                         ENDWITH
                         
 #xtranslate CREATE <type: PRIMARY,SECONDARY> INDEX [TAG] <tagName> [NAME <name>] ;
@@ -335,13 +335,13 @@
                         [ <de: DESCENDING> ] ;
                         [ <cu: CUSTOM> ] ;
                         [ <un: UNIQUE> ] ;
-                        [ <ai: AUTOINCREMENT> ] ;
+                        [ <ai: AUTOINCREMENT,AUTOINCREMENT_BASE64> ] ;
                         [ <tm: TEMPORARY> ] ;
                         [ USEINDEX <useIndex> ] ;
                         [ <acceptEmptyUnique: ACCEPT_EMPTY_UNIQUE> ] ;
                         => ;
                         WITH OBJECT TIndex():New( Self , <tagName>, [<name>], <"type">, ::curClassIndex ) ;;
-                                :AddIndex( [<cMasterKeyField>], [<.ai.>], [<.un.>], [<cKeyField>], [<keyFlags>], [<ForKey>], !<.ncs.>, [<.de.>], [<.acceptEmptyUnique.>], [<useIndex>], [<.tm.>], [<.rj.>], [<.cu.>] ) ;;
+                                :AddIndex( [<cMasterKeyField>], [<"ai">], [<.un.>], [<cKeyField>], [<keyFlags>], [<ForKey>], !<.ncs.>, [<.de.>], [<.acceptEmptyUnique.>], [<useIndex>], [<.tm.>], [<.rj.>], [<.cu.>] ) ;;
                         ENDWITH
                         
 #xtranslate CREATE [<custom: CUSTOM>] INDEX ON <expKey> TAG <ordName> ;

@@ -2,7 +2,7 @@
  *
  */
 
-THREAD STATIC BaseArray := "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ"
+THREAD STATIC base36Array := "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ"
 
 THREAD STATIC base64Array := "0123456789<>ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz"
 
@@ -128,7 +128,7 @@ FUNCTION Base2N( sBase, nBase, l, cFill )
    dec := 0
    n := 1
    lb := Len( sBase := Upper( AllTrim( sBase ) ) )
-   s := Left( BaseArray, nBase )
+   s := Left( base36Array, nBase )
    FOR i := lb TO 1 STEP -1
       IF ( c := At( SubStr( sBase, i, 1 ), s ) ) == 0
          RETURN iif( l == NIL, 0, N2Base( 0, 10, l, cFill ) )  // Regresa un cero...
@@ -184,7 +184,7 @@ FUNCTION Dec( p, base, fill, n )
       ENDIF
       s := CharMirr( Upper( p ) )
       // s := Upper( p )
-      b := Left( BaseArray, base ) + " "
+      b := Left( base36Array, base ) + " "
       FOR i := 1 TO Len( s )
          iif( ( c := SubStr( s, i, 1 ) ) == " ", b := " ", NIL )
          IF !( c $ b )
@@ -317,7 +317,7 @@ FUNCTION Inc( p, base, fill, n )
       ENDIF
       s := CharMirr( Upper( p ) )
       // s := Upper( p )
-      b := Left( BaseArray, base ) + " "
+      b := Left( base36Array, base ) + " "
       FOR i := 1 TO Len( s )
          iif( ( c := SubStr( s, i, 1 ) ) == " ", b := " ", NIL )
          IF !( c $ b )
@@ -407,7 +407,7 @@ FUNCTION N2Base( nVal, nBase, l, cFill )
    ENDDO
    WHILE n != 1
       n /= nBase
-      sBase += SubStr( BaseArray, nVal / n + 1, 1 )
+      sBase += SubStr( base36Array, nVal / n + 1, 1 )
       nVal %= n
    ENDDO
    iif( l == NIL, l := Len( sBase ), NIL )
