@@ -2,6 +2,10 @@
  * $Id: ChangeLog 155 2013-06-06 03:29:32Z tfonrouge $
  */
 
+Mon Feb 15 00:11:02 UTC 2016 Teo Fonrouge (tfonrouge@gmail.com)
+  M src/TTable.prg
+    ! remove checking for enabled fields on getCurrentRecord()
+
 Sat Feb 13 05:07:25 UTC 2016 Teo Fonrouge (tfonrouge@gmail.com)
   M include/oordb.ch
   M src/TField.prg

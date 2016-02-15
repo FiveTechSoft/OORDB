@@ -1989,18 +1989,16 @@ METHOD FUNCTION GetCurrentRecord() CLASS TTable
         IF ( Result := ::InsideScope( .T. ) )
 
             FOR EACH field IN ::FFieldList
-                IF field:Enabled
-                    IF field:FieldMethodType = "C" .AND. !field:Calculated // .AND. !field:IsMasterFieldComponent
-                        IF !field:GetData() .AND. field:IsMasterFieldComponent
-                            Result := .F.
-                            EXIT
-                        ENDIF
+                IF field:FieldMethodType = "C" .AND. !field:Calculated // .AND. !field:IsMasterFieldComponent
+                    IF !field:GetData() .AND. field:IsMasterFieldComponent
+                        Result := .F.
+                        EXIT
                     ENDIF
-                    IF field:FieldType = ftTable .AND. field:Calculated .AND. field:LinkedTableAssigned
-                        table := field:LinkedTable
-                        IF table:LinkedObjField != NIL .AND. table:LinkedObjField:Calculated .AND. !table:MasterSource == Self .AND. table:MasterSource == table:LinkedObjField:Table:KeyField:LinkedTable
-                            table:LinkedObjField:Table:KeyField:DataObj()
-                        ENDIF
+                ENDIF
+                IF field:FieldType = ftTable .AND. field:Calculated .AND. field:LinkedTableAssigned
+                    table := field:LinkedTable
+                    IF table:LinkedObjField != NIL .AND. table:LinkedObjField:Calculated .AND. !table:MasterSource == Self .AND. table:MasterSource == table:LinkedObjField:Table:KeyField:LinkedTable
+                        table:LinkedObjField:Table:KeyField:DataObj()
                     ENDIF
                 ENDIF
             NEXT
