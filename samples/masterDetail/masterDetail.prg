@@ -59,7 +59,7 @@ PROCEDURE Main()
 
                 WHILE ! tbInvoice:Field_InvoiceItems:dataObj:eof()
                     ? e"      Item Name:", tbInvoice:Field_InvoiceItems:dataObj:Field_InventoryItem:dataObj:Field_Name:value
-                    ? e"   $ Item Price:", tbInvoice:Field_InvoiceItems:dataObj:Field_InventoryItem:dataObj:Field_Price:value
+                    ? e"   $ Item Price:", tbInvoice:Field_InvoiceItems:dataObj:Field_Price:value
                     tbInvoice:Field_InvoiceItems:dataObj:dbSkip()
                 ENDDO
 

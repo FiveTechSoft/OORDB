@@ -2,6 +2,10 @@
  * $Id: ChangeLog 155 2013-06-06 03:29:32Z tfonrouge $
  */
 
+Wed Feb 17 15:03:42 UTC 2016 Teo Fonrouge (tfonrouge@gmail.com)
+  M samples/masterDetail/masterDetail.prg
+    ! show invoiceItem's Price field
+
 Wed Feb 17 05:09:41 UTC 2016 Teo Fonrouge (tfonrouge@gmail.com)
   M samples/masterDetail/masterDetail.hbm
   M samples/masterDetail/masterDetail.prg
