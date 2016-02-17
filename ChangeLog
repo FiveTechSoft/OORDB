@@ -2,6 +2,13 @@
  * $Id: ChangeLog 155 2013-06-06 03:29:32Z tfonrouge $
  */
 
+Wed Feb 17 22:47:33 UTC 2016 Teo Fonrouge (tfonrouge@gmail.com)
+  M samples/memTable/memTable.prg
+    * code cleanup
+
+  M src/TTable.prg
+    * REQUEST HB_MEMIO
+
 Wed Feb 17 22:14:25 UTC 2016 Teo Fonrouge (tfonrouge@gmail.com)
   M samples/memTable/memTable.prg
     * updated sample, creating 3 instances of same table class 

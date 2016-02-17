@@ -1,8 +1,6 @@
 
 #include "oordb.ch"
 
-REQUEST HB_MEMIO
-
 PROCEDURE Main()
     LOCAL tbMemTable1
     LOCAL tbMemTable2

@@ -24,6 +24,8 @@ THREAD STATIC BaseKeyFieldList := {}
 THREAD STATIC __S_Instances
 THREAD STATIC FmemTempFileCount := 0
 
+REQUEST HB_MEMIO
+
 REQUEST TField
 
 FUNCTION OordbErrorNew( Self, description, args )
