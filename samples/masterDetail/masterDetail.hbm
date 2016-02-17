@@ -2,9 +2,9 @@
 
 masterDetail.prg
 dataBase.prg
-customer.prg
-invItem.prg
-invoice.prg
-invoiceItem.prg
-invoiceItem_Invoice.prg
-tableBase.prg
+tbCustomer.prg
+tbInvItem.prg
+tbInvoice.prg
+tbInvoiceItem.prg
+tbInvoiceItem_Invoice.prg
+tbTableBase.prg

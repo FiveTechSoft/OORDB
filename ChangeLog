@@ -2,6 +2,16 @@
  * $Id: ChangeLog 155 2013-06-06 03:29:32Z tfonrouge $
  */
 
+Wed Feb 17 04:24:18 UTC 2016 Teo Fonrouge (tfonrouge@gmail.com)
+  M samples/masterDetail/masterDetail.hbm
+  R samples/masterDetail/customer.prg -> samples/masterDetail/tbCustomer.prg
+  R samples/masterDetail/invItem.prg -> samples/masterDetail/tbInvItem.prg
+  R samples/masterDetail/invoice.prg -> samples/masterDetail/tbInvoice.prg
+  R samples/masterDetail/invoiceItem.prg -> samples/masterDetail/tbInvoiceItem.prg
+  R samples/masterDetail/invoiceItem_Invoice.prg -> samples/masterDetail/tbInvoiceItem_Invoice.prg
+  R samples/masterDetail/tableBase.prg -> samples/masterDetail/tbTableBase.prg
+    * rename sources
+
 Wed Feb 17 04:11:33 UTC 2016 Teo Fonrouge (tfonrouge@gmail.com)
   A samples/masterDetail/customer.prg
   A samples/masterDetail/dataBase.prg
