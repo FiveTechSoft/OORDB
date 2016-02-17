@@ -2,6 +2,18 @@
  * $Id: ChangeLog 155 2013-06-06 03:29:32Z tfonrouge $
  */
 
+Wed Feb 17 04:11:33 UTC 2016 Teo Fonrouge (tfonrouge@gmail.com)
+  A samples/masterDetail/customer.prg
+  A samples/masterDetail/dataBase.prg
+  A samples/masterDetail/invItem.prg
+  A samples/masterDetail/invoice.prg
+  A samples/masterDetail/invoiceItem.prg
+  A samples/masterDetail/invoiceItem_Invoice.prg
+  A samples/masterDetail/masterDetail.hbm
+  A samples/masterDetail/masterDetail.prg
+  A samples/masterDetail/tableBase.prg
+    * a very simple invoice app to show master / detail use
+
 Mon Feb 15 00:11:02 UTC 2016 Teo Fonrouge (tfonrouge@gmail.com)
   M src/TTable.prg
     ! remove checking for enabled fields on getCurrentRecord()

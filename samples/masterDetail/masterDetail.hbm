@@ -1,0 +1,10 @@
+../../oordb.hbc
+
+masterDetail.prg
+dataBase.prg
+customer.prg
+invItem.prg
+invoice.prg
+invoiceItem.prg
+invoiceItem_Invoice.prg
+tableBase.prg
