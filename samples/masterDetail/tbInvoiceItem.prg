@@ -22,7 +22,7 @@ BEGIN FIELDS CLASS TBInvoiceItem
 
     /* Date */
     ADD DATE FIELD "Date" ;
-        NEWVALUE {|| date() }
+        NEWVALUE {|self| ::masterSource:Field_Date():value }
 
     /* InventoryItem */
     ADD TABLE FIELD "InvItem" NAME "InventoryItem" ;
