@@ -2,6 +2,19 @@
  * $Id: ChangeLog 155 2013-06-06 03:29:32Z tfonrouge $
  */
 
+Wed Feb 17 22:14:25 UTC 2016 Teo Fonrouge (tfonrouge@gmail.com)
+  M samples/memTable/memTable.prg
+    * updated sample, creating 3 instances of same table class 
+
+  M samples/memTable/tbMemTable.prg
+    * table is mem: and temporal
+
+  M src/TAlias.prg
+    * closing alias opened on destructor
+
+  M src/TTable.prg
+    * creating unique mem alias name
+
 Wed Feb 17 20:52:40 UTC 2016 Teo Fonrouge (tfonrouge@gmail.com)
   M oordb.hbc
     * updated

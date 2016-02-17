@@ -7,7 +7,7 @@ CLASS TBMemTable FROM TTable
 
 EXPORTED:
 
-    PROPERTY tableFileName INIT "mem:memtable"
+    PROPERTY isMemTable INIT .T.
 
     DEFINE FIELDS
     DEFINE PRIMARY INDEX
@@ -22,19 +22,23 @@ ENDCLASS
 */
 BEGIN FIELDS CLASS TBMemTable
 
-    /* InventoryItemId */
-    ADD AUTOINC FIELD "InvItemId" NAME "InventoryItemId"
+    /* Id */
+    ADD AUTOINC FIELD "Id"
 
-    /* Name */
-    ADD STRING FIELD "Name" SIZE 80
+    /* First */
+    ADD STRING FIELD "First" SIZE 20
 
-    /* Date */
-    ADD DATE FIELD "Date" ;
-        NEWVALUE {|| date() }
+    /* Last */
+    ADD STRING FIELD "Last" SIZE 20
 
-    /* Price */
-    ADD FLOAT FIELD "Price" PICTURE "999,999.99" ;
-        NEWVALUE {|| hb_random( 100 ) }
+    /* Street */
+    ADD STRING FIELD "Street" SIZE 30
+
+    /* City */
+    ADD STRING FIELD "City" SIZE 30
+
+    /* State */
+    ADD STRING FIELD "State" SIZE 2
 
 END FIELDS CLASS
 
@@ -43,7 +47,7 @@ END FIELDS CLASS
 */
 BEGIN PRIMARY INDEX CLASS TBMemTable
 
-    DEFINE INDEX "Primary" KEYFIELD "InventoryItemId"
+    DEFINE INDEX "Primary" KEYFIELD "Id"
 
 END PRIMARY INDEX CLASS
 
@@ -52,7 +56,9 @@ END PRIMARY INDEX CLASS
 */
 BEGIN SECONDARY INDEX CLASS TBMemTable
 
-    DEFINE INDEX "Name" KEYFIELD "Name" UNIQUE  /* validates don't duplicate item's name */
+    DEFINE INDEX "First" KEYFIELD "First"
+    DEFINE INDEX "Last" KEYFIELD "Last"
+    DEFINE INDEX "State" KEYFIELD "State" /* order by 'State' field */
 
 END SECONDARY INDEX CLASS
 
@@ -61,13 +67,28 @@ END SECONDARY INDEX CLASS
 */
 METHOD PROCEDURE onAfterOpen() CLASS TBMemTable
     LOCAL itm
+    LOCAL field
+    LOCAL aliasTest
+    LOCAL value
 
     IF ::count() = 0
 
-        /* add some 10 Inventory Items */
-        FOR itm := 1 TO 100
+        aliasTest := TAlias():new( "../../testDbf/test" )
+
+        ?
+        ? "Opening table and adding 10 records..."
+
+        FOR itm := 1 TO 10
+            aliasTest:dbGoTo( hb_randomInt( aliasTest:lastRec() ) )
             IF ::insert()
-                ::Field_Name:value := "INVENTORY ITEM #" + hb_nToS( itm )
+                FOR EACH field IN ::fieldList
+                    IF field:fieldMethodType = "C"
+                        value := aliasTest:getFieldValue( field:name )
+                        IF value != nil
+                            field:value := value
+                        ENDIF
+                    ENDIF
+                NEXT
                 ::post()
             ENDIF
         NEXT

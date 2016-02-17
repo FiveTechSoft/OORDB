@@ -35,6 +35,7 @@ PUBLIC:
    DATA lShared INIT .T.
 
    CONSTRUCTOR New( table, aliasName )
+   DESTRUCTOR onDestructor()
 
    METHOD __dbZap()
    METHOD AddRec( index )
@@ -141,6 +142,13 @@ METHOD New( table, aliasName ) CLASS TAlias
    ::SyncFromAlias()
 
    RETURN Self
+
+/*
+    onDestructor
+*/
+METHOD PROCEDURE onDestructor() CLASS TAlias
+    ::dbCloseArea()
+RETURN
 
 /*
     __DbZap

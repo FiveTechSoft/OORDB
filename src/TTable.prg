@@ -22,6 +22,7 @@
 THREAD STATIC FErrorBlock
 THREAD STATIC BaseKeyFieldList := {}
 THREAD STATIC __S_Instances
+THREAD STATIC FmemTempFileCount := 0
 
 REQUEST TField
 
@@ -2438,10 +2439,17 @@ RETURN ::FRecordList
 */
 METHOD FUNCTION GetTableFileName() CLASS TTable
 
-   IF Empty( ::FTableFileName )
-      IF ::AutoCreate
-         FClose( hb_FTempCreateEx( @::FTableFileName, NIL, "t", ".dbf" ) )
+   IF ::FisMemTable
+      IF empty( ::FTableFileName )
+         ::FTableFileName := "mem:__mem__" + hb_numToHex( ++ FmemTempFileCount )
          ::FIsTempTable := .T.
+      ENDIF
+   ELSE
+      IF Empty( ::FTableFileName )
+         IF ::AutoCreate
+            FClose( hb_FTempCreateEx( @::FTableFileName, NIL, "t", ".dbf" ) )
+            ::FIsTempTable := .T.
+         ENDIF
       ENDIF
    ENDIF
 
