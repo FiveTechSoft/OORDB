@@ -4,8 +4,8 @@
 PROCEDURE Main()
     LOCAL tbCustomer
     LOCAL tbInvoice
-    LOCAL tbInvItem
-    LOCAL invItemId
+    LOCAL tbInventoryItem
+    LOCAL inventoryItemId
 
     /* Customer's table */
     tbCustomer := TBCustomer():new()
@@ -14,7 +14,7 @@ PROCEDURE Main()
     tbInvoice := TBInvoice():new()
 
     /* Inventory Items table */
-    tbInvItem := TBInvItem():new()
+    tbInventoryItem := TBInventoryItem():new()
 
     ? "Add one invoice..."
     IF tbInvoice:insert()
@@ -23,14 +23,14 @@ PROCEDURE Main()
 
         ? "Add SOME invoice items..."
         WHILE .T.
-            invItemId := hb_randomInt( tbInvItem:count() )
-            IF tbInvoice:Field_InvoiceItems:dataObj:Field_InvItem:seek( invItemId )
+            inventoryItemId := hb_randomInt( tbInventoryItem:count() )
+            IF tbInvoice:Field_InvoiceItems:dataObj:Field_InventoryItem:seek( inventoryItemId )
                 EXIT /* we found a previously inventory item id, exit because is a UNIQUE key field */
             ELSE
-                tbInvItem:value := invItemId /* db cursor in invItemId */
+                tbInventoryItem:value := inventoryItemId /* db cursor in inventoryItemId */
                 IF tbInvoice:Field_InvoiceItems:dataObj:insert()
-                    tbInvoice:Field_InvoiceItems:dataObj:Field_InvItem:value := tbInvItem:value
-                    tbInvoice:Field_InvoiceItems:dataObj:Field_Price:value := tbInvItem:Field_Price:value
+                    tbInvoice:Field_InvoiceItems:dataObj:Field_InventoryItem:value := tbInventoryItem:value
+                    tbInvoice:Field_InvoiceItems:dataObj:Field_Price:value := tbInventoryItem:Field_Price:value
                     tbInvoice:Field_InvoiceItems:dataObj:post()
                 ENDIF
             ENDIF
@@ -58,8 +58,8 @@ PROCEDURE Main()
             IF tbInvoice:Field_InvoiceItems:dataObj:dbGoTop()
 
                 WHILE ! tbInvoice:Field_InvoiceItems:dataObj:eof()
-                    ? e"      Item Name:", tbInvoice:Field_InvoiceItems:dataObj:Field_invItem:dataObj:Field_Name:value
-                    ? e"   $ Item Price:", tbInvoice:Field_InvoiceItems:dataObj:Field_invItem:dataObj:Field_Price:value
+                    ? e"      Item Name:", tbInvoice:Field_InvoiceItems:dataObj:Field_InventoryItem:dataObj:Field_Name:value
+                    ? e"   $ Item Price:", tbInvoice:Field_InvoiceItems:dataObj:Field_InventoryItem:dataObj:Field_Price:value
                     tbInvoice:Field_InvoiceItems:dataObj:dbSkip()
                 ENDDO
 

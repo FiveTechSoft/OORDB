@@ -2,6 +2,16 @@
  * $Id: ChangeLog 155 2013-06-06 03:29:32Z tfonrouge $
  */
 
+Wed Feb 17 05:09:41 UTC 2016 Teo Fonrouge (tfonrouge@gmail.com)
+  M samples/masterDetail/masterDetail.hbm
+  M samples/masterDetail/masterDetail.prg
+  M samples/masterDetail/tbInvoiceItem.prg
+  M samples/masterDetail/tbInvoiceItem_Invoice.prg
+    * renamed field name
+
+  R samples/masterDetail/tbInvItem.prg -> samples/masterDetail/tbInventoryItem.prg
+    * renamed source file 
+
 Wed Feb 17 04:24:18 UTC 2016 Teo Fonrouge (tfonrouge@gmail.com)
   M samples/masterDetail/masterDetail.hbm
   R samples/masterDetail/customer.prg -> samples/masterDetail/tbCustomer.prg

@@ -1,7 +1,7 @@
 
 #include "oordb.ch"
 
-CLASS TBInvItem FROM MyTableBase
+CLASS TBInventoryItem FROM MyTableBase
 
 EXPORTED:
 
@@ -18,10 +18,10 @@ ENDCLASS
 /*
     FIELDS
 */
-BEGIN FIELDS CLASS TBInvItem
+BEGIN FIELDS CLASS TBInventoryItem
 
-    /* InvItemId */
-    ADD AUTOINC FIELD "InvItemId"
+    /* InventoryItemId */
+    ADD AUTOINC FIELD "InvItemId" NAME "InventoryItemId"
 
     /* Name */
     ADD STRING FIELD "Name" SIZE 80
@@ -39,16 +39,16 @@ END FIELDS CLASS
 /*
     PRIMARY INDEX
 */
-BEGIN PRIMARY INDEX CLASS TBInvItem
+BEGIN PRIMARY INDEX CLASS TBInventoryItem
 
-    DEFINE INDEX "Primary" KEYFIELD "InvItemId"
+    DEFINE INDEX "Primary" KEYFIELD "InventoryItemId"
 
 END PRIMARY INDEX CLASS
 
 /*
     SECONDARY INDEX
 */
-BEGIN SECONDARY INDEX CLASS TBInvItem
+BEGIN SECONDARY INDEX CLASS TBInventoryItem
 
     DEFINE INDEX "Name" KEYFIELD "Name" UNIQUE  /* validates don't duplicate item's name */
 
@@ -57,7 +57,7 @@ END SECONDARY INDEX CLASS
 /*
     onAfterOpen
 */
-METHOD PROCEDURE onAfterOpen() CLASS TBInvItem
+METHOD PROCEDURE onAfterOpen() CLASS TBInventoryItem
     LOCAL itm
 
     IF ::count() = 0

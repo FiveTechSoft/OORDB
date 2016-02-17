@@ -24,9 +24,9 @@ BEGIN FIELDS CLASS TBInvoiceItem
     ADD DATE FIELD "Date" ;
         NEWVALUE {|| date() }
 
-    /* InvItem */
-    ADD TABLE FIELD "InvItem" ;
-        CLASS "TBInvItem"
+    /* InventoryItem */
+    ADD TABLE FIELD "InvItem" NAME "InventoryItem" ;
+        CLASS "TBInventoryItem"
 
     /* Invoice */
     ADD TABLE FIELD "Invoice" ;

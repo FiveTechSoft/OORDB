@@ -3,7 +3,7 @@
 masterDetail.prg
 dataBase.prg
 tbCustomer.prg
-tbInvItem.prg
+tbInventoryItem.prg
 tbInvoice.prg
 tbInvoiceItem.prg
 tbInvoiceItem_Invoice.prg
