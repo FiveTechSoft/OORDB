@@ -153,8 +153,8 @@ PROTECTED:
    DATA FDbFilter
    DATA FIndexList   INIT hb_HSetOrder( hb_HSetCaseMatch( { => }, .F. ), .T. )  // <className> => <indexName> => <indexObject>
    DATA FInitialized       INIT .F.
+   DATA FisMemTable
    DATA FisMetaTable       INIT .T.
-   DATA FIsTempTable        INIT .F.
    DATA FFound    INIT .F.
    DATA FMasterSourceFieldBuffer INIT hb_HSetCaseMatch( { => }, .F. )
    DATA FOnActiveSetKeyVal  INIT .F.
@@ -189,6 +189,13 @@ PROTECTED:
    METHOD GetErrorBlock() INLINE iif( FErrorBlock = NIL, FErrorBlock := {| oErr| ErrorBlockOORDB( oErr ) }, FErrorBlock )
    METHOD GetFound()
    METHOD GetId() INLINE ::FBaseKeyField:KeyVal()
+   METHOD getIsMemTable() BLOCK ;
+        {|self|
+            IF ::FisMemTable = nil
+                ::FisMemTable := upper( ::FTableFileName ) = "MEM:"
+            ENDIF
+            RETURN ::FisMemTable
+        }
    METHOD GetIndex()
    METHOD GetRecNo()
    METHOD GetRecordList
@@ -199,7 +206,12 @@ PROTECTED:
    METHOD SetDataBase( dataBase )
    METHOD SetErrorBlock( errorBlock ) INLINE FErrorBlock := errorBlock
    METHOD SetisMetaTable( isMetaTable )
-   METHOD SetTableFileName( tableFileName ) INLINE ::FTableFileName := tableFileName
+   METHOD SetTableFileName( tableFileName ) BLOCK ;
+        {|self,tableFileName|
+            ::FisMemTable := nil
+            ::FTableFileName := tableFileName
+            RETURN ::FTableFileName
+        }
 
 PUBLIC:
 
@@ -365,7 +377,8 @@ PUBLIC:
    PROPERTY instance READ getInstance
    METHOD   Instances INLINE __S_Instances
    PROPERTY isMetaTable READ FisMetaTable WRITE SetisMetaTable
-   PROPERTY IsTempTable READ FIsTempTable
+   PROPERTY isMemTable READ getIsMemTable
+   PROPERTY IsTempTable INIT .F.
    PROPERTY KeyExpression READ GetKeyExpression
    PROPERTY KeyField READ GetKeyField
    PROPERTY KeyString READ GetKeyString

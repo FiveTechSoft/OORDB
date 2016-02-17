@@ -2,6 +2,29 @@
  * $Id: ChangeLog 155 2013-06-06 03:29:32Z tfonrouge $
  */
 
+Wed Feb 17 20:52:40 UTC 2016 Teo Fonrouge (tfonrouge@gmail.com)
+  M oordb.hbc
+    * updated
+    + added hbmemio.hbc
+
+  R samples/masterDetail/masterDetail.hbm -> samples/masterDetail/masterDetail.hbp
+    ! renamed extension
+
+  A samples/memTable/dataBase.prg
+  A samples/memTable/memTable.hbp
+  A samples/memTable/memTable.prg
+  A samples/memTable/tbMemTable.prg
+    + Test : memory table
+
+  M src/TAlias.prg
+    * checking for isMemTable for adding path
+
+  M src/TTable.prg
+    + property : isMemTable ("mem:tableName")
+
+  A testDbf/test.dbf
+    + test database
+
 Wed Feb 17 15:03:42 UTC 2016 Teo Fonrouge (tfonrouge@gmail.com)
   M samples/masterDetail/masterDetail.prg
     ! show invoiceItem's Price field

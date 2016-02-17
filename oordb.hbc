@@ -3,12 +3,8 @@
 #
 
 prgflags=-w3 -es2
-prgflags=-i${hb_inc}/oordb
 
 incpaths=include
-libpaths=lib/${hb_arch}/${hb_comp}
-libs=hbct hbtip oordb
-
-{allgcc}cpp=yes
-
-{win}libs=rpcrt4
+libpaths=lib/${hb_plat}/${hb_comp}
+libs=oordb
+hbcs=hbct.hbc hbtip.hbc hbmemio.hbc
