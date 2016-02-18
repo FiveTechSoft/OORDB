@@ -30,8 +30,6 @@ PROTECTED:
 
 PUBLIC:
 
-   DATA OpenBlock
-
    CONSTRUCTOR New( databaseName )
 
    METHOD AddParentChild( parentTableName, childTableName, indexName, virtual, autoDelete )

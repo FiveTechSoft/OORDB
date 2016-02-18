@@ -153,10 +153,10 @@ PROTECTED:
    DATA FEof    INIT .T.
    DATA FFieldList         INIT {}
    DATA FFilledFieldList   INIT .F.
+   DATA FfullFileName
    DATA FDbFilter
    DATA FIndexList   INIT hb_HSetOrder( hb_HSetCaseMatch( { => }, .F. ), .T. )  // <className> => <indexName> => <indexObject>
    DATA FInitialized       INIT .F.
-   DATA FisMemTable
    DATA FisMetaTable       INIT .T.
    DATA FFound    INIT .F.
    DATA FMasterSourceFieldBuffer INIT hb_HSetCaseMatch( { => }, .F. )
@@ -191,14 +191,8 @@ PROTECTED:
    METHOD GetEof()
    METHOD GetErrorBlock() INLINE iif( FErrorBlock = NIL, FErrorBlock := {| oErr| ErrorBlockOORDB( oErr ) }, FErrorBlock )
    METHOD GetFound()
+   METHOD getFullFileName()
    METHOD GetId() INLINE ::FBaseKeyField:KeyVal()
-   METHOD getIsMemTable() BLOCK ;
-        {|self|
-            IF ::FisMemTable = nil
-                ::FisMemTable := upper( ::FTableFileName ) = "MEM:"
-            ENDIF
-            RETURN ::FisMemTable
-        }
    METHOD GetIndex()
    METHOD GetRecNo()
    METHOD GetRecordList
@@ -211,7 +205,6 @@ PROTECTED:
    METHOD SetisMetaTable( isMetaTable )
    METHOD SetTableFileName( tableFileName ) BLOCK ;
         {|self,tableFileName|
-            ::FisMemTable := nil
             ::FTableFileName := tableFileName
             RETURN ::FTableFileName
         }
@@ -229,7 +222,6 @@ PUBLIC:
    DATA DetailSourceList INIT { => }
    DATA FieldNamePrefix INIT "Field_" // Table Field Name prefix
    DATA FUnderReset INIT .F.
-   DATA fullFileName
    DATA indexNamePrefix INIT "Index_"
    DATA LinkedObjField
 
@@ -373,14 +365,15 @@ PUBLIC:
    PROPERTY Eof READ GetEof
    PROPERTY FieldList READ FFieldList
    PROPERTY Found READ GetFound
+   PROPERTY fullFileName READ getFullFileName
    PROPERTY FieldTypes READ GetFieldTypes
    PROPERTY Id READ GetId WRITE SetId
    PROPERTY indexFieldListByClass INIT hb_HSetCaseMatch( { => }, .F. )  /* list of field index number by table class name */
    PROPERTY Initialized READ FInitialized
    PROPERTY instance READ getInstance
    METHOD   Instances INLINE __S_Instances
+   PROPERTY isMemTable INIT .F.
    PROPERTY isMetaTable READ FisMetaTable WRITE SetisMetaTable
-   PROPERTY isMemTable READ getIsMemTable
    PROPERTY IsTempTable INIT .F.
    PROPERTY KeyExpression READ GetKeyExpression
    PROPERTY KeyField READ GetKeyField
@@ -1110,7 +1103,6 @@ METHOD FUNCTION CreateTable( fullFileName ) CLASS TTable
 
    LOCAL aDbs := {}
    LOCAL fld
-   LOCAL cNet
    LOCAL n
    LOCAL dbsType
    LOCAL dbsLen
@@ -1146,18 +1138,10 @@ METHOD FUNCTION CreateTable( fullFileName ) CLASS TTable
    ENDIF
 
    IF fullFileName = NIL
-      fullFileName := ::TableFileName
+      fullFileName := ::fullFileName
    ENDIF
 
-   IF !::IsTempTable .AND. ::dataBase != NIL .AND. ::dataBase:NetIO == .T.
-      cNet := iif( Upper( fullFileName ) = "NET:", "", "net:" )
-   ELSE
-      cNet := ""
-   ENDIF
-
-   dbCreate( cNet + fullFileName, aDbs )
-
-   RETURN .T.
+RETURN dbCreate( fullFileName, aDbs )
 
 /*
     CreateTableInstance
@@ -2268,6 +2252,27 @@ METHOD FUNCTION GetFound() CLASS TTable
    RETURN ::FFound
 
 /*
+    getFullFileName
+*/
+METHOD FUNCTION getFullFileName() CLASS TTable
+   LOCAL path
+
+   IF ::FfullFileName = nil
+      IF ! ::isMemTable .AND. ! ::IsTempTable .AND. !empty( path := lTrim( rTrim( ::TableFileName_Path ) ) )
+         IF ! right( path, 1 ) == hb_osPathSeparator()
+            path += hb_osPathSeparator()
+         ENDIF
+      ELSE
+         path := ""
+      ENDIF
+
+      ::FfullFileName := path + ::TableFileName
+
+   ENDIF
+
+RETURN ::FfullFileName
+
+/*
     GetIndex
 */
 METHOD FUNCTION GetIndex() CLASS TTable
@@ -2445,6 +2450,10 @@ METHOD FUNCTION GetTableFileName() CLASS TTable
       IF empty( ::FTableFileName )
          ::FTableFileName := "mem:__mem__" + hb_numToHex( ++ FmemTempFileCount )
          ::FIsTempTable := .T.
+      ELSE
+         IF ! upper( ::FTableFileName ) = "MEM:"
+            ::FTableFileName := "mem:" + ::FTableFileName
+         ENDIF
       ENDIF
    ELSE
       IF Empty( ::FTableFileName )

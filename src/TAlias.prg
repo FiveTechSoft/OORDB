@@ -9,6 +9,8 @@
 #include "oordb.ch"
 #include "xerror.ch"
 
+REQUEST HB_FNAMENAME
+
 THREAD STATIC __S_Instances
 
 CLASS TAlias FROM OORDBBASE
@@ -18,15 +20,15 @@ PRIVATE:
    DATA FRecNo
    DATA FStack    INIT {}
    DATA FStackLen INIT 0
-   DATA FTableName
+   DATA FfullFileName
    METHOD GetRecNo INLINE ::SyncFromRecNo(), ::FRecNo
    METHOD SetRecNo( RecNo ) INLINE ::dbGoto( RecNo )
 
 PROTECTED:
 
    DATA FstackLock INIT {}
-   METHOD GetAliasName() INLINE __S_Instances[ ::FTableName, "aliasName" ]
-   METHOD SetWorkArea( workArea )
+   METHOD GetAliasName() INLINE __S_Instances[ ::FfullFileName, "aliasName" ]
+   METHOD setWorkArea( fullFileName, keepOpen )
 
 PUBLIC:
 
@@ -94,7 +96,8 @@ PUBLIC:
      */
    PROPERTY ALIAS READ GetAliasName
    METHOD Instances INLINE __S_Instances
-   PROPERTY workArea READ Instances[ ::FTableName, "workArea" ] WRITE SetWorkArea
+
+   PROPERTY workArea
 
 PUBLISHED:
 
@@ -110,10 +113,10 @@ ENDCLASS
     New
 */
 METHOD New( table, aliasName ) CLASS TAlias
-   LOCAL tableName
+   LOCAL fullFileName
 
    IF __S_Instances = nil
-    __S_Instances := hb_HSetCaseMatch( { => }, .F. )
+      __S_Instances := hb_HSetCaseMatch( { => }, .F. )
    ENDIF
 
    IF Empty( table )
@@ -122,21 +125,21 @@ METHOD New( table, aliasName ) CLASS TAlias
 
    IF HB_ISOBJECT( table )
 
-      tableName := table:TableFileName
+      fullFileName := table:fullFileName
 
-      IF Empty( tableName )
+      IF Empty( fullFileName )
          RAISE ERROR "TAlias: Empty Table Name..."
       ENDIF
 
    ELSE
 
-      tableName := table
+      fullFileName := table
 
    ENDIF
 
    IF !::DbOpen( table, aliasName )
       // RAISE ERROR "TAlias: Cannot Open Table '" + table:TableFileName + "'"
-      Break( "TAlias: Cannot Open Table '" + tableName + "'" )
+      Break( "TAlias: Cannot Open Table '" + fullFileName + "'" )
    ENDIF
 
    ::SyncFromAlias()
@@ -147,7 +150,9 @@ METHOD New( table, aliasName ) CLASS TAlias
     onDestructor
 */
 METHOD PROCEDURE onDestructor() CLASS TAlias
+
     ::dbCloseArea()
+
 RETURN
 
 /*
@@ -173,9 +178,14 @@ METHOD FUNCTION AddRec( index ) CLASS TAlias
 */
 METHOD PROCEDURE dbCloseArea() CLASS TAlias
 
-   IF hb_HHasKey( __S_Instances, ::FTableName )
-      ( ::workArea )->( dbCloseArea() )
-      hb_HDel( __S_Instances, ::FTableName )
+   IF hb_HHasKey( __S_Instances, ::FfullFileName )
+      __S_Instances[ ::FfullFileName ]["counter"] -= 1
+      IF __S_Instances[ ::FfullFileName ]["counter"] = 0
+         IF ( ::workarea )->( select() ) > 0 .AND. ! __S_Instances[ ::FfullFileName ]["keepOpen"]
+            ( ::workArea )->( dbCloseArea() )
+         ENDIF
+         hb_hDel( __S_Instances, ::FfullFileName )
+      ENDIF
    ENDIF
 
    RETURN
@@ -244,91 +254,71 @@ RETURN ( ::workArea )->( dbInfo( ... ) )
 /*
     DbOpen
 */
-METHOD DbOpen( table, aliasName ) CLASS TAlias
-
-   LOCAL PATH
-   LOCAL tableName
-   LOCAL tableFullFileName
-   LOCAL netIO
-   LOCAL cPrefix
-   LOCAL isTempTable := .F.
+METHOD FUNCTION DbOpen( table, aliasName ) CLASS TAlias
+   LOCAL fullFileName
    LOCAL wa
-   LOCAL result
+   LOCAL result := .F.
 
    wa := Alias()
 
-   IF HB_ISOBJECT( table )
-
+   IF hb_isObject( table )
       /* Check for a previously open workarea */
-      IF hb_HHasKey( __S_Instances, table:TableFileName )
-         ::FTableName := table:TableFileName
-         table:fullFileName := __S_Instances[ table:TableFileName, "fullFileName" ]
-         RETURN .T.
-      ENDIF
-
-      IF table:IsTempTable
-         isTempTable := .T.
-         IF !table:CreateTable()
-            RETURN .F.
-         ENDIF
-         ::lShared := .F.
-      ENDIF
-
-      IF table:DataBase:OpenBlock != NIL
-         IF !table:DataBase:OpenBlock:Eval( table, aliasName )
-            ::FTableName := ""
-            ::workArea := ""
-            RETURN .F.
-         ENDIF
-         ::FTableName := table:TableFileName
-         ::workArea := alias()
-         IF !Empty( wa )
-            dbSelectArea( wa )
-         ENDIF
-         RETURN .T.
-      ENDIF
-
-      IF !table:isMemTable .AND. !table:IsTempTable .AND. !Empty( path := LTrim( RTrim( table:TableFileName_Path ) ) )
-         IF !Right( path, 1 ) == hb_osPathSeparator()
-            path += hb_osPathSeparator()
+      IF ! hb_HHasKey( __S_Instances, table:fullFileName )
+         IF table:IsTempTable
+            IF table:CreateTable()
+               fullFileName := table:fullFileName
+               ::lShared := .F.
+            ENDIF
+         ELSE
+            fullFileName := table:fullFileName
          ENDIF
       ELSE
-         path := ""
+         fullFileName := table:fullFileName
+      ENDIF
+   ELSE
+      fullFileName := table
+   ENDIF
+
+   IF ! empty( fullFileName )
+
+      IF hb_hHasKey( __S_Instances, fullFileName )
+
+         ::setWorkArea( fullFileName )
+
+         result := ( ::workarea )->( select() ) > 0
+
+      ELSE
+
+         IF ! hb_dbExists( fullFileName )
+            IF ! hb_isObject( table ) .OR. ! table:AutoCreate .OR. ! table:CreateTable( fullFileName )
+               Break( "TAlias: Cannot Create Table '" + fullFileName + "'" )
+            ENDIF
+         ENDIF
+
+         IF aliasName = nil
+            aliasName := hb_fNameName( fullFileName )
+            SWITCH token( upper( aliasName ), ":", 1 )
+            CASE "MEM"
+               aliasName := subStr( aliasName, 5 )
+               EXIT
+            ENDSWITCH
+         ENDIF
+
+         /* checks if alias hasn't been opened yet */
+         IF ( aliasName )->( select() ) = 0
+            dbUseArea( .T., ::RddDriver, fullFileName, aliasName, ::lShared, ::lReadOnly )
+            result := !NetErr()
+            ::setWorkArea( fullFileName )
+         ELSE
+            /* alias has been opened already, mark it as keep open when this obj is destroyed */
+            dbSelectArea( aliasName )
+            ::setWorkArea( fullFileName, .T. )
+            result := .T.
+         ENDIF
+
       ENDIF
 
-      table:fullFileName := path + table:TableFileName
-
-      tableFullFileName := table:fullFileName
-      tableName := table:TableFileName
-
-      netIO := table:DataBase:NetIO
-
-   ELSE
-
-      tableFullFileName := table
-      tableName := table
-
    ENDIF
-
-   cPrefix := iif( !isTempTable .AND. netIO == .T., "net:", "" )
-
-   IF ! hb_dbExists( cPrefix + tableFullFileName ) .AND. HB_ISOBJECT( table ) .AND. table:AutoCreate
-      IF !table:CreateTable( tableFullFileName )
-         Break( "TAlias: Cannot Create Table '" + tableFullFileName + "'" )
-      ENDIF
-   ENDIF
-
-   IF SELECT( tableName ) = 0
-      dbUseArea( .T., ::RddDriver, cPrefix + tableFullFileName, aliasName, ::lShared, ::lReadOnly )
-   ELSE
-      dbSelectArea( tableName )
-   ENDIF
-
-   ::FTableName := tableName
-   ::workArea := alias()
-   __S_Instances[ tableName, "fullFileName" ] := tableFullFileName
-
-   result := !NetErr()
 
    IF !Empty( wa )
       dbSelectArea( wa )
@@ -669,13 +659,23 @@ METHOD FUNCTION SetFieldValue( fieldName, value ) CLASS TAlias
    RETURN ( ::workArea )->( FieldPut( FieldPos( fieldName ), value ) )
 
 /*
-    SetWorkArea
+    setWorkArea
 */
-METHOD PROCEDURE SetWorkArea( workArea ) CLASS TAlias
+METHOD PROCEDURE setWorkArea( fullFileName, keepOpen ) CLASS TAlias
 
-   __S_Instances[ ::FTableName ] := { => }
-   __S_Instances[ ::FTableName, "workArea" ] := workArea
-   __S_Instances[ ::FTableName, "aliasName" ] := Alias( workArea )
+   ::FfullFileName := fullFileName
+
+   IF hb_hHasKey( __S_Instances, fullFileName )
+      __S_Instances[ ::FfullFileName, "counter" ] += 1
+   ELSE
+      __S_Instances[ ::FfullFileName ] := { => }
+      __S_Instances[ ::FfullFileName, "nWorkArea" ]   := ( alias() )->( select() )
+      __S_Instances[ ::FfullFileName, "aliasName" ]   := alias()
+      __S_Instances[ ::FfullFileName, "counter" ]     := iif( ( alias() )->(select() ) > 0, 1, 0 )
+      __S_Instances[ ::FfullFileName, "keepOpen" ]    := hb_defaultValue( keepOpen, .F. )
+   ENDIF
+
+   ::FworkArea := __S_Instances[ ::FfullFileName, "aliasName" ]
 
    RETURN
 

@@ -2,6 +2,20 @@
  * $Id: ChangeLog 155 2013-06-06 03:29:32Z tfonrouge $
  */
 
+Thu Feb 18 09:41:01 UTC 2016 Teo Fonrouge (tfonrouge@gmail.com)
+  M src/TAlias.prg
+    % optimized ::workArea, don't use hash to get it
+    * code cleanup
+    % keep work areas opened until counter is zero or work area already been open
+    % simpler logic in dbOpen()
+    
+  M src/TDatabase.prg
+    - unused data
+
+  M src/TTable.prg
+    * code cleanup
+    * fullFileName is calculated when first called
+
 Wed Feb 17 22:47:33 UTC 2016 Teo Fonrouge (tfonrouge@gmail.com)
   M samples/memTable/memTable.prg
     * code cleanup
