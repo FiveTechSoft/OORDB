@@ -2,6 +2,13 @@
  * $Id: ChangeLog 155 2013-06-06 03:29:32Z tfonrouge $
  */
 
+Thu Feb 18 22:07:45 UTC 2016 Teo Fonrouge (tfonrouge@gmail.com)
+  M samples/masterDetail/tbTableBase.prg
+    * comment to using mem: tables
+
+  M src/TTable.prg
+    ! check if table isMemTable and has valid prefix ("mem:")
+
 Thu Feb 18 09:41:01 UTC 2016 Teo Fonrouge (tfonrouge@gmail.com)
   M src/TAlias.prg
     % optimized ::workArea, don't use hash to get it

@@ -2268,6 +2268,10 @@ METHOD FUNCTION getFullFileName() CLASS TTable
 
       ::FfullFileName := path + ::TableFileName
 
+      IF ::isMemTable .AND. ! upper( ::FfullFileName ) = "MEM:"
+         ::FfullFileName := "mem:" + ::FfullFileName
+      ENDIF
+
    ENDIF
 
 RETURN ::FfullFileName

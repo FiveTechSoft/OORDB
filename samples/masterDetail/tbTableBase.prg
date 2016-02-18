@@ -6,6 +6,9 @@
 */
 CLASS MyTableBase INHERIT TTable
 
-  DEFINE DATABASE WITH MyDataBase CLASS
+   DEFINE DATABASE WITH MyDataBase CLASS
+
+   /* enabling following line will create mem: tables */
+//  PROPERTY isMemTable INIT .T.
 
 ENDCLASS
