@@ -17,6 +17,9 @@ CLASS TFieldAutoInc FROM TFieldInteger
    DATA FFieldType INIT ftAutoInc
    DATA FType INIT "AutoInc"
    DATA FtypeNameList INIT hb_hSetCaseMatch( {"es"=>"AutoInc"} )
+
+   METHOD getReadOnly INLINE .T.
+
    PUBLIC:
    PUBLISHED:
 

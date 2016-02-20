@@ -170,13 +170,13 @@ PROTECTED:
    DATA tableStateLen INIT 0
 
    METHOD __CheckIndexes()
-   METHOD AddRec()
+   METHOD AddRec( origin )
    METHOD CheckDbStruct()
    METHOD Clear()
    METHOD CreateTableInstance()
    METHOD DefineFieldsFromDb()
    METHOD FillFieldList()
-   METHOD FillPrimaryIndexes( curClass )
+   METHOD FillPrimaryIndexes( curClass, origin )
    METHOD FixDbStruct( aNewStruct, message )
    METHOD GetAutoCreate() INLINE iif( ::FAutoCreate = NIL, iif( ::DataBase = NIL, OORDB_DEFAULT_AUTOCREATE, ::DataBase:TableAutoCreate ), ::FAutoCreate )
    METHOD getBaseDocument() BLOCK ;
@@ -251,7 +251,6 @@ PUBLIC:
    METHOD Cancel
    METHOD Childs( ignoreAutoDelete, block, curClass, childs )
    METHOD ChildSource( tableName, destroyChild )
-   METHOD CopyRecord( origin )
    METHOD COUNT( bForCondition, bWhileCondition, index, scope )
    METHOD CreateTable( fullFileName )
    METHOD DbFilterPull()
@@ -287,8 +286,7 @@ PUBLIC:
    METHOD HasFilter() INLINE ::FDbFilter != NIL
    METHOD ImportField( fromField, fieldDbName, fieldName )
    METHOD IndexByName( IndexName, aPos, curClass )
-   METHOD Insert()
-   METHOD insertFrom( origin )
+   METHOD Insert( origin )
    METHOD InsideScope( ignoreFilters )
    METHOD Open
    METHOD ordKeyNo() INLINE ::GetIndex():ordKeyNo()
@@ -323,7 +321,7 @@ PUBLIC:
 
    METHOD Validate( showAlert )
 
-   METHOD valueList()
+   METHOD valueList( origin )
 
    METHOD OnClassInitializing() VIRTUAL
    METHOD OnCreate() VIRTUAL
@@ -640,10 +638,10 @@ RETURN
 /*
     AddRec
 */
-METHOD FUNCTION AddRec() CLASS TTable
+METHOD FUNCTION AddRec( origin ) CLASS TTable
 
    LOCAL Result
-   LOCAL AField
+   LOCAL field
    LOCAL errObj
    LOCAL INDEX
    LOCAL newValue
@@ -686,16 +684,25 @@ METHOD FUNCTION AddRec() CLASS TTable
      */
    BEGIN SEQUENCE WITH ::ErrorBlock
 
-      ::FillPrimaryIndexes( Self )
+      IF origin != nil .AND. ! empty( origin := ::valueList( origin ) )
+         FOR EACH itm IN origin
+            field := ::fieldByName( itm:__enumKey )
+            IF field != nil .AND. !field:calculated .AND. !field:autoIncrement .AND. field:fieldMethodType = "C" .AND. ! field:readOnly
+               ::alias:eval( field:fieldWriteBlock, field:translateToFieldValue( itm:__enumValue ) )
+            ENDIF
+         NEXT
+      ENDIF
 
-      FOR EACH AField IN ::FFieldList
-         IF !AField:Calculated .AND. AField:FieldMethodType = 'C' .AND. !AField:PrimaryKeyComponent .AND. AField:WrittenValue == NIL .AND. AField:Enabled
-            newValue := AField:NewValue
-            IF newValue != NIL .OR. AField:AutoIncrement
-               IF !AField:IsKeyIndex
-                  AField:SetData( newValue, .T. )
+      ::FillPrimaryIndexes( self, origin )
+
+      FOR EACH field IN ::FFieldList
+         IF !field:Calculated .AND. field:FieldMethodType = 'C' .AND. !field:PrimaryKeyComponent .AND. field:WrittenValue == NIL .AND. field:Enabled
+            newValue := field:NewValue
+            IF newValue != NIL .OR. field:AutoIncrement
+               IF !field:IsKeyIndex
+                  field:SetData( newValue, .T. )
                ELSE
-                  AAdd( aKeyFields, { AField, newValue } )
+                  AAdd( aKeyFields, { field, newValue } )
                ENDIF
             ENDIF
          ENDIF
@@ -705,6 +712,15 @@ METHOD FUNCTION AddRec() CLASS TTable
       FOR EACH itm IN aKeyFields
          itm[ 1 ]:SetData( itm[ 2 ], .T. )
       NEXT
+
+      IF origin != nil
+         FOR EACH itm IN origin
+            field := ::fieldByName( itm:__enumKey )
+            IF field != nil .AND. !field:calculated .AND. !field:autoIncrement .AND. field:fieldMethodType = "C" .AND. ! field:readOnly
+               field:getData()
+            ENDIF
+         NEXT
+      ENDIF
 
    RECOVER USING errObj
 
@@ -1041,49 +1057,6 @@ METHOD PROCEDURE Clear() CLASS TTable
     NEXT
 
 RETURN
-
-/*
-    CopyRecord
-*/
-METHOD FUNCTION CopyRecord( origin ) CLASS TTable
-
-   LOCAL AField
-   LOCAL AField1
-   LOCAL entry
-
-   SWITCH ValType( origin )
-   CASE 'O' // Record from another Table
-      IF !origin:IsDerivedFrom( "TTable" )
-         RAISE ERROR "Origin is not a TTable class descendant."
-         RETURN .F.
-      ENDIF
-      IF origin:Eof()
-         RAISE ERROR "Origin is at EOF."
-         RETURN .F.
-      ENDIF
-      FOR EACH AField IN ::FFieldList
-         IF !AField:Calculated .AND. AField:FieldMethodType = 'C' .AND. !AField:PrimaryKeyComponent
-            AField1 := origin:FieldByName( AField:Name )
-            IF AField1 != NIL
-               AField:Value := AField1:Value
-            ENDIF
-         ENDIF
-      NEXT
-      EXIT
-   CASE 'H' // Hash of Values
-      FOR EACH entry IN origin
-         AField := ::FieldByName( entry:__enumKey )
-         IF AField != NIL .AND. !AField:Calculated .AND. AField:FieldMethodType = 'C' .AND. !AField:PrimaryKeyComponent
-            AField:Value := entry:__enumValue
-         ENDIF
-      NEXT
-      EXIT
-   OTHERWISE
-      RAISE ERROR "Unknown Record from Origin"
-      RETURN .F.
-   ENDSWITCH
-
-   RETURN .T.
 
 /*
     Count : number of records
@@ -1660,17 +1633,17 @@ METHOD PROCEDURE FillFieldList() CLASS TTable
 /*
     FillPrimaryIndexes
 */
-METHOD PROCEDURE FillPrimaryIndexes( curClass ) CLASS TTable
+METHOD PROCEDURE FillPrimaryIndexes( curClass, origin ) CLASS TTable
    LOCAL filledFieldList := {=>}
 
-   F_FillPrimaryIndexes( Self, curClass, filledFieldList )
+   F_FillPrimaryIndexes( self, curClass, filledFieldList, origin )
 
    RETURN
 
 /*
     F_FillPrimaryIndexes
 */
-STATIC PROCEDURE F_FillPrimaryIndexes( Self, curClass, filledFieldList )
+STATIC PROCEDURE F_FillPrimaryIndexes( self, curClass, filledFieldList, origin )
     LOCAL className
     LOCAL field
     LOCAL iTypes := {"PRIMARY","SECONDARY"}
@@ -1682,7 +1655,7 @@ STATIC PROCEDURE F_FillPrimaryIndexes( Self, curClass, filledFieldList )
 
     IF !className == "TTABLE"
 
-        F_FillPrimaryIndexes( Self, curClass:Super, filledFieldList )
+        F_FillPrimaryIndexes( Self, curClass:Super, filledFieldList, origin )
 
         FOR EACH iType IN iTypes
             IF hb_HHasKey( ::indexList, className )
@@ -1716,8 +1689,12 @@ STATIC PROCEDURE F_FillPrimaryIndexes( Self, curClass, filledFieldList )
                                 IF field:FieldType = ftAutoInc
                                     field:GetData()
                                 ELSE
-                                    field:Reset()
-                                    field:SetData(, .T. )
+                                    IF origin != nil .AND. hb_hHasKey( origin, field:name )
+                                        field:getData()
+                                    ELSE
+                                        field:Reset()
+                                        field:SetData(, .T. )
+                                    ENDIF
                                 ENDIF
                                 filledFieldList[ field:name ] := nil
                             ENDIF
@@ -2576,7 +2553,7 @@ RETURN
 /*
     Insert
 */
-METHOD FUNCTION Insert() CLASS TTable
+METHOD FUNCTION Insert( origin ) CLASS TTable
 
    IF ::FisMetaTable
       ::isMetaTable := .F.
@@ -2587,7 +2564,7 @@ METHOD FUNCTION Insert() CLASS TTable
       RETURN .F.
    ENDIF
 
-   IF ::OnBeforeInsert() .AND. ::AddRec()
+   IF ::OnBeforeInsert() .AND. ::AddRec( origin )
 
       /* To Flush !!! */
       ::Alias:dbSkip( 0 )
@@ -2595,27 +2572,6 @@ METHOD FUNCTION Insert() CLASS TTable
       ::OnAfterInsert()
 
       RETURN .T.
-
-   ENDIF
-
-   RETURN .F.
-
-/*
-    insertFrom
-*/
-METHOD FUNCTION insertFrom( origin ) CLASS TTable
-
-   IF !::Insert()
-      RETURN .F.
-   ENDIF
-
-   IF ::CopyRecord( origin )
-
-      RETURN ::Post()
-
-   ELSE
-
-      ::Cancel()
 
    ENDIF
 
@@ -3397,15 +3353,28 @@ METHOD FUNCTION Validate( showAlert ) CLASS TTable
 /*
     valueList
 */
-METHOD FUNCTION valueList() CLASS TTable
-    LOCAL fld
+METHOD FUNCTION valueList( origin ) CLASS TTable
+    LOCAL field
     LOCAL h := {=>}
-    
-    FOR EACH fld IN ::FFieldList
-        IF !fld:Calculated .AND. fld:FieldMethodType = "C"
-            h[ fld:Name ] := fld:Value
+
+    IF origin = nil
+        origin := self
+    ENDIF
+
+    SWITCH valType( origin )
+    CASE "O"
+        IF origin:isDerivedFrom( "TTable" ) .AND. ! origin:eof()
+            FOR EACH field IN origin:fieldList
+                IF !field:calculated .AND. field:fieldMethodType = "C"
+                    h[ field:name ] := field:value
+                ENDIF
+            NEXT
         ENDIF
-    NEXT
+        EXIT
+    CASE "H"
+        h := origin
+        EXIT
+    ENDSWITCH
 
 RETURN h
 

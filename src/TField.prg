@@ -37,7 +37,6 @@ CLASS TField FROM OORDBBASE
    METHOD GetAutoIncrementValue()
    METHOD GetFieldMethod
    METHOD GetIsPrimaryKeyField INLINE ::Table:KeyField == Self
-   METHOD GetReadOnly INLINE ::FReadOnly
    METHOD GetUnique INLINE !Empty( ::FUniqueKeyIndexList )
    METHOD SetAutoIncrementKeyIndex( index ) INLINE ::FAutoIncrementKeyIndex := index
    METHOD SetDescription( Description ) INLINE ::FDescription := Description
@@ -104,6 +103,7 @@ CLASS TField FROM OORDBBASE
    METHOD GetKeyIndex()
    METHOD GetLabel INLINE iif( ::FLabel == NIL, ::FName, ::FLabel )
    METHOD GetLinkedTable() INLINE NIL
+   METHOD GetReadOnly INLINE ::FReadOnly
    METHOD GetUndoValue()
    METHOD GetValidValues()
    METHOD OnSetKeyVal( lSeek, keyVal )
@@ -120,8 +120,6 @@ CLASS TField FROM OORDBBASE
    METHOD SetLastUniqueFieldList( fld ) INLINE AAdd( iif( ::FLastUniqueFieldList = NIL, ::FLastUniqueFieldList := {}, ::FLastUniqueFieldList ), fld )
    METHOD SetRequired( Required ) INLINE ::FRequired := Required
    METHOD SetReUseField( reUseField ) INLINE ::FReUseField := reUseField
-   METHOD TranslateToFieldValue( value ) INLINE value
-   METHOD TranslateToValue( value ) INLINE value
    METHOD WriteToTable( value, initialize )
 
    PUBLIC:
@@ -171,6 +169,8 @@ CLASS TField FROM OORDBBASE
    METHOD SetKeyVal( keyVal, lSoftSeek )
    METHOD SetKeyValBlock( keyValBlock ) INLINE ::FOnSetKeyValBlock := keyValBlock
    METHOD SetValidValues( validValues, ignoreUndetermined )
+   METHOD TranslateToFieldValue( value ) INLINE value
+   METHOD TranslateToValue( value ) INLINE value
    METHOD Validate( showAlert ) INLINE ::ValidateResult( showAlert ) = NIL
    METHOD ValidateResult( showAlert, value ) BLOCK ;
       {|Self,showAlert,value|

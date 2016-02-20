@@ -20,6 +20,9 @@ CLASS TFieldModTime FROM TFieldDateTime
    DATA FModStamp INIT .T.        // Field is automatically mantained (dbf layer)
    DATA FType INIT "ModTime"
    DATA FtypeNameList INIT hb_hSetCaseMatch( {"es"=>"ModTime"} )
+
+   METHOD getReadOnly INLINE .T.
+
    PUBLIC:
    PUBLISHED:
 

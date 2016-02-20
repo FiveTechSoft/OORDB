@@ -2,6 +2,24 @@
  * $Id: ChangeLog 155 2013-06-06 03:29:32Z tfonrouge $
  */
 
+Sat Feb 20 09:30:40 UTC 2016 Teo Fonrouge (tfonrouge@gmail.com)
+  M src/TField.prg
+    * getReadOnly() to protected
+    * translate*() to public
+    
+  M src/TFieldModTime.prg
+  M src/TFieldRowVer.prg
+  M src/TFieldAutoInc.prg
+    * getReadOnly() -> .T.
+
+  M src/TTable.prg
+    * insert() and addRec() accepts 'origin' parameterto give record from which poblate new record
+    - copyRecord()
+    - insertFrom()
+    * valueList() accepts 'origin' parameter to get key->value list of fields, default to self
+    * addRec() process 'origin' parameter
+    * F_FillPrimaryIndexes() checks to not overwrite possible unique keyField in 'origin'
+
 Thu Feb 18 22:07:45 UTC 2016 Teo Fonrouge (tfonrouge@gmail.com)
   M samples/masterDetail/tbTableBase.prg
     * comment to using mem: tables
