@@ -2569,6 +2569,14 @@ METHOD FUNCTION Insert( origin ) CLASS TTable
       RETURN .F.
    ENDIF
 
+   /* checks for a serialized value (array of records / hash of record) */
+   IF hb_isChar( origin )
+      origin := hb_deSerialize( origin )
+      IF ! hb_isArray( origin )
+         origin := nil
+      ENDIF
+   ENDIF
+
    IF hb_isArray( origin )
       result := .T.
       FOR EACH itm IN origin

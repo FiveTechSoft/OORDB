@@ -2,6 +2,10 @@
  * $Id: ChangeLog 155 2013-06-06 03:29:32Z tfonrouge $
  */
 
+Mon Feb 22 21:03:26 UTC 2016 Teo Fonrouge (tfonrouge@gmail.com)
+  M src/TTable.prg
+    % insert( origin ) checks for a serialized value as origin
+
 Mon Feb 22 20:41:03 UTC 2016 Teo Fonrouge (tfonrouge@gmail.com)
   M src/TFieldArray.prg
   M src/TFieldHash.prg
