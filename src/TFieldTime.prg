@@ -24,8 +24,6 @@ PROTECTED:
     METHOD GetEmptyValue INLINE ::GetTime()
     METHOD GetTPart( index )
     METHOD SetTimeFormat( timeFormat ) INLINE ::FTimeFormat := timeFormat
-    METHOD TranslateToFieldValue( value )
-    METHOD TranslateToValue( value )
 
 PUBLIC:
 
@@ -36,6 +34,9 @@ PUBLIC:
     METHOD GetTime INLINE TTime():New( "00:00:00", ::FTimeFormat )
     METHOD IndexExpression( fieldName )
     METHOD SetAsVariant( variant )
+
+    METHOD TranslateToFieldValue( value )
+    METHOD TranslateToValue( value )
 
     PROPERTY AsHours    INDEX 1 READ GetAs
     PROPERTY AsMinutes  INDEX 2 READ GetAs

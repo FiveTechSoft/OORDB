@@ -22,11 +22,11 @@ CLASS TFieldHash FROM TField
 
     METHOD GetEmptyValue BLOCK {|| {=>} }
 
+    PUBLIC:
+    
     METHOD TranslateToFieldValue( value )
     METHOD TranslateToValue( value )
 
-    PUBLIC:
-    
     PROPERTY KeySize INIT 0
 
 ENDCLASS

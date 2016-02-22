@@ -2,6 +2,12 @@
  * $Id: ChangeLog 155 2013-06-06 03:29:32Z tfonrouge $
  */
 
+Mon Feb 22 20:41:03 UTC 2016 Teo Fonrouge (tfonrouge@gmail.com)
+  M src/TFieldArray.prg
+  M src/TFieldHash.prg
+  M src/TFieldTime.prg
+    * translateTo* made PUBLIC:
+
 Mon Feb 22 20:36:09 UTC 2016 Teo Fonrouge (tfonrouge@gmail.com)
   M src/TTable.prg
     * renamed serialize() -> serializeRecord()
