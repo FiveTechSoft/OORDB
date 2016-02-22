@@ -69,8 +69,6 @@ PROTECTED:
 
    CLASSDATA indexCreationList INIT {}
 
-   DATA __autoIncrementBase
-
    DATA FCustomIndexExpression
    DATA FIndexType
    DATA FKeyFlags
@@ -106,7 +104,6 @@ PUBLIC:
    METHOD DbGoTop INLINE ::DbGoBottomTop( 1 )
    METHOD dbSkip( numRecs )
    METHOD existsKey( keyValue, recNo )
-   METHOD getAutoIncrementValue( value )
    METHOD GetKeyVal( keyVal )
    METHOD FillCustomIndex()
    METHOD Get4Seek( blk, keyVal, softSeek )
@@ -128,6 +125,7 @@ PUBLIC:
    METHOD SetDbFilter( filter ) INLINE ::FDbFilter := filter
    METHOD SetKeyVal( keyVal, lSoftSeek )
 
+   PROPERTY __autoIncrementBase
    PROPERTY Bof READ FTable:Bof
    PROPERTY DbFilter READ FDbFilter WRITE SetDbFilter
    PROPERTY Eof READ FTable:Eof
@@ -263,10 +261,10 @@ METHOD AddIndex( cMasterKeyField, ai, un, cKeyField, keyFlags, ForKey, cs, de, a
       IF ai != nil
          SWITCH ai
          CASE "AUTOINCREMENT"
-            ::__autoIncrementBase := 36
+            ::F__autoIncrementBase := 36
             EXIT
          CASE "AUTOINCREMENT_BASE64"
-            ::__autoIncrementBase := 64
+            ::F__autoIncrementBase := 64
             EXIT
          ENDSWITCH
          ::AutoIncrementKeyField := cKeyField
@@ -281,10 +279,10 @@ METHOD AddIndex( cMasterKeyField, ai, un, cKeyField, keyFlags, ForKey, cs, de, a
       CASE ai != nil
          SWITCH ai
          CASE "AUTOINCREMENT"
-            ::__autoIncrementBase := 36
+            ::F__autoIncrementBase := 36
             EXIT
          CASE "AUTOINCREMENT_BASE64"
-            ::__autoIncrementBase := 64
+            ::F__autoIncrementBase := 64
             EXIT
          ENDSWITCH
          ::AutoIncrementKeyField := cKeyField
@@ -581,20 +579,6 @@ METHOD FUNCTION dbSkip( numRecs ) CLASS TIndex
 */
 METHOD FUNCTION existsKey( keyValue, recNo ) CLASS TIndex
    RETURN ::FTable:alias:existsKey( ::getMasterKeyVal + ::KeyField:GetKeyVal( keyValue ), ::FTagName, recNo )
-
-/*
-   getAutoIncrementValue
-*/
-METHOD FUNCTION getAutoIncrementValue( value ) CLASS TIndex
-
-   SWITCH ::__autoIncrementBase
-   CASE 36
-      RETURN inc( value )
-   CASE 64
-      RETURN nToBase64( base64ToN( value ) + 1, len( value ) )
-   ENDSWITCH
-
-RETURN value
 
 /*
     FillCustomIndex

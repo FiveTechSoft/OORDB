@@ -588,7 +588,19 @@ METHOD FUNCTION GetAutoIncrementValue() CLASS TField
    ENDIF
 
    IF ::IncrementBlock = NIL
-      value := AIndex:getAutoIncrementValue( value )
+      SWITCH ::FfieldType
+      CASE ftString
+      CASE ftMemo
+         SWITCH ::__autoIncrementBase
+         CASE 36
+            RETURN inc( value )
+         CASE 64
+            RETURN nToBase64( base64ToN( value ) + 1, len( value ) )
+         ENDSWITCH
+         EXIT
+      OTHERWISE
+         value += 1
+      ENDSWITCH
    ELSE
       value := ::IncrementBlock:Eval( value )
    ENDIF
