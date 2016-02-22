@@ -298,7 +298,8 @@ PUBLIC:
    METHOD Reset() // Set Field Record to their default values, Sync MasterKeyVal Value
    METHOD SEEK( Value, AIndex, SoftSeek ) INLINE ::__Seek( 0, Value, AIndex, SoftSeek )
    METHOD SeekLast( Value, AIndex, SoftSeek ) INLINE ::__Seek( 1, Value, AIndex, SoftSeek )
-   METHOD Serialize() INLINE hb_serialize( ::valueList() )
+   METHOD serializeRecord() INLINE hb_serialize( ::valueList() )
+   METHOD serializeTable( index ) INLINE hb_serialize( ::tableValueList( index ) )
    METHOD SetAsString( Value ) INLINE ::GetKeyField():AsString := Value
    METHOD SetBaseKeyIndex( baseKeyIndex )
    METHOD SetDbFilter( filter ) INLINE ::FDbFilter := filter
@@ -316,6 +317,8 @@ PUBLIC:
    METHOD SyncRecNo( fromAlias )
    METHOD TableFileName_Path() INLINE ::DataBase:Directory
    METHOD TableClass INLINE ::ClassName + "@" + ::TableFileName
+
+   METHOD tableValueList( index )
 
    METHOD UpdateCustomIndexes()
 
@@ -2554,6 +2557,8 @@ RETURN
     Insert
 */
 METHOD FUNCTION Insert( origin ) CLASS TTable
+   LOCAL result := .F.
+   LOCAL itm
 
    IF ::FisMetaTable
       ::isMetaTable := .F.
@@ -2564,18 +2569,35 @@ METHOD FUNCTION Insert( origin ) CLASS TTable
       RETURN .F.
    ENDIF
 
-   IF ::OnBeforeInsert() .AND. ::AddRec( origin )
+   IF hb_isArray( origin )
+      result := .T.
+      FOR EACH itm IN origin
+         IF ::onBeforeInsert()
+            result := ::addRec( itm )
+            IF result
+               ::alias:dbSkip( 0 )
+               ::onAfterInsert()
+               result := ::post()
+            ENDIF
+            IF ! result
+               EXIT
+            ENDIF
+         ENDIF
+      NEXT
+   ELSE
+      IF ::OnBeforeInsert() .AND. ::AddRec( origin )
 
-      /* To Flush !!! */
-      ::Alias:dbSkip( 0 )
+         /* To Flush !!! */
+         ::Alias:dbSkip( 0 )
 
-      ::OnAfterInsert()
+         ::OnAfterInsert()
 
-      RETURN .T.
+         result := .T.
 
+      ENDIF
    ENDIF
 
-   RETURN .F.
+RETURN result
 
 /*
     InsideScope
@@ -3321,6 +3343,29 @@ METHOD PROCEDURE SyncRecNo( fromAlias ) CLASS TTable
    ::GetCurrentRecord()
 
    RETURN
+
+/*
+   tableValueList
+*/
+METHOD FUNCTION tableValueList( index ) CLASS TTable
+   LOCAL tableList := {}
+
+   ::statePush()
+
+   IF index = nil
+      index := ::primaryIndex
+   ENDIF
+
+   IF index:dbGoTop()
+      WHILE ! index:eof()
+         aAdd( tableList, ::valueList() )
+         index:dbSkip()
+      ENDDO
+   ENDIF
+
+   ::statePull()
+
+RETURN tableList
 
 /*
     UpdateCustomIndexes
