@@ -572,16 +572,16 @@ RETURN result
 */
 METHOD FUNCTION GetAutoIncrementValue() CLASS TField
 
-   LOCAL AIndex
+   LOCAL index
    LOCAL value
 
    IF ::FAutoIncrementKeyIndex = NIL
-      AIndex := ::KeyIndex
+      index := ::KeyIndex
    ELSE
-      AIndex := ::FAutoIncrementKeyIndex
+      index := ::FAutoIncrementKeyIndex
    ENDIF
 
-   value := ::Table:Alias:Get4SeekLast( ::FieldReadBlock, AIndex:MasterKeyVal, AIndex:TagName )
+   value := ::Table:Alias:Get4SeekLast( ::FieldReadBlock, index:MasterKeyVal, index:TagName )
 
    IF HB_ISCHAR( value ) .AND. Len( value ) > ::Size
       value := Left( value, ::Size )
@@ -591,7 +591,7 @@ METHOD FUNCTION GetAutoIncrementValue() CLASS TField
       SWITCH ::FfieldType
       CASE ftString
       CASE ftMemo
-         SWITCH ::__autoIncrementBase
+         SWITCH index:__autoIncrementBase
          CASE 36
             RETURN inc( value )
          CASE 64

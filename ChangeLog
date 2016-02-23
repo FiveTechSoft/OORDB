@@ -2,6 +2,10 @@
  * $Id: ChangeLog 155 2013-06-06 03:29:32Z tfonrouge $
  */
 
+Tue Feb 23 18:02:16 UTC 2016 Teo Fonrouge (tfonrouge@gmail.com)
+  M src/TField.prg
+    ! stupid typo
+
 Mon Feb 22 22:48:31 UTC 2016 Teo Fonrouge (tfonrouge@gmail.com)
   M src/TField.prg
     ! fixed incremental of not string based field index
