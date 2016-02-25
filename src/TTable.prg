@@ -2572,7 +2572,7 @@ METHOD FUNCTION Insert( origin ) CLASS TTable
    /* checks for a serialized value (array of records / hash of record) */
    IF hb_isChar( origin )
       origin := hb_deSerialize( origin )
-      IF ! hb_isArray( origin )
+      IF ! hb_isArray( origin ) .OR. ! hb_isHash( origin )
          origin := nil
       ENDIF
    ENDIF

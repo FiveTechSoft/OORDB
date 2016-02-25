@@ -2,6 +2,10 @@
  * $Id: ChangeLog 155 2013-06-06 03:29:32Z tfonrouge $
  */
 
+Thu Feb 25 20:41:44 UTC 2016 Teo Fonrouge (tfonrouge@gmail.com)
+  M src/TTable.prg
+    % accepts serialized hash value
+
 Tue Feb 23 18:02:16 UTC 2016 Teo Fonrouge (tfonrouge@gmail.com)
   M src/TField.prg
     ! stupid typo
