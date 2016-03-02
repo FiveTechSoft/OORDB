@@ -188,6 +188,7 @@ PROTECTED:
       }
    METHOD GetBof()
    METHOD GetDataBase()
+   METHOD getDefaultIndexByDefaultIndexName( indexName )
    METHOD GetEof()
    METHOD GetErrorBlock() INLINE iif( FErrorBlock = NIL, FErrorBlock := {| oErr| ErrorBlockOORDB( oErr ) }, FErrorBlock )
    METHOD GetFound()
@@ -1154,10 +1155,10 @@ METHOD PROCEDURE CreateTableInstance() CLASS TTable
 
    ::FState := dsInactive
 
-    /* set defaultIndex if any */
-    IF ::FdefaultIndexName != nil .AND. hb_hHasKey( ::FIndexList, ::className ) .AND. hb_hHasKey( ::FIndexList[ ::className ], ::FdefaultIndexName )
-        ::FMainIndex := ::FIndexList[ ::className ][ ::FdefaultIndexName ]
-    ELSE
+    /* get default index by default index name */
+    ::FMainIndex := ::getDefaultIndexByDefaultIndexName()
+
+    IF ::FMainIndex = nil
         IF hb_HHasKey( ::FIndexList, ::ClassName )
             ::FMainIndex := HB_HValueAt( ::FIndexList[ ::ClassName ], 1 )
         ELSE
@@ -2027,6 +2028,33 @@ METHOD FUNCTION GetDbStruct CLASS TTable
    ENDIF
 
    RETURN __S_Instances[ ::TableClass, "DbStruct" ]
+
+/*
+    getDefaultIndexByDefaultIndexName
+*/
+METHOD FUNCTION getDefaultIndexByDefaultIndexName( indexName ) CLASS TTable
+    LOCAL classList
+    LOCAL indexList
+
+    IF indexName = nil
+        indexName := ::FdefaultIndexName
+    ENDIF
+
+    IF indexName != nil
+        IF hb_hHasKey( ::FIndexList, ::className ) .AND. hb_hHasKey( ::FIndexList[ ::className ], indexName )
+            RETURN ::FIndexList[ ::className ][ indexName ]
+        ELSE
+            FOR EACH classList IN ::FindexList
+                FOR EACH indexList IN classList
+                    IF indexList:__enumKey == indexName
+                        RETURN indexList:__enumValue
+                    ENDIF
+                NEXT
+            NEXT
+        ENDIF
+    ENDIF
+
+RETURN nil
 
 /*
     GetDisplayFieldBlock
