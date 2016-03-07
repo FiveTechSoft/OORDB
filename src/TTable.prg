@@ -2044,12 +2044,11 @@ METHOD FUNCTION getDefaultIndexByDefaultIndexName( indexName ) CLASS TTable
         IF hb_hHasKey( ::FIndexList, ::className ) .AND. hb_hHasKey( ::FIndexList[ ::className ], indexName )
             RETURN ::FIndexList[ ::className ][ indexName ]
         ELSE
-            FOR EACH classList IN ::FindexList
-                FOR EACH indexList IN classList
-                    IF indexList:__enumKey == indexName
-                        RETURN indexList:__enumValue
-                    ENDIF
-                NEXT
+            classList := hb_hValueAt( ::FIndexList, len( ::FIndexList ) )
+            FOR EACH indexList IN classList
+                IF indexList:__enumKey == indexName
+                    RETURN indexList:__enumValue
+                ENDIF
             NEXT
         ENDIF
     ENDIF
