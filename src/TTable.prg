@@ -3389,7 +3389,7 @@ METHOD FUNCTION tableValueList( index ) CLASS TTable
    ::statePush()
 
    IF index = nil
-      index := ::primaryIndex
+      index := ::index
    ENDIF
 
    IF index:dbGoTop()
