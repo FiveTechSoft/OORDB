@@ -43,6 +43,23 @@ FUNCTION OordbErrorNew( Self, description, args )
    RETURN oErr
 
 /*
+    baseKeyFieldList
+*/
+FUNCTION baseKeyFieldList( className )
+    LOCAL n
+
+    SWITCH valType( className )
+    CASE "C"
+        n :=  aScan( BaseKeyFieldList, {|e| upper( e[ 1 ] ) == upper( className ) } )
+        IF n > 0
+            RETURN BaseKeyFieldList[ n ]
+        ENDIF
+        EXIT
+    ENDSWITCH
+
+RETURN BaseKeyFieldList
+
+/*
     __ClsInstFromName (Just UpperCase in __ClsInstName)
 */
 FUNCTION __ClsInstFromName( ClassName )
@@ -2924,11 +2941,11 @@ METHOD FUNCTION SetBaseKeyIndex( baseKeyIndex ) CLASS TTable
    tableBaseClass := baseKeyField:TableBaseClass
 
    IF AScan( BaseKeyFieldList, {| e| Upper( e[ 1 ] ) == Upper( className ) } ) = 0
-      AAdd( BaseKeyFieldList, { className, baseKeyField:DBS_TYPE, baseKeyField:DBS_LEN, baseKeyField:DBS_DEC, baseKeyField:Size } )
+      AAdd( BaseKeyFieldList, { className, baseKeyField:DBS_TYPE, baseKeyField:DBS_LEN, baseKeyField:DBS_DEC, baseKeyField:size, baseKeyField:emptyValue } )
    ENDIF
 
    IF !Upper( className ) == Upper( tableBaseClass ) .AND. AScan( BaseKeyFieldList, {| e| Upper( e[ 1 ] ) == Upper( tableBaseClass ) } ) = 0
-      AAdd( BaseKeyFieldList, { tableBaseClass, baseKeyField:DBS_TYPE, baseKeyField:DBS_LEN, baseKeyField:DBS_DEC, baseKeyField:Size } )
+      AAdd( BaseKeyFieldList, { tableBaseClass, baseKeyField:DBS_TYPE, baseKeyField:DBS_LEN, baseKeyField:DBS_DEC, baseKeyField:size, baseKeyField:emptyValue } )
    ENDIF
 
    RETURN baseKeyIndex

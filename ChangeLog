@@ -2,6 +2,14 @@
  * $Id: ChangeLog 155 2013-06-06 03:29:32Z tfonrouge $
  */
 
+Thu Mar 10 00:55:41 UTC 2016 Teo Fonrouge (tfonrouge@gmail.com)
+  M src/TFieldTable.prg
+    % use static baseKeyFieldList to get empty value
+
+  M src/TTable.prg
+    + baseKeyFieldList( className ) : gets ( list / item List ) from static baseKeyFieldList
+    * setBaseKeyIndex() : stores the empty value of baseKeyField 
+
 Tue Mar  8 00:30:27 UTC 2016 Teo Fonrouge (tfonrouge@gmail.com)
   M src/TTable.prg
     ! gets value in autoIncrement fields

@@ -31,7 +31,7 @@ PROTECTED:
    METHOD GetDBS_TYPE INLINE iif( ::BaseKeyField():DBS_TYPE = "+", "I", ::BaseKeyField():DBS_TYPE )
    METHOD GetLabel()
    METHOD GetLinkedTable( ... )
-   METHOD GetEmptyValue() INLINE ::BaseKeyField():EmptyValue
+   METHOD GetEmptyValue()
    METHOD GetFieldReadBlock()
    METHOD GetOnDataChange()
    METHOD GetValidValues()
@@ -278,6 +278,12 @@ METHOD FUNCTION GetAsVariant( ... ) CLASS TFieldTable
    ENDIF
 
    RETURN variant
+
+/*
+    GetEmptyValue
+*/
+METHOD FUNCTION GetEmptyValue() CLASS TFieldTable
+RETURN baseKeyFieldList( ::getLinkedTable():className )[ 6 ]
 
 /*
     GetFieldReadBlock
