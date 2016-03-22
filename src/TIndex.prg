@@ -708,7 +708,11 @@ METHOD FUNCTION GetMasterKeyVal( keyField ) CLASS TIndex
          keyVal := field:GetKeyVal( NIL, ::FKeyFlags )
       ELSE
          IF keyVal = nil
-            keyVal := keyField:emptyValue
+            IF ::eof()
+                keyVal := keyField:emptyValue
+            ELSE
+                keyVal := keyField:keyVal
+            ENDIF
          ENDIF
          keyVal := keyField:GetKeyVal( keyVal, ::FKeyFlags )
       ENDIF

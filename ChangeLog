@@ -2,6 +2,10 @@
  * $Id: ChangeLog 155 2013-06-06 03:29:32Z tfonrouge $
  */
 
+Tue Mar 22 07:09:09 UTC 2016 Teo Fonrouge (tfonrouge@gmail.com)
+  M src/TIndex.prg
+    * getMasterKeyVal() : uses current field value if it hasn't a explicit default value and table is not a eof
+
 Thu Mar 10 00:55:41 UTC 2016 Teo Fonrouge (tfonrouge@gmail.com)
   M src/TFieldTable.prg
     % use static baseKeyFieldList to get empty value
