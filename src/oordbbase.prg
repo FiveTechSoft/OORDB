@@ -13,6 +13,32 @@ EXPORTED:
 ENDCLASS
 
 /*
+    oordb_isInForClass
+*/
+FUNCTION oordb_isInForClass( self, forClass )
+    LOCAL itm
+
+    IF pcount() > 1
+        SWITCH valType( forClass )
+        CASE "C"
+            RETURN ::isDerivedFrom( forClass )
+        CASE "A"
+            FOR EACH itm IN forClass
+                IF ::isDerivedFrom( itm )
+                    RETURN .T.
+                ENDIF
+            NEXT
+            RETURN .F.
+        CASE "B"
+            RETURN forClass:eval( self )
+        OTHERWISE
+            RETURN .F.
+        ENDSWITCH
+    ENDIF
+
+RETURN .T.
+
+/*
     __warnDescriptor
 */
 METHOD FUNCTION __warnDescriptor() CLASS OORDBBASE

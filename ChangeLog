@@ -2,6 +2,13 @@
  * $Id: ChangeLog 155 2013-06-06 03:29:32Z tfonrouge $
  */
 
+Tue Mar 29 02:06:38 UTC 2016 Teo Fonrouge (tfonrouge@gmail.com)
+  M include/oordb.ch
+    + FIELD clause FOR CLASS : allows to specify if field is allowed in class definition (allows types 'C', 'A' and 'B')
+
+  M src/oordbbase.prg
+    + oordb_isInForClass( self, forClass ) : returns true if self is derivated of forClass data
+
 Tue Mar 22 07:09:09 UTC 2016 Teo Fonrouge (tfonrouge@gmail.com)
   M src/TIndex.prg
     * getMasterKeyVal() : uses current field value if it hasn't a explicit default value and table is not a eof
