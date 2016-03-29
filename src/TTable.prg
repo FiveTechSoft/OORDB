@@ -3245,38 +3245,45 @@ METHOD PROCEDURE StatePull() CLASS TTable
 
    LOCAL cloneData
    LOCAL tbl
+   LOCAL hData
 
-   IF AScan( { dsInsert, dsEdit }, ::State ) > 0
-      ::Cancel()
-   ENDIF
+   hData := ::tableState[ ::tableStateLen ]
 
-   FOR EACH cloneData IN ::tableState[ ::tableStateLen ][ "CloneData" ]
-      ::FFieldList[ cloneData:__enumIndex ]:CloneData := cloneData
-   NEXT
+   IF ! empty( hData )
 
-   ::FRecNo           := ::tableState[ ::tableStateLen ][ "RecNo" ]
-   ::FBof             := ::tableState[ ::tableStateLen ][ "Bof" ]
-   ::FEof             := ::tableState[ ::tableStateLen ][ "Eof" ]
-   ::FFound           := ::tableState[ ::tableStateLen ][ "Found" ]
-   ::FState           := ::tableState[ ::tableStateLen ][ "State" ]
-   ::FpreviousEditState  := ::tableState[ ::tableStateLen ][ "previousEditState" ]
-   IF !Empty( ::tableState[ ::tableStateLen ][ "IndexName" ] )
-      ::IndexName        := ::tableState[ ::tableStateLen ][ "IndexName" ]
-   ENDIF
-
-   FOR EACH tbl IN ::DetailSourceList
-      IF hb_HHasKey( ::tableState[ ::tableStateLen ][ "DetailSourceList" ], tbl:ObjectH )
-         tbl:StatePull()
+      IF AScan( { dsInsert, dsEdit }, ::State ) > 0
+         ::Cancel()
       ENDIF
-   NEXT
 
-   ::FUndoList := ::tableState[ ::tableStateLen ][ "UndoList" ]
-   ::FOnActiveSetKeyVal := ::tableState[ ::tableStateLen ][ "OnActiveSetKeyVal" ]
-   ::LinkedObjField := ::tableState[ ::tableStateLen ][ "LinkedObjField" ]
+      FOR EACH cloneData IN hData[ "CloneData" ]
+         ::FFieldList[ cloneData:__enumIndex ]:CloneData := cloneData
+      NEXT
+
+      ::FRecNo           := hData[ "RecNo" ]
+      ::FBof             := hData[ "Bof" ]
+      ::FEof             := hData[ "Eof" ]
+      ::FFound           := hData[ "Found" ]
+      ::FState           := hData[ "State" ]
+      ::FpreviousEditState  := hData[ "previousEditState" ]
+      IF !Empty( hData[ "IndexName" ] )
+         ::IndexName        := hData[ "IndexName" ]
+      ENDIF
+
+      FOR EACH tbl IN ::DetailSourceList
+         IF hb_HHasKey( hData[ "DetailSourceList" ], tbl:ObjectH )
+            tbl:StatePull()
+         ENDIF
+      NEXT
+
+      ::FUndoList := hData[ "UndoList" ]
+      ::FOnActiveSetKeyVal := hData[ "OnActiveSetKeyVal" ]
+      ::LinkedObjField := hData[ "LinkedObjField" ]
+
+      ::Alias:Pop()
+      
+   ENDIF
 
    --::tableStateLen
-
-   ::Alias:Pop()
 
    RETURN
 
@@ -3289,46 +3296,49 @@ METHOD PROCEDURE StatePush() CLASS TTable
    LOCAL aCloneData := {}
    LOCAL hDSL := { => }
    LOCAL tbl
-
-   IF ::FisMetaTable
-      ::isMetaTable := .F.
-   ENDIF
+   LOCAL hData
 
    IF Len( ::tableState ) < ++::tableStateLen
       AAdd( ::tableState, { => } )
    ENDIF
 
-   FOR EACH fld IN ::FFieldList
-      AAdd( aCloneData, fld:CloneData )
-   NEXT
+   IF ! ::FisMetaTable
 
-   ::tableState[ ::tableStateLen ][ "CloneData" ]           := aCloneData
-   ::tableState[ ::tableStateLen ][ "RecNo" ]               := ::FRecNo
-   ::tableState[ ::tableStateLen ][ "Bof" ]                 := ::FBof
-   ::tableState[ ::tableStateLen ][ "Eof" ]                 := ::FEof
-   ::tableState[ ::tableStateLen ][ "Found" ]               := ::FFound
-   ::tableState[ ::tableStateLen ][ "State" ]               := ::FState
-   ::tableState[ ::tableStateLen ][ "previousEditState" ]   := ::FpreviousEditState
-   ::tableState[ ::tableStateLen ][ "IndexName" ]           := ::IndexName
-   ::tableState[ ::tableStateLen ][ "DetailSourceList" ]    := hDSL
-   ::tableState[ ::tableStateLen ][ "UndoList" ]            := ::FUndoList
-   ::tableState[ ::tableStateLen ][ "OnActiveSetKeyVal" ]   := ::FOnActiveSetKeyVal
+      hData := ::tableState[ ::tableStateLen ]
 
-   /* unlinks possible linked field to avoid possible changes in linked table */
-   ::tableState[ ::tableStateLen ][ "LinkedObjField" ]   := ::LinkedObjField
-   ::LinkedObjField := nil
+      FOR EACH fld IN ::FFieldList
+         AAdd( aCloneData, fld:CloneData )
+      NEXT
 
-   FOR EACH tbl IN ::DetailSourceList
-      hDSL[ tbl:ObjectH ] := NIL
-      tbl:StatePush()
-   NEXT
+      hData[ "CloneData" ]           := aCloneData
+      hData[ "RecNo" ]               := ::FRecNo
+      hData[ "Bof" ]                 := ::FBof
+      hData[ "Eof" ]                 := ::FEof
+      hData[ "Found" ]               := ::FFound
+      hData[ "State" ]               := ::FState
+      hData[ "previousEditState" ]   := ::FpreviousEditState
+      hData[ "IndexName" ]           := ::IndexName
+      hData[ "DetailSourceList" ]    := hDSL
+      hData[ "UndoList" ]            := ::FUndoList
+      hData[ "OnActiveSetKeyVal" ]   := ::FOnActiveSetKeyVal
 
-   ::FState := dsBrowse
-   ::FpreviousEditState := NIL
-   ::FUndoList := NIL
-   ::FOnActiveSetKeyVal := .F.
+      /* unlinks possible linked field to avoid possible changes in linked table */
+      hData[ "LinkedObjField" ]   := ::LinkedObjField
+      ::LinkedObjField := nil
 
-   ::Alias:Push()
+      FOR EACH tbl IN ::DetailSourceList
+         hDSL[ tbl:ObjectH ] := NIL
+         tbl:StatePush()
+      NEXT
+
+      ::FState := dsBrowse
+      ::FpreviousEditState := NIL
+      ::FUndoList := NIL
+      ::FOnActiveSetKeyVal := .F.
+
+      ::Alias:Push()
+
+   ENDIF
 
    RETURN
 
