@@ -23,6 +23,7 @@ PROTECTED:
     METHOD GetAsVariant( ... )
     METHOD GetEmptyValue INLINE ::GetTime()
     METHOD GetTPart( index )
+    METHOD setAs( index, value )
     METHOD SetTimeFormat( timeFormat ) INLINE ::FTimeFormat := timeFormat
 
 PUBLIC:
@@ -38,9 +39,9 @@ PUBLIC:
     METHOD TranslateToFieldValue( value )
     METHOD TranslateToValue( value )
 
-    PROPERTY AsHours    INDEX 1 READ GetAs
-    PROPERTY AsMinutes  INDEX 2 READ GetAs
-    PROPERTY AsSeconds  INDEX 3 READ GetAs
+    PROPERTY AsHours    INDEX 1 READ GetAs WRITE setAs
+    PROPERTY AsMinutes  INDEX 2 READ GetAs WRITE setAs
+    PROPERTY AsSeconds  INDEX 3 READ GetAs WRITE setAs
     PROPERTY Hours      INDEX 1 READ GetTPart     //Time:Hours
     PROPERTY KeySize    INIT 8
     PROPERTY Minutes    INDEX 2 READ GetTPart     //Time:Minutes
@@ -149,7 +150,29 @@ METHOD FUNCTION IndexExpression( fieldName ) CLASS TFieldTime
 
 RETURN "HB_NumToHex(" + fieldName + ",8)"
 
+/*
+    setAs
+*/
+METHOD FUNCTION setAs( index, value ) CLASS TFieldTime
+    LOCAL time
 
+    time := ::getTime()
+
+    SWITCH index
+    CASE 1
+        time:asHours := value
+        EXIT
+    CASE 2
+        time:asMinutes := value
+        EXIT
+    CASE 3
+        time:asSeconds := value
+        EXIT
+    ENDSWITCH
+
+    ::super:setAsVariant( time )
+
+RETURN value
 
 /*
     SetAsVariant

@@ -1302,7 +1302,7 @@ METHOD PROCEDURE SetData( value, initialize ) CLASS TField
       RETURN
    ENDIF
 
-   IF !::Editable()
+   IF ! initialize == .T. .AND. !::Editable()
       SHOW WARN "<field is not editable>"
       RETURN
    ENDIF

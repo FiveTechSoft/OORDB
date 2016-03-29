@@ -2,6 +2,20 @@
  * $Id: ChangeLog 155 2013-06-06 03:29:32Z tfonrouge $
  */
 
+Tue Mar 29 21:02:34 UTC 2016 Teo Fonrouge (tfonrouge@gmail.com)
+  M include/oordb.ch
+  M src/oordbbase.prg
+    ! reverted conditional adding of field: field struct needs to be the same because order of adding on ::fieldList on diff sub-classes
+
+  M src/TField.prg
+    ! don't check ::editable on initialize
+
+  M src/TFieldTime.prg
+    * WRITE for asHours, asMinutes, asSeconds properties
+
+  M src/TTable.prg
+    ! change isMetaTable status
+
 Tue Mar 29 04:46:42 UTC 2016 Teo Fonrouge (tfonrouge@gmail.com)
   M src/TTable.prg
     % small optimization on hash data access

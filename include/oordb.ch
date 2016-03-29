@@ -156,11 +156,9 @@
                         [ DEFAULTINDEX <defaultIndexName> ] ;
                         [ DISPLAY <dispBlock> ] ;
                         [ <aeu: ACCEPT_EMPTY_UNIQUE> ] ;
-                        [ FOR CLASS <forClass> ] ;
                         [ CARGO <cargoValue>  ] ;
                      => ;
-                        IF oordb_isInForClass( self[, <forClass>] ) ;;
-                        WITH OBJECT TField<type>():New( self, ::curClassField ) ;;
+                        WITH OBJECT TField<type>():New( Self, ::curClassField ) ;;
                             [ :Name := <cName> ] ;;
                             [ :Label := <label> ] ;;
                             [ :ReadOnly := <.ro.> ] ;;
@@ -207,18 +205,17 @@
                             [ :cargo := <cargoValue> ] ;;
                             :AddFieldMessage() ;;
                             :ValidateFieldInfo() ;;
-                        ENDWITH ;;
-                        ENDIF
-
+                        ENDWITH
+                        
 /* Calculated field with METHOD_READ method */
 #xtranslate ADD CALCULATED [<clauses0,...>] FIELD <fldName> METHOD_READ <mthd> [<clauses1,...>] ;
                         => ;
-                        ADD CALCULATED [<clauses0>] FIELD <fldName> READ {|self,...| ::<mthd>(<fldName>,...) } [<clauses1>]
+                        ADD CALCULATED [<clauses0>] FIELD <fldName> READ {|Self,...| ::<mthd>(<fldName>,...) } [<clauses1>]
 
 /* Calculated field with METHOD method */
 #xtranslate ADD CALCULATED [<clauses0,...>] FIELD <fldName> METHOD <mthd> [<clauses1,...>] ;
                         => ;
-                        ADD CALCULATED [<clauses0>] FIELD <fldName> READ {|self| ::<mthd>(<fldName>) } WRITE {|self,...| ::<mthd>( <fldName>,... ) } [<clauses1>]
+                        ADD CALCULATED [<clauses0>] FIELD <fldName> READ {|Self| ::<mthd>(<fldName>) } WRITE {|Self,...| ::<mthd>( <fldName>,... ) } [<clauses1>]
 
 /* Calculated field with ALLOW_WRITE method */
 #xtranslate ADD CALCULATED [<clauses0,...>] FIELD <fldName> ALLOW_WRITE [<clauses1,...>] ;
@@ -304,7 +301,7 @@
 /* TODO: Implement this, needs to use a index declared in ancestor class
 #xtranslate DEFINE PRIMARY INDEX <cName> ;
             => ;
-            TIndex():New( self, <cName>, "PRIMARY" )
+            TIndex():New( Self, <cName>, "PRIMARY" )
 */
 
 #xtranslate DEFINE INDEX [TAG] <tagName> [NAME <name>] ;
@@ -324,7 +321,7 @@
                         [ ON KEYVIOLATION WARN <errorMsg> ] ;
                         [ <def: DEFAULT > ] ;
                         => ;
-                        WITH OBJECT TIndex():New( self , <tagName>, [<name>], __typeIndex__, iif( __typeIndex__ == "PRIMARY", ::curClassPrimaryIndex, ::curClassIndex ), <errorMsg> ) ;;
+                        WITH OBJECT TIndex():New( Self , <tagName>, [<name>], __typeIndex__, iif( __typeIndex__ == "PRIMARY", ::curClassPrimaryIndex, ::curClassIndex ), <errorMsg> ) ;;
                             :AddIndex( [<cMasterKeyField>], [<"ai">], [<.un.>], [<cKeyField>], [<keyFlags>], [<ForKey>], !<.ncs.>, [<.de.>], [<.acceptEmptyUnique.>], [<useIndex>], [<.tm.>], [<.rj.>], [<.cu.>], [<.def.>] ) ;;
                         ENDWITH
                         
@@ -343,7 +340,7 @@
                         [ USEINDEX <useIndex> ] ;
                         [ <acceptEmptyUnique: ACCEPT_EMPTY_UNIQUE> ] ;
                         => ;
-                        WITH OBJECT TIndex():New( self , <tagName>, [<name>], <"type">, ::curClassIndex ) ;;
+                        WITH OBJECT TIndex():New( Self , <tagName>, [<name>], <"type">, ::curClassIndex ) ;;
                                 :AddIndex( [<cMasterKeyField>], [<"ai">], [<.un.>], [<cKeyField>], [<keyFlags>], [<ForKey>], !<.ncs.>, [<.de.>], [<.acceptEmptyUnique.>], [<useIndex>], [<.tm.>], [<.rj.>], [<.cu.>] ) ;;
                         ENDWITH
                         

@@ -1001,6 +1001,10 @@ STATIC FUNCTION F_Childs( Self, ignoreAutoDelete, block, curClass, childs )
                   ChildDB:IndexName := ::DataBase:TableList[ childTableName, "IndexName" ]
                ENDIF
 
+               IF ChildDB:isMetaTable
+                  ChildDB:isMetaTable := .F.
+               ENDIF
+
                ChildDB:StatePush()
 
                ChildDB:MainIndex:Scope := NIL
