@@ -763,15 +763,26 @@ METHOD FUNCTION GetEditable CLASS TField
     GetEnabled
 */
 METHOD FUNCTION GetEnabled() CLASS TField
+   LOCAL itm
 
-   IF HB_ISLOGICAL( ::FEnabled )
+   SWITCH valType( ::FEnabled )
+   CASE "U"
+      RETURN .T.
+   CASE "L"
       RETURN ::FEnabled
-   ENDIF
-   IF HB_ISBLOCK( ::FEnabled )
-      RETURN ::FEnabled:Eval( ::FTable )
-   ENDIF
+   CASE "B"
+      RETURN ::FEnabled:eval( ::FTable )
+   CASE "C"
+      RETURN ::FTable:isDerivedFrom( ::FEnabled )
+   CASE "A"
+      FOR EACH itm IN ::FEnabled
+         IF ::FTable:isDerivedFrom( itm )
+            RETURN .T.
+         ENDIF
+      NEXT
+   ENDSWITCH
 
-   RETURN .F.
+RETURN .F.
 
 /*
     GetFieldArray
@@ -1420,6 +1431,7 @@ METHOD PROCEDURE SetEnabled( enabled ) CLASS TField
    IF ::FIsMasterFieldComponent .OR. ::FPrimaryKeyComponent
       RAISE TFIELD ::FName ERROR "Cannot disable a Master/Primary key component..."
    ENDIF
+
    ::FEnabled := enabled
 
    RETURN
