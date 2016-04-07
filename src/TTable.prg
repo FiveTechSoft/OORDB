@@ -311,12 +311,13 @@ PUBLIC:
    METHOD Post()
    METHOD RawSeek( Value, index )
    METHOD RecLock( lNoRetry )
+   METHOD recordValueList( origin )
    METHOD RecUnLock()
    METHOD Refresh
    METHOD Reset() // Set Field Record to their default values, Sync MasterKeyVal Value
    METHOD SEEK( Value, AIndex, SoftSeek ) INLINE ::__Seek( 0, Value, AIndex, SoftSeek )
    METHOD SeekLast( Value, AIndex, SoftSeek ) INLINE ::__Seek( 1, Value, AIndex, SoftSeek )
-   METHOD serializeRecord() INLINE hb_serialize( ::valueList() )
+   METHOD serializeRecord() INLINE hb_serialize( ::recordValueList() )
    METHOD serializeTable( index ) INLINE hb_serialize( ::tableValueList( index ) )
    METHOD SetAsString( Value ) INLINE ::GetKeyField():AsString := Value
    METHOD SetBaseKeyIndex( baseKeyIndex )
@@ -341,8 +342,6 @@ PUBLIC:
    METHOD UpdateCustomIndexes()
 
    METHOD Validate( showAlert )
-
-   METHOD valueList( origin )
 
    METHOD OnClassInitializing() VIRTUAL
    METHOD OnCreate() VIRTUAL
@@ -707,7 +706,7 @@ METHOD FUNCTION AddRec( origin ) CLASS TTable
      */
    BEGIN SEQUENCE WITH ::ErrorBlock
 
-      IF origin != nil .AND. ! empty( origin := ::valueList( origin ) )
+      IF origin != nil .AND. ! empty( origin := ::recordValueList( origin ) )
         originatedFields := {}
          FOR EACH itm IN origin
             field := ::fieldByName( itm:__enumKey )
@@ -2890,6 +2889,34 @@ METHOD FUNCTION RecLock( lNoRetry ) CLASS TTable
    RETURN result
 
 /*
+    recordValueList
+*/
+METHOD FUNCTION recordValueList( origin ) CLASS TTable
+    LOCAL field
+    LOCAL h := {=>}
+
+    IF origin = nil
+        origin := self
+    ENDIF
+
+    SWITCH valType( origin )
+    CASE "O"
+        IF origin:isDerivedFrom( "TTable" ) .AND. ! origin:eof()
+            FOR EACH field IN origin:fieldList
+                IF !field:calculated .AND. field:fieldMethodType = "C"
+                    h[ field:name ] := field:value
+                ENDIF
+            NEXT
+        ENDIF
+        EXIT
+    CASE "H"
+        h := origin
+        EXIT
+    ENDSWITCH
+
+RETURN h
+
+/*
     RecUnLock
 */
 METHOD FUNCTION RecUnLock() CLASS TTable
@@ -3436,7 +3463,7 @@ METHOD FUNCTION tableValueList( index ) CLASS TTable
 
    IF index:dbGoTop()
       WHILE ! index:eof()
-         aAdd( tableList, ::valueList() )
+         aAdd( tableList, ::recordValueList() )
          index:dbSkip()
       ENDDO
    ENDIF
@@ -3472,34 +3499,6 @@ METHOD FUNCTION Validate( showAlert ) CLASS TTable
    NEXT
 
    RETURN .T.
-
-/*
-    valueList
-*/
-METHOD FUNCTION valueList( origin ) CLASS TTable
-    LOCAL field
-    LOCAL h := {=>}
-
-    IF origin = nil
-        origin := self
-    ENDIF
-
-    SWITCH valType( origin )
-    CASE "O"
-        IF origin:isDerivedFrom( "TTable" ) .AND. ! origin:eof()
-            FOR EACH field IN origin:fieldList
-                IF !field:calculated .AND. field:fieldMethodType = "C"
-                    h[ field:name ] := field:value
-                ENDIF
-            NEXT
-        ENDIF
-        EXIT
-    CASE "H"
-        h := origin
-        EXIT
-    ENDSWITCH
-
-RETURN h
 
 /*
     End Class TTable

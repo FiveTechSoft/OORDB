@@ -2,6 +2,11 @@
  * $Id: ChangeLog 155 2013-06-06 03:29:32Z tfonrouge $
  */
 
+Thu Apr  7 19:44:53 UTC 2016 Teo Fonrouge (tfonrouge@gmail.com)
+  M samples/memTable/memTable.prg
+  M src/TTable.prg
+    * renamed method :valueList -> :recordValueList
+
 Thu Apr  7 19:31:21 UTC 2016 Teo Fonrouge (tfonrouge@gmail.com)
   M src/TTable.prg
     * on insert record with a hash of field values, perform getData() on files provided

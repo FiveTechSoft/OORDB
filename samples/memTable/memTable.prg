@@ -37,7 +37,7 @@ STATIC PROCEDURE printRecords( index )
     IF index:dbGoTop()
         WHILE ! index:eof()
             ?
-            FOR EACH itm IN index:table:valueList
+            FOR EACH itm IN index:table:recordValueList
                 ?? itm
             NEXT
             index:dbSkip()
