@@ -668,6 +668,8 @@ METHOD FUNCTION AddRec( origin ) CLASS TTable
    LOCAL newValue
    LOCAL aKeyFields := {}
    LOCAL itm
+   LOCAL originatedFields
+   LOCAL filledFieldList
 
    IF ::FReadOnly
       SHOW WARN "Table is marked as READONLY..."
@@ -706,15 +708,25 @@ METHOD FUNCTION AddRec( origin ) CLASS TTable
    BEGIN SEQUENCE WITH ::ErrorBlock
 
       IF origin != nil .AND. ! empty( origin := ::valueList( origin ) )
+        originatedFields := {}
          FOR EACH itm IN origin
             field := ::fieldByName( itm:__enumKey )
             IF field != nil .AND. !field:calculated .AND. !field:autoIncrement .AND. field:fieldMethodType = "C" .AND. ! field:readOnly
                ::alias:eval( field:fieldWriteBlock, field:translateToFieldValue( itm:__enumValue ) )
+               aAdd( originatedFields, field:name )
             ENDIF
          NEXT
       ENDIF
 
-      ::FillPrimaryIndexes( self, origin )
+      filledFieldList := ::FillPrimaryIndexes( self, origin )
+
+      IF originatedFields != nil
+         FOR EACH itm IN originatedFields
+            IF ! hb_hHasKey( filledFieldList, itm )
+               ::fieldByName( itm ):getData()
+            ENDIF
+         NEXT
+      ENDIF
 
       FOR EACH field IN ::FFieldList
          IF !field:Calculated .AND. field:FieldMethodType = 'C' .AND. !field:PrimaryKeyComponent .AND. field:WrittenValue == NIL .AND. field:Enabled
@@ -1658,12 +1670,12 @@ METHOD PROCEDURE FillFieldList() CLASS TTable
 /*
     FillPrimaryIndexes
 */
-METHOD PROCEDURE FillPrimaryIndexes( curClass, origin ) CLASS TTable
+METHOD FUNCTION FillPrimaryIndexes( curClass, origin ) CLASS TTable
    LOCAL filledFieldList := {=>}
 
    F_FillPrimaryIndexes( self, curClass, filledFieldList, origin )
 
-   RETURN
+RETURN filledFieldList
 
 /*
     F_FillPrimaryIndexes

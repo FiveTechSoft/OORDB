@@ -2,6 +2,10 @@
  * $Id: ChangeLog 155 2013-06-06 03:29:32Z tfonrouge $
  */
 
+Thu Apr  7 19:31:21 UTC 2016 Teo Fonrouge (tfonrouge@gmail.com)
+  M src/TTable.prg
+    * on insert record with a hash of field values, perform getData() on files provided
+
 Wed Mar 30 00:53:36 UTC 2016 Teo Fonrouge (tfonrouge@gmail.com)
   M src/TField.prg
     * getEnabled() allows type "C" (className) "A" (array of classNames)
