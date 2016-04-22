@@ -2,6 +2,11 @@
  * $Id: ChangeLog 155 2013-06-06 03:29:32Z tfonrouge $
  */
 
+Fri Apr 22 14:41:59 UTC 2016 Teo Fonrouge (tfonrouge@gmail.com)
+  M include/oordb.ch
+  M include/oordbdefs.h
+    * moved defs to oordbdefs.h
+
 Thu Apr  7 19:44:53 UTC 2016 Teo Fonrouge (tfonrouge@gmail.com)
   M samples/memTable/memTable.prg
   M src/TTable.prg

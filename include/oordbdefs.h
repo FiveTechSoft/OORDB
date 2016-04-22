@@ -21,4 +21,34 @@
 
 #define SND_BUFFERSIZE  4096
 
+#define dsInactive  0
+#define dsBrowse    1
+#define dsInsert    2
+#define dsEdit      4
+
+#define dssNone     0
+#define dssAdding   1
+#define dssPosting  2
+
+#define ftBase      0
+#define ftArray     1
+#define ftDate      2
+#define ftDateTime  3
+#define ftHash      4
+#define ftLogical   5
+#define ftNumeric   6
+#define ftString    7
+#define ftTable     8
+#define ftMemo      9
+#define ftTime      10
+#define ftVariant   11
+
+#define ftAutoInc   101
+#define ftRowVer    102
+#define ftFloat     103
+#define ftInteger   104
+#define ftModTime   105
+
+#define noRetry     .T.
+
 #endif
