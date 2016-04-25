@@ -15,7 +15,7 @@ THREAD STATIC __S_Instances
 
 CLASS TAlias FROM OORDBBASE
 
-PRIVATE:
+PROTECTED:
 
    DATA FRecNo
    DATA FStack    INIT {}
@@ -23,8 +23,6 @@ PRIVATE:
    DATA FfullFileName
    METHOD GetRecNo INLINE ::SyncFromRecNo(), ::FRecNo
    METHOD SetRecNo( RecNo ) INLINE ::dbGoto( RecNo )
-
-PROTECTED:
 
    DATA FstackLock INIT {}
    METHOD GetAliasName() INLINE __S_Instances[ ::FfullFileName, "aliasName" ]
