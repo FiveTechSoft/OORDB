@@ -34,6 +34,8 @@ PUBLIC:
    DATA lReadOnly INIT .F.
    DATA lShared INIT .T.
 
+   CLASSDATA keepOpen INIT .F.
+
    CONSTRUCTOR New( table, aliasName )
    DESTRUCTOR onDestructor()
 
@@ -149,7 +151,9 @@ METHOD New( table, aliasName ) CLASS TAlias
 */
 METHOD PROCEDURE onDestructor() CLASS TAlias
 
-    ::dbCloseArea()
+    IF __S_Instances != nil
+        ::dbCloseArea()
+    ENDIF
 
 RETURN
 
@@ -176,17 +180,19 @@ METHOD FUNCTION AddRec( index ) CLASS TAlias
 */
 METHOD PROCEDURE dbCloseArea() CLASS TAlias
 
-   IF hb_HHasKey( __S_Instances, ::FfullFileName )
-      __S_Instances[ ::FfullFileName ]["counter"] -= 1
-      IF __S_Instances[ ::FfullFileName ]["counter"] = 0
-         IF ( ::workarea )->( select() ) > 0 .AND. ! __S_Instances[ ::FfullFileName ]["keepOpen"]
-            ( ::workArea )->( dbCloseArea() )
-         ENDIF
-         hb_hDel( __S_Instances, ::FfullFileName )
-      ENDIF
-   ENDIF
+    IF ::FfullFileName != nil
+        IF hb_HHasKey( __S_Instances, ::FfullFileName )
+            __S_Instances[ ::FfullFileName ]["counter"] -= 1
+            IF __S_Instances[ ::FfullFileName ]["counter"] = 0
+                IF ( ::workarea )->( select() ) > 0 .AND. ! __S_Instances[ ::FfullFileName ]["keepOpen"]
+                    ( ::workArea )->( dbCloseArea() )
+                ENDIF
+                hb_hDel( __S_Instances, ::FfullFileName )
+            ENDIF
+        ENDIF
+    ENDIF
 
-   RETURN
+RETURN
 
 /*
     DbDelete
@@ -663,6 +669,10 @@ METHOD PROCEDURE setWorkArea( fullFileName, keepOpen ) CLASS TAlias
 
    ::FfullFileName := fullFileName
 
+   IF keepOpen = nil
+    keepOpen := ::keepOpen
+   ENDIF
+
    IF hb_hHasKey( __S_Instances, fullFileName )
       __S_Instances[ ::FfullFileName, "counter" ] += 1
    ELSE
@@ -670,7 +680,7 @@ METHOD PROCEDURE setWorkArea( fullFileName, keepOpen ) CLASS TAlias
       __S_Instances[ ::FfullFileName, "nWorkArea" ]   := ( alias() )->( select() )
       __S_Instances[ ::FfullFileName, "aliasName" ]   := alias()
       __S_Instances[ ::FfullFileName, "counter" ]     := iif( ( alias() )->(select() ) > 0, 1, 0 )
-      __S_Instances[ ::FfullFileName, "keepOpen" ]    := hb_defaultValue( keepOpen, .F. )
+      __S_Instances[ ::FfullFileName, "keepOpen" ]    := keepOpen
    ENDIF
 
    ::FworkArea := __S_Instances[ ::FfullFileName, "aliasName" ]

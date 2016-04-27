@@ -2,6 +2,14 @@
  * $Id: ChangeLog 155 2013-06-06 03:29:32Z tfonrouge $
  */
 
+Wed Apr 27 21:46:12 UTC 2016 Teo Fonrouge (tfonrouge@gmail.com)
+  M src/TAlias.prg
+    * CLASSDATA keepOpen
+    ! protection against nul on static list
+
+  M src/TTable.prg
+    * :Fdatabase made THREAD STATIC
+
 Mon Apr 25 22:41:23 UTC 2016 Teo Fonrouge (tfonrouge@gmail.com)
   M src/TAlias.prg
     * moved private data to protected area

@@ -22,6 +22,7 @@
 THREAD STATIC FErrorBlock
 THREAD STATIC BaseKeyFieldList := {}
 THREAD STATIC __S_Instances
+THREAD STATIC __S_dataBase
 THREAD STATIC FmemTempFileCount := 0
 
 REQUEST HB_MEMIO
@@ -154,8 +155,6 @@ PRIVATE:
    // METHOD SendToServer
 
 PROTECTED:
-
-   CLASSDATA FdataBase INIT hb_HSetCaseMatch( { => }, .F. )
 
    DATA FAutoCreate
    DATA FBaseKeyField
@@ -440,7 +439,7 @@ METHOD New( masterSource, tableName ) CLASS TTable
 
    IF __S_Instances = nil
       __S_Instances := hb_HSetCaseMatch( { => }, .F. )
-      ::FdataBase := hb_HSetCaseMatch( { => }, .F. )
+      __S_dataBase := hb_HSetCaseMatch( { => }, .F. )
    ENDIF
 
    ::FInitialized := .T.
@@ -2048,7 +2047,7 @@ METHOD FUNCTION GetDataBase() CLASS TTable
       RETURN NIL
    ENDIF
 
-   RETURN ::FdataBase[ ::FDataBaseClass ]
+   RETURN __S_dataBase[ ::FDataBaseClass ]
 
 /*
     GetDbStruct
@@ -3002,8 +3001,8 @@ METHOD FUNCTION SetDataBase( dataBase ) CLASS TTable
       ::FDataBaseClass := NIL
    ELSE
       ::FDataBaseClass := dataBase:ClassName
-      IF !hb_HHasKey( ::FdataBase, ::FDataBaseClass )
-         ::FdataBase[ dataBase:ClassName ] := dataBase
+      IF !hb_HHasKey( __S_dataBase, ::FDataBaseClass )
+         __S_dataBase[ dataBase:ClassName ] := dataBase
       ENDIF
    ENDIF
 
