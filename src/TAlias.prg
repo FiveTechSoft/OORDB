@@ -20,6 +20,7 @@ PROTECTED:
    DATA FRecNo
    DATA FStack    INIT {}
    DATA FStackLen INIT 0
+   DATA FthreadId
    DATA FfullFileName
    METHOD GetRecNo INLINE ::SyncFromRecNo(), ::FRecNo
    METHOD SetRecNo( RecNo ) INLINE ::dbGoto( RecNo )
@@ -151,7 +152,7 @@ METHOD New( table, aliasName ) CLASS TAlias
 */
 METHOD PROCEDURE onDestructor() CLASS TAlias
 
-    IF __S_Instances != nil
+    IF __S_Instances != nil .AND. ::FthreadId == hb_threadId()
         ::dbCloseArea()
     ENDIF
 
@@ -668,6 +669,7 @@ METHOD FUNCTION SetFieldValue( fieldName, value ) CLASS TAlias
 METHOD PROCEDURE setWorkArea( fullFileName, keepOpen ) CLASS TAlias
 
    ::FfullFileName := fullFileName
+   ::FthreadId := hb_threadId()
 
    IF keepOpen = nil
     keepOpen := ::keepOpen

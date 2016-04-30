@@ -2,6 +2,10 @@
  * $Id: ChangeLog 155 2013-06-06 03:29:32Z tfonrouge $
  */
 
+Sat Apr 30 03:43:40 UTC 2016 Teo Fonrouge (tfonrouge@gmail.com)
+  M src/TAlias.prg
+    ! destructor checks threadId
+
 Wed Apr 27 21:46:12 UTC 2016 Teo Fonrouge (tfonrouge@gmail.com)
   M src/TAlias.prg
     * CLASSDATA keepOpen
