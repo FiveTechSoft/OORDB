@@ -312,36 +312,3 @@
                         WITH OBJECT TIndex():New( Self , <tagName>, [<name>], <"type">, ::curClassIndex ) ;;
                                 :AddIndex( [<cMasterKeyField>], [<"ai">], [<.un.>], [<cKeyField>], [<keyFlags>], [<ForKey>], !<.ncs.>, [<.de.>], [<.acceptEmptyUnique.>], [<useIndex>], [<.tm.>], [<.rj.>], [<.cu.>] ) ;;
                         ENDWITH
-                        
-#xtranslate CREATE [<custom: CUSTOM>] INDEX ON <expKey> TAG <ordName> ;
-    [BAG <bagName>] ;
-    [FOR <forKey>] ;
-    [WHILE <whileBlk>] ;
-    [<unique: UNIQUE>] ;
-    [EVAL <evalBlk>] ;
-    [EACH <intVal>] ;
-    [<descend: DESCENDING>] ;
-    [<additive: ADDITIVE>] ;
-    [<current: USECURRENT>] ;
-    [<temporary: TEMPORARY>] ;
-    => ;
-    OrdCondSet( ;
-        <(forKey)>, ;
-        iif(<.forKey.>, <{forKey}>, NIL ), ;
-        NIL, ;
-        <{whileBlk}>, ;
-        <{evalBlk}>, ;
-        <intVal>, ;
-        NIL, ;
-        NIL, ;
-        NIL, ;
-        NIL, ;
-        <.descend.>, ;
-        NIL, ;
-        <.additive.>, ;
-        <.current.>, ;
-        <.custom.>, ;
-        NIL, ;
-        NIL, ;
-        <.temporary.> ) ;;
-    OrdCreate( [<bagName>], <ordName>, <expKey>, <expKey>, <.unique.> )

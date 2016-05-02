@@ -2,6 +2,10 @@
  * $Id: ChangeLog 155 2013-06-06 03:29:32Z tfonrouge $
  */
 
+Mon May  2 16:15:02 UTC 2016 Teo Fonrouge (tfonrouge@gmail.com)
+  M include/oordb.ch
+    - unused command
+
 Sat Apr 30 03:43:40 UTC 2016 Teo Fonrouge (tfonrouge@gmail.com)
   M src/TAlias.prg
     ! destructor checks threadId
