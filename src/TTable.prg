@@ -1387,9 +1387,9 @@ METHOD PROCEDURE DefineFieldsFromDb() CLASS TTable
    RETURN
 
 /*
-    Delete
+    delete
 */
-METHOD FUNCTION DELETE( lDeleteChilds ) CLASS TTable
+METHOD FUNCTION delete( lDeleteChilds ) CLASS TTable
 
    LOCAL AField
    LOCAL aChilds
@@ -1399,11 +1399,13 @@ METHOD FUNCTION DELETE( lDeleteChilds ) CLASS TTable
    LOCAL result := .F.
 
    IF AScan( { dsBrowse, dsEdit, dsInsert }, ::State ) = 0
-      ::Error_Table_Not_In_Browse_or_Insert_State()
+      ::Error_Table_Not_In_Browse_or_Edit_Insert_State()
+      outErr( e"\nError on delete() : Table not in browse or edit/insert state" )
       RETURN .F.
    ENDIF
 
    IF ::State = dsBrowse .AND. !::RecLock()
+      outErr( e"\nError on delete() : recLock()" )
       RETURN .F.
    ENDIF
 
@@ -1426,18 +1428,20 @@ METHOD FUNCTION DELETE( lDeleteChilds ) CLASS TTable
             SHOW WARN "Error_Table_Has_Childs"
             ::RecUnLock()
             ::allowOnDataChange := allowOnDataChange
+            outErr( e"\nError on delete() : Table has childs" )
             RETURN .F.
          ENDIF
          IF !::DeleteChilds()
             SHOW WARN "Error_Deleting_Childs"
             ::RecUnLock()
             ::allowOnDataChange := allowOnDataChange
+            outErr( e"\nError on delete() : Deleting childs" )
             RETURN .F.
          ENDIF
       ENDIF
 
       FOR EACH AField IN ::FieldList
-         AField:Delete()
+         AField:delete()
       NEXT
 
       IF ::FHasDeletedOrder()
@@ -1446,6 +1450,8 @@ METHOD FUNCTION DELETE( lDeleteChilds ) CLASS TTable
 
       result := .T.
 
+   ELSE
+      outErr( e"\nError on delete() : canceled by onBeforeDelete()" )
    ENDIF
 
    ::RecUnLock()

@@ -2,6 +2,10 @@
  * $Id: ChangeLog 155 2013-06-06 03:29:32Z tfonrouge $
  */
 
+Wed May  4 20:35:11 UTC 2016 Teo Fonrouge (tfonrouge@gmail.com)
+  M src/TTable.prg
+    * error messages
+
 Wed May  4 15:58:04 UTC 2016 Teo Fonrouge (tfonrouge@gmail.com)
   M include/oordb.ch
     * removed unneeded data parameter
