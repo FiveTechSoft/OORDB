@@ -2,6 +2,21 @@
  * $Id: ChangeLog 155 2013-06-06 03:29:32Z tfonrouge $
  */
 
+Wed May  4 15:58:04 UTC 2016 Teo Fonrouge (tfonrouge@gmail.com)
+  M include/oordb.ch
+    * removed unneeded data parameter
+
+  M src/TIndex.prg
+    + DATA customKeyBlock : codeblock used to evaluate on each record on a custom index
+    + DATA customKeyLen : length of key (customKeyBlock evalued)
+    * useIndex made read/write
+    * code cleanup
+    * allow to finish custom index creation with K_ESC
+
+  M src/TTable.prg
+    + event message : onAfterChangeIndex : executes when index on table is changed
+    + event message : onBeforeChangeIndex : evaluate before change index and only if it returns TRUE
+
 Mon May  2 16:15:02 UTC 2016 Teo Fonrouge (tfonrouge@gmail.com)
   M include/oordb.ch
     - unused command

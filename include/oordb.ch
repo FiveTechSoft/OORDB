@@ -309,6 +309,6 @@
                         [ USEINDEX <useIndex> ] ;
                         [ <acceptEmptyUnique: ACCEPT_EMPTY_UNIQUE> ] ;
                         => ;
-                        WITH OBJECT TIndex():New( Self , <tagName>, [<name>], <"type">, ::curClassIndex ) ;;
+                        WITH OBJECT TIndex():New( Self , <tagName>, [<name>], <"type"> ) ;;
                                 :AddIndex( [<cMasterKeyField>], [<"ai">], [<.un.>], [<cKeyField>], [<keyFlags>], [<ForKey>], !<.ncs.>, [<.de.>], [<.acceptEmptyUnique.>], [<useIndex>], [<.tm.>], [<.rj.>], [<.cu.>] ) ;;
                         ENDWITH

@@ -8,6 +8,7 @@
 
 #include "oordb.ch"
 #include "xerror.ch"
+#include "inkey.ch"
 
 #include "dbinfo.ch"
 
@@ -85,6 +86,8 @@ PROTECTED:
 
 PUBLIC:
 
+    DATA customKeyBlock
+    DATA customKeyLen
    DATA temporary INIT .F.
 
    DATA WarnMsg
@@ -142,7 +145,7 @@ PUBLIC:
    METHOD SEEK( keyValue, lSoftSeek ) INLINE ::__Seek( 0, keyValue, lSoftSeek )
    METHOD SeekLast( keyValue, lSoftSeek ) INLINE ::__Seek( 1, keyValue, lSoftSeek )
 
-   PROPERTY useIndex /* index to use when poblating a custom index */
+   PROPERTY useIndex READWRITE /* index to use when poblating a custom index */
 
 PUBLISHED:
 
@@ -369,40 +372,12 @@ METHOD FUNCTION CreateIndex() CLASS TIndex
 
     recNo := ::FTable:Alias:RecNo
 
-/*
-#command INDEX ON <key> [TAG <(tag)>] TO <(bag)> ;
-               [FOR <for>] [WHILE <while>] [NEXT <next>] ;
-               [RECORD <rec>] [<rest:REST>] [<all:ALL>] ;
-               [EVAL <eval>] [EVERY <every>] [<unique: UNIQUE>] ;
-               [<ascend: ASCENDING>] [<descend: DESCENDING>] ;
-               [<add: ADDITIVE>] [<cur: USECURRENT>] [<cust: CUSTOM>] ;
-               [<noopt: NOOPTIMIZE>] [<mem: MEMORY, TEMPORARY>] ;
-               [<filter: USEFILTER>] [<ex: EXCLUSIVE>] => ;
-         ordCondSet( <"for">, <{for}>, [<.all.>], <{while}>, ;
-                     <{eval}>, <every>, RecNo(), <next>, <rec>, ;
-                     [<.rest.>], [<.descend.>],, ;
-                     [<.add.>], [<.cur.>], [<.cust.>], [<.noopt.>], ;
-                     <"while">, [<.mem.>], [<.filter.>], [<.ex.>] ) ;;
-         ordCreate( <(bag)>, <(tag)>, <"key">, <{key}>, [<.unique.>] )
-
-#command INDEX ON <key> TAG <(tag)> [TO <(bag)>] ;
-               [FOR <for>] [WHILE <while>] [NEXT <next>] ;
-               [RECORD <rec>] [<rest:REST>] [<all:ALL>] ;
-               [EVAL <eval>] [EVERY <every>] [<unique: UNIQUE>] ;
-               [<ascend: ASCENDING>] [<descend: DESCENDING>] ;
-               [<add: ADDITIVE>] [<cur: USECURRENT>] [<cust: CUSTOM>] ;
-               [<noopt: NOOPTIMIZE>] [<mem: MEMORY, TEMPORARY>] ;
-               [<filter: USEFILTER>] [<ex: EXCLUSIVE>] => ;
-         ordCondSet( <"for">, <{for}>, [<.all.>], <{while}>, ;
-                     <{eval}>, <every>, RecNo(), <next>, <rec>, ;
-                     [<.rest.>], [<.descend.>],, ;
-                     [<.add.>], [<.cur.>], [<.cust.>], [<.noopt.>], ;
-                     <"while">, [<.mem.>], [<.filter.>], [<.ex.>] ) ;;
-         ordCreate( <(bag)>, <(tag)>, <"key">, <{key}>, [<.unique.>] )
-*/
-
     IF ::custom
-        indexExp := E"\042" + Replicate( "#", Len( ::getMasterKeyVal ) + Len( ::KeyVal ) ) + E"\042"
+        IF ::customKeyLen = nil
+            indexExp := E"\"" + Replicate( "#", Len( ::getMasterKeyVal ) + Len( ::KeyVal ) ) + E"\""
+        ELSE
+            indexExp := E"\"" + Replicate( "#", ::customKeyLen ) + E"\""
+        ENDIF
     ELSE
         indexExp := ::IndexExpression()
     ENDIF
@@ -493,7 +468,11 @@ METHOD PROCEDURE CustomKeyUpdate CLASS TIndex
 
     IF ::FCustom .AND. ::Fopened
         WHILE ::FTable:Alias:ordKeyDel( ::FTagName ) ; ENDDO
-        customKeyValue := ::CustomKeyExpValue()
+        IF ::customKeyBlock = nil
+            customKeyValue := ::CustomKeyExpValue()
+        ELSE
+            customKeyValue := ::FTable:alias:eval( ::customKeyBlock, ::FTable:displayFieldList )
+        ENDIF
         IF Empty( ::FForKeyBlock ) .OR. ::FTable:Alias:Eval( ::FForKeyBlock, ::FTable )
             ::FTable:Alias:ordKeyAdd( ::FTagName, , customKeyValue )
         ENDIF
@@ -604,7 +583,7 @@ METHOD PROCEDURE FillCustomIndex() CLASS TIndex
 
     IF index != NIL
         index:dbGoTop()
-        WHILE !index:Eof()
+        WHILE !index:Eof() .AND. inkey() != K_ESC
             ::CustomKeyUpdate()
             index:dbSkip()
         ENDDO

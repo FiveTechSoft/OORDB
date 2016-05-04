@@ -216,6 +216,8 @@ PROTECTED:
    METHOD getTableBaseClass INLINE iif( ::FbaseKeyIndex = nil, "", ::FbaseKeyIndex:TableBaseClass )
    METHOD InitDataBase INLINE TDataBase():New()
    METHOD InitTable()
+   METHOD onAfterChangeIndex() VIRTUAL
+   METHOD onBeforeChangeIndex() INLINE .T.
    METHOD RawGet4Seek( direction, xField, keyVal, index, softSeek )
    METHOD SetDataBase( dataBase )
    METHOD SetErrorBlock( errorBlock ) INLINE FErrorBlock := errorBlock
@@ -3013,11 +3015,12 @@ METHOD FUNCTION SetDataBase( dataBase ) CLASS TTable
 */
 METHOD FUNCTION SetIndex( index ) CLASS TTable
 
-   IF !Empty( index ) .AND. !::GetIndex() == index
-      ::FIndex := index
-   ENDIF
+    IF !Empty( index ) .AND. !::GetIndex() == index .AND. ::onBeforeChangeIndex( index )
+        ::FIndex := index
+        ::onAfterChangeIndex()
+    ENDIF
 
-   RETURN ::FIndex
+RETURN ::FIndex
 
 /*
     SetIndexName
