@@ -352,7 +352,7 @@ PUBLIC:
    METHOD OnAfterDelete() VIRTUAL
    METHOD OnAfterInsert() VIRTUAL
    METHOD OnAfterOpen() VIRTUAL
-   METHOD OnAfterPost() VIRTUAL
+   METHOD OnAfterPost( changedFieldList ) VIRTUAL
    METHOD OnAfterPostInsert() VIRTUAL
    METHOD OnBeforeCancel() INLINE .T.
    METHOD onBeforeChange_Field() INLINE .T.
@@ -2749,7 +2749,7 @@ METHOD FUNCTION Post() CLASS TTable
    LOCAL AField
    LOCAL errObj
    LOCAL postOk := .F.
-   LOCAL aChangedFields := {}
+   LOCAL changedFieldList := {}
    LOCAL changed := .F.
    LOCAL result
 
@@ -2768,7 +2768,7 @@ METHOD FUNCTION Post() CLASS TTable
             IF AField:Enabled .AND. !AField:Calculated
                IF AField:Changed
                   IF AField:OnAfterPostChange != NIL
-                     AAdd( aChangedFields, AField )
+                     AAdd( changedFieldList, AField )
                   ENDIF
                   changed := .T.
                ENDIF
@@ -2799,9 +2799,9 @@ METHOD FUNCTION Post() CLASS TTable
    END SEQUENCE
 
    IF postOk
-      ::OnAfterPost()
-      IF Len( aChangedFields ) > 0
-         FOR EACH AField IN aChangedFields
+      ::OnAfterPost( changedFieldList )
+      IF Len( changedFieldList ) > 0
+         FOR EACH AField IN changedFieldList
             AField:OnAfterPostChange:Eval( Self )
          NEXT
       ENDIF
