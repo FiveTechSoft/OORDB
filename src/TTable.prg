@@ -175,6 +175,7 @@ PROTECTED:
    DATA FInitialized       INIT .F.
    DATA FisMetaTable       INIT .T.
    DATA FFound    INIT .F.
+   DATA FmainIndex
    DATA FMasterSourceFieldBuffer INIT hb_HSetCaseMatch( { => }, .F. )
    DATA FOnActiveSetKeyVal  INIT .F.
    DATA FPrimaryIndex
@@ -211,6 +212,14 @@ PROTECTED:
    METHOD getFullFileName()
    METHOD GetId() INLINE ::FBaseKeyField:KeyVal()
    METHOD GetIndex()
+   METHOD getMainIndex() BLOCK ;
+      {|self|
+         IF ::FisMetaTable
+            ::isMetaTable := .F.
+         ENDIF
+         RETURN ::FmainIndex
+      }
+
    METHOD GetRecNo()
    METHOD GetRecordList
    METHOD getTableBaseClass INLINE iif( ::FbaseKeyIndex = nil, "", ::FbaseKeyIndex:TableBaseClass )
@@ -324,7 +333,6 @@ PUBLIC:
    METHOD SetBaseKeyIndex( baseKeyIndex )
    METHOD SetDbFilter( filter ) INLINE ::FDbFilter := filter
    METHOD SetKeyVal( keyVal )
-   METHOD SetMainIndex( mainIndex )
    METHOD SetPrimaryIndex( primaryIndex )
    METHOD SetPrimaryIndexList( clsName, name )
    METHOD SetId( id ) INLINE ::FBaseKeyField:SetKeyVal( id )
@@ -422,7 +430,7 @@ PUBLISHED:
    PROPERTY INDEX READ GetIndex WRITE SetIndex
    PROPERTY IndexList READ FIndexList
    PROPERTY IndexName READ GetIndexName WRITE SetIndexName
-   PROPERTY MainIndex       /* child table can miss a primary index but a secondary one sets dependency */
+   PROPERTY MainIndex READ getMainIndex       /* child table can miss a primary index but a secondary one sets dependency */
    PROPERTY MasterKeyField READ GetMasterKeyField
    PROPERTY MasterSource READ GetMasterSource WRITE SetMasterSource
    PROPERTY PrimaryIndex READ FPrimaryIndex
@@ -3071,17 +3079,6 @@ METHOD FUNCTION SetisMetaTable( isMetaTable ) CLASS TTable
 METHOD FUNCTION SetKeyVal( keyVal ) CLASS TTable
 
    RETURN ::GetKeyField():SetKeyVal( keyVal )
-
-/*
-    SetMainIndex
-*/
-METHOD FUNCTION SetMainIndex( mainIndex ) CLASS TTable
-
-   IF ::FMainIndex = NIL
-      ::FMainIndex := mainIndex
-   ENDIF
-
-   RETURN mainIndex
 
 /*
     SetMasterSource
