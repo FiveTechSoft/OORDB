@@ -210,7 +210,8 @@ METHOD FUNCTION DataObj( ... ) CLASS TFieldTable
                   linkedTable:MasterSource:LinkedObjField:DataObj()
                ENDIF
                /* to be sure of mastersource synced with linkedTable */
-               IF linkedTable:MasterSource != NIL .AND. !linkedTable:MasterSource:BaseKeyField:KeyVal == ::FMasterKeyVal
+               /* don't try to move linkedTable if it is the current ::table:masterSource */
+               IF ( ::table:masterSource = nil .OR. ! ::table:masterSource == linkedTable ) .AND. linkedTable:MasterSource != NIL .AND. !linkedTable:MasterSource:BaseKeyField:KeyVal == ::FMasterKeyVal
                   IF ! linkedTable:InsideScope()
                      /* to don't attempt to write into a LinkedObjField */
                      linkedObjField := linkedTable:LinkedObjField

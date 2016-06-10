@@ -2,6 +2,10 @@
  * $Id: ChangeLog 155 2013-06-06 03:29:32Z tfonrouge $
  */
 
+Fri Jun 10 00:11:17 UTC 2016 Teo Fonrouge (tfonrouge@gmail.com)
+  M src/TFieldTable.prg
+    ! don't try to move linkedTable if it is the current table:masterSource
+
 Thu Jun  9 21:01:26 UTC 2016 Teo Fonrouge (tfonrouge@gmail.com)
   M src/TTable.prg
     * code cleanup
