@@ -2088,16 +2088,13 @@ METHOD FUNCTION getDefaultIndexByDefaultIndexName( indexName ) CLASS TTable
     ENDIF
 
     IF indexName != nil
-        IF hb_hHasKey( ::FIndexList, ::className ) .AND. hb_hHasKey( ::FIndexList[ ::className ], indexName )
-            RETURN ::FIndexList[ ::className ][ indexName ]
-        ELSE
-            classList := hb_hValueAt( ::FIndexList, len( ::FIndexList ) )
+        FOR EACH classList IN ::FIndexList
             FOR EACH indexList IN classList
                 IF indexList:__enumKey == indexName
                     RETURN indexList:__enumValue
                 ENDIF
             NEXT
-        ENDIF
+        NEXT
     ENDIF
 
 RETURN nil

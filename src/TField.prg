@@ -62,7 +62,8 @@ CLASS TField FROM OORDBBASE
    DATA FDBS_TYPE
    DATA FdefaultValueList
    DATA FEditable
-   DATA FEvtOnBeforeChange
+   DATA FonAfterChangeAssigned
+   DATA FonBeforeChangeAssigned
    DATA FFieldArrayIndex        // Array of TField's indexes in FieldList
    DATA FFieldExpression         // Literal Field expression on the Database
    DATA FFieldMethodType
@@ -1331,10 +1332,10 @@ METHOD PROCEDURE SetData( value, initialize ) CLASS TField
                 RETURN
             ENDIF
         ELSE
-            IF ::FEvtOnBeforeChange = NIL
-                ::FEvtOnBeforeChange := __objHasMsgAssigned( ::FTable, "OnBeforeChange_Field_" + ::Name )
+            IF ::FonBeforeChangeAssigned = NIL
+                ::FonBeforeChangeAssigned := __objHasMsgAssigned( ::FTable, "OnBeforeChange_Field_" + ::Name )
             ENDIF
-            IF ::FEvtOnBeforeChange .AND. !__objSendMsg( ::FTable, "OnBeforeChange_Field_" + ::Name, Self, @value )
+            IF ::FonBeforeChangeAssigned .AND. !__objSendMsg( ::FTable, "OnBeforeChange_Field_" + ::Name, @value )
                 RETURN
             ENDIF
         ENDIF
@@ -1374,11 +1375,23 @@ METHOD PROCEDURE SetData( value, initialize ) CLASS TField
                 ::FTable:FieldList[ ::FReUseFieldIndex ]:GetData()
             ENDIF
 
-            IF !initialize == .T. .AND. ::OnAfterChange != NIL
-                ::OnAfterChange:Eval( ::FTable )
+            IF !initialize == .T.
+                IF ::onAfterChange != nil
+                    BEGIN SEQUENCE WITH ::FTable:ErrorBlock
+                        ::onAfterChange:Eval( ::FTable )
+                    RECOVER
+                        SHOW WARN "<Error at 'OnAfterChange()'>"
+                    END SEQUENCE
+                ELSE
+                    IF ::FonAfterChangeAssigned = nil
+                        ::FonAfterChangeAssigned := __objHasMsgAssigned( ::FTable, "onAfterChange_Field_" + ::name )
+                    ENDIF
+                    IF ::FonAfterChangeAssigned
+                        __objSendMsg( ::FTable, "onAfterChange_Field_" + ::name )
+                    ENDIF
+                ENDIF
             ENDIF
         ENDIF
-
 
     RECOVER USING errObj
 
