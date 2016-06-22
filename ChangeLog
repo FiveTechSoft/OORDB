@@ -2,6 +2,10 @@
  * $Id: ChangeLog 155 2013-06-06 03:29:32Z tfonrouge $
  */
 
+Wed Jun 22 05:20:01 UTC 2016 Teo Fonrouge (tfonrouge@gmail.com)
+  M src/TTable.prg
+    ! allow break if error
+
 Thu Jun 16 21:03:43 UTC 2016 Teo Fonrouge (tfonrouge@gmail.com)
   M src/TField.prg
     * code cleanup

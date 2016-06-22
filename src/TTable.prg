@@ -1083,9 +1083,7 @@ METHOD FUNCTION ChildSource( tableName, destroyChild ) CLASS TTable
 
    destroyChild := .T.
 
-   BEGIN SEQUENCE WITH {| oErr| Break( oErr ) }
-      childDb := __ClsInstFromName( tableName ):New( Self )
-   END SEQUENCE
+   childDb := __ClsInstFromName( tableName ):New( Self )
 
    RETURN childDb
 
