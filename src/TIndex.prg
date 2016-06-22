@@ -98,6 +98,9 @@ PUBLIC:
 
    METHOD __Seek( direction, keyValue, lSoftSeek )
    METHOD AddIndex
+
+   METHOD bindIndex( reusing, indexType, curClass )
+
    METHOD closeIndex()
    METHOD COUNT( bForCondition, bWhileCondition )
    METHOD CustomKeyUpdate
@@ -178,7 +181,6 @@ ENDCLASS
 METHOD New( Table, tagName, name, indexType, curClass, warnMsg ) CLASS TIndex
 
    ::FTable := Table
-   ::FIndexType := indexType
    ::WarnMsg := warnMsg
 
    IF Len( tagName ) > 10
@@ -193,24 +195,7 @@ METHOD New( Table, tagName, name, indexType, curClass, warnMsg ) CLASS TIndex
 
    ::FName := name
 
-   IF curClass = NIL
-      curClass := ::FTable:ClassName()
-   ENDIF
-
-   ::FTableBaseClass := curClass
-
-   IF !hb_HHasKey( ::FTable:IndexList, curClass )
-      ::FTable:IndexList[ curClass ] := hb_HSetOrder( hb_HSetCaseMatch( { => }, .F. ), .T. )
-   ENDIF
-
-   ::FTable:IndexList[ curClass, name ] := Self
-
-   ::FIsPrimaryIndex := indexType = "PRIMARY"
-
-   IF ::FIsPrimaryIndex
-      ::FTable:SetPrimaryIndexList( curClass, name )
-      ::FTable:SetPrimaryIndex( Self )
-   ENDIF
+   ::bindIndex( .f., indexType, curClass )
 
    RETURN Self
 
@@ -312,6 +297,54 @@ METHOD AddIndex( cMasterKeyField, ai, un, cKeyField, keyFlags, ForKey, cs, de, a
    ::FTable:addIndexMessage( ::name, default )
 
    RETURN Self
+
+/*
+    bindIndex
+*/
+METHOD PROCEDURE bindIndex( reusing, indexType, curClass ) CLASS TIndex
+    LOCAL class
+    LOCAL index
+
+    /* on reusing must remove index on parent classes */
+    IF reusing
+        FOR EACH class IN ::Ftable:indexList
+            FOR EACH index IN class
+                IF index:__enumKey == ::Fname .AND. index == self
+                    hb_hDel( class, index:__enumKey )
+                    EXIT
+                ENDIF
+            NEXT
+        NEXT
+        FOR EACH index IN ::Ftable:primaryIndexList
+            IF index == ::Fname
+                hb_hDel( ::Ftable:primaryIndexList, index:__enumKey )
+                EXIT
+            ENDIF
+        NEXT
+    ENDIF
+
+    ::FIndexType := indexType
+
+    IF curClass = NIL
+        curClass := ::FTable:ClassName()
+    ENDIF
+
+    ::FTableBaseClass := curClass
+
+    IF !hb_HHasKey( ::FTable:IndexList, curClass )
+        ::FTable:IndexList[ curClass ] := hb_HSetOrder( hb_HSetCaseMatch( { => }, .F. ), .T. )
+    ENDIF
+
+    ::FTable:IndexList[ curClass, ::Fname ] := Self
+
+    ::FIsPrimaryIndex := indexType = "PRIMARY"
+
+    IF ::FIsPrimaryIndex
+        ::FTable:SetPrimaryIndexList( curClass, ::Fname )
+        ::FTable:SetPrimaryIndex( Self )
+    ENDIF
+
+RETURN
 
 /*
     closeIndex

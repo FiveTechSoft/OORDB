@@ -998,7 +998,7 @@ METHOD FUNCTION Reset() CLASS TField
       FValue := ::FDefaultValue
    ENDIF
 
-   IF !::FCalculated
+   IF !::FCalculated .OR. hb_isChar( ::FIndexExpression )
 
       IF FValue = NIL
 
@@ -1806,8 +1806,12 @@ METHOD PROCEDURE WriteToTable( value, initialize ) CLASS TField
 
     ::SetBuffer( value )
 
-    /* The physical write to the field */
-    ::FTable:Alias:Eval( ::FFieldWriteBlock, value )
+    /* The physical write to the  field */
+    IF ::Fcalculated
+        ::FTable:Alias:Eval( ::FFieldWriteBlock, ::Ftable, value )
+    ELSE
+        ::FTable:Alias:Eval( ::FFieldWriteBlock, value )
+    ENDIF
 
     ::FWrittenValue := ::GetBuffer()
 

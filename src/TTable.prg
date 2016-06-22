@@ -188,6 +188,9 @@ PROTECTED:
 
    METHOD __CheckIndexes()
    METHOD AddRec( origin )
+
+   METHOD bindIndex( reusing, indexName, indexType, curClass, default )
+
    METHOD CheckDbStruct()
    METHOD Clear()
    METHOD CreateTableInstance()
@@ -777,6 +780,23 @@ METHOD FUNCTION AddRec( origin ) CLASS TTable
    ::FSubState := dssNone
 
    RETURN Result
+
+/*
+    bindIndex
+*/
+METHOD PROCEDURE bindIndex( reusing, indexName, indexType, curClass, default ) CLASS TTable
+    LOCAL index
+
+    index := ::indexByName( indexName )
+
+    IF index != nil
+        IF default = .T.
+            ::FdefaultIndexName := indexName
+        ENDIF
+        index:bindIndex( reusing, indexType, curClass )
+    ENDIF
+
+RETURN
 
 /*
     BuildFieldBlockFromFieldExpression

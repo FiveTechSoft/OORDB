@@ -2,6 +2,17 @@
  * $Id: ChangeLog 155 2013-06-06 03:29:32Z tfonrouge $
  */
 
+Wed Jun 22 22:26:13 UTC 2016 Teo Fonrouge (tfonrouge@gmail.com)
+  M include/oordb.ch
+  M src/TIndex.prg
+  M src/TTable.prg
+    + clause USE INDEX <name> [DEFAULT] : allows to move declaration of a (parent class) index in current class
+      ; indexes can be declared on a virtual base class then used in child classes
+
+  M src/TField.prg
+    * reset() : allows to reset a calculated field if it has a indexExpression declared
+    * writeToTable() : use different method call for calculated fields
+
 Wed Jun 22 05:20:01 UTC 2016 Teo Fonrouge (tfonrouge@gmail.com)
   M src/TTable.prg
     ! allow break if error

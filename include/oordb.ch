@@ -293,6 +293,8 @@
                         WITH OBJECT TIndex():New( Self , <tagName>, [<name>], __typeIndex__, iif( __typeIndex__ == "PRIMARY", ::curClassPrimaryIndex, ::curClassIndex ), <errorMsg> ) ;;
                             :AddIndex( [<cMasterKeyField>], [<"ai">], [<.un.>], [<cKeyField>], [<keyFlags>], [<ForKey>], !<.ncs.>, [<.de.>], [<.acceptEmptyUnique.>], [<useIndex>], [<.tm.>], [<.rj.>], [<.cu.>], [<.def.>] ) ;;
                         ENDWITH
+
+#xtranslate USE INDEX <name> [<def: DEFAULT>] => ::bindIndex( .t., <name>, __typeIndex__, iif( __typeIndex__ == "PRIMARY", ::curClassPrimaryIndex, ::curClassIndex ), [<.def.>] )
                         
 #xtranslate CREATE <type: PRIMARY,SECONDARY> INDEX [TAG] <tagName> [NAME <name>] ;
                         [ MASTERKEYFIELD <cMasterKeyField> ] ;
