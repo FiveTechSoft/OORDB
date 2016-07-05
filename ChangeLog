@@ -2,6 +2,11 @@
  * $Id: ChangeLog 155 2013-06-06 03:29:32Z tfonrouge $
  */
 
+Tue Jul  5 23:35:22 UTC 2016 Teo Fonrouge (tfonrouge@gmail.com)
+  M src/TTable.prg
+    + property defaultIndexName
+    ! fixed getDefaultIndexByDefaultIndexName() : for default, uses primary/secondary indexes defined in class (if any) then search for defaultIndexName
+
 Tue Jul  5 03:42:24 UTC 2016 Teo Fonrouge (tfonrouge@gmail.com)
   M src/TTable.prg
     ! find parent class

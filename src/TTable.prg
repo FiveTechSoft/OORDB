@@ -165,7 +165,6 @@ PROTECTED:
    DATA FcanCreateInstance INIT .F.
    DATA FCustomIndexList   INIT {}
    DATA FDataBaseClass
-   DATA FdefaultIndexName
    DATA FEof    INIT .T.
    DATA FFieldList         INIT {}
    DATA FFilledFieldList   INIT .F.
@@ -208,7 +207,6 @@ PROTECTED:
       }
    METHOD GetBof()
    METHOD GetDataBase()
-   METHOD getDefaultIndexByDefaultIndexName( indexName )
    METHOD GetEof()
    METHOD GetErrorBlock() INLINE iif( FErrorBlock = NIL, FErrorBlock := {| oErr| ErrorBlockOORDB( oErr ) }, FErrorBlock )
    METHOD GetFound()
@@ -388,6 +386,7 @@ PUBLIC:
    PROPERTY DataBase READ GetDataBase WRITE SetDataBase
    PROPERTY DbFilter READ FDbFilter WRITE SetDbFilter
    PROPERTY DbStruct READ GetDbStruct
+   PROPERTY defaultIndexName
    PROPERTY DELETED READ Alias:Deleted()
    PROPERTY DeletingChilds INIT .F.
    PROPERTY DisplayFieldList READ GetDisplayFieldList
@@ -1215,7 +1214,7 @@ METHOD PROCEDURE CreateTableInstance() CLASS TTable
    ::FState := dsInactive
 
     /* get default index by default index name */
-    ::FMainIndex := ::getDefaultIndexByDefaultIndexName()
+    ::FMainIndex := getDefaultIndexByDefaultIndexName( self )
 
     IF ::FMainIndex = nil
         IF hb_HHasKey( ::FIndexList, ::ClassName )
@@ -2097,22 +2096,24 @@ METHOD FUNCTION GetDbStruct CLASS TTable
 /*
     getDefaultIndexByDefaultIndexName
 */
-METHOD FUNCTION getDefaultIndexByDefaultIndexName( indexName ) CLASS TTable
-    LOCAL classList
-    LOCAL indexList
+STATIC FUNCTION getDefaultIndexByDefaultIndexName( self, indexName )
+    LOCAL curClass
 
     IF indexName = nil
-        indexName := ::FdefaultIndexName
+        indexName := ::defaultIndexName
     ENDIF
 
     IF indexName != nil
-        FOR EACH classList IN ::FIndexList
-            FOR EACH indexList IN classList
-                IF indexList:__enumKey == indexName
-                    RETURN indexList:__enumValue
+        curClass := self
+        WHILE ! curClass:className == "TTABLE"
+            IF hb_HHasKey( ::indexList, curClass:className )
+                IF hb_HHasKey( ::indexList[ curClass:className ], indexName )
+                    RETURN ::indexList[ curClass:className ][indexName]
                 ENDIF
-            NEXT
-        NEXT
+                RETURN hb_hValueAt( ::indexList[ curClass:className ], 1 )
+            ENDIF
+            curClass := curClass:super
+        ENDDO
     ENDIF
 
 RETURN nil
