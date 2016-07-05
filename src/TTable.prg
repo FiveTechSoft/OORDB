@@ -3524,6 +3524,20 @@ METHOD FUNCTION Validate( showAlert ) CLASS TTable
     End Class TTable
 */
 
+STATIC FUNCTION findParentClass( self )
+    LOCAL n
+    LOCAL clsName
+
+    clsName := ::className
+
+    n := aScan( BaseKeyFieldList, {|e| upper( e[ 1 ] ) == clsName } )
+
+    IF n = 0 .AND. ! clsName == "TTABLE"
+        findParentClass( ::super )
+    ENDIF
+
+RETURN n
+
 /*
     FindTableBaseClass
 */
@@ -3539,7 +3553,7 @@ STATIC FUNCTION FindTableBaseClass( AField )
 
    IF n = 0
       t := AField:LinkedTable
-      n := AScan( BaseKeyFieldList, {| e| t:IsDerivedFrom( e[ 1 ] ) } )
+      n := findParentClass( t )
    ENDIF
 
    RETURN n
