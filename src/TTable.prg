@@ -654,11 +654,9 @@ METHOD PROCEDURE addIndexMessage( indexName, default ) CLASS TTable
     LOCAL y
 
     IF ::indexByName( indexName, @aPos ) != nil
-        IF !__objHasMsg( Self, ::indexNamePrefix + indexName )
-            x := aPos[ 1 ]
-            y := aPos[ 2 ]
-            EXTEND OBJECT Self WITH MESSAGE ::indexNamePrefix + indexName INLINE hb_hValueAt( hb_hValueAt( ::FIndexList, x ), y )
-        ENDIF
+        x := aPos[ 1 ]
+        y := aPos[ 2 ]
+        EXTEND OBJECT Self WITH MESSAGE ::indexNamePrefix + indexName INLINE hb_hValueAt( hb_hValueAt( ::FIndexList, x ), y )
         IF default = .T.
             ::FdefaultIndexName := indexName
         ENDIF
@@ -789,10 +787,8 @@ METHOD PROCEDURE bindIndex( reusing, indexName, indexType, curClass, default ) C
     index := ::indexByName( indexName )
 
     IF index != nil
-        IF default = .T.
-            ::FdefaultIndexName := indexName
-        ENDIF
         index:bindIndex( reusing, indexType, curClass )
+        ::addIndexMessage( indexName, default )
     ENDIF
 
 RETURN
