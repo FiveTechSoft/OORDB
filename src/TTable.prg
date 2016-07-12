@@ -636,12 +636,11 @@ METHOD PROCEDURE AddFieldMessage( messageName, AField, isAlias ) CLASS TTable
    ENDIF
 
    /* Check if Name is already created in class */
-   IF !__objHasMsg( Self, ::FieldNamePrefix + messageName )
-      IF index < 1 .OR. index > Len( ::FieldList )
-         RAISE ERROR "Illegal index field for '" + messageName + "' on Class <" + ::ClassName + ">"
-      ENDIF
-      EXTEND OBJECT Self WITH MESSAGE ::FieldNamePrefix + messageName INLINE ::FieldList[ index ]
+   IF index < 1 .OR. index > Len( ::FieldList )
+      RAISE ERROR "Illegal index field for '" + messageName + "' on Class <" + ::ClassName + ">"
    ENDIF
+
+   EXTEND OBJECT Self WITH MESSAGE ::FieldNamePrefix + messageName INLINE ::FieldList[ index ]
 
    RETURN
 

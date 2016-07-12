@@ -384,6 +384,10 @@ METHOD FUNCTION GetLinkedTable( ... ) CLASS TFieldTable
 
          ::FcalculatingLinkedTable := .F.
 
+         IF result = nil
+            RETURN nil
+         ENDIF
+
       ELSE
 
          ::BuildLinkedTable()
