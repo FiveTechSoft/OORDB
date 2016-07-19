@@ -2,6 +2,11 @@
  * $Id: ChangeLog 155 2013-06-06 03:29:32Z tfonrouge $
  */
 
+Tue Jul 19 03:54:39 UTC 2016 Teo Fonrouge (tfonrouge@gmail.com)
+  M src/TIndex.prg
+  M src/TTable.prg
+    % allows replicate a skipUnique on index
+
 Tue Jul 19 01:26:20 UTC 2016 Teo Fonrouge (tfonrouge@gmail.com)
   M src/TTable.prg
     * using static to check for messages added to class

@@ -292,7 +292,7 @@ PUBLIC:
    METHOD DbGoInsideScope() INLINE iif( ! ::InsideScope(), ::DbGoTop(), .T. )
    METHOD dbGoto( RecNo )
    METHOD DbGoTop INLINE ::DbGoBottomTop( 1 )
-   METHOD dbSkip( numRecs )
+   METHOD dbSkip( numRecs, lSkipUnique )
    METHOD DELETE( lDeleteChilds )
    METHOD DeleteChilds()
    METHOD Edit( lNoRetry )
@@ -339,7 +339,7 @@ PUBLIC:
    METHOD SetPrimaryIndexList( clsName, name )
    METHOD SetId( id ) INLINE ::FBaseKeyField:SetKeyVal( id )
    METHOD __SetValue( value )
-   METHOD SkipBrowse( n )
+   METHOD SkipBrowse( n, lSkipUnique )
    METHOD SkipFilter( n, index )
    METHOD StatePull()
    METHOD StatePush()
@@ -1376,7 +1376,7 @@ METHOD FUNCTION dbGoto( RecNo ) CLASS TTable
 /*
     DbSkip
 */
-METHOD FUNCTION dbSkip( numRecs ) CLASS TTable
+METHOD FUNCTION dbSkip( numRecs, lSkipUnique ) CLASS TTable
 
    LOCAL result
 
@@ -1385,7 +1385,7 @@ METHOD FUNCTION dbSkip( numRecs ) CLASS TTable
    ENDIF
 
    IF ::GetIndex() != NIL
-      RETURN ::GetIndex():dbSkip( numRecs )
+      RETURN ::GetIndex():dbSkip( numRecs, lSkipUnique )
    ELSE
       IF !::HasFilter
          result := ::Alias:dbSkip( numRecs ) /* because on Bof returns .F. */
@@ -3233,7 +3233,7 @@ METHOD FUNCTION __SetValue( value ) CLASS TTable
 /*
     SkipBrowse : BROWSE skipblock
 */
-METHOD FUNCTION SkipBrowse( n ) CLASS TTable
+METHOD FUNCTION SkipBrowse( n, lSkipUnique ) CLASS TTable
 
    LOCAL num_skipped := 0
    LOCAL recNo
@@ -3246,7 +3246,7 @@ METHOD FUNCTION SkipBrowse( n ) CLASS TTable
    IF n > 0
       WHILE !::Eof() .AND. num_skipped < n
          recNo := ::RecNo
-         IF !::dbSkip( 1 ) .OR. ::Eof()
+         IF !::dbSkip( 1, lSkipUnique ) .OR. ::Eof()
             ::dbGoto( recNo )
             EXIT
          ENDIF
@@ -3255,7 +3255,7 @@ METHOD FUNCTION SkipBrowse( n ) CLASS TTable
    ELSE
       WHILE !::Bof() .AND. num_skipped > n
          recNo := ::RecNo
-         IF !::dbSkip( -1 ) .OR. ::Bof()
+         IF !::dbSkip( -1, lSkipUnique ) .OR. ::Bof()
             ::dbGoto( recNo )
             EXIT
          ENDIF

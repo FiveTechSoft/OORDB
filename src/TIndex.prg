@@ -108,7 +108,7 @@ PUBLIC:
    METHOD DbFilterPull()
    METHOD DbGoBottom INLINE ::DbGoBottomTop( -1 )
    METHOD DbGoTop INLINE ::DbGoBottomTop( 1 )
-   METHOD dbSkip( numRecs )
+   METHOD dbSkip( numRecs, lSkipUnique )
    METHOD existsKey( keyValue, recNo )
    METHOD GetKeyVal( keyVal )
    METHOD FillCustomIndex()
@@ -574,12 +574,28 @@ METHOD FUNCTION DbGoBottomTop( n ) CLASS TIndex
 /*
     DbSkip
 */
-METHOD FUNCTION dbSkip( numRecs ) CLASS TIndex
+METHOD FUNCTION dbSkip( numRecs, lSkipUnique ) CLASS TIndex
 
    LOCAL result
+   LOCAL n
 
    IF !::HasFilter() .AND. !::FTable:HasFilter()
-      result := ::FTable:alias:dbSkip( numRecs, ::FTagName ) /* because on Bof returns .F. */
+      IF lSkipUnique = .T.
+         result := .T.
+         WHILE numRecs != 0 .AND. ! ::Ftable:eof() .AND. result
+            IF numRecs > 0
+                ::seekLast( ::keyVal )
+                n := 1
+            ELSE
+                ::seek( ::keyVal )
+                n := -1
+            ENDIF
+            result := ::FTable:alias:dbSkip( n, ::FTagName )
+            numRecs += - ( n )
+         ENDDO
+      ELSE
+         result := ::FTable:alias:dbSkip( numRecs, ::FTagName ) /* because on Bof returns .F. */
+      ENDIF
       ::GetCurrentRecord()
       RETURN result .AND. ::InsideScope()
    ENDIF
