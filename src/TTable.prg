@@ -22,6 +22,7 @@
 THREAD STATIC FErrorBlock
 THREAD STATIC BaseKeyFieldList := {}
 THREAD STATIC __S_Instances
+THREAD STATIC __s_fieldList
 THREAD STATIC __S_dataBase
 THREAD STATIC FmemTempFileCount := 0
 
@@ -249,7 +250,7 @@ PUBLIC:
         array of possible TFieldTable's that have this (SELF) object referenced
      */
    DATA DetailSourceList INIT { => }
-   DATA FieldNamePrefix INIT "Field_" // Table Field Name prefix
+   DATA fieldNamePrefix INIT "Field_" // Table Field Name prefix
    DATA FUnderReset INIT .F.
    DATA indexNamePrefix INIT "Index_"
    DATA LinkedObjField
@@ -608,41 +609,56 @@ METHOD PROCEDURE AddFieldAlias( nameAlias, fld, private ) CLASS TTable
     AddFieldMessage
 */
 METHOD PROCEDURE AddFieldMessage( messageName, AField, isAlias ) CLASS TTable
+    LOCAL i
+    LOCAL index
+    LOCAL fld
 
-   LOCAL INDEX
-   LOCAL fld
+    fld := ::FieldByName( messageName, @index )
 
-   fld := ::FieldByName( messageName, @index )
+    IF index = 0
+        IF isAlias == .T.
+            ::FieldByName( AField:Name, @index )
+        ELSE
+            AAdd( ::FFieldList, AField )
+            index := Len( ::FFieldList )
+            IF ! hb_hHasKey( ::FindexFieldListByClass, AField:tableBaseClass )
+                ::FindexFieldListByClass[ AField:tableBaseClass ] := {}
+            ENDIF
+            AAdd( ::FindexFieldListByClass[ AField:tableBaseClass ], index )
+        ENDIF
+    ELSE
+        IF fld:IsKeyIndex
+            RAISE ERROR "Attempt to overwrite key index Field '" + messageName + "' on Class <" + ::ClassName + ">"
+        ENDIF
+        IF AField:TableBaseClass == fld:TableBaseClass
+            RAISE ERROR "Attempt to Re-Declare Field '" + messageName + "' on Class <" + ::ClassName + ">"
+        ENDIF
+        ::FFieldList[ index ] := AField
+    ENDIF
 
-   IF index = 0
-      IF isAlias == .T.
-         ::FieldByName( AField:Name, @index )
-      ELSE
-         AAdd( ::FFieldList, AField )
-         index := Len( ::FFieldList )
-         IF ! hb_hHasKey( ::FindexFieldListByClass, AField:tableBaseClass )
-            ::FindexFieldListByClass[ AField:tableBaseClass ] := {}
-         ENDIF
-         AAdd( ::FindexFieldListByClass[ AField:tableBaseClass ], index )
-      ENDIF
-   ELSE
-      IF fld:IsKeyIndex
-         RAISE ERROR "Attempt to overwrite key index Field '" + messageName + "' on Class <" + ::ClassName + ">"
-      ENDIF
-      IF AField:TableBaseClass == fld:TableBaseClass
-         RAISE ERROR "Attempt to Re-Declare Field '" + messageName + "' on Class <" + ::ClassName + ">"
-      ENDIF
-      ::FFieldList[ index ] := AField
-   ENDIF
+    IF __s_fieldList = nil
+        __s_fieldList := hb_HSetCaseMatch( { => }, .F. )
+    ENDIF
 
-   /* Check if Name is already created in class */
-   IF index < 1 .OR. index > Len( ::FieldList )
-      RAISE ERROR "Illegal index field for '" + messageName + "' on Class <" + ::ClassName + ">"
-   ENDIF
+    IF ! hb_hHasKey( __s_fieldList, ::className, @i )
+        __s_fieldList[ ::className ] := hb_HSetCaseMatch( { => }, .F. )
+        i := hb_hPos( __s_fieldList, ::className )
+    ENDIF
 
-   EXTEND OBJECT Self WITH MESSAGE ::FieldNamePrefix + messageName INLINE ::FieldList[ index ]
+    /* check if need to add the field message to the class */
+    IF ! hb_hHasKey( hb_hValueAt( __s_fieldList, i ), messageName )
 
-   RETURN
+        hb_hValueAt( __s_fieldList, i )[ messageName ] := nil
+
+        IF index < 1 .OR. index > Len( ::FieldList )
+            RAISE ERROR "Illegal index field for '" + messageName + "' on Class <" + ::ClassName + ">"
+        ENDIF
+
+        EXTEND OBJECT Self WITH MESSAGE ::fieldNamePrefix + messageName INLINE ::FieldList[ index ]
+
+    ENDIF
+
+RETURN
 
 /*
     addIndexMessage
@@ -655,7 +671,11 @@ METHOD PROCEDURE addIndexMessage( indexName, default ) CLASS TTable
     IF ::indexByName( indexName, @aPos ) != nil
         x := aPos[ 1 ]
         y := aPos[ 2 ]
-        EXTEND OBJECT Self WITH MESSAGE ::indexNamePrefix + indexName INLINE hb_hValueAt( hb_hValueAt( ::FIndexList, x ), y )
+        IF !__objHasMsg( Self, ::indexNamePrefix + indexName )
+            EXTEND OBJECT self WITH MESSAGE ::indexNamePrefix + indexName INLINE hb_hValueAt( hb_hValueAt( ::FIndexList, x ), y )
+        ELSE
+            __clsModMsg( ::ClassH, ::indexNamePrefix + indexName, {|self| hb_hValueAt( hb_hValueAt( ::FIndexList, x ), y ) } )
+        ENDIF
         IF default = .T.
             ::FdefaultIndexName := indexName
         ENDIF

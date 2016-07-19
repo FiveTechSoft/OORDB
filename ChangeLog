@@ -2,6 +2,11 @@
  * $Id: ChangeLog 155 2013-06-06 03:29:32Z tfonrouge $
  */
 
+Tue Jul 19 01:26:20 UTC 2016 Teo Fonrouge (tfonrouge@gmail.com)
+  M src/TTable.prg
+    * using static to check for messages added to class
+    * on adding index message name, change code block if changing message name
+
 Tue Jul 12 00:28:34 UTC 2016 Teo Fonrouge (tfonrouge@gmail.com)
   M src/TFieldTable.prg
     * if calculated table field returns nil, the return nil
