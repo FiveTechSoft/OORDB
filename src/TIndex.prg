@@ -310,14 +310,14 @@ METHOD PROCEDURE bindIndex( reusing, indexType, curClass ) CLASS TIndex
         FOR EACH class IN ::Ftable:indexList
             FOR EACH index IN class
                 IF index:__enumKey == ::Fname .AND. index == self
-                    hb_hDel( class, index:__enumKey )
+//                    hb_hDel( class, index:__enumKey )
                     EXIT
                 ENDIF
             NEXT
         NEXT
         FOR EACH index IN ::Ftable:primaryIndexList
             IF index == ::Fname
-                hb_hDel( ::Ftable:primaryIndexList, index:__enumKey )
+//                hb_hDel( ::Ftable:primaryIndexList, index:__enumKey )
                 EXIT
             ENDIF
         NEXT
