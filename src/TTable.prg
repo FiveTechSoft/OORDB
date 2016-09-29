@@ -23,6 +23,7 @@ THREAD STATIC FErrorBlock
 THREAD STATIC BaseKeyFieldList := {}
 THREAD STATIC __S_Instances
 THREAD STATIC __s_fieldList
+THREAD STATIC __s_indexList
 THREAD STATIC __S_dataBase
 THREAD STATIC FmemTempFileCount := 0
 
@@ -665,20 +666,32 @@ RETURN
 */
 METHOD PROCEDURE addIndexMessage( indexName, default ) CLASS TTable
     LOCAL aPos
+    LOCAL i
     LOCAL x
     LOCAL y
 
-    IF ::indexByName( indexName, @aPos ) != nil
+    IF __s_indexList = nil
+        __s_indexList := hb_hSetCaseMatch( {=>}, .F. )
+    ENDIF
+
+    IF ! hb_hHasKey( __s_indexList, ::className, @i )
+        __s_indexList[ ::className ] := hb_hSetCaseMatch( {=>}, .F. )
+        i := hb_hPos( __s_indexList, ::className )
+    ENDIF
+
+    IF ! hb_hHasKey( hb_hValueAt( __s_indexList, i ), indexName ) .AND. ::indexByName( indexName, @aPos ) != nil
+
+        hb_hValueAt( __s_indexList, i )[ indexName ] := nil
+
         x := aPos[ 1 ]
         y := aPos[ 2 ]
-        IF !__objHasMsg( Self, ::indexNamePrefix + indexName )
-            EXTEND OBJECT self WITH MESSAGE ::indexNamePrefix + indexName INLINE hb_hValueAt( hb_hValueAt( ::FIndexList, x ), y )
-        ELSE
-            __clsModMsg( ::ClassH, ::indexNamePrefix + indexName, {|self| hb_hValueAt( hb_hValueAt( ::FIndexList, x ), y ) } )
-        ENDIF
-        IF default = .T.
-            ::FdefaultIndexName := indexName
-        ENDIF
+
+        EXTEND OBJECT self WITH MESSAGE ::indexNamePrefix + indexName INLINE hb_hValueAt( hb_hValueAt( ::FIndexList, x ), y )
+
+    ENDIF
+
+    IF default = .T.
+        ::FdefaultIndexName := indexName
     ENDIF
 
 RETURN
@@ -2608,7 +2621,6 @@ METHOD FUNCTION IndexByName( indexName, aPos, curClass ) CLASS TTable
     F_IndexByName
 */
 STATIC FUNCTION F_IndexByName( Self, indexName, aPos, curClass )
-
    LOCAL className
    LOCAL x,y
 
