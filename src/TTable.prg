@@ -372,6 +372,7 @@ PUBLIC:
    METHOD OnBeforeInsert() INLINE .T.
    METHOD OnBeforeLock INLINE .T.
    METHOD OnBeforePost() INLINE .T.
+   METHOD OnCheckValueForLinkedObjField( linkedObjField, value )  VIRTUAL
    METHOD OnDataChange()
    METHOD OnStateChange( oldState ) VIRTUAL
    METHOD OnSyncFromMasterSource() VIRTUAL
@@ -2091,7 +2092,7 @@ METHOD FUNCTION GetCurrentRecord() CLASS TTable
     ENDIF
 
     IF ::allowOnDataChange
-        IF ::LinkedObjField != NIL .AND. ::LinkedObjField:Table:State > dsBrowse
+        IF ::LinkedObjField != NIL
             ::LinkedObjField:BaseKeyField:CheckForLinkedObjFieldSetAsVariant( ::BaseKeyField:GetAsVariant() )
         ENDIF
         ::OnDataChange()

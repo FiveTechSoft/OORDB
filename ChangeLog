@@ -2,6 +2,13 @@
  * $Id: ChangeLog 155 2013-06-06 03:29:32Z tfonrouge $
  */
 
+Wed Oct 12 20:54:04 UTC 2016 Teo Fonrouge (tfonrouge@gmail.com)
+  M src/TField.prg
+    % CheckForLinkedObjFieldSetAsVariant() : call to ::table:OnCheckValueForLinkedObjField()
+
+  M src/TTable.prg
+    + OnCheckValueForLinkedObjField() : executes on ::field_*:CheckForLinkedObjFieldSetAsVariant()
+
 Thu Sep 29 00:22:07 UTC 2016 Teo Fonrouge (tfonrouge@gmail.com)
   M src/TTable.prg
     * check if need to add index message

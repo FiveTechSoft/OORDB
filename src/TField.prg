@@ -349,8 +349,11 @@ RETURN
     CheckForLinkedObjFieldSetAsVariant
 */
 METHOD PROCEDURE CheckForLinkedObjFieldSetAsVariant( value ) CLASS TField
-    IF ::FTable:LinkedObjField != NIL .AND. (::FTable:LinkedObjField:Calculated .OR. ::FTable:LinkedObjField:Table:State > dsBrowse )
-        ::FTable:LinkedObjField:SetAsVariant( value )
+    IF ::FTable:LinkedObjField != NIL
+        ::FTable:OnCheckValueForLinkedObjField( ::FTable:LinkedObjField, value )
+        IF (::FTable:LinkedObjField:Calculated .OR. ::FTable:LinkedObjField:Table:State > dsBrowse )
+            ::FTable:LinkedObjField:SetAsVariant( value )
+        ENDIF
     ENDIF
 RETURN
 
