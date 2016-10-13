@@ -361,6 +361,7 @@ PUBLIC:
    METHOD OnAfterCancel() VIRTUAL
    METHOD OnAfterChange() VIRTUAL
    METHOD OnAfterDelete() VIRTUAL
+   METHOD OnAfterEdit() VIRTUAL
    METHOD OnAfterInsert() VIRTUAL
    METHOD OnAfterOpen() VIRTUAL
    METHOD OnAfterPost( changedFieldList ) VIRTUAL
@@ -1654,6 +1655,8 @@ METHOD FUNCTION Edit( lNoRetry ) CLASS TTable
    IF ::Eof() .OR. !::OnBeforeEdit() .OR. !::RecLock( lNoRetry )
       RETURN .F.
    ENDIF
+
+   ::OnAfterEdit()
 
    RETURN .T.
 
