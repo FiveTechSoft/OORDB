@@ -373,8 +373,8 @@ PUBLIC:
    METHOD OnBeforeInsert() INLINE .T.
    METHOD OnBeforeLock INLINE .T.
    METHOD OnBeforePost() INLINE .T.
-   METHOD OnCheckValueForLinkedObjField( linkedObjField, value )  VIRTUAL
    METHOD OnDataChange()
+   METHOD OnSetValueToLinkedObjField( linkedObjField, value, field )  VIRTUAL
    METHOD OnStateChange( oldState ) VIRTUAL
    METHOD OnSyncFromMasterSource() VIRTUAL
 
@@ -2096,7 +2096,7 @@ METHOD FUNCTION GetCurrentRecord() CLASS TTable
 
     IF ::allowOnDataChange
         IF ::LinkedObjField != NIL
-            ::LinkedObjField:BaseKeyField:CheckForLinkedObjFieldSetAsVariant( ::BaseKeyField:GetAsVariant() )
+            ::LinkedObjField:BaseKeyField:SetValueToLinkedObjField( ::BaseKeyField:GetAsVariant() )
         ENDIF
         ::OnDataChange()
     ENDIF

@@ -139,7 +139,6 @@ CLASS TField FROM OORDBBASE
    METHOD AddFieldMessage()
    METHOD AddKeyIndex( index )
    METHOD CheckForKeyViolation( value )
-   METHOD CheckForLinkedObjFieldSetAsVariant( value )
    METHOD CLEAR()
    METHOD DefaultValuePull()
    METHOD DefaultValuePush( newDefaultValue )
@@ -170,6 +169,7 @@ CLASS TField FROM OORDBBASE
    METHOD SetKeyVal( keyVal, lSoftSeek )
    METHOD SetKeyValBlock( keyValBlock ) INLINE ::FOnSetKeyValBlock := keyValBlock
    METHOD SetValidValues( validValues, ignoreUndetermined )
+   METHOD SetValueToLinkedObjField( value )
    METHOD TranslateToFieldValue( value ) INLINE value
    METHOD TranslateToValue( value ) INLINE value
    METHOD Validate( showAlert ) INLINE ::ValidateResult( showAlert ) = NIL
@@ -343,18 +343,6 @@ METHOD PROCEDURE CheckForKeyViolation( value ) CLASS TField
         NEXT
     ENDIF
 
-RETURN
-
-/*
-    CheckForLinkedObjFieldSetAsVariant
-*/
-METHOD PROCEDURE CheckForLinkedObjFieldSetAsVariant( value ) CLASS TField
-    IF ::FTable:LinkedObjField != NIL
-        ::FTable:OnCheckValueForLinkedObjField( ::FTable:LinkedObjField, value )
-        IF (::FTable:LinkedObjField:Calculated .OR. ::FTable:LinkedObjField:Table:State > dsBrowse )
-            ::FTable:LinkedObjField:SetAsVariant( value )
-        ENDIF
-    ENDIF
 RETURN
 
 /*
@@ -1369,7 +1357,7 @@ METHOD PROCEDURE SetData( value, initialize ) CLASS TField
         ELSE
             IF ::FTable:BaseKeyField == Self
 
-                ::CheckForLinkedObjFieldSetAsVariant( ::GetAsVariant() )
+                ::SetValueToLinkedObjField( ::GetAsVariant() )
 
             ENDIF
 
@@ -1622,7 +1610,7 @@ METHOD FUNCTION SetKeyVal( keyVal, lSoftSeek ) CLASS TField
                 ::OnSetKeyVal( .F., keyVal )
             ENDIF
 
-            ::CheckForLinkedObjFieldSetAsVariant( ::FTable:BaseKeyField:GetAsVariant() )
+            ::SetValueToLinkedObjField( ::FTable:BaseKeyField:GetAsVariant() )
 
         ELSE
 
@@ -1695,6 +1683,18 @@ METHOD PROCEDURE SetValidValues( validValues, ignoreUndetermined ) CLASS TField
    ::FignoreUndetermined := ignoreUndetermined
 
    RETURN
+
+/*
+    SetValueToLinkedObjField
+*/
+METHOD PROCEDURE SetValueToLinkedObjField( value ) CLASS TField
+    IF ::FTable:LinkedObjField != NIL
+        ::FTable:OnSetValueToLinkedObjField( ::FTable:LinkedObjField, value )
+        IF (::FTable:LinkedObjField:Calculated .OR. ::FTable:LinkedObjField:Table:State > dsBrowse )
+            ::FTable:LinkedObjField:SetAsVariant( value )
+        ENDIF
+    ENDIF
+RETURN
 
 /*
     Type
