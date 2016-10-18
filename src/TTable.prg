@@ -359,12 +359,12 @@ PUBLIC:
    METHOD OnCreate() VIRTUAL
    METHOD OnActiveSetKeyVal( value )
    METHOD OnAfterCancel() VIRTUAL
-   METHOD OnAfterChange() VIRTUAL
    METHOD OnAfterDelete() VIRTUAL
    METHOD OnAfterEdit() VIRTUAL
    METHOD OnAfterInsert() VIRTUAL
    METHOD OnAfterOpen() VIRTUAL
    METHOD OnAfterPost( changedFieldList ) VIRTUAL
+   METHOD OnAfterPostEdit() VIRTUAL
    METHOD OnAfterPostInsert() VIRTUAL
    METHOD OnBeforeCancel() INLINE .T.
    METHOD onBeforeChange_Field() INLINE .T.
@@ -2861,8 +2861,8 @@ METHOD FUNCTION Post() CLASS TTable
          NEXT
       ENDIF
       IF ::FpreviousEditState = dsEdit .AND. changed
-         IF __objHasMsgAssigned( Self, "OnAfterChange" )
-            __objSendMsg( Self, "OnAfterChange" )
+         IF __objHasMsgAssigned( Self, "OnAfterPostEdit" )
+            __objSendMsg( Self, "OnAfterPostEdit" )
          ENDIF
       ENDIF
       IF ::FpreviousEditState = dsInsert
