@@ -1588,7 +1588,7 @@ METHOD FUNCTION SetKeyVal( keyVal, lSoftSeek ) CLASS TField
 
     IF ::FTable:OnActiveSetKeyVal()
 
-        SHOW WARN e"Ignoring setKeyVal() call with \"" + keyVal + e"\""
+        outErr(e"\nIgnoring setKeyVal() call with \"" + keyVal + e"\"")
 
     ELSE
 

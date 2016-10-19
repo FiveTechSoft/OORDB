@@ -2,6 +2,10 @@
  * $Id: ChangeLog 155 2013-06-06 03:29:32Z tfonrouge $
  */
 
+Wed Oct 19 22:37:12 UTC 2016 Teo Fonrouge (tfonrouge@gmail.com)
+  M src/TField.prg
+    * don't show alert window on warning
+
 Wed Oct 19 00:12:25 UTC 2016 Teo Fonrouge (tfonrouge@gmail.com)
   M src/TTable.prg
     * code cleanup
