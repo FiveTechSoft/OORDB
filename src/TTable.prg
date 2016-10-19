@@ -2861,14 +2861,10 @@ METHOD FUNCTION Post() CLASS TTable
          NEXT
       ENDIF
       IF ::FpreviousEditState = dsEdit .AND. changed
-         IF __objHasMsgAssigned( Self, "OnAfterPostEdit" )
-            __objSendMsg( Self, "OnAfterPostEdit" )
-         ENDIF
+         ::OnAfterPostEdit()
       ENDIF
       IF ::FpreviousEditState = dsInsert
-         IF __objHasMsgAssigned( self, "OnAfterPostInsert" )
-            __objSendMsg( self, "OnAfterPostInsert" )
-         ENDIF
+         ::OnAfterPostInsert()
       ENDIF
    ENDIF
 
